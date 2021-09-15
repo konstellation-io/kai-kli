@@ -4,7 +4,7 @@ on:
   workflow_run:
     workflows:
       - "Quality"
-    branches: [master]
+    branches: [main]
     types: 
       - completed
 
@@ -21,6 +21,6 @@ jobs:
           prefix: "release-"
           mode: 'pre-release'
           pre-release: 'alpha'
-          default-branch: 'master'
+          default-branch: 'main'
         env:
           GITHUB_TOKEN: ${{ secrets.PATNAME }}
