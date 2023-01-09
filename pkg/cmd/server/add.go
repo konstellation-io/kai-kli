@@ -1,6 +1,8 @@
 package server
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 
 	"github.com/konstellation-io/kli/cmd/factory"
@@ -36,7 +38,7 @@ func NewAddCmd(f factory.CmdFactory) *cobra.Command {
 			r := render.DefaultRenderer(cmd.OutOrStdout())
 			cfg.RenderServerList(r)
 
-			log.Success("Server '%s' added.", newServer.Name)
+			log.Success(fmt.Sprintf("Server '%s' added.", newServer.Name))
 			return nil
 		},
 	}

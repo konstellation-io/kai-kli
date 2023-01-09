@@ -21,7 +21,7 @@ func gqlMockServer(t *testing.T, requestVars, mockResponse string) (*httptest.Se
 
 	auth := false
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		b, err := ioutil.ReadAll(r.Body)
+		b, err := ioutil.ReadAll(r.Body) //nolint:gocritic
 		require.NoError(t, err)
 
 		stringBody := string(b)

@@ -1,4 +1,4 @@
-package config
+package config_test
 
 import (
 	"io/ioutil"
@@ -9,6 +9,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/konstellation-io/kli/internal/config"
 	"github.com/konstellation-io/kli/text"
 )
 
@@ -16,15 +17,15 @@ func TestNewConfig(t *testing.T) {
 	dir := setupConfigDir(t)
 	defer cleanConfigDir(t, dir)
 
-	cfg := NewConfig()
+	cfg := config.NewConfig()
 
 	// NOTE: This formatting is for testing on windows platform
 	f := path.Join(filepath.FromSlash(path.Join(dir, "konstellation-io", "kli")), "config.yml")
-	expected := &Config{
-		filename:              f,
-		DefaultRequestTimeout: DefaultRequestTimeout,
+	expected := &config.Config{
+		Filename:              f,
+		DefaultRequestTimeout: config.DefaultRequestTimeout,
 		DefaultServer:         "",
-		ServerList:            []ServerConfig{},
+		ServerList:            []config.ServerConfig{},
 	}
 
 	require.Equal(t, expected, cfg)
@@ -34,9 +35,9 @@ func TestConfig_AddServer(t *testing.T) {
 	dir := setupConfigDir(t)
 	defer cleanConfigDir(t, dir)
 
-	cfg := NewConfig()
+	cfg := config.NewConfig()
 
-	newServer := ServerConfig{
+	newServer := config.ServerConfig{
 		Name:     "local",
 		URL:      "http://test.local",
 		APIToken: "12345",
@@ -44,7 +45,7 @@ func TestConfig_AddServer(t *testing.T) {
 
 	err := cfg.AddServer(newServer)
 	require.NoError(t, err)
-	require.Equal(t, cfg.ServerList, []ServerConfig{
+	require.Equal(t, cfg.ServerList, []config.ServerConfig{
 		newServer,
 	})
 }
@@ -53,9 +54,9 @@ func TestConfig_GetByServerName(t *testing.T) {
 	dir := setupConfigDir(t)
 	defer cleanConfigDir(t, dir)
 
-	cfg := NewConfig()
+	cfg := config.NewConfig()
 
-	newServer := &ServerConfig{
+	newServer := &config.ServerConfig{
 		Name:     "getby",
 		URL:      "http://test.local",
 		APIToken: "12345",
@@ -70,9 +71,9 @@ func TestConfig_SetDefaultServer(t *testing.T) {
 	dir := setupConfigDir(t)
 	defer cleanConfigDir(t, dir)
 
-	cfg := NewConfigTest()
+	cfg := config.NewConfigTest()
 
-	newServer := ServerConfig{
+	newServer := config.ServerConfig{
 		Name:     "Default SERVER",
 		URL:      "http://test.local",
 		APIToken: "12345",

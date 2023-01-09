@@ -2,9 +2,10 @@ package version
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/spf13/cobra"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 
 	"github.com/konstellation-io/kli/cmd/factory"
 	"github.com/konstellation-io/kli/pkg/cmd/args"
@@ -17,7 +18,7 @@ func NewActionCmd(f factory.CmdFactory, action string) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   action,
 		Args:  args.ComposeArgsCheck(args.CheckServerFlag, cobra.ExactArgs(1)),
-		Short: fmt.Sprintf("%s a version", strings.Title(action)),
+		Short: fmt.Sprintf("%s a version", cases.Title(language.English).String(action)),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			s, _ := cmd.Flags().GetString("server")
 			c, err := f.KreClient(s)

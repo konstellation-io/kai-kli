@@ -1,4 +1,4 @@
-package version
+package version_test
 
 import (
 	"fmt"
@@ -6,56 +6,22 @@ import (
 	"os"
 	"testing"
 
+	"gopkg.in/gookit/color.v1"
+
 	"github.com/MakeNowJust/heredoc"
 	"github.com/golang/mock/gomock"
-	"github.com/guumaster/logsymbols"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/require"
 
 	"github.com/konstellation-io/kli/api/kre/version"
+	versioncmd "github.com/konstellation-io/kli/pkg/cmd/kre/version"
 
-	"github.com/konstellation-io/kli/internal/config"
 	"github.com/konstellation-io/kli/internal/testhelpers"
 	"github.com/konstellation-io/kli/mocks"
 )
 
-type testVersionConfigSuite struct {
-	ctrl  *gomock.Controller
-	mocks versionSuiteMocks
-}
-
-type versionSuiteMocks struct {
-	kreClient *mocks.MockKreInterface
-	version   *mocks.MockVersionInterface
-}
-
-func newTestVersionConfigSuite(t *testing.T) *testVersionConfigSuite {
-	ctrl := gomock.NewController(t)
-
-	return &testVersionConfigSuite{
-		ctrl,
-		versionSuiteMocks{
-			kreClient: mocks.NewMockKreInterface(ctrl),
-			version:   mocks.NewMockVersionInterface(ctrl),
-		},
-	}
-}
-
-func setupVersionConfig(t *testing.T, f *mocks.MockCmdFactory) {
-	cfg := f.Config()
-
-	err := cfg.AddServer(config.ServerConfig{
-		Name:     "test",
-		URL:      "http://test.local",
-		APIToken: "12346",
-	})
-	require.NoError(t, err)
-	err = cfg.SetDefaultServer("test")
-	require.NoError(t, err)
-}
-
 func TestVersionGetConfigCmd(t *testing.T) {
-	s := newTestVersionConfigSuite(t)
+	s := newTestVersionSuite(t)
 	versionConfig := &version.Config{
 		Completed: true,
 		Vars: []*version.ConfigVariable{
@@ -78,7 +44,7 @@ func TestVersionGetConfigCmd(t *testing.T) {
 		s.mocks.kreClient.EXPECT().Version().Return(s.mocks.version)
 		s.mocks.version.EXPECT().GetConfig("test-v1").Return(versionConfig, nil)
 
-		return NewVersionCmd(f)
+		return versioncmd.NewVersionCmd(f)
 	})
 
 	r.Run("version config test-v1").
@@ -88,11 +54,11 @@ func TestVersionGetConfigCmd(t *testing.T) {
 			2 VARIABLE key2
 
       [%s] Version config complete
-		`), logsymbols.CurrentSymbols().Success)
+		`), color.Success.Render("✔"))
 }
 
 func TestVersionGetConfigWithValuesCmd(t *testing.T) {
-	s := newTestVersionConfigSuite(t)
+	s := newTestVersionSuite(t)
 	versionConfig := &version.Config{
 		Completed: true,
 		Vars: []*version.ConfigVariable{
@@ -115,7 +81,7 @@ func TestVersionGetConfigWithValuesCmd(t *testing.T) {
 		s.mocks.kreClient.EXPECT().Version().Return(s.mocks.version)
 		s.mocks.version.EXPECT().GetConfig("test-v1").Return(versionConfig, nil)
 
-		return NewVersionCmd(f)
+		return versioncmd.NewVersionCmd(f)
 	})
 
 	r.Run("version config test-v1 --show-values").
@@ -125,11 +91,11 @@ func TestVersionGetConfigWithValuesCmd(t *testing.T) {
 			2 VARIABLE key2 value2
 
       [%s] Version config complete
-		`), logsymbols.CurrentSymbols().Success)
+		`), color.Success.Render("✔"))
 }
 
 func TestVersionSetConfigCmd(t *testing.T) {
-	s := newTestVersionConfigSuite(t)
+	s := newTestVersionSuite(t)
 	configVars := []version.ConfigVariableInput{
 		{"key": "key1", "value": "value1"},
 		{"key": "key2", "value": "value2"},
@@ -142,7 +108,7 @@ func TestVersionSetConfigCmd(t *testing.T) {
 		s.mocks.kreClient.EXPECT().Version().Return(s.mocks.version)
 		s.mocks.version.EXPECT().UpdateConfig("test-v1", configVars).Return(true, nil)
 
-		return NewVersionCmd(f)
+		return versioncmd.NewVersionCmd(f)
 	})
 
 	pair1 := fmt.Sprintf("%s=%s", configVars[0]["key"], configVars[0]["value"])
@@ -150,18 +116,16 @@ func TestVersionSetConfigCmd(t *testing.T) {
 	r.Runf("version config test-v1 --set %s --set %s", pair1, pair2).
 		Containsf(heredoc.Doc(`
       [%s] Config completed for version 'test-v1'.
-		`), logsymbols.CurrentSymbols().Success)
+		`), color.Success.Render("✔"))
 }
 
 func TestVersionSetConfigErrorEdgeCasesCmd(t *testing.T) {
-	s := newTestVersionConfigSuite(t)
+	_ = newTestVersionSuite(t)
 
 	r := testhelpers.NewRunner(t, func(f *mocks.MockCmdFactory) *cobra.Command {
 		setupVersionConfig(t, f)
 
-		f.EXPECT().KreClient("test").Return(s.mocks.kreClient, nil)
-
-		return NewVersionCmd(f)
+		return versioncmd.NewVersionCmd(f)
 	})
 
 	type testCase struct {
@@ -172,26 +136,26 @@ func TestVersionSetConfigErrorEdgeCasesCmd(t *testing.T) {
 	testCases := []testCase{
 		{
 			[]string{"--set", fmt.Sprintf("%s=%s", "key", "\"test")},
-			`invalid argument "key=\"test" for "--set" flag: parse error on line 1, column 4: bare " in non-quoted-field`,
+			`invalid argument "key=\"test" for "--set" flag: parse error on line 1, column 5: bare " in non-quoted-field`,
 		},
 		{
 			[]string{"--set", fmt.Sprintf("%s=%s", "key", "\"test test\"")},
-			`invalid argument "key=\"test test\"" for "--set" flag: parse error on line 1, column 4: bare " in non-quoted-field`,
+			`invalid argument "key=\"test test\"" for "--set" flag: parse error on line 1, column 5: bare " in non-quoted-field`,
 		},
 		{
-			[]string{"--set", fmt.Sprintf("\"%s\"=\"%s\"", "key", `test`)},
-			`invalid argument "\"key\"=\"test\"" for "--set" flag: parse error on line 1, column 4: extraneous or missing " in quoted-field`,
+			[]string{"--set", fmt.Sprintf("%q=%q", "key", `test`)},
+			`invalid argument "\"key\"=\"test\"" for "--set" flag: parse error on line 1, column 5: extraneous or missing " in quoted-field`,
 		},
 	}
 
 	for _, pair := range testCases {
-		err := fmt.Errorf(pair.expectedError)
+		err := fmt.Errorf("%s", pair.expectedError)
 		r.RunArgsE("version config test-v1", err, pair.extraArgs...)
 	}
 }
 
 func TestVersionSetConfigEdgeCasesCmd(t *testing.T) {
-	s := newTestVersionConfigSuite(t)
+	s := newTestVersionSuite(t)
 
 	r := testhelpers.NewRunner(t, func(f *mocks.MockCmdFactory) *cobra.Command {
 		setupVersionConfig(t, f)
@@ -200,7 +164,7 @@ func TestVersionSetConfigEdgeCasesCmd(t *testing.T) {
 		s.mocks.kreClient.EXPECT().Version().Return(s.mocks.version).AnyTimes()
 		s.mocks.version.EXPECT().UpdateConfig("test-v1", gomock.Any()).Return(true, nil).AnyTimes()
 
-		return NewVersionCmd(f)
+		return versioncmd.NewVersionCmd(f)
 	})
 
 	testCases := [][]string{
@@ -216,12 +180,12 @@ func TestVersionSetConfigEdgeCasesCmd(t *testing.T) {
 		r.RunArgs("version config test-v1", extraArgs...).
 			Containsf(heredoc.Doc(`
       [%s] Config completed for version 'test-v1'.
-		`), logsymbols.CurrentSymbols().Success)
+		`), color.Success.Render("✔"))
 	}
 }
 
 func TestVersionSetConfigFromEnvCmd(t *testing.T) {
-	s := newTestVersionConfigSuite(t)
+	s := newTestVersionSuite(t)
 	configVars := []version.ConfigVariableInput{
 		{
 			"key":   "TEST_VAR",
@@ -239,7 +203,7 @@ func TestVersionSetConfigFromEnvCmd(t *testing.T) {
 		s.mocks.kreClient.EXPECT().Version().Return(s.mocks.version)
 		s.mocks.version.EXPECT().UpdateConfig("test-v1", configVars).Return(true, nil)
 
-		return NewVersionCmd(f)
+		return versioncmd.NewVersionCmd(f)
 	})
 
 	err := os.Setenv("TEST_VAR", heredoc.Doc(`test-v1
@@ -252,11 +216,11 @@ func TestVersionSetConfigFromEnvCmd(t *testing.T) {
 	r.Run("version config test-v1 --set-from-env TEST_VAR --set-from-env TEST_VAR2").
 		Containsf(heredoc.Doc(`
       [%s] Config completed for version 'test-v1'.
-		`), logsymbols.CurrentSymbols().Success)
+		`), color.Success.Render("✔"))
 }
 
 func TestVersionSetConfigFromEmptyEnvCmd(t *testing.T) {
-	s := newTestVersionConfigSuite(t)
+	s := newTestVersionSuite(t)
 	configVars := []version.ConfigVariableInput{
 		{
 			"key":   "TEST_VAR",
@@ -270,7 +234,7 @@ func TestVersionSetConfigFromEmptyEnvCmd(t *testing.T) {
 		s.mocks.kreClient.EXPECT().Version().Return(s.mocks.version)
 		s.mocks.version.EXPECT().UpdateConfig("test-v1", configVars).Return(false, nil)
 
-		return NewVersionCmd(f)
+		return versioncmd.NewVersionCmd(f)
 	})
 
 	err := os.Unsetenv("TEST_VAR")
@@ -279,11 +243,11 @@ func TestVersionSetConfigFromEmptyEnvCmd(t *testing.T) {
 	r.Run("version config test-v1 --set-from-env TEST_VAR").
 		Containsf(heredoc.Doc(`
       [%s] Config updated for version 'test-v1'.
-		`), logsymbols.CurrentSymbols().Success)
+		`), color.Success.Render("✔"))
 }
 
 func TestVersionSetConfigFromFileCmd(t *testing.T) {
-	s := newTestVersionConfigSuite(t)
+	s := newTestVersionSuite(t)
 	configVars := []version.ConfigVariableInput{
 		{
 			"key":   "TEST_VAR",
@@ -297,7 +261,7 @@ func TestVersionSetConfigFromFileCmd(t *testing.T) {
 		s.mocks.kreClient.EXPECT().Version().Return(s.mocks.version)
 		s.mocks.version.EXPECT().UpdateConfig("test-v1", configVars).Return(true, nil)
 
-		return NewVersionCmd(f)
+		return versioncmd.NewVersionCmd(f)
 	})
 
 	d := os.TempDir()
@@ -306,12 +270,12 @@ func TestVersionSetConfigFromFileCmd(t *testing.T) {
 
 	defer os.RemoveAll(tempEnvFile.Name())
 
-	_, _ = tempEnvFile.Write([]byte(heredoc.Doc(`
+	_, _ = tempEnvFile.WriteString(heredoc.Doc(`
 		TEST_VAR=test-v16
-	`)))
+	`))
 
 	r.Runf("version config test-v1 --set-from-file %s", tempEnvFile.Name()).
 		Containsf(heredoc.Doc(`
       [%s] Config completed for version 'test-v1'.
-		`), logsymbols.CurrentSymbols().Success)
+		`), color.Success.Render("✔"))
 }

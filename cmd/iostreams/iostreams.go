@@ -5,9 +5,11 @@ import (
 	"os"
 	"time"
 
-	"github.com/briandowns/spinner"
-	"github.com/mattn/go-colorable"
 	"github.com/mattn/go-isatty"
+
+	"github.com/mattn/go-colorable"
+
+	"github.com/briandowns/spinner"
 )
 
 const (

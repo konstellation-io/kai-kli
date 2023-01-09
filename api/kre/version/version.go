@@ -1,6 +1,6 @@
 package version
 
-//go:generate mockgen -source=${GOFILE} -destination=$PWD/mocks/${GOFILE} -package=mocks
+//go:generate mockgen -source=${GOFILE} -destination=../../../mocks/${GOFILE} -package=mocks
 
 import (
 	"github.com/konstellation-io/kli/api/graphql"
@@ -8,7 +8,7 @@ import (
 )
 
 // VersionInterface method to interact with Versions.
-type VersionInterface interface { // nolint: golint
+type VersionInterface interface { //nolint: golint
 	List() (List, error)
 	Start(versionName, comment string) error
 	Stop(versionName, comment string) error

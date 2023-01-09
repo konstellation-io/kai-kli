@@ -1,9 +1,11 @@
-package config
+package config_test
 
 import (
 	"bytes"
 	"io/ioutil"
 	"testing"
+
+	"github.com/konstellation-io/kli/internal/config"
 
 	"github.com/MakeNowJust/heredoc"
 	"github.com/stretchr/testify/require"
@@ -16,9 +18,9 @@ func TestConfig_RenderServerList(t *testing.T) {
 	dir := setupConfigDir(t)
 	defer cleanConfigDir(t, dir)
 
-	cfg := NewConfigTest()
+	cfg := config.NewConfigTest()
 
-	err := cfg.AddServer(ServerConfig{
+	err := cfg.AddServer(config.ServerConfig{
 		Name:     "test",
 		URL:      "http://test.local",
 		APIToken: "12345",
@@ -30,7 +32,7 @@ func TestConfig_RenderServerList(t *testing.T) {
 
 	cfg.RenderServerList(r)
 
-	out, err := ioutil.ReadAll(b)
+	out, err := ioutil.ReadAll(b) //nolint:gocritic
 	require.NoError(t, err)
 
 	expected := text.LinesTrim(heredoc.Doc(`

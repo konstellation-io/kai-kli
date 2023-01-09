@@ -8,14 +8,14 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/konstellation-io/kli/internal/logger"
+
 	"github.com/golang/mock/gomock"
-	"github.com/guumaster/cligger"
 	"github.com/sergi/go-diff/diffmatchpatch"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/require"
 
 	"github.com/konstellation-io/kli/internal/config"
-	"github.com/konstellation-io/kli/internal/logger"
 	"github.com/konstellation-io/kli/mocks"
 	"github.com/konstellation-io/kli/text"
 )
@@ -36,9 +36,9 @@ func NewRunner(t *testing.T, cmd cmd) Runner {
 	f := mocks.NewMockCmdFactory(ctrl)
 	f.EXPECT().Config().Return(cfg).AnyTimes()
 
-	log := cligger.NewLoggerWithWriter(runner.buf)
+	log := logger.NewWithWriter(runner.buf)
 
-	f.EXPECT().Logger().AnyTimes().DoAndReturn(func() logger.Logger {
+	f.EXPECT().Logger().AnyTimes().DoAndReturn(func() logger.Interface {
 		return log
 	})
 
@@ -128,7 +128,7 @@ func (c *cmdRunner) Run(cmd string) Runner {
 	err := c.root.Execute()
 	assert.NoError(err)
 
-	out, err := ioutil.ReadAll(b)
+	out, err := ioutil.ReadAll(b) //nolint:gocritic
 	assert.NoError(err)
 
 	c.out = "\n" + string(out)
@@ -156,7 +156,7 @@ func (c *cmdRunner) RunArgs(cmd string, extraArgs ...string) Runner {
 	err := c.root.Execute()
 	assert.NoError(err)
 
-	out, err := ioutil.ReadAll(b)
+	out, err := ioutil.ReadAll(b) //nolint:gocritic
 	assert.NoError(err)
 
 	c.out = "\n" + string(out)
@@ -179,7 +179,7 @@ func (c *cmdRunner) RunE(cmd string, expectedErr error) Runner {
 	actualErr := c.root.Execute()
 	assert.EqualError(actualErr, expectedErr.Error())
 
-	out, err := ioutil.ReadAll(b)
+	out, err := ioutil.ReadAll(b) //nolint:gocritic
 	assert.NoError(err)
 
 	c.out = "\n" + string(out)
@@ -203,7 +203,7 @@ func (c *cmdRunner) RunArgsE(cmd string, expectedErr error, extraArgs ...string)
 	actualErr := c.root.Execute()
 	assert.EqualError(actualErr, expectedErr.Error())
 
-	out, err := ioutil.ReadAll(b)
+	out, err := ioutil.ReadAll(b) //nolint:gocritic
 	assert.NoError(err)
 
 	c.out = "\n" + string(out)
@@ -213,8 +213,8 @@ func (c *cmdRunner) RunArgsE(cmd string, expectedErr error, extraArgs ...string)
 
 // This only accepts simple and well formatted arguments
 // this commands will fail:
-//   "version start test-v1 --comment \"test test\""
-//   "version config --set key=\"test\""
+// "version start test-v1 --comment \"test test\""
+// "version config --set key=\"test\""
 // Use RunArgs and RunArgsE instead.
 func splitArgs(t *testing.T, s string) []string {
 	t.Helper()

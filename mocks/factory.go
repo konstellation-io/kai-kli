@@ -5,53 +5,40 @@
 package mocks
 
 import (
+	reflect "reflect"
+
 	gomock "github.com/golang/mock/gomock"
 	kre "github.com/konstellation-io/kli/api/kre"
 	iostreams "github.com/konstellation-io/kli/cmd/iostreams"
 	krttools "github.com/konstellation-io/kli/cmd/krttools"
 	config "github.com/konstellation-io/kli/internal/config"
 	logger "github.com/konstellation-io/kli/internal/logger"
-	reflect "reflect"
 )
 
-// MockCmdFactory is a mock of CmdFactory interface
+// MockCmdFactory is a mock of CmdFactory interface.
 type MockCmdFactory struct {
 	ctrl     *gomock.Controller
 	recorder *MockCmdFactoryMockRecorder
 }
 
-// MockCmdFactoryMockRecorder is the mock recorder for MockCmdFactory
+// MockCmdFactoryMockRecorder is the mock recorder for MockCmdFactory.
 type MockCmdFactoryMockRecorder struct {
 	mock *MockCmdFactory
 }
 
-// NewMockCmdFactory creates a new mock instance
+// NewMockCmdFactory creates a new mock instance.
 func NewMockCmdFactory(ctrl *gomock.Controller) *MockCmdFactory {
 	mock := &MockCmdFactory{ctrl: ctrl}
 	mock.recorder = &MockCmdFactoryMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockCmdFactory) EXPECT() *MockCmdFactoryMockRecorder {
 	return m.recorder
 }
 
-// IOStreams mocks base method
-func (m *MockCmdFactory) IOStreams() *iostreams.IOStreams {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "IOStreams")
-	ret0, _ := ret[0].(*iostreams.IOStreams)
-	return ret0
-}
-
-// IOStreams indicates an expected call of IOStreams
-func (mr *MockCmdFactoryMockRecorder) IOStreams() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IOStreams", reflect.TypeOf((*MockCmdFactory)(nil).IOStreams))
-}
-
-// Config mocks base method
+// Config mocks base method.
 func (m *MockCmdFactory) Config() *config.Config {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Config")
@@ -59,27 +46,27 @@ func (m *MockCmdFactory) Config() *config.Config {
 	return ret0
 }
 
-// Config indicates an expected call of Config
+// Config indicates an expected call of Config.
 func (mr *MockCmdFactoryMockRecorder) Config() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Config", reflect.TypeOf((*MockCmdFactory)(nil).Config))
 }
 
-// Logger mocks base method
-func (m *MockCmdFactory) Logger() logger.Logger {
+// IOStreams mocks base method.
+func (m *MockCmdFactory) IOStreams() *iostreams.IOStreams {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Logger")
-	ret0, _ := ret[0].(logger.Logger)
+	ret := m.ctrl.Call(m, "IOStreams")
+	ret0, _ := ret[0].(*iostreams.IOStreams)
 	return ret0
 }
 
-// Logger indicates an expected call of Logger
-func (mr *MockCmdFactoryMockRecorder) Logger() *gomock.Call {
+// IOStreams indicates an expected call of IOStreams.
+func (mr *MockCmdFactoryMockRecorder) IOStreams() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Logger", reflect.TypeOf((*MockCmdFactory)(nil).Logger))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IOStreams", reflect.TypeOf((*MockCmdFactory)(nil).IOStreams))
 }
 
-// KreClient mocks base method
+// KreClient mocks base method.
 func (m *MockCmdFactory) KreClient(arg0 string) (kre.KreInterface, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "KreClient", arg0)
@@ -88,13 +75,13 @@ func (m *MockCmdFactory) KreClient(arg0 string) (kre.KreInterface, error) {
 	return ret0, ret1
 }
 
-// KreClient indicates an expected call of KreClient
+// KreClient indicates an expected call of KreClient.
 func (mr *MockCmdFactoryMockRecorder) KreClient(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "KreClient", reflect.TypeOf((*MockCmdFactory)(nil).KreClient), arg0)
 }
 
-// Krt mocks base method
+// Krt mocks base method.
 func (m *MockCmdFactory) Krt() krttools.KrtTooler {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Krt")
@@ -102,8 +89,22 @@ func (m *MockCmdFactory) Krt() krttools.KrtTooler {
 	return ret0
 }
 
-// Krt indicates an expected call of Krt
+// Krt indicates an expected call of Krt.
 func (mr *MockCmdFactoryMockRecorder) Krt() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Krt", reflect.TypeOf((*MockCmdFactory)(nil).Krt))
+}
+
+// Logger mocks base method.
+func (m *MockCmdFactory) Logger() logger.Interface {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Logger")
+	ret0, _ := ret[0].(logger.Interface)
+	return ret0
+}
+
+// Logger indicates an expected call of Logger.
+func (mr *MockCmdFactoryMockRecorder) Logger() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Logger", reflect.TypeOf((*MockCmdFactory)(nil).Logger))
 }

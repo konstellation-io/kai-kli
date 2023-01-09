@@ -1,6 +1,8 @@
 package server
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 
 	"github.com/konstellation-io/kli/cmd/factory"
@@ -27,7 +29,7 @@ func NewDefaultCmd(f factory.CmdFactory) *cobra.Command {
 			r := render.DefaultRenderer(cmd.OutOrStdout())
 			cfg.RenderServerList(r)
 
-			log.Success("Server '%s' is now default.\n", name)
+			log.Success(fmt.Sprintf("Server '%s' is now default.\n", name))
 
 			return nil
 		},

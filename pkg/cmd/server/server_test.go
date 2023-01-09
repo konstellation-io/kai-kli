@@ -3,8 +3,9 @@ package server_test
 import (
 	"testing"
 
+	"gopkg.in/gookit/color.v1"
+
 	"github.com/MakeNowJust/heredoc"
-	"github.com/guumaster/logsymbols"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/require"
 
@@ -63,7 +64,7 @@ func TestServerDefaultCmd(t *testing.T) {
 		`)).
 		Containsf(heredoc.Doc(`
 			[%s] Server 'test' is now default.
-		`), logsymbols.CurrentSymbols().Success)
+		`), color.Success.Render("✔"))
 }
 
 func TestServerDefaultCmdError(t *testing.T) {
@@ -81,7 +82,7 @@ func TestServerAddCmd(t *testing.T) {
 	r.Run("server add test http://test.local 12345").
 		Containsf(heredoc.Doc(`
 			[%s] Server 'test' added.
-		`), logsymbols.CurrentSymbols().Success).
+		`), color.Success.Render("✔")).
 		Run("server ls").
 		Contains(heredoc.Doc(`
 			SERVER	URL
@@ -96,7 +97,7 @@ func TestServerAddCmdErr(t *testing.T) {
 	r.Run("server add test http://test.local 12345").
 		Containsf(heredoc.Doc(`
 			[%s] Server 'test' added.
-		`), logsymbols.CurrentSymbols().Success).
+		`), color.Success.Render("✔")).
 		RunE("server add test http://test.local 12345", errors.ErrServerAlreadyExists)
 }
 
@@ -108,5 +109,5 @@ func TestNoServerCmd(t *testing.T) {
 		Run("server ls").
 		Containsf(heredoc.Doc(`
 			[%s] No servers found.
-		`), logsymbols.CurrentSymbols().Info)
+		`), color.Info.Render("ℹ"))
 }

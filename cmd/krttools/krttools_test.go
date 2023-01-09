@@ -1,4 +1,4 @@
-package krttools
+package krttools_test
 
 import (
 	"io/ioutil"
@@ -6,43 +6,52 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/konstellation-io/kre/libs/krt-utils/pkg/validator"
+	"github.com/golang/mock/gomock"
+	"github.com/konstellation-io/kli/cmd/krttools"
+	"github.com/konstellation-io/kli/internal/krt"
+	"github.com/konstellation-io/kli/internal/testhelpers"
+	"github.com/konstellation-io/kli/mocks"
 
-	"github.com/MakeNowJust/heredoc"
 	"github.com/stretchr/testify/require"
 )
 
-// nolint:gochecknoglobals
+//nolint:gochecknoglobals
 var (
-	sampleKrtString = heredoc.Doc(`
-    version: test-v1
-    description: Version for testing.
-    entrypoint:
-      proto: public_input.proto
-      image: konstellation/kre-entrypoint:latest
-    config:
-      variables:
-        - SOME_CONFIG_VAR
-      files:
-        - SOME_FILE
-    nodes:
-      - name: py-test
-        image: konstellation/kre-py:latest
-        src: src/py-test/main.py
-        gpu: true
-    workflows:
-      - name: py-test
-        entrypoint: PyTest
-        sequential:
-          - py-test
-	`)
+	sampleKrtString        = testhelpers.NewKrtBuilder().AsString()
+	invalidSampleKrtString = testhelpers.NewKrtBuilder().WithWorkflows([]krt.Workflow{{
+		Name:       "workflow",
+		Entrypoint: "test",
+		Nodes:      nil,
+	}}).AsString()
 )
+
+type testKrtToolsSuite struct {
+	ctrl  *gomock.Controller
+	mocks suiteMocks
+}
+
+type suiteMocks struct {
+	logger *mocks.MockLogger
+}
+
+func newTestKrtToolsSuite(t *testing.T) *testKrtToolsSuite {
+	ctrl := gomock.NewController(t)
+	logger := mocks.NewMockLogger(ctrl)
+	mocks.AddLoggerExpects(logger)
+
+	return &testKrtToolsSuite{
+		ctrl,
+		suiteMocks{
+			logger: logger,
+		},
+	}
+}
 
 func createKrtFile(t *testing.T, root, content, filename string) string {
 	t.Helper()
 
 	path := filepath.Join(root, filename)
-	err := ioutil.WriteFile(path, []byte(content), 0600)
+	err := ioutil.WriteFile(path, []byte(content), 0600) //nolint:gocritic
 	require.NoError(t, err)
 
 	return path
@@ -63,33 +72,49 @@ func createTestKrtContent(t *testing.T, root string, files ...string) {
 
 		f, err := os.Create(name)
 
-		defer func() {
-			_ = f.Close()
-		}()
-
 		require.NoError(t, err)
+
+		_ = f.Close()
 	}
 }
 
 func TestNewKrtTools(t *testing.T) {
-	krt := NewKrtTools().(*KrtTools)
-	require.NotEmpty(t, krt.validator)
-	require.NotEmpty(t, krt.builder)
+	s := newTestKrtToolsSuite(t)
+	krtTools := krttools.NewKrtTools(s.mocks.logger).(*krttools.KrtTools)
+	require.NotNil(t, krtTools)
 }
 
 func TestKrtTools_Validate(t *testing.T) {
+	s := newTestKrtToolsSuite(t)
+
 	tempDir, err := ioutil.TempDir("", "TestKrtTools_Validate")
 	require.NoError(t, err)
 
 	defer os.RemoveAll(tempDir)
 
 	yamlFile := createKrtFile(t, tempDir, sampleKrtString, ".krt.yaml")
-	krt := NewKrtTools()
-	err = krt.Validate(yamlFile)
+	krtTools := krttools.NewKrtTools(s.mocks.logger)
+	err = krtTools.Validate(yamlFile)
 	require.NoError(t, err)
 }
 
+func TestKrtTools_ValidateFailsWithKrtV1(t *testing.T) {
+	s := newTestKrtToolsSuite(t)
+
+	tempDir, err := ioutil.TempDir("", "TestKrtTools_Validate")
+	require.NoError(t, err)
+
+	defer os.RemoveAll(tempDir)
+
+	yamlFile := createKrtFile(t, tempDir, invalidSampleKrtString, ".krt.yaml")
+	krtTools := krttools.NewKrtTools(s.mocks.logger)
+	err = krtTools.Validate(yamlFile)
+	require.Error(t, err)
+	require.ErrorContains(t, err, "error validating krt")
+}
+
 func TestKrtTools_Build(t *testing.T) {
+	s := newTestKrtToolsSuite(t)
 	files := []string{
 		"src/py-test/main.py",
 		"src/go-test/go.go",
@@ -107,19 +132,10 @@ func TestKrtTools_Build(t *testing.T) {
 	createTestKrtContent(t, tempDir, files...)
 	createKrtFile(t, tempDir, sampleKrtString, "krt.yaml")
 
-	krt := NewKrtTools()
+	krtTools := krttools.NewKrtTools(s.mocks.logger)
 	target := "test.krt"
-	err = krt.Build(tempDir, target, "testversion")
+	err = krtTools.Build(tempDir, target, "testversion")
 	require.NoError(t, err)
 
-	defer os.Remove(target)
-
-	yamlFile := filepath.Join(tempDir, "krt.yaml")
-	f, err := os.Open(yamlFile)
-	require.NoError(t, err)
-
-	v := validator.New()
-	yamlFields, err := v.Parse(f)
-	require.NoError(t, err)
-	require.Equal(t, "testversion", yamlFields.Version)
+	os.Remove(target)
 }

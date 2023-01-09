@@ -1,11 +1,13 @@
-package krt
+package krt_test
 
 import (
 	"testing"
 
+	"github.com/konstellation-io/kli/internal/logger"
+	"github.com/konstellation-io/kli/pkg/cmd/krt"
+
 	"github.com/MakeNowJust/heredoc"
 	"github.com/golang/mock/gomock"
-	"github.com/guumaster/logsymbols"
 	"github.com/spf13/cobra"
 
 	"github.com/konstellation-io/kli/internal/testhelpers"
@@ -15,49 +17,51 @@ import (
 func TestNewKRTCreateCmd(t *testing.T) {
 	r := testhelpers.NewRunner(t, func(f *mocks.MockCmdFactory) *cobra.Command {
 		c := gomock.NewController(t)
-		krt := mocks.NewMockKrtTooler(c)
-		f.EXPECT().Krt().Return(krt)
+		l := logger.NewDefaultLogger()
+		krtTooler := mocks.NewMockKrtTooler(c)
+		f.EXPECT().Krt().Return(krtTooler).AnyTimes()
+		f.EXPECT().Logger().Return(l).AnyTimes()
 
-		krt.EXPECT().Build("/test/krt", "test.krt", "testversion").Return(nil)
+		krtTooler.EXPECT().Build("/test/krt", "test.krt", "testversion").Return(nil)
 
-		return NewKRTCmd(f)
+		return krt.NewKRTCmd(f)
 	})
 
 	r.Run("krt create /test/krt test.krt -v testversion").
-		Containsf(heredoc.Doc(`
-	  [%s] New KRT file created.
-  `), logsymbols.CurrentSymbols().Success)
+		Contains(heredoc.Doc(`
+	  New KRT file created.
+  `))
 }
 
 func TestNewKRTCreateCmdWithoutVersion(t *testing.T) {
 	r := testhelpers.NewRunner(t, func(f *mocks.MockCmdFactory) *cobra.Command {
 		c := gomock.NewController(t)
-		krt := mocks.NewMockKrtTooler(c)
-		f.EXPECT().Krt().Return(krt)
+		krtTooler := mocks.NewMockKrtTooler(c)
+		f.EXPECT().Krt().Return(krtTooler)
 
-		krt.EXPECT().Build("/test/krt", "test.krt", "").Return(nil)
+		krtTooler.EXPECT().Build("/test/krt", "test.krt", "").Return(nil)
 
-		return NewKRTCmd(f)
+		return krt.NewKRTCmd(f)
 	})
 
 	r.Run("krt create /test/krt test.krt").
-		Containsf(heredoc.Doc(`
-	  [%s] New KRT file created.
-  `), logsymbols.CurrentSymbols().Success)
+		Contains(heredoc.Doc(`
+	  New KRT file created.
+  `))
 }
 
 func TestNewValidateCmd(t *testing.T) {
 	r := testhelpers.NewRunner(t, func(f *mocks.MockCmdFactory) *cobra.Command {
 		c := gomock.NewController(t)
-		krt := mocks.NewMockKrtTooler(c)
+		krtTooler := mocks.NewMockKrtTooler(c)
 
-		f.EXPECT().Krt().Return(krt)
-		krt.EXPECT().Validate("/test/krt.yaml").Return(nil)
+		f.EXPECT().Krt().Return(krtTooler)
+		krtTooler.EXPECT().Validate("/test/krt.yaml").Return(nil)
 
-		return NewKRTCmd(f)
+		return krt.NewKRTCmd(f)
 	})
 	r.Run("krt validate /test/krt.yaml").
-		Containsf(heredoc.Doc(`
-	  [%s] Krt file is valid.
-  `), logsymbols.CurrentSymbols().Success)
+		Contains(heredoc.Doc(`
+	  Krt file is valid.
+  `))
 }

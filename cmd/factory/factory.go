@@ -1,6 +1,6 @@
 package factory
 
-//go:generate mockgen -source=${GOFILE} -destination=$PWD/mocks/${GOFILE} -package=mocks
+//go:generate mockgen -source=${GOFILE} -destination=../../mocks/${GOFILE} -package=mocks
 
 import (
 	"github.com/konstellation-io/kli/api"
@@ -16,7 +16,7 @@ import (
 type CmdFactory interface {
 	IOStreams() *iostreams.IOStreams
 	Config() *config.Config
-	Logger() logger.Logger
+	Logger() logger.Interface
 	KreClient(string) (kre.KreInterface, error)
 	Krt() krttools.KrtTooler
 }
@@ -26,7 +26,7 @@ type Factory struct {
 	appVersion string
 	ioStreams  *iostreams.IOStreams
 	cfg        *config.Config
-	logger     logger.Logger
+	logger     logger.Interface
 }
 
 // NewCmdFactory returns a new Factory object used during commands execution.
@@ -37,7 +37,7 @@ func NewCmdFactory(appVersion string) *Factory {
 		appVersion: appVersion,
 		ioStreams:  io,
 		cfg:        config.NewConfig(),
-		logger:     logger.NewLogger(io.Out),
+		logger:     logger.NewDefaultLogger(),
 	}
 }
 
@@ -52,7 +52,7 @@ func (f *Factory) Config() *config.Config {
 }
 
 // Logger access to Logger object.
-func (f *Factory) Logger() logger.Logger {
+func (f *Factory) Logger() logger.Interface {
 	return f.logger
 }
 
@@ -68,5 +68,5 @@ func (f *Factory) KreClient(serverName string) (kre.KreInterface, error) {
 
 // Krt tools to build and validate.
 func (f *Factory) Krt() krttools.KrtTooler {
-	return krttools.NewKrtTools()
+	return krttools.NewKrtTools(f.logger)
 }

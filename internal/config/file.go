@@ -17,7 +17,9 @@ func (c *Config) Save() error {
 		return err
 	}
 
-	cfgFile, err := os.OpenFile(c.filename, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o600)
+	const writePermission = 0o600
+
+	cfgFile, err := os.OpenFile(c.Filename, os.O_RDWR|os.O_CREATE|os.O_TRUNC, writePermission)
 	if err != nil {
 		return err
 	}
@@ -39,7 +41,7 @@ func (c *Config) readFile() error {
 		return err
 	}
 
-	f, err := os.Open(c.filename)
+	f, err := os.Open(c.Filename)
 	if err != nil {
 		return pathError(err)
 	}
@@ -52,13 +54,15 @@ func (c *Config) readFile() error {
 }
 
 func (c *Config) ensureConfigDir() error {
-	_, err := os.Stat(path.Dir(c.filename))
+	_, err := os.Stat(path.Dir(c.Filename))
 	if err != nil && !os.IsNotExist(err) {
 		return err
 	}
 
+	const writePermission = 0o771
+
 	if os.IsNotExist(err) {
-		err := os.MkdirAll(path.Dir(c.filename), 0o771)
+		err := os.MkdirAll(path.Dir(c.Filename), writePermission)
 		if err != nil {
 			return pathError(err)
 		}
@@ -73,13 +77,13 @@ func (c *Config) ensureConfigFile() error {
 		return err
 	}
 
-	_, err = os.Stat(c.filename)
+	_, err = os.Stat(c.Filename)
 	if err != nil && !os.IsNotExist(err) {
 		return err
 	}
 
 	if os.IsNotExist(err) {
-		file, err := os.Create(c.filename)
+		file, err := os.Create(c.Filename)
 		if err != nil {
 			return err
 		}

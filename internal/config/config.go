@@ -1,12 +1,14 @@
 package config
 
 import (
+	"fmt"
 	"path"
 	"sync"
 	"time"
 
 	"github.com/OpenPeeDeeP/xdg"
-	"github.com/guumaster/cligger"
+
+	"github.com/konstellation-io/kli/internal/logger"
 
 	"github.com/konstellation-io/kli/pkg/errors"
 	"github.com/konstellation-io/kli/text"
@@ -19,13 +21,13 @@ var (
 )
 
 const (
-	// DefaultRequestTimeout time used to timeout all requests to Konstellation APIs.
+	// DefaultRequestTimeout time used to time out all requests to Konstellation APIs.
 	DefaultRequestTimeout = 2 * time.Minute
 )
 
 // Config holds the configuration values for the application.
 type Config struct {
-	filename              string
+	Filename              string
 	DefaultRequestTimeout time.Duration  `yaml:"defaultRequestTimeout"`
 	DefaultServer         string         `yaml:"defaultServer"`
 	ServerList            []ServerConfig `yaml:"servers"`
@@ -53,15 +55,16 @@ func NewConfigTest() *Config {
 }
 
 func createConfig() {
+	log := logger.NewDefaultLogger()
 	d := xdg.New("konstellation-io", "kli")
 
 	cfg = &Config{
-		filename: path.Join(d.ConfigHome(), "config.yml"),
+		Filename: path.Join(d.ConfigHome(), "config.yml"),
 	}
 
 	err := cfg.readFile()
 	if err != nil {
-		cligger.Fatal("error reading config: %s", err)
+		log.Error(fmt.Sprintf("error reading config: %s", err))
 	}
 
 	// Add default values

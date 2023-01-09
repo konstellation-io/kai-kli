@@ -20,7 +20,7 @@ func getAccessToken(cfg *config.Config, server *config.ServerConfig) (string, er
 	client := &http.Client{}
 	url := fmt.Sprintf("%s/api/v1/auth/token/signin", server.URL)
 
-	postData := bytes.NewBuffer([]byte(fmt.Sprintf(`{"apiToken":"%s"}`, server.APIToken)))
+	postData := bytes.NewBuffer([]byte(fmt.Sprintf(`{"apiToken":%q}`, server.APIToken)))
 
 	ctx, cancel := context.WithTimeout(context.Background(), cfg.DefaultRequestTimeout)
 	defer cancel()

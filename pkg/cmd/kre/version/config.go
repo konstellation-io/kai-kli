@@ -127,7 +127,7 @@ func getConfig(f factory.CmdFactory, cmd *cobra.Command, serverName, versionName
 	if config.Completed {
 		log.Success("Version config complete")
 	} else {
-		log.Warning("Version config incomplete")
+		log.Warn("Version config incomplete")
 	}
 
 	return nil
@@ -135,6 +135,8 @@ func getConfig(f factory.CmdFactory, cmd *cobra.Command, serverName, versionName
 
 func updateConfig(f factory.CmdFactory, serverName, versionName string, vars []string) error {
 	log := f.Logger()
+
+	const substringNumber = 2
 
 	c, err := f.KreClient(serverName)
 	if err != nil {
@@ -144,7 +146,7 @@ func updateConfig(f factory.CmdFactory, serverName, versionName string, vars []s
 	config := []version.ConfigVariableInput{}
 
 	for _, v := range vars {
-		arr := strings.SplitN(v, "=", 2)
+		arr := strings.SplitN(v, "=", substringNumber)
 
 		config = append(config, version.ConfigVariableInput{
 			"key":   arr[0],

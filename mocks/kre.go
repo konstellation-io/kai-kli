@@ -5,35 +5,36 @@
 package mocks
 
 import (
+	reflect "reflect"
+
 	gomock "github.com/golang/mock/gomock"
 	version "github.com/konstellation-io/kli/api/kre/version"
-	reflect "reflect"
 )
 
-// MockKreInterface is a mock of KreInterface interface
+// MockKreInterface is a mock of KreInterface interface.
 type MockKreInterface struct {
 	ctrl     *gomock.Controller
 	recorder *MockKreInterfaceMockRecorder
 }
 
-// MockKreInterfaceMockRecorder is the mock recorder for MockKreInterface
+// MockKreInterfaceMockRecorder is the mock recorder for MockKreInterface.
 type MockKreInterfaceMockRecorder struct {
 	mock *MockKreInterface
 }
 
-// NewMockKreInterface creates a new mock instance
+// NewMockKreInterface creates a new mock instance.
 func NewMockKreInterface(ctrl *gomock.Controller) *MockKreInterface {
 	mock := &MockKreInterface{ctrl: ctrl}
 	mock.recorder = &MockKreInterfaceMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockKreInterface) EXPECT() *MockKreInterfaceMockRecorder {
 	return m.recorder
 }
 
-// Version mocks base method
+// Version mocks base method.
 func (m *MockKreInterface) Version() version.VersionInterface {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Version")
@@ -41,7 +42,7 @@ func (m *MockKreInterface) Version() version.VersionInterface {
 	return ret0
 }
 
-// Version indicates an expected call of Version
+// Version indicates an expected call of Version.
 func (mr *MockKreInterfaceMockRecorder) Version() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Version", reflect.TypeOf((*MockKreInterface)(nil).Version))
