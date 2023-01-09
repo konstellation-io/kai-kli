@@ -15,5 +15,4 @@ jobs:
           prefix: "release-"
           mode: 'release'
           default-branch: 'main'
-        env:
-          GITHUB_TOKEN: ${{ secrets.PATNAME }}
+
