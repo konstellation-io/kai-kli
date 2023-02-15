@@ -1,10 +1,34 @@
-[![Tests][tests-badge]][tests-link]
-[![GitHub Release][release-badge]][release-link]
-[![Go Report Card][report-badge]][report-link]
-[![License][license-badge]][license-link]
-[![Coverage][coverage-badge]][coverage-link]
+# Kli
+|  Build status  | Relase version  |  License  |
+| :---------: | :-----:   |  :--------------------:  |
+| [![Tests][tests-badge]][tests-link] | [![GitHub Release][release-badge]][release-link] | [![License][license-badge]][license-link] |
 
-# kli
+|  Component  | Coverage  |  Bugs  |  Maintainability Rating  | Go Report |
+| :---------: | :-----:   |  :---: |  :--------------------:  |  :---: |
+|  KLI  | [![coverage][kli-coverage]][kli-coverage-link] | [![bugs][kli-bugs]][kli-bugs-link] | [![mr][kli-mr]][kli-mr-link] | [![Go Report Card][report-badge]][report-link] |
+
+[tests-badge]: https://img.shields.io/github/actions/workflow/status/konstellation-io/kli/quality.yml
+[tests-link]: https://img.shields.io/github/actions/workflow/status/konstellation-io/kli/quality.yml
+
+[release-badge]: https://img.shields.io/github/release/konstellation-io/kli.svg?logo=github&labelColor=262b30
+[release-link]: https://github.com/konstellation-io/kli/releases
+
+[report-badge]: https://goreportcard.com/badge/github.com/konstellation-io/kli
+[report-link]: https://goreportcard.com/report/github.com/konstellation-io/kli
+
+[license-badge]: https://img.shields.io/github/license/konstellation-io/kli
+[license-link]: https://github.com/konstellation-io/kli/blob/master/LICENSE
+
+[kli-coverage]: https://sonarcloud.io/api/project_badges/measure?project=kli&metric=coverage
+[kli-coverage-link]: https://sonarcloud.io/api/project_badges/measure?project=kli&metric=coverage
+
+[kli-bugs]: https://sonarcloud.io/api/project_badges/measure?project=kli&metric=bugs
+[kli-bugs-link]: https://sonarcloud.io/component_measures?id=kli&metric=Reliability
+
+[kli-mr]: https://sonarcloud.io/api/project_badges/measure?project=kli&metric=sqale_rating
+[kli-mr-link]: https://sonarcloud.io/component_measures?id=kli&metric=Maintainability
+
+---
 
 This repo contains a CLI to access, query and manage KRE and KDL.
 
@@ -164,22 +188,3 @@ A local release can be created for testing without creating anything official on
 - Run: 
     `goreleaser --skip-validate --skip-publish --rm-dist`
 - Find the built binaries under `dist/` folder.
-
-
-
-
-<!-- JUST BADGES & LINKS -->
-[tests-badge]: https://img.shields.io/github/workflow/status/konstellation-io/kli/Test
-[tests-link]: https://github.com/konstellation-io/kli/actions?query=workflow%3ATest
-
-[release-badge]: https://img.shields.io/github/release/konstellation-io/kli.svg?logo=github&labelColor=262b30
-[release-link]: https://github.com/konstellation-io/kli/releases
-
-[report-badge]: https://goreportcard.com/badge/github.com/konstellation-io/kli
-[report-link]: https://goreportcard.com/report/github.com/konstellation-io/kli
-
-[license-badge]: https://img.shields.io/github/license/konstellation-io/kli
-[license-link]: https://github.com/konstellation-io/kli/blob/master/LICENSE
-
-[coverage-badge]: https://sonarcloud.io/api/project_badges/measure?project=kli&metric=coverage
-[coverage-link]: https://sonarcloud.io/dashboard?id=kli
