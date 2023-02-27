@@ -3,8 +3,10 @@ package main
 import (
 	"fmt"
 
-	"github.com/konstellation-io/kli/cmd/factory"
-	"github.com/konstellation-io/kli/pkg/cmd/root"
+	"github.com/konstellation-io/kli/api/kre/config"
+	"github.com/konstellation-io/kli/cmd/root"
+	"github.com/konstellation-io/kli/internal/logging"
+	"github.com/konstellation-io/kli/pkg/iostreams"
 )
 
 const (
@@ -19,11 +21,17 @@ func main() {
 	buildDate := Date
 	buildVersion := Version
 
-	cmdFactory := factory.NewCmdFactory(buildVersion)
+	logger := logging.NewDefaultLogger()
+	io := iostreams.System()
 
-	rootCmd := root.NewRootCmd(cmdFactory, buildVersion, buildDate)
+	cfg, err := config.NewConfig(buildVersion)
+	if err != nil {
+		logger.Error(err.Error())
+	}
+
+	rootCmd := root.NewRootCmd(cfg, logger, io, buildVersion, buildDate)
 
 	if err := rootCmd.Execute(); err != nil {
-		cmdFactory.Logger().Error(fmt.Sprintf("execution error: %s\n", err))
+		logger.Error(fmt.Sprintf("execution error: %s\n", err))
 	}
 }

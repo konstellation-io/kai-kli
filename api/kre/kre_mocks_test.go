@@ -3,25 +3,25 @@ package kre_test
 import (
 	"encoding/json"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 	"time"
 
+	"github.com/konstellation-io/kli/api/kre/config"
+
 	"github.com/stretchr/testify/require"
 
 	"github.com/konstellation-io/kli/api/graphql"
-	"github.com/konstellation-io/kli/internal/config"
 )
 
-func gqlMockServer(t *testing.T, requestVars, mockResponse string) (*httptest.Server, *config.Config, *graphql.GqlManager) {
+func gqlMockServer(t *testing.T, requestVars, mockResponse string) (*httptest.Server, *graphql.GqlManager) {
 	t.Helper()
 
 	auth := false
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		b, err := ioutil.ReadAll(r.Body) //nolint:gocritic
+		b, err := io.ReadAll(r.Body)
 		require.NoError(t, err)
 
 		stringBody := string(b)
@@ -42,7 +42,7 @@ func gqlMockServer(t *testing.T, requestVars, mockResponse string) (*httptest.Se
 			err = json.NewDecoder(strings.NewReader(requestVars)).Decode(&expectedVars)
 			require.NoError(t, err)
 
-			require.EqualValues(t, actualBody["variables"], expectedVars)
+			require.EqualValues(t, expectedVars, actualBody["variables"])
 		}
 
 		if mockResponse == "" {
@@ -61,7 +61,11 @@ func gqlMockServer(t *testing.T, requestVars, mockResponse string) (*httptest.Se
 		APIToken: "12345",
 	}
 
-	client := graphql.NewGqlManager(cfg, srvCfg, "test")
+	clientConfig := &graphql.ClientConfig{
+		DefaultRequestTimeout: cfg.DefaultRequestTimeout,
+		Debug:                 cfg.Debug,
+	}
+	client := graphql.NewGqlManager(clientConfig, srvCfg, "test")
 
-	return srv, cfg, client
+	return srv, client
 }

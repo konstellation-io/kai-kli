@@ -6,8 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-
-	"github.com/konstellation-io/kli/internal/config"
 )
 
 // accessTokenResponse represents a response from the sign-in API.
@@ -16,13 +14,13 @@ type accessTokenResponse struct {
 }
 
 // getAccessToken call to sign-in endpoint and get an access_token to use in later API calls.
-func getAccessToken(cfg *config.Config, server *config.ServerConfig) (string, error) {
+func (g *GqlManager) getAccessToken() (string, error) {
 	client := &http.Client{}
-	url := fmt.Sprintf("%s/api/v1/auth/token/signin", server.URL)
+	url := fmt.Sprintf("%s/api/v1/auth/token/signin", g.server.URL)
 
-	postData := bytes.NewBuffer([]byte(fmt.Sprintf(`{"apiToken":%q}`, server.APIToken)))
+	postData := bytes.NewBuffer([]byte(fmt.Sprintf(`{"apiToken":%q}`, g.server.APIToken)))
 
-	ctx, cancel := context.WithTimeout(context.Background(), cfg.DefaultRequestTimeout)
+	ctx, cancel := context.WithTimeout(context.Background(), g.cfg.DefaultRequestTimeout)
 	defer cancel()
 
 	req, err := http.NewRequestWithContext(ctx, "POST", url, postData)

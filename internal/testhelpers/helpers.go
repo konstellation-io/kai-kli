@@ -1,7 +1,6 @@
 package testhelpers
 
 import (
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -12,7 +11,7 @@ import (
 func SetupConfigDir(t *testing.T) string {
 	t.Helper()
 
-	dir, err := ioutil.TempDir("", "kli-test")
+	dir, err := os.MkdirTemp("", "kli-test")
 	require.NoError(t, err)
 
 	err = os.Setenv("XDG_CONFIG_HOME", dir)

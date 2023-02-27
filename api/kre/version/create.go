@@ -2,12 +2,11 @@ package version
 
 import (
 	"os"
-	"path/filepath"
 
 	"github.com/konstellation-io/graphql"
 )
 
-func (c *versionClient) Create(krtFile string) (string, error) {
+func (c *versionClient) Create(runtime, krtFile string) (string, error) {
 	query := `
 		mutation CreateVersion($input: CreateVersionInput!) {
 			createVersion(input: $input) {
@@ -17,7 +16,8 @@ func (c *versionClient) Create(krtFile string) (string, error) {
 		`
 	vars := map[string]interface{}{
 		"input": map[string]interface{}{
-			"file": nil,
+			"file":      nil,
+			"runtimeId": runtime,
 		},
 	}
 
@@ -34,7 +34,7 @@ func (c *versionClient) Create(krtFile string) (string, error) {
 
 	file := graphql.File{
 		Field: "variables.input.file",
-		Name:  filepath.Base(krtFile),
+		Name:  r.Name(),
 		R:     r,
 	}
 

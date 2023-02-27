@@ -55,7 +55,6 @@ linters:
     - deadcode
     - depguard
     - dogsled
-    - dupl
     - errcheck
     - exhaustive
     - funlen
@@ -93,12 +92,10 @@ linters:
     - gochecknoglobals
     - gocognit
     - godot
-    - godox
     - maligned
     - nestif
     - prealloc
     - wsl
-    - goerr113
 issues:
   # Excluding configuration per-path, per-linter, per-text and per-source
   exclude-rules:
@@ -106,5 +103,4 @@ issues:
       linters:
         - gomnd
         - goconst
-        - dupl
-        - goerr113
+        - scopelint

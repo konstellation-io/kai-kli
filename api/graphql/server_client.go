@@ -6,15 +6,15 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/konstellation-io/graphql"
+	"github.com/konstellation-io/kli/api/kre/config"
 
-	"github.com/konstellation-io/kli/internal/config"
+	"github.com/konstellation-io/graphql"
 )
 
 // GqlManager struct to implement access to GraphQL endpoints with gql client.
 type GqlManager struct {
 	appVersion string
-	cfg        *config.Config
+	cfg        *ClientConfig
 	server     *config.ServerConfig
 	client     *graphql.Client
 	httpClient *http.Client
@@ -25,7 +25,7 @@ func (g *GqlManager) setupClient(args ...graphql.ClientOption) error {
 		return nil
 	}
 
-	accessToken, err := getAccessToken(g.cfg, g.server)
+	accessToken, err := g.getAccessToken()
 	if err != nil {
 		return err
 	}
@@ -101,7 +101,7 @@ func (g *GqlManager) UploadFile(file graphql.File, query string, vars map[string
 }
 
 // NewGqlManager creates an instance of GqlManager that takes cares of authentication.
-func NewGqlManager(cfg *config.Config, server *config.ServerConfig, appVersion string) *GqlManager {
+func NewGqlManager(cfg *ClientConfig, server *config.ServerConfig, appVersion string) *GqlManager {
 	return &GqlManager{
 		appVersion,
 		cfg,
