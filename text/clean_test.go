@@ -15,7 +15,7 @@ func TestText(t *testing.T) {
 		require.Equal(t, text.Sanitize(str), expected)
 	})
 
-	t.Run("Normalilze", func(t *testing.T) {
+	t.Run("Normalize", func(t *testing.T) {
 		str := " SoME     lONg     STring    "
 		expected := "some long string"
 		require.Equal(t, text.Normalize(str), expected)
