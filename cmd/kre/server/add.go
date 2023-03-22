@@ -35,7 +35,7 @@ func NewAddCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
 			r.RenderServerList(cfg.ServerList, cfg.DefaultServer)
 
-			logger.Success(fmt.Sprintf("Server '%s' added.", newServer.Name))
+			logger.Success(fmt.Sprintf("Server %q added.", newServer.Name))
 			return nil
 		},
 	}

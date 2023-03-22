@@ -28,7 +28,7 @@ func NewDefaultCmd(logger logging.Interface, cfg *config.Config) *cobra.Command 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
 			r.RenderServerList(cfg.ServerList, cfg.DefaultServer)
 
-			logger.Success(fmt.Sprintf("Server '%s' is now default.\n", name))
+			logger.Success(fmt.Sprintf("Server %q is now default.\n", name))
 
 			return nil
 		},
