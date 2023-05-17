@@ -8,14 +8,14 @@ import (
 
 // VersionInterface method to interact with Versions.
 type VersionInterface interface { //nolint: golint
-	List(runtime string) (List, error)
-	Start(runtime, versionName, comment string) error
-	Stop(runtime, versionName, comment string) error
-	Publish(runtime, versionName, comment string) error
-	Unpublish(runtime, versionName, comment string) error
-	GetConfig(runtime, versionName string) (*Config, error)
-	UpdateConfig(runtime, versionName string, configVars []ConfigVariableInput) (bool, error)
-	Create(runtime, krtFile string) (string, error)
+	List(product string) (List, error)
+	Start(product, versionName, comment string) error
+	Stop(product, versionName, comment string) error
+	Publish(product, versionName, comment string) error
+	Unpublish(product, versionName, comment string) error
+	GetConfig(product, versionName string) (*Config, error)
+	UpdateConfig(product, versionName string, configVars []ConfigVariableInput) (bool, error)
+	Create(product, krtFile string) (string, error)
 }
 
 type versionClient struct {

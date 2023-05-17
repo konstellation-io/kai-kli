@@ -2,7 +2,7 @@ package render
 
 import (
 	"github.com/konstellation-io/kli/api/kre/config"
-	"github.com/konstellation-io/kli/api/kre/runtime"
+	"github.com/konstellation-io/kli/api/kre/product"
 	"github.com/konstellation-io/kli/api/kre/version"
 	"github.com/konstellation-io/kli/internal/krt/errors"
 )
@@ -15,5 +15,5 @@ type Renderer interface {
 	RenderVars(cfg *version.Config, showValues bool)
 	RenderVersions(versions version.List)
 	RenderValidationErrors(validationErrors []*errors.ValidationError)
-	RenderRuntimes(runtimes []runtime.Runtime)
+	RenderProducts(products []product.Product)
 }

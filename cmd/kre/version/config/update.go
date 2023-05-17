@@ -25,7 +25,7 @@ func NewUpdateConfigCmd(logger logging.Interface, cfg *config.Config) *cobra.Com
 		RunE: func(cmd *cobra.Command, args []string) error {
 			versionName := args[0]
 
-			runtime, _ := cmd.Flags().GetString("runtime")
+			product, _ := cmd.Flags().GetString("product")
 
 			// read key=value pairs
 			keyValuePairs, err := cmd.Flags().GetStringSlice("set")
@@ -71,7 +71,7 @@ func NewUpdateConfigCmd(logger logging.Interface, cfg *config.Config) *cobra.Com
 			}
 
 			configVars := getNewConfigVars(keyValuePairs)
-			return kreInteractor.UpdateVersionConfig(runtime, versionName, configVars)
+			return kreInteractor.UpdateVersionConfig(product, versionName, configVars)
 		},
 	}
 	cmd.Flags().StringSlice("set", []string{}, "Set new key value pair key=value")

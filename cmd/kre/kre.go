@@ -5,7 +5,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/konstellation-io/kli/api/kre/config"
-	"github.com/konstellation-io/kli/cmd/kre/runtime"
+	"github.com/konstellation-io/kli/cmd/kre/product"
 	"github.com/konstellation-io/kli/cmd/kre/server"
 	"github.com/konstellation-io/kli/cmd/kre/version"
 	"github.com/konstellation-io/kli/internal/logging"
@@ -17,12 +17,12 @@ func NewKRECmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 		Use:   "kre",
 		Short: "Manage KRE",
 		Example: heredoc.Doc(`
-			$ kli kre runtime ls
+			$ kli kre product ls
 		`),
 	}
 
 	cmd.AddCommand(
-		runtime.NewRuntimeCmd(logger, cfg),
+		product.NewProductCmd(logger, cfg),
 		version.NewVersionCmd(logger, cfg),
 		server.NewServerCmd(logger, cfg),
 	)

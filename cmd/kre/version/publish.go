@@ -14,13 +14,13 @@ import (
 // NewPublishCmd manages the publish command.
 func NewPublishCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "publish <version-name> -r <runtime> -m <audit message>",
+		Use:   "publish <version-name> -r <product> -m <audit message>",
 		Args:  args.ComposeArgsCheck(args.CheckServerFlag, cobra.ExactArgs(1)),
 		Short: "Publish a version",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			versionName := args[0]
 
-			runtime, err := cmd.Flags().GetString("runtime")
+			product, err := cmd.Flags().GetString("product")
 			if err != nil {
 				return err
 			}
@@ -42,7 +42,7 @@ func NewPublishCmd(logger logging.Interface, cfg *config.Config) *cobra.Command 
 			}, server, cfg.BuildVersion)
 			kreInteractor := kre.NewInteractor(logger, kreClient, nil)
 
-			err = kreInteractor.PublishVersion(runtime, versionName, comment)
+			err = kreInteractor.PublishVersion(product, versionName, comment)
 			if err != nil {
 				return err
 			}

@@ -11,7 +11,7 @@ import (
 )
 
 func TestVersionList(t *testing.T) {
-	srv, client := gqlMockServer(t, "{\"runtimeId\":\"test-runtime\"}", `
+	srv, client := gqlMockServer(t, "{\"productId\":\"test-product\"}", `
 		{
 				"data": {
 						"versions": [
@@ -27,8 +27,8 @@ func TestVersionList(t *testing.T) {
 
 	c := version.New(client)
 
-	runtime := "test-runtime"
-	list, err := c.List(runtime)
+	product := "test-product"
+	list, err := c.List(product)
 	require.NoError(t, err)
 	require.Len(t, list, 1)
 	require.Equal(t, list[0], version.Version{
@@ -38,105 +38,105 @@ func TestVersionList(t *testing.T) {
 }
 
 func TestVersionStart(t *testing.T) {
-	runtime := "test-runtime"
+	product := "test-product"
 	versionName := "123456"
 	comment := "test start comment"
 	expectedVariables := fmt.Sprintf(`
 		{
 			"input": {
-					"runtimeId": "%s",
+					"productId": "%s",
 					"versionName": "%s",
 					"comment": "%s"
 			}
 		}
- `, runtime, versionName, comment)
+ `, product, versionName, comment)
 
 	srv, client := gqlMockServer(t, expectedVariables, "")
 	defer srv.Close()
 
 	c := version.New(client)
 
-	err := c.Start(runtime, versionName, comment)
+	err := c.Start(product, versionName, comment)
 	require.NoError(t, err)
 }
 
 func TestVersionStop(t *testing.T) {
-	runtime := "test-runtime"
+	product := "test-product"
 	versionName := "123456"
 	comment := "test stop comment"
 	expectedVariables := fmt.Sprintf(`
 		{
 			"input": {
-					"runtimeId":"%s",
+					"productId":"%s",
 					"versionName": "%s",
 					"comment": "%s"
 			}
 		}
- `, runtime, versionName, comment)
+ `, product, versionName, comment)
 
 	srv, client := gqlMockServer(t, expectedVariables, "")
 	defer srv.Close()
 
 	c := version.New(client)
 
-	err := c.Stop(runtime, versionName, comment)
+	err := c.Stop(product, versionName, comment)
 	require.NoError(t, err)
 }
 
 func TestVersionPublish(t *testing.T) {
-	runtime := "test-runtime"
+	product := "test-product"
 	versionName := "123456"
 	comment := "test publish comment"
 	expectedVariables := fmt.Sprintf(`
 		{
 			"input": {
-					"runtimeId": "%s",
+					"productId": "%s",
 					"versionName": "%s",
 					"comment": "%s"
 			}
 		}
- `, runtime, versionName, comment)
+ `, product, versionName, comment)
 
 	srv, client := gqlMockServer(t, expectedVariables, "")
 	defer srv.Close()
 
 	c := version.New(client)
 
-	err := c.Publish(runtime, versionName, comment)
+	err := c.Publish(product, versionName, comment)
 	require.NoError(t, err)
 }
 
 func TestVersionUnpublish(t *testing.T) {
-	runtime := "test-runtime"
+	product := "test-product"
 	versionName := "123456"
 	comment := "test unpublish comment"
 	expectedVariables := fmt.Sprintf(`
 		{
 			"input": {
-					"runtimeId": "%s",
+					"productId": "%s",
 					"versionName": "%s",
 					"comment": "%s"
 			}
 		}
- `, runtime, versionName, comment)
+ `, product, versionName, comment)
 
 	srv, client := gqlMockServer(t, expectedVariables, "")
 	defer srv.Close()
 
 	c := version.New(client)
 
-	err := c.Unpublish(runtime, versionName, comment)
+	err := c.Unpublish(product, versionName, comment)
 	require.NoError(t, err)
 }
 
 func TestVersionGetConfig(t *testing.T) {
-	runtime := "test-runtime"
+	product := "test-product"
 	versionName := "test-v1"
 	expectedVariables := fmt.Sprintf(`
 		{
-			"runtimeId":"%s",
+			"productId":"%s",
 			"versionName": "%s"
-		}`, runtime, versionName)
+		}`, product, versionName)
 	srv, client := gqlMockServer(t, expectedVariables, `
 		{
 			"data": {
@@ -165,7 +165,7 @@ func TestVersionGetConfig(t *testing.T) {
 
 	c := version.New(client)
 
-	config, err := c.GetConfig(runtime, versionName)
+	config, err := c.GetConfig(product, versionName)
 	require.NoError(t, err)
 	require.False(t, config.Completed)
 	require.Len(t, config.Vars, 2)
@@ -199,7 +199,7 @@ func TestVersionUpdateConfig(t *testing.T) {
 					"configurationVariables": [
 						{ "key": "KEY2", "value": "newValue" }
 					],
-					"runtimeId": "test-runtime",
+					"productId": "test-product",
 					"versionName": "test-v1"
 			}
 		}
@@ -220,8 +220,8 @@ func TestVersionUpdateConfig(t *testing.T) {
 
 	c := version.New(client)
 
-	runtime := "test-runtime"
-	completed, err := c.UpdateConfig(runtime, "test-v1", configVars)
+	product := "test-product"
+	completed, err := c.UpdateConfig(product, "test-v1", configVars)
 	require.NoError(t, err)
 	require.True(t, completed)
 }
@@ -245,8 +245,8 @@ func TestVersionCreate(t *testing.T) {
 
 	defer os.RemoveAll(krtFile.Name())
 
-	runtime := "test-runtime"
-	versionName, err := c.Create(runtime, krtFile.Name())
+	product := "test-product"
+	versionName, err := c.Create(product, krtFile.Name())
 	require.NoError(t, err)
 	require.Equal(t, versionName, "test-v1")
 }

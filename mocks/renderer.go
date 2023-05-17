@@ -9,7 +9,7 @@ import (
 
 	gomock "github.com/golang/mock/gomock"
 	config "github.com/konstellation-io/kli/api/kre/config"
-	runtime "github.com/konstellation-io/kli/api/kre/runtime"
+	product "github.com/konstellation-io/kli/api/kre/product"
 	version "github.com/konstellation-io/kli/api/kre/version"
 	errors "github.com/konstellation-io/kli/internal/krt/errors"
 )
@@ -37,16 +37,16 @@ func (m *MockRenderer) EXPECT() *MockRendererMockRecorder {
 	return m.recorder
 }
 
-// RenderRuntimes mocks base method.
-func (m *MockRenderer) RenderRuntimes(runtimes []runtime.Runtime) {
+// RenderProducts mocks base method.
+func (m *MockRenderer) RenderProducts(products []product.Product) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "RenderRuntimes", runtimes)
+	m.ctrl.Call(m, "RenderProducts", products)
 }
 
-// RenderRuntimes indicates an expected call of RenderRuntimes.
-func (mr *MockRendererMockRecorder) RenderRuntimes(runtimes interface{}) *gomock.Call {
+// RenderProducts indicates an expected call of RenderProducts.
+func (mr *MockRendererMockRecorder) RenderProducts(products interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderRuntimes", reflect.TypeOf((*MockRenderer)(nil).RenderRuntimes), runtimes)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderProducts", reflect.TypeOf((*MockRenderer)(nil).RenderProducts), products)
 }
 
 // RenderServerList mocks base method.

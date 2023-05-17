@@ -3,7 +3,7 @@ package api
 import (
 	"github.com/konstellation-io/kli/api/graphql"
 	"github.com/konstellation-io/kli/api/kre/config"
-	"github.com/konstellation-io/kli/api/kre/runtime"
+	"github.com/konstellation-io/kli/api/kre/product"
 	"github.com/konstellation-io/kli/api/kre/version"
 )
 
@@ -11,7 +11,7 @@ import (
 type KRE struct {
 	gqlManager *graphql.GqlManager
 	version    version.VersionInterface
-	runtime    runtime.RuntimeInterface
+	product    product.ProductInterface
 }
 
 // Version access to methods to interact with Versions.
@@ -19,8 +19,8 @@ func (a *KRE) Version() version.VersionInterface {
 	return a.version
 }
 
-func (a *KRE) Runtime() runtime.RuntimeInterface {
-	return a.runtime
+func (a *KRE) Product() product.ProductInterface {
+	return a.product
 }
 
 // NewKreClient creates an API client instance.
@@ -30,6 +30,6 @@ func NewKreClient(cfg *graphql.ClientConfig, server *config.ServerConfig, appVer
 	return &KRE{
 		g,
 		version.New(g),
-		runtime.New(g),
+		product.New(g),
 	}
 }

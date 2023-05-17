@@ -1,6 +1,6 @@
 package version
 
-func (c *versionClient) Start(runtime, versionName, comment string) error {
+func (c *versionClient) Start(product, versionName, comment string) error {
 	query := `
 		mutation StartVersion($input: StartVersionInput!) {
 			startVersion(input: $input) {
@@ -12,7 +12,7 @@ func (c *versionClient) Start(runtime, versionName, comment string) error {
 		"input": map[string]string{
 			"versionName": versionName,
 			"comment":     comment,
-			"runtimeId":   runtime,
+			"productId":   product,
 		},
 	}
 
