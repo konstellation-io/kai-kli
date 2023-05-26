@@ -19,7 +19,7 @@ import (
 // NewUpdateConfigCmd manage config command for version.
 func NewUpdateConfigCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "set",
+		Use:   "set <version-name>",
 		Args:  args.ComposeArgsCheck(args.CheckServerFlag, cobra.ExactArgs(1)),
 		Short: "Set config variables values",
 		RunE: func(cmd *cobra.Command, args []string) error {
