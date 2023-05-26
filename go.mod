@@ -9,7 +9,7 @@ require (
 	github.com/briandowns/spinner v1.19.0
 	github.com/golang/mock v1.6.0
 	github.com/joho/godotenv v1.4.0
-	github.com/konstellation-io/graphql v0.3.0
+	github.com/konstellation-io/graphql v0.3.1
 	github.com/mattn/go-colorable v0.1.13
 	github.com/mattn/go-isatty v0.0.16
 	github.com/olekukonko/tablewriter v0.0.5
