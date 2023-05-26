@@ -14,7 +14,7 @@ import (
 // NewCreateCmd upload a KRT file to product and make a new version.
 func NewCreateCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create [krt-file] -r <product>",
+		Use:   "create [krt-file] -r <product-id>",
 		Args:  args.ComposeArgsCheck(args.CheckServerFlag, cobra.ExactArgs(1)),
 		Short: "Upload a KRT and create a new version",
 		RunE: func(cmd *cobra.Command, args []string) error {

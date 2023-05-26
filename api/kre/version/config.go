@@ -55,7 +55,7 @@ func (c *versionClient) UpdateConfig(product, versionName string, configVars []C
 		"input": map[string]interface{}{
 			"versionName":            versionName,
 			"configurationVariables": configVars,
-			"productId":              product,
+			"productID":              product,
 		},
 	}
 
@@ -75,7 +75,7 @@ func (c *versionClient) UpdateConfig(product, versionName string, configVars []C
 func (c *versionClient) GetConfig(product, versionName string) (*Config, error) {
 	query := `
     query GetVersionConf($versionName: String!, $productId: ID!) {
-      version(name: $versionName, productId: $productId) {
+      version(name: $versionName, productID: $productId) {
         config {
           completed
           vars{
@@ -89,7 +89,7 @@ func (c *versionClient) GetConfig(product, versionName string) (*Config, error) 
   `
 	vars := map[string]interface{}{
 		"versionName": versionName,
-		"productId":   product,
+		"productID":   product,
 	}
 
 	var respData struct {

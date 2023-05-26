@@ -17,7 +17,7 @@ func (c *versionClient) Create(product, krtFile string) (string, error) {
 	vars := map[string]interface{}{
 		"input": map[string]interface{}{
 			"file":      nil,
-			"productId": product,
+			"productID": product,
 		},
 	}
 

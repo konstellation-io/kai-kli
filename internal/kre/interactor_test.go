@@ -118,8 +118,8 @@ func TestInteractor_CreateVersion_ClientError(t *testing.T) {
 
 func TestInteractor_ListProducts(t *testing.T) {
 	s := newTestInteractorSuite(t)
-	productName := "test-product"
-	expectedProducts := []product.Product{{Name: productName}}
+	productID := "test-product"
+	expectedProducts := []product.Product{{ID: productID}}
 
 	s.mocks.kreClient.EXPECT().Product().Return(s.mocks.product)
 	s.mocks.product.EXPECT().List().Return(expectedProducts, nil)
@@ -156,27 +156,27 @@ func TestInteractor_ListProducts_ErrorGettingProducts(t *testing.T) {
 
 func TestInteractor_CreateProduct(t *testing.T) {
 	s := newTestInteractorSuite(t)
-	productName := "test-product"
+	productID := "test-product"
 	description := "Test description"
 
 	s.mocks.kreClient.EXPECT().Product().Return(s.mocks.product)
-	s.mocks.product.EXPECT().Create(productName, description).Return(nil)
+	s.mocks.product.EXPECT().Create(productID, description).Return(nil)
 
 	krtInteractor := kre.NewInteractor(s.mocks.logger, s.mocks.kreClient, s.mocks.renderer)
-	err := krtInteractor.CreateProduct(productName, description)
+	err := krtInteractor.CreateProduct(productID, description)
 	assert.NoError(t, err)
 }
 
 func TestInteractor_CreateProduct_ClientError(t *testing.T) {
 	s := newTestInteractorSuite(t)
-	productName := "test-product"
+	productID := "test-product"
 	description := "Test description"
 
 	s.mocks.kreClient.EXPECT().Product().Return(s.mocks.product)
-	s.mocks.product.EXPECT().Create(productName, description).Return(errors.New("graphql error"))
+	s.mocks.product.EXPECT().Create(productID, description).Return(errors.New("graphql error"))
 
 	krtInteractor := kre.NewInteractor(s.mocks.logger, s.mocks.kreClient, s.mocks.renderer)
-	err := krtInteractor.CreateProduct(productName, description)
+	err := krtInteractor.CreateProduct(productID, description)
 	assert.Error(t, err)
 	assert.ErrorContains(t, err, "error creating product")
 }

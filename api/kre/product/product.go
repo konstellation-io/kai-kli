@@ -9,6 +9,7 @@ import (
 )
 
 type Product struct {
+	ID   string
 	Name string
 }
 
@@ -42,6 +43,7 @@ func (c *productClient) List() ([]Product, error) {
 	query := `
 		query GetProducts() {
 			products() {
+				id
 				name
 			}
 		}
