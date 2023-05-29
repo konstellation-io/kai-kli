@@ -5,16 +5,16 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/konstellation-io/kli/api/kre/runtime"
+	"github.com/konstellation-io/kli/api/kre/product"
 )
 
-func TestRuntimeList(t *testing.T) {
+func TestProductList(t *testing.T) {
 	srv, client := gqlMockServer(t, "", `
 		{
 				"data": {
-						"runtimes": [
+						"products": [
 								{
-										"name": "test-runtime"
+										"name": "test-product"
 								}
 						]
 				}
@@ -22,30 +22,30 @@ func TestRuntimeList(t *testing.T) {
 	`)
 	defer srv.Close()
 
-	c := runtime.New(client)
+	c := product.New(client)
 
 	list, err := c.List()
 	require.NoError(t, err)
 	require.Len(t, list, 1)
-	require.Equal(t, list[0], runtime.Runtime{
-		Name: "test-runtime",
+	require.Equal(t, list[0], product.Product{
+		Name: "test-product",
 	})
 }
 
-func TestRuntimeCreate(t *testing.T) {
+func TestProductCreate(t *testing.T) {
 	srv, client := gqlMockServer(t, "", `
 		{
 				"data": {
-						"createRuntime": {
-								"name": "test-runtime"
+						"createProduct": {
+								"name": "test-product"
 						}
 				}
 		}
 	`)
 	defer srv.Close()
 
-	c := runtime.New(client)
+	c := product.New(client)
 
-	err := c.Create("test-runtime", "test description")
+	err := c.Create("test-product", "test description")
 	require.NoError(t, err)
 }

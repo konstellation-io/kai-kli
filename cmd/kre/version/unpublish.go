@@ -14,13 +14,13 @@ import (
 // NewUnpublishCmd manages the unpublish command.
 func NewUnpublishCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "unpublish <version-name> -r <runtime> -m <audit message>",
+		Use:   "unpublish <version-name> -r <product> -m <audit message>",
 		Args:  args.ComposeArgsCheck(args.CheckServerFlag, cobra.ExactArgs(1)),
 		Short: "Unpublish a version",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			versionName := args[0]
 
-			runtime, err := cmd.Flags().GetString("runtime")
+			product, err := cmd.Flags().GetString("product")
 			if err != nil {
 				return err
 			}
@@ -42,7 +42,7 @@ func NewUnpublishCmd(logger logging.Interface, cfg *config.Config) *cobra.Comman
 			}, server, cfg.BuildVersion)
 			kreInteractor := kre.NewInteractor(logger, kreClient, nil)
 
-			err = kreInteractor.UnpublishVersion(runtime, versionName, comment)
+			err = kreInteractor.UnpublishVersion(product, versionName, comment)
 			if err != nil {
 				return err
 			}

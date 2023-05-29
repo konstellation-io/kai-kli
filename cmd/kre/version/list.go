@@ -14,7 +14,7 @@ import (
 // NewListCmd creates a new command to list Versions.
 func NewListCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "ls -r <runtime>",
+		Use:     "ls -r <product>",
 		Aliases: []string{"list"},
 		Args:    args.CheckServerFlag,
 		Short:   "List all available Versions",
@@ -27,9 +27,9 @@ func NewListCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 			}, server, cfg.BuildVersion)
 			kreInteractor := kre.NewInteractorWithDefaultRenderer(logger, kreClient, cmd.OutOrStdout())
 
-			runtime, _ := cmd.Flags().GetString(runtimeFlag)
+			product, _ := cmd.Flags().GetString(productFlag)
 
-			return kreInteractor.ListVersions(runtime)
+			return kreInteractor.ListVersions(product)
 		},
 	}
 

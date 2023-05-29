@@ -1,4 +1,4 @@
-package runtime
+package product
 
 import (
 	"github.com/MakeNowJust/heredoc"
@@ -11,15 +11,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// NewCreateCmd creates a new command to list Runtimes.
+// NewCreateCmd creates a new command to list Products.
 func NewCreateCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "create <runtime-name> -d <runtime description>",
+		Use:     "create <product-name> -d <product description>",
 		Aliases: []string{"create"},
 		Args:    args.CheckServerFlag,
-		Short:   "Create a runtime",
+		Short:   "Create a product",
 		Example: heredoc.Doc(`
-			$ kli kre runtime create 'runtime-name' -d 'runtime description' -s kre-local
+			$ kli kre product create 'product-name' -d 'product description' -s kre-local
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			serverName, _ := cmd.Flags().GetString("server")
@@ -33,17 +33,17 @@ func NewCreateCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 			description, _ := cmd.Flags().GetString("description")
 
 			kreInteractor := kre.NewInteractorWithDefaultRenderer(logger, kreClient, cmd.OutOrStdout())
-			err := kreInteractor.CreateRuntime(name, description)
+			err := kreInteractor.CreateProduct(name, description)
 			if err != nil {
 				logger.Debug(err.Error())
 				return err
 			}
 
-			logger.Info("Runtime successfully created")
+			logger.Info("Product successfully created")
 			return nil
 		},
 	}
-	cmd.Flags().StringP("description", "d", "", "Adds runtime description")
+	cmd.Flags().StringP("description", "d", "", "Adds product description")
 
 	return cmd
 }

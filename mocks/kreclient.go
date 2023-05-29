@@ -8,7 +8,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	runtime "github.com/konstellation-io/kli/api/kre/runtime"
+	product "github.com/konstellation-io/kli/api/kre/product"
 	version "github.com/konstellation-io/kli/api/kre/version"
 )
 
@@ -35,18 +35,18 @@ func (m *MockKreInterface) EXPECT() *MockKreInterfaceMockRecorder {
 	return m.recorder
 }
 
-// Runtime mocks base method.
-func (m *MockKreInterface) Runtime() runtime.RuntimeInterface {
+// Product mocks base method.
+func (m *MockKreInterface) Product() product.ProductInterface {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Runtime")
-	ret0, _ := ret[0].(runtime.RuntimeInterface)
+	ret := m.ctrl.Call(m, "Product")
+	ret0, _ := ret[0].(product.ProductInterface)
 	return ret0
 }
 
-// Runtime indicates an expected call of Runtime.
-func (mr *MockKreInterfaceMockRecorder) Runtime() *gomock.Call {
+// Product indicates an expected call of Product.
+func (mr *MockKreInterfaceMockRecorder) Product() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Runtime", reflect.TypeOf((*MockKreInterface)(nil).Runtime))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Product", reflect.TypeOf((*MockKreInterface)(nil).Product))
 }
 
 // Version mocks base method.

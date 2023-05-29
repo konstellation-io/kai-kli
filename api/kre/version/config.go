@@ -41,7 +41,7 @@ func (e ConfigVariableType) String() string {
 }
 
 // UpdateConfig update a Version config values.
-func (c *versionClient) UpdateConfig(runtime, versionName string, configVars []ConfigVariableInput) (bool, error) {
+func (c *versionClient) UpdateConfig(product, versionName string, configVars []ConfigVariableInput) (bool, error) {
 	query := `
 		mutation UpdateConfig($input: UpdateConfigurationInput!) {
 			updateVersionUserConfiguration(input: $input) {
@@ -55,7 +55,7 @@ func (c *versionClient) UpdateConfig(runtime, versionName string, configVars []C
 		"input": map[string]interface{}{
 			"versionName":            versionName,
 			"configurationVariables": configVars,
-			"runtimeId":              runtime,
+			"productId":              product,
 		},
 	}
 
@@ -72,10 +72,10 @@ func (c *versionClient) UpdateConfig(runtime, versionName string, configVars []C
 	return respData.UpdateVersionUserConfiguration.Config.Completed, err
 }
 
-func (c *versionClient) GetConfig(runtime, versionName string) (*Config, error) {
+func (c *versionClient) GetConfig(product, versionName string) (*Config, error) {
 	query := `
-    query GetVersionConf($versionName: String!, $runtimeId: ID!) {
-      version(name: $versionName, runtimeId: $runtimeId) {
+    query GetVersionConf($versionName: String!, $productId: ID!) {
+      version(name: $versionName, productId: $productId) {
         config {
           completed
           vars{
@@ -89,7 +89,7 @@ func (c *versionClient) GetConfig(runtime, versionName string) (*Config, error) 
   `
 	vars := map[string]interface{}{
 		"versionName": versionName,
-		"runtimeId":   runtime,
+		"productId":   product,
 	}
 
 	var respData struct {

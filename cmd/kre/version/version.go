@@ -9,7 +9,7 @@ import (
 	"github.com/konstellation-io/kli/internal/logging"
 )
 
-const runtimeFlag = "runtime"
+const productFlag = "product"
 
 // NewVersionCmd creates a new command to handle 'version' subcommands.
 func NewVersionCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
@@ -24,8 +24,8 @@ func NewVersionCmd(logger logging.Interface, cfg *config.Config) *cobra.Command 
 	}
 
 	cmd.PersistentFlags().StringP("server", "s", cfg.DefaultServer, "KRE server to use")
-	cmd.PersistentFlags().StringP(runtimeFlag, "r", "", "runtime of the version")
-	_ = cmd.MarkFlagRequired(runtimeFlag)
+	cmd.PersistentFlags().StringP(productFlag, "r", "", "product of the version")
+	_ = cmd.MarkFlagRequired(productFlag)
 
 	cmd.AddCommand(
 		NewListCmd(logger, cfg),

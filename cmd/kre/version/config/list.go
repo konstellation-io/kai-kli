@@ -19,7 +19,7 @@ func NewListConfigCmd(logger logging.Interface, cfg *config.Config) *cobra.Comma
 		RunE: func(cmd *cobra.Command, args []string) error {
 			versionName := args[0]
 
-			runtime, _ := cmd.Flags().GetString("runtime")
+			product, _ := cmd.Flags().GetString("product")
 
 			showValues, err := cmd.Flags().GetBool("show-values")
 			if err != nil {
@@ -38,7 +38,7 @@ func NewListConfigCmd(logger logging.Interface, cfg *config.Config) *cobra.Comma
 			}, server, cfg.BuildVersion)
 			kreInteractor := kre.NewInteractorWithDefaultRenderer(logger, kreClient, cmd.OutOrStdout())
 
-			return kreInteractor.ListVersionConfig(runtime, versionName, showValues)
+			return kreInteractor.ListVersionConfig(product, versionName, showValues)
 		},
 	}
 	cmd.Flags().Bool("show-values", false, "Show configuration variables")

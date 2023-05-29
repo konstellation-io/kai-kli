@@ -1,4 +1,4 @@
-package runtime
+package product
 
 import (
 	"github.com/MakeNowJust/heredoc"
@@ -8,14 +8,14 @@ import (
 	"github.com/konstellation-io/kli/internal/logging"
 )
 
-// NewRuntimeCmd creates a new command to handle 'runtime' subcommands.
-func NewRuntimeCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
+// NewProductCmd creates a new command to handle 'product' subcommands.
+func NewProductCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "runtime",
+		Use:   "product",
 		Short: "Manage KRE Version",
 		Example: heredoc.Doc(`
-			$ kli kre runtime ls
-			$ kli kre runtime create 'runtime-name' -d 'runtime description'
+			$ kli kre product ls
+			$ kli kre product create 'product-name' -d 'product description'
 		`),
 	}
 

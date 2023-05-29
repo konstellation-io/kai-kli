@@ -7,7 +7,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/konstellation-io/kli/api/kre/runtime"
+	"github.com/konstellation-io/kli/api/kre/product"
 	"github.com/konstellation-io/kli/api/kre/version"
 	"github.com/konstellation-io/kli/internal/kre"
 	"github.com/konstellation-io/kli/mocks"
@@ -22,7 +22,7 @@ type suiteMocks struct {
 	logger    *mocks.MockLogger
 	kreClient *mocks.MockKreInterface
 	version   *mocks.MockVersionInterface
-	runtime   *mocks.MockRuntimeInterface
+	product   *mocks.MockProductInterface
 	renderer  *mocks.MockRenderer
 }
 
@@ -32,7 +32,7 @@ func newTestInteractorSuite(t *testing.T) *testInteractorSuite {
 	mocks.AddLoggerExpects(logger)
 	kreClient := mocks.NewMockKreInterface(ctrl)
 	versionMock := mocks.NewMockVersionInterface(ctrl)
-	runtimeMock := mocks.NewMockRuntimeInterface(ctrl)
+	productMock := mocks.NewMockProductInterface(ctrl)
 	renderer := mocks.NewMockRenderer(ctrl)
 
 	return &testInteractorSuite{
@@ -41,7 +41,7 @@ func newTestInteractorSuite(t *testing.T) *testInteractorSuite {
 			logger:    logger,
 			kreClient: kreClient,
 			version:   versionMock,
-			runtime:   runtimeMock,
+			product:   productMock,
 			renderer:  renderer,
 		},
 	}
@@ -50,30 +50,30 @@ func newTestInteractorSuite(t *testing.T) *testInteractorSuite {
 func TestInteractor_ListVersions(t *testing.T) {
 	s := newTestInteractorSuite(t)
 
-	versionRuntime := version.Version{
+	versionProduct := version.Version{
 		Name:   "test-version",
 		Status: "STARTED",
 	}
-	versionList := version.List([]version.Version{versionRuntime})
+	versionList := version.List([]version.Version{versionProduct})
 
 	s.mocks.kreClient.EXPECT().Version().Return(s.mocks.version)
-	s.mocks.version.EXPECT().List("test-runtime").Return(versionList, nil)
+	s.mocks.version.EXPECT().List("test-product").Return(versionList, nil)
 	s.mocks.renderer.EXPECT().RenderVersions(versionList).Return()
 
 	krtInteractor := kre.NewInteractor(s.mocks.logger, s.mocks.kreClient, s.mocks.renderer)
-	err := krtInteractor.ListVersions("test-runtime")
+	err := krtInteractor.ListVersions("test-product")
 	assert.NoError(t, err)
 }
 
-func TestInteractor_ListVersions_NoVersionsInRuntime(t *testing.T) {
+func TestInteractor_ListVersions_NoVersionsInProduct(t *testing.T) {
 	s := newTestInteractorSuite(t)
 
 	s.mocks.kreClient.EXPECT().Version().Return(s.mocks.version)
-	s.mocks.version.EXPECT().List("test-runtime").Return(nil, nil)
+	s.mocks.version.EXPECT().List("test-product").Return(nil, nil)
 	s.mocks.renderer.EXPECT().RenderVersions(nil).Return()
 
 	krtInteractor := kre.NewInteractor(s.mocks.logger, s.mocks.kreClient, s.mocks.renderer)
-	err := krtInteractor.ListVersions("test-runtime")
+	err := krtInteractor.ListVersions("test-product")
 	assert.NoError(t, err)
 }
 
@@ -81,10 +81,10 @@ func TestInteractor_ListVersions_RequestFail(t *testing.T) {
 	s := newTestInteractorSuite(t)
 
 	s.mocks.kreClient.EXPECT().Version().Return(s.mocks.version)
-	s.mocks.version.EXPECT().List("test-runtime").Return(nil, errors.New("client error"))
+	s.mocks.version.EXPECT().List("test-product").Return(nil, errors.New("client error"))
 
 	krtInteractor := kre.NewInteractor(s.mocks.logger, s.mocks.kreClient, s.mocks.renderer)
-	err := krtInteractor.ListVersions("test-runtime")
+	err := krtInteractor.ListVersions("test-product")
 	assert.Error(t, err)
 	assert.ErrorContains(t, err, "error listing versions")
 }
@@ -92,91 +92,91 @@ func TestInteractor_ListVersions_RequestFail(t *testing.T) {
 func TestInteractor_CreateVersion(t *testing.T) {
 	s := newTestInteractorSuite(t)
 	pathToKrt := "path/to/krt"
-	expectedRuntime := "test-runtime"
+	expectedProduct := "test-product"
 
 	s.mocks.kreClient.EXPECT().Version().Return(s.mocks.version)
-	s.mocks.version.EXPECT().Create(expectedRuntime, pathToKrt).Return("version-name", nil)
+	s.mocks.version.EXPECT().Create(expectedProduct, pathToKrt).Return("version-name", nil)
 
 	krtInteractor := kre.NewInteractor(s.mocks.logger, s.mocks.kreClient, s.mocks.renderer)
-	err := krtInteractor.CreateVersion(expectedRuntime, pathToKrt)
+	err := krtInteractor.CreateVersion(expectedProduct, pathToKrt)
 	assert.NoError(t, err)
 }
 
 func TestInteractor_CreateVersion_ClientError(t *testing.T) {
 	s := newTestInteractorSuite(t)
 	pathToKrt := "path/to/krt"
-	expectedRuntime := "test-runtime"
+	expectedProduct := "test-product"
 
 	s.mocks.kreClient.EXPECT().Version().Return(s.mocks.version)
-	s.mocks.version.EXPECT().Create(expectedRuntime, pathToKrt).Return("", errors.New("error uploading file"))
+	s.mocks.version.EXPECT().Create(expectedProduct, pathToKrt).Return("", errors.New("error uploading file"))
 
 	krtInteractor := kre.NewInteractor(s.mocks.logger, s.mocks.kreClient, s.mocks.renderer)
-	err := krtInteractor.CreateVersion(expectedRuntime, pathToKrt)
+	err := krtInteractor.CreateVersion(expectedProduct, pathToKrt)
 	assert.Error(t, err)
 	assert.ErrorContains(t, err, "error uploading KRT")
 }
 
-func TestInteractor_ListRuntimes(t *testing.T) {
+func TestInteractor_ListProducts(t *testing.T) {
 	s := newTestInteractorSuite(t)
-	runtimeName := "test-runtime"
-	expectedRuntimes := []runtime.Runtime{{Name: runtimeName}}
+	productName := "test-product"
+	expectedProducts := []product.Product{{Name: productName}}
 
-	s.mocks.kreClient.EXPECT().Runtime().Return(s.mocks.runtime)
-	s.mocks.runtime.EXPECT().List().Return(expectedRuntimes, nil)
-	s.mocks.renderer.EXPECT().RenderRuntimes(expectedRuntimes)
+	s.mocks.kreClient.EXPECT().Product().Return(s.mocks.product)
+	s.mocks.product.EXPECT().List().Return(expectedProducts, nil)
+	s.mocks.renderer.EXPECT().RenderProducts(expectedProducts)
 
 	krtInteractor := kre.NewInteractor(s.mocks.logger, s.mocks.kreClient, s.mocks.renderer)
-	err := krtInteractor.ListRuntimes()
+	err := krtInteractor.ListProducts()
 	assert.NoError(t, err)
 }
 
-func TestInteractor_ListRuntimes_NoRuntimesFound(t *testing.T) {
+func TestInteractor_ListProducts_NoProductsFound(t *testing.T) {
 	s := newTestInteractorSuite(t)
 
-	s.mocks.kreClient.EXPECT().Runtime().Return(s.mocks.runtime)
-	s.mocks.runtime.EXPECT().List().Return(nil, nil)
-	s.mocks.renderer.EXPECT().RenderRuntimes(nil)
+	s.mocks.kreClient.EXPECT().Product().Return(s.mocks.product)
+	s.mocks.product.EXPECT().List().Return(nil, nil)
+	s.mocks.renderer.EXPECT().RenderProducts(nil)
 
 	krtInteractor := kre.NewInteractor(s.mocks.logger, s.mocks.kreClient, s.mocks.renderer)
-	err := krtInteractor.ListRuntimes()
+	err := krtInteractor.ListProducts()
 	assert.NoError(t, err)
 }
 
-func TestInteractor_ListRuntimes_ErrorGettingRuntimes(t *testing.T) {
+func TestInteractor_ListProducts_ErrorGettingProducts(t *testing.T) {
 	s := newTestInteractorSuite(t)
 
-	s.mocks.kreClient.EXPECT().Runtime().Return(s.mocks.runtime)
-	s.mocks.runtime.EXPECT().List().Return(nil, errors.New("graphql error"))
+	s.mocks.kreClient.EXPECT().Product().Return(s.mocks.product)
+	s.mocks.product.EXPECT().List().Return(nil, errors.New("graphql error"))
 
 	krtInteractor := kre.NewInteractor(s.mocks.logger, s.mocks.kreClient, s.mocks.renderer)
-	err := krtInteractor.ListRuntimes()
+	err := krtInteractor.ListProducts()
 	assert.Error(t, err)
-	assert.ErrorContains(t, err, "error getting runtimes")
+	assert.ErrorContains(t, err, "error getting products")
 }
 
-func TestInteractor_CreateRuntime(t *testing.T) {
+func TestInteractor_CreateProduct(t *testing.T) {
 	s := newTestInteractorSuite(t)
-	runtimeName := "test-runtime"
+	productName := "test-product"
 	description := "Test description"
 
-	s.mocks.kreClient.EXPECT().Runtime().Return(s.mocks.runtime)
-	s.mocks.runtime.EXPECT().Create(runtimeName, description).Return(nil)
+	s.mocks.kreClient.EXPECT().Product().Return(s.mocks.product)
+	s.mocks.product.EXPECT().Create(productName, description).Return(nil)
 
 	krtInteractor := kre.NewInteractor(s.mocks.logger, s.mocks.kreClient, s.mocks.renderer)
-	err := krtInteractor.CreateRuntime(runtimeName, description)
+	err := krtInteractor.CreateProduct(productName, description)
 	assert.NoError(t, err)
 }
 
-func TestInteractor_CreateRuntime_ClientError(t *testing.T) {
+func TestInteractor_CreateProduct_ClientError(t *testing.T) {
 	s := newTestInteractorSuite(t)
-	runtimeName := "test-runtime"
+	productName := "test-product"
 	description := "Test description"
 
-	s.mocks.kreClient.EXPECT().Runtime().Return(s.mocks.runtime)
-	s.mocks.runtime.EXPECT().Create(runtimeName, description).Return(errors.New("graphql error"))
+	s.mocks.kreClient.EXPECT().Product().Return(s.mocks.product)
+	s.mocks.product.EXPECT().Create(productName, description).Return(errors.New("graphql error"))
 
 	krtInteractor := kre.NewInteractor(s.mocks.logger, s.mocks.kreClient, s.mocks.renderer)
-	err := krtInteractor.CreateRuntime(runtimeName, description)
+	err := krtInteractor.CreateProduct(productName, description)
 	assert.Error(t, err)
-	assert.ErrorContains(t, err, "error creating runtime")
+	assert.ErrorContains(t, err, "error creating product")
 }

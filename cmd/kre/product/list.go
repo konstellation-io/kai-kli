@@ -1,4 +1,4 @@
-package runtime
+package product
 
 import (
 	"github.com/konstellation-io/kli/api"
@@ -10,13 +10,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// NewListCmd creates a new command to list Runtimes.
+// NewListCmd creates a new command to list Products.
 func NewListCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "ls",
 		Aliases: []string{"list"},
 		Args:    args.CheckServerFlag,
-		Short:   "List all available Runtimes",
+		Short:   "List all available Products",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			serverName, _ := cmd.Flags().GetString("server")
 			server := cfg.GetByServerName(serverName)
@@ -26,7 +26,7 @@ func NewListCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 			}, server, cfg.BuildVersion)
 
 			kreInteractor := kre.NewInteractorWithDefaultRenderer(logger, kreClient, cmd.OutOrStdout())
-			return kreInteractor.ListRuntimes()
+			return kreInteractor.ListProducts()
 		},
 	}
 

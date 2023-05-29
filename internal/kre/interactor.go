@@ -37,8 +37,8 @@ func NewInteractorWithDefaultRenderer(
 	return NewInteractor(logger, client, renderer)
 }
 
-func (i *Interactor) ListVersions(runtimeName string) error {
-	list, err := i.client.Version().List(runtimeName)
+func (i *Interactor) ListVersions(productName string) error {
+	list, err := i.client.Version().List(productName)
 	if err != nil {
 		return fmt.Errorf("error listing versions: %w", err)
 	}
@@ -48,8 +48,8 @@ func (i *Interactor) ListVersions(runtimeName string) error {
 	return nil
 }
 
-func (i *Interactor) CreateVersion(runtimeName, krt string) error {
-	versionName, err := i.client.Version().Create(runtimeName, krt)
+func (i *Interactor) CreateVersion(productName, krt string) error {
+	versionName, err := i.client.Version().Create(productName, krt)
 	if err != nil {
 		return fmt.Errorf("error uploading KRT: %w", err)
 	}
@@ -59,58 +59,58 @@ func (i *Interactor) CreateVersion(runtimeName, krt string) error {
 	return nil
 }
 
-func (i *Interactor) StartVersion(runtimeName, versionName, comment string) error {
-	err := i.client.Version().Start(runtimeName, versionName, comment)
+func (i *Interactor) StartVersion(productName, versionName, comment string) error {
+	err := i.client.Version().Start(productName, versionName, comment)
 	if err != nil {
 		return err
 	}
 
-	i.logger.Success(fmt.Sprintf("Starting version %q on runtime %q.", versionName, runtimeName))
+	i.logger.Success(fmt.Sprintf("Starting version %q on product %q.", versionName, productName))
 
 	return nil
 }
 
-func (i *Interactor) StopVersion(runtimeName, versionName, comment string) error {
-	err := i.client.Version().Stop(runtimeName, versionName, comment)
+func (i *Interactor) StopVersion(productName, versionName, comment string) error {
+	err := i.client.Version().Stop(productName, versionName, comment)
 	if err != nil {
 		return err
 	}
 
-	i.logger.Success(fmt.Sprintf("Stopping version %q on runtime %q.", versionName, runtimeName))
+	i.logger.Success(fmt.Sprintf("Stopping version %q on product %q.", versionName, productName))
 
 	return nil
 }
 
-func (i *Interactor) PublishVersion(runtimeName, versionName, comment string) error {
-	err := i.client.Version().Publish(runtimeName, versionName, comment)
+func (i *Interactor) PublishVersion(productName, versionName, comment string) error {
+	err := i.client.Version().Publish(productName, versionName, comment)
 	if err != nil {
 		return err
 	}
 
-	i.logger.Success(fmt.Sprintf("Publishing version %q on runtime %q.", versionName, runtimeName))
+	i.logger.Success(fmt.Sprintf("Publishing version %q on product %q.", versionName, productName))
 
 	return nil
 }
 
-func (i *Interactor) UnpublishVersion(runtimeName, versionName, comment string) error {
-	err := i.client.Version().Unpublish(runtimeName, versionName, comment)
+func (i *Interactor) UnpublishVersion(productName, versionName, comment string) error {
+	err := i.client.Version().Unpublish(productName, versionName, comment)
 	if err != nil {
 		return err
 	}
 
-	i.logger.Success(fmt.Sprintf("Unpublishing version %q on runtime %q.", versionName, runtimeName))
+	i.logger.Success(fmt.Sprintf("Unpublishing version %q on product %q.", versionName, productName))
 
 	return nil
 }
 
-func (i *Interactor) ListVersionConfig(runtimeName, versionName string, showValues bool) error {
-	cfg, err := i.client.Version().GetConfig(runtimeName, versionName)
+func (i *Interactor) ListVersionConfig(productName, versionName string, showValues bool) error {
+	cfg, err := i.client.Version().GetConfig(productName, versionName)
 	if err != nil {
 		return err
 	}
 
 	if len(cfg.Vars) == 0 {
-		i.logger.Info(fmt.Sprintf("No config found for version %q on runtime %q.", versionName, runtimeName))
+		i.logger.Info(fmt.Sprintf("No config found for version %q on product %q.", versionName, productName))
 		return nil
 	}
 
@@ -119,8 +119,8 @@ func (i *Interactor) ListVersionConfig(runtimeName, versionName string, showValu
 	return nil
 }
 
-func (i *Interactor) UpdateVersionConfig(runtimeName, versionName string, newConfig []version.ConfigVariableInput) error {
-	completed, err := i.client.Version().UpdateConfig(runtimeName, versionName, newConfig)
+func (i *Interactor) UpdateVersionConfig(productName, versionName string, newConfig []version.ConfigVariableInput) error {
+	completed, err := i.client.Version().UpdateConfig(productName, versionName, newConfig)
 	if err != nil {
 		return err
 	}
@@ -135,21 +135,21 @@ func (i *Interactor) UpdateVersionConfig(runtimeName, versionName string, newCon
 	return nil
 }
 
-func (i *Interactor) ListRuntimes() error {
-	runtimes, err := i.client.Runtime().List()
+func (i *Interactor) ListProducts() error {
+	products, err := i.client.Product().List()
 	if err != nil {
-		return fmt.Errorf("error getting runtimes: %w", err)
+		return fmt.Errorf("error getting products: %w", err)
 	}
 
-	i.renderer.RenderRuntimes(runtimes)
+	i.renderer.RenderProducts(products)
 
 	return nil
 }
 
-func (i *Interactor) CreateRuntime(name, description string) error {
-	err := i.client.Runtime().Create(name, description)
+func (i *Interactor) CreateProduct(name, description string) error {
+	err := i.client.Product().Create(name, description)
 	if err != nil {
-		return fmt.Errorf("error creating runtime: %w", err)
+		return fmt.Errorf("error creating product: %w", err)
 	}
 
 	return nil

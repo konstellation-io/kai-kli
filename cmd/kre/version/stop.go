@@ -14,13 +14,13 @@ import (
 // NewStopCmd manages the stop command.
 func NewStopCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "stop <version-name> -r <runtime> -m <audit message>",
+		Use:   "stop <version-name> -r <product> -m <audit message>",
 		Args:  args.ComposeArgsCheck(args.CheckServerFlag, cobra.ExactArgs(1)),
 		Short: "Stop a version",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			versionName := args[0]
 
-			runtime, err := cmd.Flags().GetString("runtime")
+			product, err := cmd.Flags().GetString("product")
 			if err != nil {
 				return err
 			}
@@ -42,7 +42,7 @@ func NewStopCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 			}, server, cfg.BuildVersion)
 			kreInteractor := kre.NewInteractor(logger, kreClient, nil)
 
-			err = kreInteractor.StopVersion(runtime, versionName, comment)
+			err = kreInteractor.StopVersion(product, versionName, comment)
 			if err != nil {
 				return err
 			}

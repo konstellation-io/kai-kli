@@ -11,10 +11,10 @@ import (
 	"github.com/konstellation-io/kli/internal/logging"
 )
 
-// NewCreateCmd upload a KRT file to runtime and make a new version.
+// NewCreateCmd upload a KRT file to product and make a new version.
 func NewCreateCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create [krt-file] -r <runtime>",
+		Use:   "create [krt-file] -r <product>",
 		Args:  args.ComposeArgsCheck(args.CheckServerFlag, cobra.ExactArgs(1)),
 		Short: "Upload a KRT and create a new version",
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -28,9 +28,9 @@ func NewCreateCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 
 			krt := args[0]
 
-			runtime, _ := cmd.Flags().GetString(runtimeFlag)
+			product, _ := cmd.Flags().GetString(productFlag)
 
-			return kreInteractor.CreateVersion(runtime, krt)
+			return kreInteractor.CreateVersion(product, krt)
 		},
 	}
 

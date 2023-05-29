@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/konstellation-io/kli/api/kre/config"
-	"github.com/konstellation-io/kli/api/kre/runtime"
+	"github.com/konstellation-io/kli/api/kre/product"
 	"github.com/konstellation-io/kli/api/kre/version"
 	"github.com/konstellation-io/kli/internal/krt/errors"
 	"github.com/konstellation-io/kli/internal/logging"
@@ -185,11 +185,11 @@ func (r *CliRenderer) RenderValidationErrors(validationErrors []*errors.Validati
 	r.printEmptyLine()
 }
 
-func (r *CliRenderer) RenderRuntimes(runtimes []runtime.Runtime) {
-	if len(runtimes) < 1 {
-		r.logger.Info("No runtimes found.")
+func (r *CliRenderer) RenderProducts(products []product.Product) {
+	if len(products) < 1 {
+		r.logger.Info("No products found.")
 	}
 
-	runtimesNames := runtime.GetRuntimesNames(runtimes)
-	r.logger.Success(fmt.Sprintf("%d runtimes found: %s", len(runtimes), strings.Join(runtimesNames, ", ")))
+	productsNames := product.GetProductsNames(products)
+	r.logger.Success(fmt.Sprintf("%d products found: %s", len(products), strings.Join(productsNames, ", ")))
 }
