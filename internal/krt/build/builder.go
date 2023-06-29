@@ -110,11 +110,7 @@ func (b *Builder) buildKrt(src, target, yamlPath string) error {
 		return err
 	}
 
-	if err := compressedFile.Compress(); err != nil {
-		return err
-	}
-
-	return nil
+	return compressedFile.Compress()
 }
 
 func (b *Builder) compressFiles(src string, patterns ignore.IgnoreParser, compressedFile compression.CompressedFile) error {

@@ -7,7 +7,7 @@ import (
 )
 
 // VersionInterface method to interact with Versions.
-type VersionInterface interface { //nolint: golint
+type VersionInterface interface { //nolint: revive
 	List(product string) (List, error)
 	Start(product, versionName, comment string) error
 	Stop(product, versionName, comment string) error

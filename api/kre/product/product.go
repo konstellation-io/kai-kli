@@ -22,7 +22,7 @@ func GetProductsNames(products []Product) []string {
 }
 
 // ProductInterface method to interact with products.
-type ProductInterface interface { //nolint:golint
+type ProductInterface interface { //nolint:revive
 	List() ([]Product, error)
 	Create(name, description string) error
 }
