@@ -136,9 +136,5 @@ func (c *KrtCompressedFile) Compress() error {
 		return err
 	}
 
-	if err := c.file.Close(); err != nil {
-		return err
-	}
-
-	return nil
+	return c.file.Close()
 }
