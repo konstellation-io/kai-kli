@@ -19,7 +19,7 @@ import (
 type AddServerSuite struct {
 	suite.Suite
 
-	manager *server.Manager
+	manager *server.KaiConfigurator
 	tmpDir  string
 }
 
@@ -32,7 +32,7 @@ func (s *AddServerSuite) SetupSuite() {
 	logger := mocks.NewMockLogger(ctrl)
 	mocks.AddLoggerExpects(logger)
 
-	s.manager = server.NewManager(logger)
+	s.manager = server.NewKaiConfigurator(logger)
 
 	tmpDir, err := os.MkdirTemp("", "TestAddServer_*")
 	s.Require().NoError(err)

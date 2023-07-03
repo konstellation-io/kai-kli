@@ -34,7 +34,7 @@ func NewAddCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 				Default: setDefault,
 			}
 
-			err = server.NewManager(logger).AddNewServer(newServer)
+			err = server.NewKaiConfigurator(logger).AddNewServer(newServer)
 			if err != nil {
 				return err
 			}

@@ -53,6 +53,7 @@ func gqlMockServer(t *testing.T, requestVars, mockResponse string) (*httptest.Se
 	}))
 
 	viper.Set("request_timeout", 999999*time.Second)
+
 	srvCfg := &config.ServerConfig{
 		Name:     "test",
 		URL:      srv.URL,

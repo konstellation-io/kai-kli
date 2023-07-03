@@ -169,7 +169,7 @@ func (r *CliRenderer) RenderValidationErrors(validationErrors []*errors.Validati
 
 	r.tableWriter.SetHeader([]string{
 		"",
-		"Field",
+		"field",
 		"Error",
 	})
 

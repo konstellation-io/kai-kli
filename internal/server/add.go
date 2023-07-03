@@ -1,77 +1,37 @@
 package server
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"os"
 	"path"
 
 	"github.com/konstellation-io/kli/cmd/config"
-	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/spf13/viper"
-	"gopkg.in/yaml.v3"
 )
 
 var (
-	ErrInvalidKaiServer     = errors.New("invalid kai server")
-	ErrDuplicatedServerName = errors.New("duplicated server name")
-	ErrDuplicatedServerURL  = errors.New("duplicated server URL")
+	ErrInvalidKaiServer = errors.New("invalid server")
 )
 
-type KaiConfiguration struct {
-	Servers []Server
-}
-
-func (kc *KaiConfiguration) AddServer(server Server) error {
-	if err := kc.checkServerDuplication(server); err != nil {
-		return err
-	}
-
-	kc.Servers = append(kc.Servers, server)
-
-	return nil
-}
-
-func (kc *KaiConfiguration) checkServerDuplication(server Server) error {
-	for _, s := range kc.Servers {
-		if s.Name == server.Name {
-			return ErrDuplicatedServerName
-		}
-
-		if s.URL == server.URL {
-			return ErrDuplicatedServerURL
-		}
-	}
-
-	return nil
-}
-
-type Manager struct {
-	logger logging.Interface
-}
-
-func NewManager(logger logging.Interface) *Manager {
-	return &Manager{
-		logger: logger,
-	}
-}
-
-func (sm *Manager) AddNewServer(server Server) error {
-	err := sm.validateServer(server)
+func (c *KaiConfigurator) AddNewServer(server Server) error {
+	err := c.validateServer(server)
 	if err != nil {
 		return fmt.Errorf("validate server: %w", err)
 	}
 
-	err = sm.addServerToConfiguration(server)
+	err = c.addServerToConfiguration(server)
 
 	switch {
 	case errors.Is(err, os.ErrNotExist):
-		sm.logger.Info("Configuration not found, creating a new one.")
+		c.logger.Info("Configuration not found, creating a new one.")
 
-		err = sm.createInitialConfiguration(server)
+		err = c.createInitialConfiguration(server)
 		if err != nil {
 			return fmt.Errorf("generate initial configuration: %w", err)
 		}
@@ -83,46 +43,58 @@ func (sm *Manager) AddNewServer(server Server) error {
 	return nil
 }
 
-func (sm *Manager) validateServer(server Server) error {
+func (c *KaiConfigurator) validateServer(server Server) error {
 	if err := server.Validate(); err != nil {
 		return err
 	}
 
-	if err := sm.validateURL(server.URL); err != nil {
+	if err := c.validateURL(server.URL); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (sm *Manager) validateURL(url string) error {
+func (c *KaiConfigurator) validateURL(serverURL string) error {
 	// TODO: this enpoint needs to be defined
-	response, err := http.Get(url + "/info")
+	infoURL, err := url.JoinPath(serverURL, "info")
 	if err != nil {
-		return err
+		return fmt.Errorf("format URL: %w", err)
 	}
+
+	req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, infoURL, http.NoBody)
+	if err != nil {
+		return fmt.Errorf("initialize request to %s: %w", infoURL, err)
+	}
+
+	response, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return fmt.Errorf("error querying %s: %w", infoURL, err)
+	}
+
+	defer response.Body.Close()
 
 	responseData, err := io.ReadAll(response.Body)
 	if err != nil {
-		return err
+		return fmt.Errorf("read response body: %w", err)
 	}
 
 	var serverInfo RemoteServerInfo
 
 	err = json.Unmarshal(responseData, &serverInfo)
 	if err != nil {
-		return err
+		return fmt.Errorf("parse response: %w", err)
 	}
 
 	if !serverInfo.IsKaiServer {
-		return errors.New("invalid server")
+		return ErrInvalidKaiServer
 	}
 
 	return nil
 }
 
-func (sm *Manager) addServerToConfiguration(server Server) error {
-	userConfig, err := sm.getKaiConfiguration()
+func (c *KaiConfigurator) addServerToConfiguration(server Server) error {
+	userConfig, err := c.getConfiguration()
 	if err != nil {
 		return fmt.Errorf("get user configuration: %w", err)
 	}
@@ -131,7 +103,7 @@ func (sm *Manager) addServerToConfiguration(server Server) error {
 		return err
 	}
 
-	err = sm.writeConfiguration(userConfig)
+	err = c.writeConfiguration(userConfig)
 	if err != nil {
 		return fmt.Errorf("update user configuration: %w", err)
 	}
@@ -139,40 +111,8 @@ func (sm *Manager) addServerToConfiguration(server Server) error {
 	return nil
 }
 
-func (sm *Manager) getKaiConfiguration() (*KaiConfiguration, error) {
-	configBytes, err := os.ReadFile(viper.GetString(config.KaiPathKey))
-	if err != nil {
-		return nil, err
-	}
-
-	var kaiConfiguration KaiConfiguration
-
-	err = yaml.Unmarshal(configBytes, &kaiConfiguration)
-	if err != nil {
-		return nil, err
-	}
-
-	return &kaiConfiguration, nil
-}
-
-func (sm *Manager) writeConfiguration(newConfig *KaiConfiguration) error {
-	updatedConfig, err := yaml.Marshal(newConfig)
-	if err != nil {
-		return err
-	}
-
-	filePermissions := 0600
-
-	err = os.WriteFile(viper.GetString(config.KaiPathKey), updatedConfig, os.FileMode(filePermissions))
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (sm *Manager) createInitialConfiguration(server Server) error {
-	err := sm.createConfigurationDir()
+func (c *KaiConfigurator) createInitialConfiguration(server Server) error {
+	err := c.createConfigurationDir()
 	if err != nil {
 		return fmt.Errorf("create configuration directory: %w", err)
 	}
@@ -183,7 +123,7 @@ func (sm *Manager) createInitialConfiguration(server Server) error {
 		Servers: []Server{server},
 	}
 
-	err = sm.writeConfiguration(initialConfiguration)
+	err = c.writeConfiguration(initialConfiguration)
 	if err != nil {
 		return fmt.Errorf("wite user configuration: %w", err)
 	}
@@ -191,7 +131,7 @@ func (sm *Manager) createInitialConfiguration(server Server) error {
 	return nil
 }
 
-func (sm *Manager) createConfigurationDir() error {
+func (c *KaiConfigurator) createConfigurationDir() error {
 	var (
 		configDirPath  = path.Dir(viper.GetString(config.KaiPathKey))
 		dirPermissions = 0750
