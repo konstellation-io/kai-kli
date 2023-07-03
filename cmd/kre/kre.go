@@ -6,7 +6,6 @@ import (
 
 	"github.com/konstellation-io/kli/api/kre/config"
 	"github.com/konstellation-io/kli/cmd/kre/product"
-	"github.com/konstellation-io/kli/cmd/kre/server"
 	"github.com/konstellation-io/kli/cmd/kre/version"
 	"github.com/konstellation-io/kli/internal/logging"
 )
@@ -24,7 +23,6 @@ func NewKRECmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 	cmd.AddCommand(
 		product.NewProductCmd(logger, cfg),
 		version.NewVersionCmd(logger, cfg),
-		server.NewServerCmd(logger, cfg),
 	)
 
 	return cmd

@@ -6,9 +6,11 @@ import (
 	"github.com/konstellation-io/kli/api/graphql"
 	"github.com/konstellation-io/kli/api/kre/config"
 	"github.com/konstellation-io/kli/cmd/args"
+	config2 "github.com/konstellation-io/kli/cmd/config"
 	"github.com/konstellation-io/kli/internal/kre"
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // NewCreateCmd creates a new command to list Products.
@@ -25,9 +27,9 @@ func NewCreateCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 			serverName, _ := cmd.Flags().GetString("server")
 			server := cfg.GetByServerName(serverName)
 			kreClient := api.NewKreClient(&graphql.ClientConfig{
-				Debug:                 cfg.Debug,
-				DefaultRequestTimeout: cfg.DefaultRequestTimeout,
-			}, server, cfg.BuildVersion)
+				Debug:                 viper.GetBool(config2.DebugKey),
+				DefaultRequestTimeout: viper.GetDuration("request_timeout"),
+			}, server, viper.GetString(config2.BuildVersionKey))
 
 			name := args[0]
 			description, _ := cmd.Flags().GetString("description")

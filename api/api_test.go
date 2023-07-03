@@ -3,14 +3,13 @@ package api_test
 import (
 	"testing"
 
+	"github.com/konstellation-io/kli/api"
 	"github.com/konstellation-io/kli/api/graphql"
 	"github.com/konstellation-io/kli/api/kre/config"
-	"github.com/stretchr/testify/assert"
-
-	"github.com/stretchr/testify/require"
-
-	"github.com/konstellation-io/kli/api"
 	"github.com/konstellation-io/kli/internal/testhelpers"
+	"github.com/spf13/viper"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNewKreClient(t *testing.T) {
@@ -21,7 +20,7 @@ func TestNewKreClient(t *testing.T) {
 	assert.NoError(t, err)
 
 	clientCfg := &graphql.ClientConfig{
-		DefaultRequestTimeout: cfg.DefaultRequestTimeout,
+		DefaultRequestTimeout: viper.GetDuration("request_timeout"),
 		Debug:                 cfg.Debug,
 	}
 

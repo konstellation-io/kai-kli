@@ -5,9 +5,11 @@ import (
 	"github.com/konstellation-io/kli/api/graphql"
 	"github.com/konstellation-io/kli/api/kre/config"
 	"github.com/konstellation-io/kli/cmd/args"
+	config2 "github.com/konstellation-io/kli/cmd/config"
 	"github.com/konstellation-io/kli/internal/kre"
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // NewListConfigCmd list version's configuration variables.
@@ -33,9 +35,9 @@ func NewListConfigCmd(logger logging.Interface, cfg *config.Config) *cobra.Comma
 
 			server := cfg.GetByServerName(serverName)
 			kreClient := api.NewKreClient(&graphql.ClientConfig{
-				Debug:                 cfg.Debug,
-				DefaultRequestTimeout: cfg.DefaultRequestTimeout,
-			}, server, cfg.BuildVersion)
+				Debug:                 viper.GetBool(config2.DebugKey),
+				DefaultRequestTimeout: viper.GetDuration("request_timeout"),
+			}, server, viper.GetString(config2.BuildVersionKey))
 			kreInteractor := kre.NewInteractorWithDefaultRenderer(logger, kreClient, cmd.OutOrStdout())
 
 			return kreInteractor.ListVersionConfig(product, versionName, showValues)

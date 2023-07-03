@@ -14,8 +14,7 @@ func NewServerCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 		Short: "Manage servers for kli",
 		Example: heredoc.Doc(`
 			$ kli server ls
-			$ kli server add my-server http://api.kre.local TOKEN_12345
-			$ kli server default my-server
+			$ kli server add my-server http://api.kre.local
 		`),
 	}
 

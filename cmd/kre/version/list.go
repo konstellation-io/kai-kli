@@ -1,7 +1,9 @@
 package version
 
 import (
+	config2 "github.com/konstellation-io/kli/cmd/config"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 
 	"github.com/konstellation-io/kli/api"
 	"github.com/konstellation-io/kli/api/graphql"
@@ -22,9 +24,9 @@ func NewListCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 			serverName, _ := cmd.Flags().GetString("server")
 			server := cfg.GetByServerName(serverName)
 			kreClient := api.NewKreClient(&graphql.ClientConfig{
-				Debug:                 cfg.Debug,
-				DefaultRequestTimeout: cfg.DefaultRequestTimeout,
-			}, server, cfg.BuildVersion)
+				Debug:                 viper.GetBool(config2.DebugKey),
+				DefaultRequestTimeout: viper.GetDuration("request_timeout"),
+			}, server, viper.GetString(config2.BuildVersionKey))
 			kreInteractor := kre.NewInteractorWithDefaultRenderer(logger, kreClient, cmd.OutOrStdout())
 
 			product, _ := cmd.Flags().GetString(productFlag)

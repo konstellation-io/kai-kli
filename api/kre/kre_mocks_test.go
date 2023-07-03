@@ -9,11 +9,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/konstellation-io/kli/api/kre/config"
-
-	"github.com/stretchr/testify/require"
-
 	"github.com/konstellation-io/kli/api/graphql"
+	"github.com/konstellation-io/kli/api/kre/config"
+	config2 "github.com/konstellation-io/kli/cmd/config"
+	"github.com/spf13/viper"
+	"github.com/stretchr/testify/require"
 )
 
 func gqlMockServer(t *testing.T, requestVars, mockResponse string) (*httptest.Server, *graphql.GqlManager) {
@@ -52,9 +52,7 @@ func gqlMockServer(t *testing.T, requestVars, mockResponse string) (*httptest.Se
 		require.NoError(t, err)
 	}))
 
-	cfg := &config.Config{
-		DefaultRequestTimeout: 999999 * time.Second,
-	}
+	viper.Set("request_timeout", 999999*time.Second)
 	srvCfg := &config.ServerConfig{
 		Name:     "test",
 		URL:      srv.URL,
@@ -62,8 +60,8 @@ func gqlMockServer(t *testing.T, requestVars, mockResponse string) (*httptest.Se
 	}
 
 	clientConfig := &graphql.ClientConfig{
-		DefaultRequestTimeout: cfg.DefaultRequestTimeout,
-		Debug:                 cfg.Debug,
+		DefaultRequestTimeout: viper.GetDuration("request_timeout"),
+		Debug:                 viper.GetBool(config2.DebugKey),
 	}
 	client := graphql.NewGqlManager(clientConfig, srvCfg, "test")
 

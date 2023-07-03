@@ -4,6 +4,7 @@ import (
 	"github.com/konstellation-io/kli/api/kre/config"
 	"github.com/konstellation-io/kli/cmd/kre"
 	"github.com/konstellation-io/kli/cmd/krt"
+	"github.com/konstellation-io/kli/cmd/server"
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/konstellation-io/kli/pkg/iostreams"
 	"github.com/spf13/cobra"
@@ -46,6 +47,7 @@ func NewRootCmd(
 
 	// Child commands
 	cmd.AddCommand(newVersionCmd(version, buildDate))
+	cmd.AddCommand(server.NewServerCmd(logger, cfg))
 	cmd.AddCommand(kre.NewKRECmd(logger, cfg))
 	cmd.AddCommand(krt.NewKRTCmd(logger))
 

@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/konstellation-io/kli/api/kre/config"
+	config2 "github.com/konstellation-io/kli/cmd/config"
 	"github.com/konstellation-io/kli/cmd/root"
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/konstellation-io/kli/pkg/iostreams"
@@ -27,6 +29,12 @@ func main() {
 	cfg, err := config.NewConfig(buildVersion)
 	if err != nil {
 		logger.Error(err.Error())
+		return
+	}
+
+	err = config2.InitConfigWithBuildVersion(buildVersion)
+	if err != nil {
+		log.Fatalf("initialize configuration: %s", err)
 	}
 
 	rootCmd := root.NewRootCmd(cfg, logger, io, buildVersion, buildDate)
