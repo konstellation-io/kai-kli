@@ -1,27 +1,21 @@
 package server
 
 import (
-	"github.com/konstellation-io/kli/api/kre/config"
 	"github.com/konstellation-io/kli/internal/logging"
-	"github.com/spf13/cobra"
-
 	"github.com/konstellation-io/kli/internal/render"
+	"github.com/konstellation-io/kli/internal/server"
+	"github.com/spf13/cobra"
 )
 
 // NewListCmd creates a new command to list servers existing in config file.
-func NewListCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
+func NewListCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "ls",
 		Aliases: []string{"list"},
 		Short:   "List all available servers",
-		Run: func(cmd *cobra.Command, args []string) {
-			if len(cfg.ServerList) == 0 {
-				logger.Info("No servers found.")
-				return
-			}
-
+		RunE: func(cmd *cobra.Command, args []string) error {
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
-			r.RenderServerList(cfg.ServerList, cfg.DefaultServer)
+			return server.NewKaiConfigurator(logger, r).ListServers()
 		},
 	}
 

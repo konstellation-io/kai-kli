@@ -10,6 +10,7 @@ import (
 	"github.com/konstellation-io/kli/api/kre/version"
 	"github.com/konstellation-io/kli/internal/krt/errors"
 	"github.com/konstellation-io/kli/internal/logging"
+	"github.com/konstellation-io/kli/internal/server"
 	"github.com/konstellation-io/kli/text"
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/gookit/color.v1"
@@ -192,4 +193,30 @@ func (r *CliRenderer) RenderProducts(products []product.Product) {
 
 	productsNames := product.GetProductsNames(products)
 	r.logger.Success(fmt.Sprintf("%d products found: %s", len(products), strings.Join(productsNames, ", ")))
+}
+
+func (r *CliRenderer) RenderServers(kaiConfiguration *server.KaiConfiguration) {
+	if len(kaiConfiguration.Servers) < 1 {
+		r.logger.Info("No servers configured.")
+		return
+	}
+
+	r.tableWriter.SetHeader([]string{"Server", "URL", "Auth"})
+
+	for _, s := range kaiConfiguration.Servers {
+		defaultMark := ""
+		isDefault := text.Normalize(s.Name) == kaiConfiguration.DefaultServer
+
+		if isDefault {
+			defaultMark = "*"
+		}
+
+		r.tableWriter.Append([]string{
+			fmt.Sprintf("%s%s", s.Name, defaultMark),
+			s.URL,
+			"",
+		})
+	}
+
+	r.tableWriter.Render()
 }
