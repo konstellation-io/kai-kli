@@ -162,6 +162,7 @@ func (sm *Manager) writeConfiguration(newConfig *KaiConfiguration) error {
 	}
 
 	filePermissions := 0600
+
 	err = os.WriteFile(viper.GetString(config.KaiPathKey), updatedConfig, os.FileMode(filePermissions))
 	if err != nil {
 		return err
