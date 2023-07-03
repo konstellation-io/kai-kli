@@ -14,7 +14,7 @@ var (
 type Server struct {
 	Name    string `yaml:"name"`
 	URL     string `yaml:"url"`
-	Default bool   `yaml:"default"`
+	Default bool   `yaml:"-"`
 }
 
 func (s Server) Validate() error {

@@ -117,10 +117,9 @@ func (c *KaiConfigurator) createInitialConfiguration(server Server) error {
 		return fmt.Errorf("create configuration directory: %w", err)
 	}
 
-	server.Default = true
-
 	initialConfiguration := &KaiConfiguration{
-		Servers: []Server{server},
+		DefaultServer: server.Name,
+		Servers:       []Server{server},
 	}
 
 	err = c.writeConfiguration(initialConfiguration)

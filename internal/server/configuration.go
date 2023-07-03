@@ -8,12 +8,17 @@ var (
 )
 
 type KaiConfiguration struct {
-	Servers []Server `yaml:"servers"`
+	DefaultServer string   `yaml:"default_server"`
+	Servers       []Server `yaml:"servers"`
 }
 
 func (kc *KaiConfiguration) AddServer(server Server) error {
 	if err := kc.checkServerDuplication(server); err != nil {
 		return err
+	}
+
+	if server.Default {
+		kc.DefaultServer = server.Name
 	}
 
 	kc.Servers = append(kc.Servers, server)

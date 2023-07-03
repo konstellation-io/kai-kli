@@ -30,9 +30,10 @@ func TestAddServerSuite(t *testing.T) {
 func (s *AddServerSuite) SetupSuite() {
 	ctrl := gomock.NewController(s.T())
 	logger := mocks.NewMockLogger(ctrl)
+	renderer := mocks.NewMockRenderer(ctrl)
 	mocks.AddLoggerExpects(logger)
 
-	s.manager = server.NewKaiConfigurator(logger)
+	s.manager = server.NewKaiConfigurator(logger, renderer)
 
 	tmpDir, err := os.MkdirTemp("", "TestAddServer_*")
 	s.Require().NoError(err)
@@ -64,11 +65,11 @@ func (s *AddServerSuite) TestAddServer_InitialConfiguration() {
 		}
 
 		expectedKaiConfig = server.KaiConfiguration{
+			DefaultServer: newServer.Name,
 			Servers: []server.Server{
 				{
-					Name:    newServer.Name,
-					URL:     newServer.URL,
-					Default: true,
+					Name: newServer.Name,
+					URL:  newServer.URL,
 				},
 			},
 		}
@@ -96,9 +97,8 @@ func (s *AddServerSuite) TestAddServer_InitialConfiguration() {
 func (s *AddServerSuite) TestAddServer_ValidServerInExistingConfig() {
 	var (
 		existingServer = server.Server{
-			Name:    "existing-server",
-			URL:     "http://existing-server",
-			Default: true,
+			Name: "existing-server",
+			URL:  "http://existing-server",
 		}
 
 		newServer = server.Server{
@@ -107,7 +107,56 @@ func (s *AddServerSuite) TestAddServer_ValidServerInExistingConfig() {
 		}
 
 		expectedKaiConfig = server.KaiConfiguration{
-			Servers: []server.Server{existingServer, newServer},
+			DefaultServer: existingServer.Name,
+			Servers:       []server.Server{existingServer, newServer},
+		}
+	)
+
+	err := createConfigWithServer(existingServer)
+	s.Require().NoError(err)
+
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("GET", newServer.URL+"/info",
+		httpmock.NewStringResponder(200, `{"isKaiServer": true}`))
+
+	err = s.manager.AddNewServer(newServer)
+	s.Assert().NoError(err)
+
+	configBytes, err := os.ReadFile(viper.GetString(config.KaiPathKey))
+	s.Require().NoError(err)
+
+	var kaiConfig server.KaiConfiguration
+
+	err = yaml.Unmarshal(configBytes, &kaiConfig)
+	s.Require().NoError(err)
+
+	s.Assert().Equal(expectedKaiConfig, kaiConfig)
+}
+
+func (s *AddServerSuite) TestAddServer_DefaultServer() {
+	var (
+		existingServer = server.Server{
+			Name: "existing-server",
+			URL:  "http://existing-server",
+		}
+
+		newServer = server.Server{
+			Name:    "valid-server",
+			URL:     "http://valid-kai-server",
+			Default: true,
+		}
+
+		expectedKaiConfig = server.KaiConfiguration{
+			DefaultServer: newServer.Name,
+			Servers: []server.Server{
+				existingServer,
+				{
+					Name: newServer.Name,
+					URL:  newServer.URL,
+				},
+			},
 		}
 	)
 
@@ -194,7 +243,8 @@ func createConfigWithServer(s server.Server) error {
 	}
 
 	configBytes, err := yaml.Marshal(server.KaiConfiguration{
-		Servers: []server.Server{s},
+		DefaultServer: s.Name,
+		Servers:       []server.Server{s},
 	})
 	if err != nil {
 		return err

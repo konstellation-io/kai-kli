@@ -19,7 +19,7 @@ func NewServerCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 	}
 
 	cmd.AddCommand(
-		NewListCmd(logger, cfg),
+		NewListCmd(logger),
 		NewDefaultCmd(logger, cfg),
 		NewAddCmd(logger, cfg),
 	)

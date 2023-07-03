@@ -9,13 +9,21 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-type KaiConfigurator struct {
-	logger logging.Interface
+//go:generate mockgen -source=${GOFILE} -destination=../../mocks/renderer.go -package=mocks
+
+type Renderer interface {
+	RenderServers(kaiConfiguration *KaiConfiguration)
 }
 
-func NewKaiConfigurator(logger logging.Interface) *KaiConfigurator {
+type KaiConfigurator struct {
+	logger   logging.Interface
+	renderer Renderer
+}
+
+func NewKaiConfigurator(logger logging.Interface, renderer Renderer) *KaiConfigurator {
 	return &KaiConfigurator{
-		logger: logger,
+		logger:   logger,
+		renderer: renderer,
 	}
 }
 

@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 
+	"github.com/konstellation-io/kli/internal/render"
 	"github.com/konstellation-io/kli/internal/server"
 	"github.com/spf13/cobra"
 
@@ -34,7 +35,9 @@ func NewAddCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 				Default: setDefault,
 			}
 
-			err = server.NewKaiConfigurator(logger).AddNewServer(newServer)
+			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
+
+			err = server.NewKaiConfigurator(logger, r).AddNewServer(newServer)
 			if err != nil {
 				return err
 			}
