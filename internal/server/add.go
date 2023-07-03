@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 	"path"
@@ -66,6 +66,7 @@ func (sm *Manager) AddNewServer(server Server) error {
 	}
 
 	err = sm.addServerToConfiguration(server)
+
 	switch {
 	case errors.Is(err, os.ErrNotExist):
 		sm.logger.Info("Configuration not found, creating a new one.")
@@ -75,7 +76,6 @@ func (sm *Manager) AddNewServer(server Server) error {
 			return fmt.Errorf("generate initial configuration: %w", err)
 		}
 
-		break
 	case err != nil:
 		return fmt.Errorf("add server to user configuration: %w", err)
 	}
@@ -88,21 +88,21 @@ func (sm *Manager) validateServer(server Server) error {
 		return err
 	}
 
-	if err := sm.validateUrl(server.URL); err != nil {
+	if err := sm.validateURL(server.URL); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (sm *Manager) validateUrl(url string) error {
+func (sm *Manager) validateURL(url string) error {
 	// TODO: this enpoint needs to be defined
 	response, err := http.Get(url + "/info")
 	if err != nil {
 		return err
 	}
 
-	responseData, err := ioutil.ReadAll(response.Body)
+	responseData, err := io.ReadAll(response.Body)
 	if err != nil {
 		return err
 	}
@@ -161,7 +161,8 @@ func (sm *Manager) writeConfiguration(newConfig *KaiConfiguration) error {
 		return err
 	}
 
-	err = os.WriteFile(viper.GetString(config.KaiPathKey), updatedConfig, 0750)
+	filePermissions := 0600
+	err = os.WriteFile(viper.GetString(config.KaiPathKey), updatedConfig, os.FileMode(filePermissions))
 	if err != nil {
 		return err
 	}
@@ -190,9 +191,12 @@ func (sm *Manager) createInitialConfiguration(server Server) error {
 }
 
 func (sm *Manager) createConfigurationDir() error {
-	configDirPath := path.Dir(viper.GetString(config.KaiPathKey))
+	var (
+		configDirPath  = path.Dir(viper.GetString(config.KaiPathKey))
+		dirPermissions = 0750
+	)
 
-	err := os.Mkdir(configDirPath, 0750)
+	err := os.Mkdir(configDirPath, os.FileMode(dirPermissions))
 	if err != nil && !errors.Is(err, os.ErrExist) {
 		return err
 	}

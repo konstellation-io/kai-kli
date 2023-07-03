@@ -37,7 +37,7 @@ func (s *AddServerSuite) SetupSuite() {
 	tmpDir, err := os.MkdirTemp("", "TestAddServer_*")
 	s.Require().NoError(err)
 
-	kaiConfigPath := path.Join(tmpDir, "kai.conf")
+	kaiConfigPath := path.Join(tmpDir, ".kai", "kai.conf")
 	viper.Set(config.KaiPathKey, kaiConfigPath)
 
 	s.tmpDir = tmpDir
@@ -49,7 +49,7 @@ func (s *AddServerSuite) TearDownSuite(_, _ string) {
 }
 
 func (s *AddServerSuite) AfterTest(_, _ string) {
-	if err := os.Remove(viper.GetString(config.KaiPathKey)); err != nil {
+	if err := os.RemoveAll(path.Dir(viper.GetString(config.KaiPathKey))); err != nil {
 		if !errors.Is(err, os.ErrNotExist) {
 			s.T().Fatalf("error cleaning tmp path: %s", err)
 		}
@@ -189,6 +189,10 @@ func (s *AddServerSuite) TestAddServer_DuplicatedServerURL() {
 }
 
 func createConfigWithServer(s server.Server) error {
+	if err := os.Mkdir(path.Dir(viper.GetString(config.KaiPathKey)), 0750); err != nil {
+		return err
+	}
+
 	configBytes, err := yaml.Marshal(server.KaiConfiguration{
 		Servers: []server.Server{s},
 	})
@@ -196,5 +200,5 @@ func createConfigWithServer(s server.Server) error {
 		return err
 	}
 
-	return os.WriteFile(viper.GetString(config.KaiPathKey), configBytes, 0750)
+	return os.WriteFile(viper.GetString(config.KaiPathKey), configBytes, 0600)
 }
