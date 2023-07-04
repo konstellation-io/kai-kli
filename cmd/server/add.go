@@ -30,14 +30,13 @@ func NewAddCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 			}
 
 			newServer := server.Server{
-				Name:    args[0],
-				URL:     args[1],
-				Default: setDefault,
+				Name: args[0],
+				URL:  args[1],
 			}
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
 
-			err = server.NewKaiConfigurator(logger, r).AddNewServer(newServer)
+			err = server.NewKaiConfigurator(logger, r).AddNewServer(newServer, setDefault)
 			if err != nil {
 				return err
 			}
