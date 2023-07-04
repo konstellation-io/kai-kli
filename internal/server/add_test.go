@@ -30,7 +30,7 @@ func TestAddServerSuite(t *testing.T) {
 func (s *AddServerSuite) SetupSuite() {
 	ctrl := gomock.NewController(s.T())
 	logger := mocks.NewMockLogger(ctrl)
-	renderer := mocks.NewMockRenderer(ctrl)
+	renderer := mocks.NewMockServerRenderer(ctrl)
 	mocks.AddLoggerExpects(logger)
 
 	s.manager = server.NewKaiConfigurator(logger, renderer)

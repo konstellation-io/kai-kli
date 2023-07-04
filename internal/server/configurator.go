@@ -9,7 +9,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-//go:generate mockgen -source=${GOFILE} -destination=../../mocks/renderer.go -package=mocks
+//go:generate mockgen -source=${GOFILE} -destination=../../mocks/server_renderer.go -package=mocks -mock_names Renderer=MockServerRenderer
 
 type Renderer interface {
 	RenderServers(kaiConfiguration *KaiConfiguration)
