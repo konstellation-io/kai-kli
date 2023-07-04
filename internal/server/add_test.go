@@ -81,7 +81,7 @@ func (s *AddServerSuite) TestAddServer_InitialConfiguration() {
 	httpmock.RegisterResponder("GET", newServer.URL+"/info",
 		httpmock.NewStringResponder(200, `{"isKaiServer": true}`))
 
-	err := s.manager.AddNewServer(newServer)
+	err := s.manager.AddNewServer(newServer, false)
 	s.Assert().NoError(err)
 
 	configBytes, err := os.ReadFile(viper.GetString(config.KaiPathKey))
@@ -95,25 +95,20 @@ func (s *AddServerSuite) TestAddServer_InitialConfiguration() {
 }
 
 func (s *AddServerSuite) TestAddServer_ValidServerInExistingConfig() {
-	var (
-		existingServer = server.Server{
-			Name: "existing-server",
-			URL:  "http://existing-server",
-		}
+	existingConfig, err := createDefaultConfiguration()
+	s.Require().NoError(err)
 
+	var (
 		newServer = server.Server{
 			Name: "valid-server",
 			URL:  "http://valid-kai-server",
 		}
 
 		expectedKaiConfig = server.KaiConfiguration{
-			DefaultServer: existingServer.Name,
-			Servers:       []server.Server{existingServer, newServer},
+			DefaultServer: existingConfig.DefaultServer,
+			Servers:       append(existingConfig.Servers, newServer),
 		}
 	)
-
-	err := createConfigWithServer(existingServer)
-	s.Require().NoError(err)
 
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
@@ -121,7 +116,7 @@ func (s *AddServerSuite) TestAddServer_ValidServerInExistingConfig() {
 	httpmock.RegisterResponder("GET", newServer.URL+"/info",
 		httpmock.NewStringResponder(200, `{"isKaiServer": true}`))
 
-	err = s.manager.AddNewServer(newServer)
+	err = s.manager.AddNewServer(newServer, false)
 	s.Assert().NoError(err)
 
 	configBytes, err := os.ReadFile(viper.GetString(config.KaiPathKey))
@@ -136,32 +131,20 @@ func (s *AddServerSuite) TestAddServer_ValidServerInExistingConfig() {
 }
 
 func (s *AddServerSuite) TestAddServer_DefaultServer() {
-	var (
-		existingServer = server.Server{
-			Name: "existing-server",
-			URL:  "http://existing-server",
-		}
+	existingConfig, err := createDefaultConfiguration()
+	s.Require().NoError(err)
 
+	var (
 		newServer = server.Server{
-			Name:    "valid-server",
-			URL:     "http://valid-kai-server",
-			Default: true,
+			Name: "valid-server",
+			URL:  "http://valid-kai-server",
 		}
 
 		expectedKaiConfig = server.KaiConfiguration{
 			DefaultServer: newServer.Name,
-			Servers: []server.Server{
-				existingServer,
-				{
-					Name: newServer.Name,
-					URL:  newServer.URL,
-				},
-			},
+			Servers:       append(existingConfig.Servers, newServer),
 		}
 	)
-
-	err := createConfigWithServer(existingServer)
-	s.Require().NoError(err)
 
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
@@ -169,7 +152,7 @@ func (s *AddServerSuite) TestAddServer_DefaultServer() {
 	httpmock.RegisterResponder("GET", newServer.URL+"/info",
 		httpmock.NewStringResponder(200, `{"isKaiServer": true}`))
 
-	err = s.manager.AddNewServer(newServer)
+	err = s.manager.AddNewServer(newServer, true)
 	s.Assert().NoError(err)
 
 	configBytes, err := os.ReadFile(viper.GetString(config.KaiPathKey))
@@ -184,21 +167,13 @@ func (s *AddServerSuite) TestAddServer_DefaultServer() {
 }
 
 func (s *AddServerSuite) TestAddServer_DuplicatedServerName() {
-	var (
-		existingServer = server.Server{
-			Name:    "existing-server",
-			URL:     "http://existing-server",
-			Default: true,
-		}
-
-		newServer = server.Server{
-			Name: "existing-server",
-			URL:  "http://valid-kai-server",
-		}
-	)
-
-	err := createConfigWithServer(existingServer)
+	existingConfig, err := createDefaultConfiguration()
 	s.Require().NoError(err)
+
+	newServer := server.Server{
+		Name: existingConfig.Servers[0].Name,
+		URL:  "new-server.com",
+	}
 
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
@@ -206,26 +181,18 @@ func (s *AddServerSuite) TestAddServer_DuplicatedServerName() {
 	httpmock.RegisterResponder("GET", newServer.URL+"/info",
 		httpmock.NewStringResponder(200, `{"isKaiServer": true}`))
 
-	err = s.manager.AddNewServer(newServer)
+	err = s.manager.AddNewServer(newServer, false)
 	s.Assert().ErrorIs(err, server.ErrDuplicatedServerName)
 }
 
 func (s *AddServerSuite) TestAddServer_DuplicatedServerURL() {
-	var (
-		existingServer = server.Server{
-			Name:    "existing-server",
-			URL:     "http://existing-server",
-			Default: true,
-		}
-
-		newServer = server.Server{
-			Name: "new-server",
-			URL:  "http://existing-server",
-		}
-	)
-
-	err := createConfigWithServer(existingServer)
+	existingConfig, err := createDefaultConfiguration()
 	s.Require().NoError(err)
+
+	newServer := server.Server{
+		Name: "new-server",
+		URL:  existingConfig.Servers[0].URL,
+	}
 
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
@@ -233,19 +200,36 @@ func (s *AddServerSuite) TestAddServer_DuplicatedServerURL() {
 	httpmock.RegisterResponder("GET", newServer.URL+"/info",
 		httpmock.NewStringResponder(200, `{"isKaiServer": true}`))
 
-	err = s.manager.AddNewServer(newServer)
+	err = s.manager.AddNewServer(newServer, false)
 	s.Assert().ErrorIs(err, server.ErrDuplicatedServerURL)
 }
 
-func createConfigWithServer(s server.Server) error {
+func createDefaultConfiguration() (*server.KaiConfiguration, error) {
+	defaultServerName := "existing-server"
+
+	defaultConfiguration := server.KaiConfiguration{
+		DefaultServer: defaultServerName,
+		Servers: []server.Server{
+			{
+				Name: defaultServerName,
+				URL:  "existing-server.com",
+			},
+		},
+	}
+
+	if err := createConfigWithServer(defaultConfiguration); err != nil {
+		return nil, err
+	}
+
+	return &defaultConfiguration, nil
+}
+
+func createConfigWithServer(cfg server.KaiConfiguration) error {
 	if err := os.Mkdir(path.Dir(viper.GetString(config.KaiPathKey)), 0750); err != nil {
 		return err
 	}
 
-	configBytes, err := yaml.Marshal(server.KaiConfiguration{
-		DefaultServer: s.Name,
-		Servers:       []server.Server{s},
-	})
+	configBytes, err := yaml.Marshal(cfg)
 	if err != nil {
 		return err
 	}

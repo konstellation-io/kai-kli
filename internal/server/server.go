@@ -12,9 +12,8 @@ var (
 
 // Server contains data to represent a KAI server.
 type Server struct {
-	Name    string `yaml:"name"`
-	URL     string `yaml:"url"`
-	Default bool   `yaml:"-"`
+	Name string `yaml:"name"`
+	URL  string `yaml:"url"`
 }
 
 func (s Server) Validate() error {

@@ -19,13 +19,13 @@ var (
 	ErrInvalidKaiServer = errors.New("invalid server")
 )
 
-func (c *KaiConfigurator) AddNewServer(server Server) error {
+func (c *KaiConfigurator) AddNewServer(server Server, isDefault bool) error {
 	err := c.validateServer(server)
 	if err != nil {
 		return fmt.Errorf("validate server: %w", err)
 	}
 
-	err = c.addServerToConfiguration(server)
+	err = c.addServerToConfiguration(server, isDefault)
 
 	switch {
 	case errors.Is(err, os.ErrNotExist):
@@ -93,7 +93,7 @@ func (c *KaiConfigurator) validateURL(serverURL string) error {
 	return nil
 }
 
-func (c *KaiConfigurator) addServerToConfiguration(server Server) error {
+func (c *KaiConfigurator) addServerToConfiguration(server Server, isDefault bool) error {
 	userConfig, err := c.getConfiguration()
 	if err != nil {
 		return fmt.Errorf("get user configuration: %w", err)
@@ -101,6 +101,12 @@ func (c *KaiConfigurator) addServerToConfiguration(server Server) error {
 
 	if err := userConfig.AddServer(server); err != nil {
 		return err
+	}
+
+	if isDefault {
+		if err := userConfig.SetDefaultServer(server.Name); err != nil {
+			return err
+		}
 	}
 
 	err = c.writeConfiguration(userConfig)

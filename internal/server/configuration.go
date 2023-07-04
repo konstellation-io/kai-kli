@@ -5,6 +5,7 @@ import "errors"
 var (
 	ErrDuplicatedServerName = errors.New("duplicated server name")
 	ErrDuplicatedServerURL  = errors.New("duplicated server URL")
+	ErrServerNotFound       = errors.New("server not found")
 )
 
 type KaiConfiguration struct {
@@ -17,11 +18,17 @@ func (kc *KaiConfiguration) AddServer(server Server) error {
 		return err
 	}
 
-	if server.Default {
-		kc.DefaultServer = server.Name
+	kc.Servers = append(kc.Servers, server)
+
+	return nil
+}
+
+func (kc *KaiConfiguration) SetDefaultServer(serverName string) error {
+	if !kc.checkServerExists(serverName) {
+		return ErrServerNotFound
 	}
 
-	kc.Servers = append(kc.Servers, server)
+	kc.DefaultServer = serverName
 
 	return nil
 }
@@ -38,4 +45,14 @@ func (kc *KaiConfiguration) checkServerDuplication(server Server) error {
 	}
 
 	return nil
+}
+
+func (kc *KaiConfiguration) checkServerExists(serverName string) bool {
+	for _, s := range kc.Servers {
+		if serverName == s.Name {
+			return true
+		}
+	}
+
+	return false
 }
