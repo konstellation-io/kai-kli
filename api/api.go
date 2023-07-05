@@ -2,32 +2,32 @@ package api
 
 import (
 	"github.com/konstellation-io/kli/api/graphql"
-	"github.com/konstellation-io/kli/api/kre/config"
-	"github.com/konstellation-io/kli/api/kre/product"
-	"github.com/konstellation-io/kli/api/kre/version"
+	"github.com/konstellation-io/kli/api/kai/config"
+	"github.com/konstellation-io/kli/api/kai/product"
+	"github.com/konstellation-io/kli/api/kai/version"
 )
 
-// KRE object to implement access to KRE API.
-type KRE struct {
+// KAI object to implement access to KAI API.
+type KAI struct {
 	gqlManager *graphql.GqlManager
 	version    version.VersionInterface
 	product    product.ProductInterface
 }
 
 // Version access to methods to interact with Versions.
-func (a *KRE) Version() version.VersionInterface {
+func (a *KAI) Version() version.VersionInterface {
 	return a.version
 }
 
-func (a *KRE) Product() product.ProductInterface {
+func (a *KAI) Product() product.ProductInterface {
 	return a.product
 }
 
-// NewKreClient creates an API client instance.
-func NewKreClient(cfg *graphql.ClientConfig, server *config.ServerConfig, appVersion string) *KRE {
+// NewKAIClient creates an API client instance.
+func NewKAIClient(cfg *graphql.ClientConfig, server *config.ServerConfig, appVersion string) *KAI {
 	g := graphql.NewGqlManager(cfg, server, appVersion)
 
-	return &KRE{
+	return &KAI{
 		g,
 		version.New(g),
 		product.New(g),

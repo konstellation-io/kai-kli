@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/konstellation-io/kli/api/kre/config"
+	"github.com/konstellation-io/kli/api/kai/config"
 
 	"github.com/konstellation-io/graphql"
 )
@@ -74,7 +74,7 @@ func (g *GqlManager) MakeRequest(query string, vars map[string]interface{}, resp
 	return nil
 }
 
-// UploadFile uploads a file to KRE server.
+// UploadFile uploads a file to KAI server.
 func (g *GqlManager) UploadFile(file graphql.File, query string, vars map[string]interface{}, respData interface{}) error {
 	err := g.setupClient(graphql.UseMultipartForm())
 	if err != nil {

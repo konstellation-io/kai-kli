@@ -3,11 +3,10 @@ package render
 import (
 	"fmt"
 	"io"
-	"strings"
 
-	"github.com/konstellation-io/kli/api/kre/config"
-	"github.com/konstellation-io/kli/api/kre/product"
-	"github.com/konstellation-io/kli/api/kre/version"
+	"github.com/konstellation-io/kli/api/kai/config"
+	"github.com/konstellation-io/kli/api/kai/product"
+	"github.com/konstellation-io/kli/api/kai/version"
 	"github.com/konstellation-io/kli/internal/krt/errors"
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/konstellation-io/kli/text"
@@ -51,6 +50,11 @@ func NewDefaultCliRenderer(logger logging.Interface, writer io.Writer) *CliRende
 
 // RenderServerList add server information to the renderer and show it.
 func (r *CliRenderer) RenderServerList(servers []config.ServerConfig, defaultServer string) {
+	if len(servers) < 1 {
+		r.logger.Info("No servers found.")
+		return
+	}
+
 	r.tableWriter.SetHeader([]string{"Server", "URL"})
 
 	for _, s := range servers {
@@ -124,11 +128,12 @@ func (r *CliRenderer) renderVariables(cfg *version.Config, showValues bool) {
 func (r *CliRenderer) RenderVersions(versions version.List) {
 	if len(versions) < 1 {
 		r.logger.Info("No versions found.")
+		return
 	}
 
 	r.tableWriter.SetHeader([]string{
 		"",
-		"Name",
+		"ID",
 		"Status",
 	})
 
@@ -188,8 +193,21 @@ func (r *CliRenderer) RenderValidationErrors(validationErrors []*errors.Validati
 func (r *CliRenderer) RenderProducts(products []product.Product) {
 	if len(products) < 1 {
 		r.logger.Info("No products found.")
+		return
 	}
 
-	productsNames := product.GetProductsNames(products)
-	r.logger.Success(fmt.Sprintf("%d products found: %s", len(products), strings.Join(productsNames, ", ")))
+	r.tableWriter.SetHeader([]string{
+		"ID",
+		"Name",
+	})
+
+	for _, productItem := range products {
+		r.tableWriter.Append([]string{
+			productItem.ID,
+			productItem.Name,
+		})
+	}
+
+	r.tableWriter.Render()
+	r.printEmptyLine()
 }
