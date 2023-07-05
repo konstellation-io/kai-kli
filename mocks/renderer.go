@@ -8,9 +8,9 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	config "github.com/konstellation-io/kli/api/kre/config"
-	product "github.com/konstellation-io/kli/api/kre/product"
-	version "github.com/konstellation-io/kli/api/kre/version"
+	config "github.com/konstellation-io/kli/api/kai/config"
+	product "github.com/konstellation-io/kli/api/kai/product"
+	version "github.com/konstellation-io/kli/api/kai/version"
 	errors "github.com/konstellation-io/kli/internal/krt/errors"
 )
 

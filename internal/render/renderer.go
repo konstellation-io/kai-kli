@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/konstellation-io/kli/api/kre/config"
-	"github.com/konstellation-io/kli/api/kre/product"
-	"github.com/konstellation-io/kli/api/kre/version"
+	"github.com/konstellation-io/kli/api/kai/config"
+	"github.com/konstellation-io/kli/api/kai/product"
+	"github.com/konstellation-io/kli/api/kai/version"
 	"github.com/konstellation-io/kli/internal/krt/errors"
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/konstellation-io/kli/text"

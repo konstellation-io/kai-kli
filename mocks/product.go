@@ -8,7 +8,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	product "github.com/konstellation-io/kli/api/kre/product"
+	product "github.com/konstellation-io/kli/api/kai/product"
 )
 
 // MockProductInterface is a mock of ProductInterface interface.

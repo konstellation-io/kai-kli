@@ -1,8 +1,8 @@
 package root
 
 import (
-	"github.com/konstellation-io/kli/api/kre/config"
-	"github.com/konstellation-io/kli/cmd/kre"
+	"github.com/konstellation-io/kli/api/kai/config"
+	"github.com/konstellation-io/kli/cmd/kai"
 	"github.com/konstellation-io/kli/cmd/krt"
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/konstellation-io/kli/pkg/iostreams"
@@ -46,7 +46,7 @@ func NewRootCmd(
 
 	// Child commands
 	cmd.AddCommand(newVersionCmd(version, buildDate))
-	cmd.AddCommand(kre.NewKRECmd(logger, cfg))
+	cmd.AddCommand(kai.NewKAICmd(logger, cfg))
 	cmd.AddCommand(krt.NewKRTCmd(logger))
 
 	return cmd

@@ -8,7 +8,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	version "github.com/konstellation-io/kli/api/kre/version"
+	version "github.com/konstellation-io/kli/api/kai/version"
 )
 
 // MockVersionInterface is a mock of VersionInterface interface.
