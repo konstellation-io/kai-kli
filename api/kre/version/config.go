@@ -44,7 +44,7 @@ func (e ConfigVariableType) String() string {
 func (c *versionClient) UpdateConfig(product, versionName string, configVars []ConfigVariableInput) (bool, error) {
 	query := `
 		mutation UpdateConfig($input: UpdateConfigurationInput!) {
-			updateVersionConfiguration(input: $input) {
+			updateVersionUserConfiguration(input: $input) {
 				config {
 					completed
 				}
@@ -60,7 +60,7 @@ func (c *versionClient) UpdateConfig(product, versionName string, configVars []C
 	}
 
 	var respData struct {
-		UpdateVersionConfiguration struct {
+		UpdateVersionUserConfiguration struct {
 			Config struct {
 				Completed bool
 			}
@@ -69,7 +69,7 @@ func (c *versionClient) UpdateConfig(product, versionName string, configVars []C
 
 	err := c.client.MakeRequest(query, vars, &respData)
 
-	return respData.UpdateVersionConfiguration.Config.Completed, err
+	return respData.UpdateVersionUserConfiguration.Config.Completed, err
 }
 
 func (c *versionClient) GetConfig(product, versionName string) (*Config, error) {

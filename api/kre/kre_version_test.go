@@ -207,7 +207,7 @@ func TestVersionUpdateConfig(t *testing.T) {
 	srv, client := gqlMockServer(t, requestVars, `
 		{
 			"data": {
-				"updateVersionConfiguration": {
+				"updateVersionUserConfiguration": {
 					"config": {
 						"completed": true
 					}

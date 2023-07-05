@@ -8,7 +8,7 @@ import (
 )
 
 // KreInterface first level methods.
-type KreInterface interface { //nolint: golint
+type KreInterface interface { //nolint:revive
 	Version() version.VersionInterface
 	Product() product.ProductInterface
 }
