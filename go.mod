@@ -1,6 +1,6 @@
 module github.com/konstellation-io/kli
 
-go 1.18
+go 1.20
 
 require (
 	github.com/MakeNowJust/heredoc v1.0.0
