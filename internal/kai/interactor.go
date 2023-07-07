@@ -1,24 +1,24 @@
-package kre
+package kai
 
 import (
 	"fmt"
 	"io"
 
-	api "github.com/konstellation-io/kli/api/kre"
-	"github.com/konstellation-io/kli/api/kre/version"
+	api "github.com/konstellation-io/kli/api/kai"
+	"github.com/konstellation-io/kli/api/kai/version"
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/konstellation-io/kli/internal/render"
 )
 
 type Interactor struct {
 	logger   logging.Interface
-	client   api.KreInterface
+	client   api.KaiInterface
 	renderer render.Renderer
 }
 
 func NewInteractor(
 	logger logging.Interface,
-	client api.KreInterface,
+	client api.KaiInterface,
 	renderer render.Renderer,
 ) *Interactor {
 	return &Interactor{
@@ -30,7 +30,7 @@ func NewInteractor(
 
 func NewInteractorWithDefaultRenderer(
 	logger logging.Interface,
-	client api.KreInterface,
+	client api.KaiInterface,
 	writer io.Writer,
 ) *Interactor {
 	renderer := render.NewDefaultCliRenderer(logger, writer)

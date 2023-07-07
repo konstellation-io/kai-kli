@@ -2,9 +2,10 @@ package server
 
 import (
 	"github.com/MakeNowJust/heredoc"
-	"github.com/konstellation-io/kli/api/kre/config"
-	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/spf13/cobra"
+
+	"github.com/konstellation-io/kli/api/kai/config"
+	"github.com/konstellation-io/kli/internal/logging"
 )
 
 // NewServerCmd creates a new command to handle 'server' subcommands.
@@ -14,7 +15,7 @@ func NewServerCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 		Short: "Manage servers for kli",
 		Example: heredoc.Doc(`
 			$ kli server ls
-			$ kli server add my-server http://api.kre.local
+			$ kli server add my-server http://api.kai.local
 		`),
 	}
 

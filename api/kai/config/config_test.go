@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/konstellation-io/kli/api/kre/config"
+	"github.com/konstellation-io/kli/api/kai/config"
 	"github.com/konstellation-io/kli/text"
 )
 

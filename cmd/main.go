@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/konstellation-io/kli/api/kre/config"
+	"github.com/konstellation-io/kli/api/kai/config"
 	config2 "github.com/konstellation-io/kli/cmd/config"
 	"github.com/konstellation-io/kli/cmd/root"
 	"github.com/konstellation-io/kli/internal/logging"

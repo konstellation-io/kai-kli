@@ -1,6 +1,6 @@
 package version
 
-// Version represents a Version entity in KRE.
+// Version represents a Version entity in KAI.
 type Version struct {
 	Name   string
 	Status string
@@ -9,7 +9,7 @@ type Version struct {
 // List contains a list of  Version.
 type List []Version
 
-// List calls to KRE API and returns a list of Version entities.
+// List calls to KAI API and returns a list of Version entities.
 func (c *versionClient) List(product string) (List, error) {
 	query := `
 		query GetVersions($productId: ID!) {

@@ -1,24 +1,25 @@
 package version
 
 import (
-	config2 "github.com/konstellation-io/kli/cmd/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
+	config2 "github.com/konstellation-io/kli/cmd/config"
+
 	"github.com/konstellation-io/kli/api"
 	"github.com/konstellation-io/kli/api/graphql"
-	"github.com/konstellation-io/kli/api/kre/config"
+	"github.com/konstellation-io/kli/api/kai/config"
 	"github.com/konstellation-io/kli/cmd/args"
-	"github.com/konstellation-io/kli/internal/kre"
+	"github.com/konstellation-io/kli/internal/kai"
 	"github.com/konstellation-io/kli/internal/logging"
 )
 
-// NewUnpublishCmd manages the unpublish command.
-func NewUnpublishCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
+// NewStartCmd manages the start command.
+func NewStartCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "unpublish <version-name> -r <product> -m <audit message>",
+		Use:   "start <version-name> -r <product> -m <audit message>",
 		Args:  args.ComposeArgsCheck(args.CheckServerFlag, cobra.ExactArgs(1)),
-		Short: "Unpublish a version",
+		Short: "Start a version",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			versionName := args[0]
 
@@ -38,13 +39,13 @@ func NewUnpublishCmd(logger logging.Interface, cfg *config.Config) *cobra.Comman
 			}
 
 			server := cfg.GetByServerName(serverName)
-			kreClient := api.NewKreClient(&graphql.ClientConfig{
+			kaiClient := api.NewKaiClient(&graphql.ClientConfig{
 				Debug:                 viper.GetBool(config2.DebugKey),
 				DefaultRequestTimeout: viper.GetDuration("request_timeout"),
 			}, server, viper.GetString(config2.BuildVersionKey))
-			kreInteractor := kre.NewInteractor(logger, kreClient, nil)
+			kaiInteractor := kai.NewInteractor(logger, kaiClient, nil)
 
-			err = kreInteractor.UnpublishVersion(product, versionName, comment)
+			err = kaiInteractor.StartVersion(product, versionName, comment)
 			if err != nil {
 				return err
 			}

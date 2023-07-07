@@ -4,8 +4,8 @@ import (
 	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
 
-	"github.com/konstellation-io/kli/api/kre/config"
-	configcmd "github.com/konstellation-io/kli/cmd/kre/version/config"
+	"github.com/konstellation-io/kli/api/kai/config"
+	configcmd "github.com/konstellation-io/kli/cmd/kai/version/config"
 	"github.com/konstellation-io/kli/internal/logging"
 )
 
@@ -15,15 +15,15 @@ const productFlag = "product"
 func NewVersionCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "version",
-		Short: "Manage KRE Version",
+		Short: "Manage KAI Version",
 		Example: heredoc.Doc(`
-			$ kli kre version ls -r demo
-			$ kli kre version create file.krt -r demo
-			$ kli kre version start demo-v1 -r demo -m 'Testing version'
+			$ kli kai version ls -r demo
+			$ kli kai version create file.krt -r demo
+			$ kli kai version start demo-v1 -r demo -m 'Testing version'
 		`),
 	}
 
-	cmd.PersistentFlags().StringP("server", "s", cfg.DefaultServer, "KRE server to use")
+	cmd.PersistentFlags().StringP("server", "s", cfg.DefaultServer, "KAI server to use")
 	cmd.PersistentFlags().StringP(productFlag, "r", "", "product of the version")
 	_ = cmd.MarkFlagRequired(productFlag)
 

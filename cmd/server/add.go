@@ -3,11 +3,12 @@ package server
 import (
 	"fmt"
 
-	"github.com/konstellation-io/kli/internal/render"
-	"github.com/konstellation-io/kli/internal/server"
 	"github.com/spf13/cobra"
 
-	"github.com/konstellation-io/kli/api/kre/config"
+	"github.com/konstellation-io/kli/internal/render"
+	"github.com/konstellation-io/kli/internal/server"
+
+	"github.com/konstellation-io/kli/api/kai/config"
 	"github.com/konstellation-io/kli/internal/logging"
 )
 
@@ -21,7 +22,7 @@ func NewAddCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 		Args:    cobra.ExactArgs(2), //nolint:gomnd
 		Short:   "Add a new server in config file",
 		Example: `
-    $ kli server add my-server http://api.local.kre
+    $ kli server add my-server http://api.local.kai
 		`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			setDefault, err := cmd.Flags().GetBool(_defaultFlag)

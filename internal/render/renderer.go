@@ -5,15 +5,16 @@ import (
 	"io"
 	"strings"
 
-	"github.com/konstellation-io/kli/api/kre/config"
-	"github.com/konstellation-io/kli/api/kre/product"
-	"github.com/konstellation-io/kli/api/kre/version"
+	"github.com/olekukonko/tablewriter"
+	"gopkg.in/gookit/color.v1"
+
+	"github.com/konstellation-io/kli/api/kai/config"
+	"github.com/konstellation-io/kli/api/kai/product"
+	"github.com/konstellation-io/kli/api/kai/version"
 	"github.com/konstellation-io/kli/internal/krt/errors"
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/konstellation-io/kli/internal/server"
 	"github.com/konstellation-io/kli/text"
-	"github.com/olekukonko/tablewriter"
-	"gopkg.in/gookit/color.v1"
 )
 
 type CliRenderer struct {

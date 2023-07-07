@@ -1,4 +1,4 @@
-package kre_test
+package kai_test
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/konstellation-io/kli/api/kre/version"
+	"github.com/konstellation-io/kli/api/kai/version"
 )
 
 func TestVersionList(t *testing.T) {

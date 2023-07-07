@@ -1,11 +1,11 @@
-package kre_test
+package kai_test
 
 import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/konstellation-io/kli/api/kre/product"
+	"github.com/konstellation-io/kli/api/kai/product"
 )
 
 func TestProductList(t *testing.T) {

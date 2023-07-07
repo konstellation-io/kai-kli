@@ -1,13 +1,14 @@
 package root
 
 import (
-	"github.com/konstellation-io/kli/api/kre/config"
-	"github.com/konstellation-io/kli/cmd/kre"
+	"github.com/spf13/cobra"
+
+	"github.com/konstellation-io/kli/api/kai/config"
+	"github.com/konstellation-io/kli/cmd/kai"
 	"github.com/konstellation-io/kli/cmd/krt"
 	"github.com/konstellation-io/kli/cmd/server"
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/konstellation-io/kli/pkg/iostreams"
-	"github.com/spf13/cobra"
 )
 
 // NewRootCmd creates the base command where all subcommands are added.
@@ -48,7 +49,7 @@ func NewRootCmd(
 	// Child commands
 	cmd.AddCommand(newVersionCmd(version, buildDate))
 	cmd.AddCommand(server.NewServerCmd(logger, cfg))
-	cmd.AddCommand(kre.NewKRECmd(logger, cfg))
+	cmd.AddCommand(kai.NewKAICmd(logger, cfg))
 	cmd.AddCommand(krt.NewKRTCmd(logger))
 
 	return cmd

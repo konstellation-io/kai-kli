@@ -30,7 +30,7 @@
 
 ---
 
-This repo contains a CLI to access, query and manage KRE and KDL.
+This repo contains a CLI to access, query and manage KAI servers.
 
 
 ## Frameworks and libraries
@@ -60,7 +60,7 @@ Usage:
   kli [command]
 
 Available Commands:
-  kre         Manage KRE
+  kai         Manage KAI
   server      Manage servers for kli
 
 Flags:
@@ -77,7 +77,7 @@ Example:
 
 # Output
 SERVER URL                                  
-local* http://api.kre.local                 
+local* http://api.kai.local                 
 int    https://api.your-domain.com 
 ```
 
@@ -87,7 +87,7 @@ int    https://api.your-domain.com
 1. You can set a Version variable as a key/value pair directly: 
 
 ```bash
-./kli kre version config your-version --set SOME_VAR="any value"
+./kli kai version config your-version --set SOME_VAR="any value"
 # Output:
 # [✔] Config updated for version 'your-version'.
 ```
@@ -96,7 +96,7 @@ int    https://api.your-domain.com
 
 ```bash
 export SOME_VAR="any value"
-./kli kre version config your-version --set-from-env SOME_VAR
+./kli kai version config your-version --set-from-env SOME_VAR
 # Output:
 # [✔] Config updated for version 'your-version'.
 ```
@@ -110,7 +110,7 @@ ANOTHER_VAR="some long string... "
 ```
 
 ```bash
-./kli kre version config your-version --set-from-file variables.env
+./kli kai version config your-version --set-from-file variables.env
 # Output:
 # [✔] Config updated for version 'your-version'.
 ```
@@ -123,7 +123,7 @@ NOTE: `godotenv` library currently doesn't support multiline variables, as state
 
 ```bash
 export SOME_VAR=$(cat any_file.txt) 
-./kli kre version config your-version --set-from-env SOME_VAR
+./kli kai version config your-version --set-from-env SOME_VAR
 # Output:
 # [✔] Config updated for version 'your-version'.
 ```

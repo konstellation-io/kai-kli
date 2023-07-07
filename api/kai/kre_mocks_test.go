@@ -1,4 +1,4 @@
-package kre_test
+package kai_test
 
 import (
 	"encoding/json"
@@ -9,11 +9,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/konstellation-io/kli/api/graphql"
-	"github.com/konstellation-io/kli/api/kre/config"
-	config2 "github.com/konstellation-io/kli/cmd/config"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/require"
+
+	"github.com/konstellation-io/kli/api/graphql"
+	"github.com/konstellation-io/kli/api/kai/config"
+	config2 "github.com/konstellation-io/kli/cmd/config"
 )
 
 func gqlMockServer(t *testing.T, requestVars, mockResponse string) (*httptest.Server, *graphql.GqlManager) {

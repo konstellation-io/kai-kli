@@ -1,37 +1,39 @@
 package version
 
 import (
-	config2 "github.com/konstellation-io/kli/cmd/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
+	config2 "github.com/konstellation-io/kli/cmd/config"
+
 	"github.com/konstellation-io/kli/api"
 	"github.com/konstellation-io/kli/api/graphql"
-	"github.com/konstellation-io/kli/api/kre/config"
+	"github.com/konstellation-io/kli/api/kai/config"
 	"github.com/konstellation-io/kli/cmd/args"
-	"github.com/konstellation-io/kli/internal/kre"
+	"github.com/konstellation-io/kli/internal/kai"
 	"github.com/konstellation-io/kli/internal/logging"
 )
 
-// NewListCmd creates a new command to list Versions.
-func NewListCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
+// NewCreateCmd upload a KRT file to product and make a new version.
+func NewCreateCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "ls -r <product>",
-		Aliases: []string{"list"},
-		Args:    args.CheckServerFlag,
-		Short:   "List all available Versions",
+		Use:   "create [krt-file] -r <product>",
+		Args:  args.ComposeArgsCheck(args.CheckServerFlag, cobra.ExactArgs(1)),
+		Short: "Upload a KRT and create a new version",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			serverName, _ := cmd.Flags().GetString("server")
 			server := cfg.GetByServerName(serverName)
-			kreClient := api.NewKreClient(&graphql.ClientConfig{
+			kaiClient := api.NewKaiClient(&graphql.ClientConfig{
 				Debug:                 viper.GetBool(config2.DebugKey),
 				DefaultRequestTimeout: viper.GetDuration("request_timeout"),
 			}, server, viper.GetString(config2.BuildVersionKey))
-			kreInteractor := kre.NewInteractorWithDefaultRenderer(logger, kreClient, cmd.OutOrStdout())
+			kaiInteractor := kai.NewInteractor(logger, kaiClient, nil)
+
+			krt := args[0]
 
 			product, _ := cmd.Flags().GetString(productFlag)
 
-			return kreInteractor.ListVersions(product)
+			return kaiInteractor.CreateVersion(product, krt)
 		},
 	}
 
