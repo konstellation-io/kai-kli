@@ -3,11 +3,6 @@ package server
 import (
 	"fmt"
 
-<<<<<<<< HEAD:cmd/server/default.go
-========
-	"github.com/konstellation-io/kli/api/kai/config"
-	"github.com/konstellation-io/kli/internal/logging"
->>>>>>>> origin/develop:cmd/kai/server/default.go
 	"github.com/spf13/cobra"
 
 	"github.com/konstellation-io/kli/api/kai/config"
