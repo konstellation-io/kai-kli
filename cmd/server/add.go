@@ -8,14 +8,13 @@ import (
 	"github.com/konstellation-io/kli/internal/render"
 	"github.com/konstellation-io/kli/internal/server"
 
-	"github.com/konstellation-io/kli/api/kai/config"
 	"github.com/konstellation-io/kli/internal/logging"
 )
 
 const _defaultFlag = "default"
 
 // NewAddCmd creates a new command to add a new server to config file.
-func NewAddCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
+func NewAddCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "add <remote_name> <server_url> [--default]",
 		Aliases: []string{"set"},
