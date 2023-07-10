@@ -21,8 +21,9 @@ import (
 type AddServerSuite struct {
 	suite.Suite
 
-	manager *server.Handler
-	tmpDir  string
+	renderer *mocks.MockRenderer
+	manager  *server.Handler
+	tmpDir   string
 }
 
 func TestAddServerSuite(t *testing.T) {
@@ -35,6 +36,7 @@ func (s *AddServerSuite) SetupSuite() {
 	renderer := mocks.NewMockRenderer(ctrl)
 	mocks.AddLoggerExpects(logger)
 
+	s.renderer = renderer
 	s.manager = server.NewServerHandler(logger, renderer)
 
 	tmpDir, err := os.MkdirTemp("", "TestAddServer_*")
@@ -61,6 +63,7 @@ func (s *AddServerSuite) AfterTest(_, _ string) {
 
 func (s *AddServerSuite) TestAddServer_ValidServerInExistingConfig() {
 	existingConfig, err := createDefaultConfiguration()
+	s.renderer.EXPECT().RenderServers(gomock.Any()).Times(1)
 	s.Require().NoError(err)
 
 	var (
@@ -97,6 +100,7 @@ func (s *AddServerSuite) TestAddServer_ValidServerInExistingConfig() {
 
 func (s *AddServerSuite) TestAddServer_DefaultServer() {
 	existingConfig, err := createDefaultConfiguration()
+	s.renderer.EXPECT().RenderServers(gomock.Any()).Times(1)
 	s.Require().NoError(err)
 
 	for i := range existingConfig.Servers {

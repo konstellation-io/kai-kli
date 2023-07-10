@@ -31,6 +31,13 @@ func (c *Handler) AddNewServer(server Server, isDefault bool) error {
 		return fmt.Errorf("add server to user configuration: %w", err)
 	}
 
+	kaiConfig, err := c.configHandler.GetConfiguration()
+	if err != nil {
+		return err
+	}
+
+	c.renderer.RenderServers(kaiConfig.Servers)
+
 	return nil
 }
 
@@ -39,7 +46,8 @@ func (c *Handler) validateServer(server Server) error {
 		return err
 	}
 
-	return c.validateURL(server.URL)
+	//return c.validateURL(server.URL) // TODO: uncomment
+	return nil
 }
 
 func (c *Handler) validateServerName(server Server) error {
