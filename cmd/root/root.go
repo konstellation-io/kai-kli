@@ -62,8 +62,10 @@ func NewRootCmd(
 
 func setDebugLogLevel(cmd *cobra.Command, cfg *config.Config, logger logging.Interface) error {
 	d, err := cmd.Flags().GetBool("debug")
+
 	if d {
 		cfg.Debug = true
+
 		logger.SetDebugLevel()
 	}
 
