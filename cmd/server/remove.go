@@ -10,7 +10,7 @@ import (
 	server2 "github.com/konstellation-io/kli/internal/server"
 )
 
-// NewAddCmd creates a new command to remove an existing server from the config file.
+// NewRemoveCmd creates a new command to remove an existing server from the config file.
 func NewRemoveCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "remove <remote_name>",
