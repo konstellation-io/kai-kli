@@ -8,18 +8,20 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/jarcoal/httpmock"
-	"github.com/konstellation-io/kli/cmd/config"
-	"github.com/konstellation-io/kli/internal/server"
-	"github.com/konstellation-io/kli/mocks"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
 	"gopkg.in/yaml.v3"
+
+	"github.com/konstellation-io/kli/cmd/config"
+	"github.com/konstellation-io/kli/internal/configuration"
+	"github.com/konstellation-io/kli/internal/server"
+	"github.com/konstellation-io/kli/mocks"
 )
 
 type AddServerSuite struct {
 	suite.Suite
 
-	manager *server.KaiConfigurator
+	manager *server.ServerHandler
 	tmpDir  string
 }
 
@@ -30,16 +32,16 @@ func TestAddServerSuite(t *testing.T) {
 func (s *AddServerSuite) SetupSuite() {
 	ctrl := gomock.NewController(s.T())
 	logger := mocks.NewMockLogger(ctrl)
-	renderer := mocks.NewMockServerRenderer(ctrl)
+	renderer := mocks.NewMockRenderer(ctrl)
 	mocks.AddLoggerExpects(logger)
 
-	s.manager = server.NewKaiConfigurator(logger, renderer)
+	s.manager = server.NewServerHandler(logger, renderer)
 
 	tmpDir, err := os.MkdirTemp("", "TestAddServer_*")
 	s.Require().NoError(err)
 
 	kaiConfigPath := path.Join(tmpDir, ".kai", "kai.conf")
-	viper.Set(config.KaiPathKey, kaiConfigPath)
+	viper.Set(config.KaiConfigPath, kaiConfigPath)
 
 	s.tmpDir = tmpDir
 }
@@ -50,48 +52,11 @@ func (s *AddServerSuite) TearDownSuite(_, _ string) {
 }
 
 func (s *AddServerSuite) AfterTest(_, _ string) {
-	if err := os.RemoveAll(path.Dir(viper.GetString(config.KaiPathKey))); err != nil {
+	if err := os.RemoveAll(path.Dir(viper.GetString(config.KaiConfigPath))); err != nil {
 		if !errors.Is(err, os.ErrNotExist) {
 			s.T().Fatalf("error cleaning tmp path: %s", err)
 		}
 	}
-}
-
-func (s *AddServerSuite) TestAddServer_InitialConfiguration() {
-	var (
-		newServer = server.Server{
-			Name: "valid-server",
-			URL:  "http://valid-kai-server",
-		}
-
-		expectedKaiConfig = server.KaiConfiguration{
-			DefaultServer: newServer.Name,
-			Servers: []server.Server{
-				{
-					Name: newServer.Name,
-					URL:  newServer.URL,
-				},
-			},
-		}
-	)
-
-	httpmock.Activate()
-	defer httpmock.DeactivateAndReset()
-
-	httpmock.RegisterResponder("GET", newServer.URL+"/info",
-		httpmock.NewStringResponder(200, `{"isKaiServer": true}`))
-
-	err := s.manager.AddNewServer(newServer, false)
-	s.Assert().NoError(err)
-
-	configBytes, err := os.ReadFile(viper.GetString(config.KaiPathKey))
-	s.Require().NoError(err)
-
-	var kaiConfig server.KaiConfiguration
-	err = yaml.Unmarshal(configBytes, &kaiConfig)
-	s.Require().NoError(err)
-
-	s.Assert().Equal(expectedKaiConfig, kaiConfig)
 }
 
 func (s *AddServerSuite) TestAddServer_ValidServerInExistingConfig() {
@@ -99,14 +64,14 @@ func (s *AddServerSuite) TestAddServer_ValidServerInExistingConfig() {
 	s.Require().NoError(err)
 
 	var (
-		newServer = server.Server{
-			Name: "valid-server",
-			URL:  "http://valid-kai-server",
+		newServer = configuration.Server{
+			Name:      "valid-server",
+			URL:       "http://valid-kai-server",
+			IsDefault: false,
 		}
 
-		expectedKaiConfig = server.KaiConfiguration{
-			DefaultServer: existingConfig.DefaultServer,
-			Servers:       append(existingConfig.Servers, newServer),
+		expectedKaiConfig = configuration.KaiConfiguration{
+			Servers: append(existingConfig.Servers, newServer),
 		}
 	)
 
@@ -116,13 +81,13 @@ func (s *AddServerSuite) TestAddServer_ValidServerInExistingConfig() {
 	httpmock.RegisterResponder("GET", newServer.URL+"/info",
 		httpmock.NewStringResponder(200, `{"isKaiServer": true}`))
 
-	err = s.manager.AddNewServer(newServer, false)
+	err = s.manager.AddNewServer(server.Server{Name: newServer.Name, URL: newServer.URL}, false)
 	s.Assert().NoError(err)
 
-	configBytes, err := os.ReadFile(viper.GetString(config.KaiPathKey))
+	configBytes, err := os.ReadFile(viper.GetString(config.KaiConfigPath))
 	s.Require().NoError(err)
 
-	var kaiConfig server.KaiConfiguration
+	var kaiConfig configuration.KaiConfiguration
 
 	err = yaml.Unmarshal(configBytes, &kaiConfig)
 	s.Require().NoError(err)
@@ -135,14 +100,14 @@ func (s *AddServerSuite) TestAddServer_DefaultServer() {
 	s.Require().NoError(err)
 
 	var (
-		newServer = server.Server{
-			Name: "valid-server",
-			URL:  "http://valid-kai-server",
+		newServer = configuration.Server{
+			Name:      "valid-server",
+			URL:       "http://valid-kai-server",
+			IsDefault: true,
 		}
 
-		expectedKaiConfig = server.KaiConfiguration{
-			DefaultServer: newServer.Name,
-			Servers:       append(existingConfig.Servers, newServer),
+		expectedKaiConfig = configuration.KaiConfiguration{
+			Servers: append(existingConfig.Servers, newServer),
 		}
 	)
 
@@ -152,13 +117,13 @@ func (s *AddServerSuite) TestAddServer_DefaultServer() {
 	httpmock.RegisterResponder("GET", newServer.URL+"/info",
 		httpmock.NewStringResponder(200, `{"isKaiServer": true}`))
 
-	err = s.manager.AddNewServer(newServer, true)
+	err = s.manager.AddNewServer(server.Server{Name: newServer.Name, URL: newServer.URL}, true)
 	s.Assert().NoError(err)
 
-	configBytes, err := os.ReadFile(viper.GetString(config.KaiPathKey))
+	configBytes, err := os.ReadFile(viper.GetString(config.KaiConfigPath))
 	s.Require().NoError(err)
 
-	var kaiConfig server.KaiConfiguration
+	var kaiConfig configuration.KaiConfiguration
 
 	err = yaml.Unmarshal(configBytes, &kaiConfig)
 	s.Require().NoError(err)
@@ -182,7 +147,7 @@ func (s *AddServerSuite) TestAddServer_DuplicatedServerName() {
 		httpmock.NewStringResponder(200, `{"isKaiServer": true}`))
 
 	err = s.manager.AddNewServer(newServer, false)
-	s.Assert().ErrorIs(err, server.ErrDuplicatedServerName)
+	s.Assert().ErrorIs(err, configuration.ErrDuplicatedServerName)
 }
 
 func (s *AddServerSuite) TestAddServer_DuplicatedServerURL() {
@@ -201,18 +166,16 @@ func (s *AddServerSuite) TestAddServer_DuplicatedServerURL() {
 		httpmock.NewStringResponder(200, `{"isKaiServer": true}`))
 
 	err = s.manager.AddNewServer(newServer, false)
-	s.Assert().ErrorIs(err, server.ErrDuplicatedServerURL)
+	s.Assert().ErrorIs(err, configuration.ErrDuplicatedServerURL)
 }
 
-func createDefaultConfiguration() (*server.KaiConfiguration, error) {
-	defaultServerName := "existing-server"
-
-	defaultConfiguration := server.KaiConfiguration{
-		DefaultServer: defaultServerName,
-		Servers: []server.Server{
+func createDefaultConfiguration() (*configuration.KaiConfiguration, error) {
+	defaultConfiguration := configuration.KaiConfiguration{
+		Servers: []configuration.Server{
 			{
-				Name: defaultServerName,
-				URL:  "existing-server.com",
+				Name:      "existing-server",
+				URL:       "existing-server.com",
+				IsDefault: true,
 			},
 		},
 	}
@@ -224,8 +187,8 @@ func createDefaultConfiguration() (*server.KaiConfiguration, error) {
 	return &defaultConfiguration, nil
 }
 
-func createConfigWithServer(cfg server.KaiConfiguration) error {
-	if err := os.Mkdir(path.Dir(viper.GetString(config.KaiPathKey)), 0750); err != nil {
+func createConfigWithServer(cfg configuration.KaiConfiguration) error {
+	if err := os.Mkdir(path.Dir(viper.GetString(config.KaiConfigPath)), 0750); err != nil {
 		return err
 	}
 
@@ -234,5 +197,5 @@ func createConfigWithServer(cfg server.KaiConfiguration) error {
 		return err
 	}
 
-	return os.WriteFile(viper.GetString(config.KaiPathKey), configBytes, 0600)
+	return os.WriteFile(viper.GetString(config.KaiConfigPath), configBytes, 0600)
 }

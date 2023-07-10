@@ -13,8 +13,11 @@ const (
 	DebugKey          = "debug"
 	RequestTimeoutKey = "request_timeout"
 	BuildVersionKey   = "build_version"
-	KaiPathKey        = "kai_path"
+	KaiConfigPath     = "kai_path"
+	KaiConfigFile     = "kai_config_filename"
 
+	_defaultKaiConfigFile  = "kai.conf"
+	_defaultKaiFolder      = ".kai"
 	_defaultRequestTimeout = 2 * time.Minute
 )
 
@@ -24,7 +27,8 @@ func InitConfigWithBuildVersion(buildVersion string) error {
 		return fmt.Errorf("get user home path: %w", err)
 	}
 
-	viper.SetDefault(KaiPathKey, path.Join(userHomeDir, ".kai", "kai.conf"))
+	viper.SetDefault(KaiConfigFile, _defaultKaiConfigFile)
+	viper.SetDefault(KaiConfigPath, path.Join(userHomeDir, _defaultKaiFolder, _defaultKaiConfigFile))
 	viper.Set(BuildVersionKey, buildVersion)
 	viper.Set(RequestTimeoutKey, _defaultRequestTimeout)
 	viper.Set(DebugKey, false)

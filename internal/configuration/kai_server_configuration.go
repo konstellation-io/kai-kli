@@ -1,17 +1,14 @@
-package server
+package configuration
 
-import "errors"
+import (
+	"errors"
+)
 
 var (
 	ErrDuplicatedServerName = errors.New("duplicated server name")
 	ErrDuplicatedServerURL  = errors.New("duplicated server URL")
 	ErrServerNotFound       = errors.New("server not found")
 )
-
-type KaiConfiguration struct {
-	DefaultServer string   `yaml:"default_server"`
-	Servers       []Server `yaml:"servers"`
-}
 
 func (kc *KaiConfiguration) AddServer(server Server) error {
 	if err := kc.checkServerDuplication(server); err != nil {
@@ -20,15 +17,26 @@ func (kc *KaiConfiguration) AddServer(server Server) error {
 
 	kc.Servers = append(kc.Servers, server)
 
+	// If there is just one server, set the first one as default.
+	if len(kc.Servers) == 1 || server.IsDefault {
+		if err := kc.SetDefaultServer(server.Name); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
 func (kc *KaiConfiguration) SetDefaultServer(serverName string) error {
-	if !kc.checkServerExists(serverName) {
+	serverExists := kc.checkServerExists(serverName)
+	if !serverExists {
 		return ErrServerNotFound
 	}
 
-	kc.DefaultServer = serverName
+	for i, s := range kc.Servers {
+		s.IsDefault = serverName == s.Name
+		kc.Servers[i] = s
+	}
 
 	return nil
 }

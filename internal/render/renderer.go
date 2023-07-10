@@ -8,13 +8,11 @@ import (
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/gookit/color.v1"
 
-	"github.com/konstellation-io/kli/api/kai/config"
 	"github.com/konstellation-io/kli/api/kai/product"
 	"github.com/konstellation-io/kli/api/kai/version"
+	"github.com/konstellation-io/kli/internal/configuration"
 	"github.com/konstellation-io/kli/internal/krt/errors"
 	"github.com/konstellation-io/kli/internal/logging"
-	"github.com/konstellation-io/kli/internal/server"
-	"github.com/konstellation-io/kli/text"
 )
 
 type CliRenderer struct {
@@ -49,27 +47,6 @@ func NewCliRenderer(logger logging.Interface, ioWriter io.Writer, tableWriter *t
 
 func NewDefaultCliRenderer(logger logging.Interface, writer io.Writer) *CliRenderer {
 	return NewCliRenderer(logger, writer, DefaultTableWriter(writer))
-}
-
-// RenderServerList add server information to the renderer and show it.
-func (r *CliRenderer) RenderServerList(servers []config.ServerConfig, defaultServer string) {
-	r.tableWriter.SetHeader([]string{"Server", "URL"})
-
-	for _, s := range servers {
-		defaultMark := ""
-		isDefault := text.Normalize(s.Name) == defaultServer
-
-		if isDefault {
-			defaultMark = "*"
-		}
-
-		r.tableWriter.Append([]string{
-			fmt.Sprintf("%s%s", s.Name, defaultMark),
-			s.URL,
-		})
-	}
-
-	r.tableWriter.Render()
 }
 
 func (r *CliRenderer) RenderVars(cfg *version.Config, showValues bool) {
@@ -196,19 +173,18 @@ func (r *CliRenderer) RenderProducts(products []product.Product) {
 	r.logger.Success(fmt.Sprintf("%d products found: %s", len(products), strings.Join(productsNames, ", ")))
 }
 
-func (r *CliRenderer) RenderServers(kaiConfiguration *server.KaiConfiguration) {
-	if len(kaiConfiguration.Servers) < 1 {
+func (r *CliRenderer) RenderServers(servers []configuration.Server) {
+	if len(servers) < 1 {
 		r.logger.Info("No servers configured.")
 		return
 	}
 
 	r.tableWriter.SetHeader([]string{"Server", "URL", "Auth"})
 
-	for _, s := range kaiConfiguration.Servers {
+	for _, s := range servers {
 		defaultMark := ""
-		isDefault := text.Normalize(s.Name) == kaiConfiguration.DefaultServer
 
-		if isDefault {
+		if s.IsDefault {
 			defaultMark = "*"
 		}
 

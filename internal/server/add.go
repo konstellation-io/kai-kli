@@ -8,18 +8,18 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"os"
-	"path"
+	"regexp"
 
-	"github.com/konstellation-io/kli/cmd/config"
-	"github.com/spf13/viper"
+	"github.com/konstellation-io/kli/internal/configuration"
 )
 
 var (
-	ErrInvalidKaiServer = errors.New("invalid server")
+	_validServerName     = regexp.MustCompile(`^[A-Za-z0-9\-_]+$`)
+	ErrInvalidKaiServer  = errors.New("invalid server")
+	ErrInvalidServerName = errors.New("invalid server name, only alphanumeric and hyphens are supported")
 )
 
-func (c *KaiConfigurator) AddNewServer(server Server, isDefault bool) error {
+func (c *ServerHandler) AddNewServer(server Server, isDefault bool) error {
 	err := c.validateServer(server)
 	if err != nil {
 		return fmt.Errorf("validate server: %w", err)
@@ -27,24 +27,15 @@ func (c *KaiConfigurator) AddNewServer(server Server, isDefault bool) error {
 
 	err = c.addServerToConfiguration(server, isDefault)
 
-	switch {
-	case errors.Is(err, os.ErrNotExist):
-		c.logger.Info("Configuration not found, creating a new one.")
-
-		err = c.createInitialConfiguration(server)
-		if err != nil {
-			return fmt.Errorf("generate initial configuration: %w", err)
-		}
-
-	case err != nil:
+	if err != nil {
 		return fmt.Errorf("add server to user configuration: %w", err)
 	}
 
 	return nil
 }
 
-func (c *KaiConfigurator) validateServer(server Server) error {
-	if err := server.Validate(); err != nil {
+func (c *ServerHandler) validateServer(server Server) error {
+	if err := c.validateServerName(server); err != nil {
 		return err
 	}
 
@@ -55,7 +46,15 @@ func (c *KaiConfigurator) validateServer(server Server) error {
 	return nil
 }
 
-func (c *KaiConfigurator) validateURL(serverURL string) error {
+func (c *ServerHandler) validateServerName(server Server) error {
+	if !_validServerName.MatchString(server.Name) {
+		return ErrInvalidServerName
+	}
+
+	return nil
+}
+
+func (c *ServerHandler) validateURL(serverURL string) error {
 	// TODO: this enpoint needs to be defined
 	infoURL, err := url.JoinPath(serverURL, "info")
 	if err != nil {
@@ -93,58 +92,23 @@ func (c *KaiConfigurator) validateURL(serverURL string) error {
 	return nil
 }
 
-func (c *KaiConfigurator) addServerToConfiguration(server Server, isDefault bool) error {
-	userConfig, err := c.getConfiguration()
+func (c *ServerHandler) addServerToConfiguration(server Server, isDefault bool) error {
+	userConfig, err := c.configHandler.GetConfiguration()
 	if err != nil {
 		return fmt.Errorf("get user configuration: %w", err)
 	}
 
-	if err := userConfig.AddServer(server); err != nil {
+	if err := userConfig.AddServer(configuration.Server{
+		Name:      server.Name,
+		URL:       server.URL,
+		IsDefault: isDefault,
+	}); err != nil {
 		return err
 	}
 
-	if isDefault {
-		if err := userConfig.SetDefaultServer(server.Name); err != nil {
-			return err
-		}
-	}
-
-	err = c.writeConfiguration(userConfig)
+	err = c.configHandler.WriteConfiguration(userConfig)
 	if err != nil {
 		return fmt.Errorf("update user configuration: %w", err)
-	}
-
-	return nil
-}
-
-func (c *KaiConfigurator) createInitialConfiguration(server Server) error {
-	err := c.createConfigurationDir()
-	if err != nil {
-		return fmt.Errorf("create configuration directory: %w", err)
-	}
-
-	initialConfiguration := &KaiConfiguration{
-		DefaultServer: server.Name,
-		Servers:       []Server{server},
-	}
-
-	err = c.writeConfiguration(initialConfiguration)
-	if err != nil {
-		return fmt.Errorf("wite user configuration: %w", err)
-	}
-
-	return nil
-}
-
-func (c *KaiConfigurator) createConfigurationDir() error {
-	var (
-		configDirPath  = path.Dir(viper.GetString(config.KaiPathKey))
-		dirPermissions = 0750
-	)
-
-	err := os.Mkdir(configDirPath, os.FileMode(dirPermissions))
-	if err != nil && !errors.Is(err, os.ErrExist) {
-		return err
 	}
 
 	return nil

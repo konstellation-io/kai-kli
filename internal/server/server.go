@@ -1,27 +1,28 @@
 package server
 
 import (
-	"errors"
-	"regexp"
+	"github.com/konstellation-io/kli/internal/configuration"
+	"github.com/konstellation-io/kli/internal/logging"
+	"github.com/konstellation-io/kli/internal/render"
 )
 
-var (
-	_validServerName     = regexp.MustCompile(`^[A-Za-z0-9\-_]+$`)
-	ErrInvalidServerName = errors.New("invalid server name, only alphanumeric and hyphens are supported")
-)
-
-// Server contains data to represent a KAI server.
-type Server struct {
-	Name string `yaml:"name"`
-	URL  string `yaml:"url"`
+type ServerHandler struct {
+	logger        logging.Interface
+	renderer      render.Renderer
+	configHandler *configuration.KaiConfigHandler
 }
 
-func (s Server) Validate() error {
-	if !_validServerName.MatchString(s.Name) {
-		return ErrInvalidServerName
+func NewServerHandler(logger logging.Interface, renderer render.Renderer) *ServerHandler {
+	return &ServerHandler{
+		logger:        logger,
+		renderer:      renderer,
+		configHandler: configuration.NewKaiConfigHandler(logger),
 	}
+}
 
-	return nil
+type Server struct {
+	Name string
+	URL  string
 }
 
 type RemoteServerInfo struct {

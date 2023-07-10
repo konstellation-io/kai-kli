@@ -4,14 +4,18 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
 )
 
 // newVersionCmd creates a new command to handle 'version' keyword.
 func newVersionCmd(version, buildDate string) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:    "version",
-		Hidden: true,
+		Use:   "version",
+		Short: "Show the version of the CLI",
+		Example: heredoc.Doc(`
+			$ kli version
+		`),
 		Run: func(cmd *cobra.Command, args []string) {
 			_, _ = fmt.Fprint(cmd.OutOrStdout(), Format(version, buildDate))
 		},
