@@ -6,14 +6,14 @@ import (
 	"github.com/konstellation-io/kli/internal/render"
 )
 
-type ServerHandler struct {
+type Handler struct {
 	logger        logging.Interface
 	renderer      render.Renderer
 	configHandler *configuration.KaiConfigHandler
 }
 
-func NewServerHandler(logger logging.Interface, renderer render.Renderer) *ServerHandler {
-	return &ServerHandler{
+func NewServerHandler(logger logging.Interface, renderer render.Renderer) *Handler {
+	return &Handler{
 		logger:        logger,
 		renderer:      renderer,
 		configHandler: configuration.NewKaiConfigHandler(logger),

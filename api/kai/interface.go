@@ -7,8 +7,8 @@ import (
 	"github.com/konstellation-io/kli/api/kai/version"
 )
 
-// KaiInterface first level methods.
-type KaiInterface interface { //nolint: golint
+// Interface first level methods.
+type Interface interface { //nolint: golint
 	Version() version.VersionInterface
 	Product() product.ProductInterface
 }

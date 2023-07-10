@@ -19,7 +19,7 @@ var (
 	ErrInvalidServerName = errors.New("invalid server name, only alphanumeric and hyphens are supported")
 )
 
-func (c *ServerHandler) AddNewServer(server Server, isDefault bool) error {
+func (c *Handler) AddNewServer(server Server, isDefault bool) error {
 	err := c.validateServer(server)
 	if err != nil {
 		return fmt.Errorf("validate server: %w", err)
@@ -34,7 +34,7 @@ func (c *ServerHandler) AddNewServer(server Server, isDefault bool) error {
 	return nil
 }
 
-func (c *ServerHandler) validateServer(server Server) error {
+func (c *Handler) validateServer(server Server) error {
 	if err := c.validateServerName(server); err != nil {
 		return err
 	}
@@ -46,7 +46,7 @@ func (c *ServerHandler) validateServer(server Server) error {
 	return nil
 }
 
-func (c *ServerHandler) validateServerName(server Server) error {
+func (c *Handler) validateServerName(server Server) error {
 	if !_validServerName.MatchString(server.Name) {
 		return ErrInvalidServerName
 	}
@@ -54,7 +54,7 @@ func (c *ServerHandler) validateServerName(server Server) error {
 	return nil
 }
 
-func (c *ServerHandler) validateURL(serverURL string) error {
+func (c *Handler) validateURL(serverURL string) error {
 	// TODO: this enpoint needs to be defined
 	infoURL, err := url.JoinPath(serverURL, "info")
 	if err != nil {
@@ -92,7 +92,7 @@ func (c *ServerHandler) validateURL(serverURL string) error {
 	return nil
 }
 
-func (c *ServerHandler) addServerToConfiguration(server Server, isDefault bool) error {
+func (c *Handler) addServerToConfiguration(server Server, isDefault bool) error {
 	userConfig, err := c.configHandler.GetConfiguration()
 	if err != nil {
 		return fmt.Errorf("get user configuration: %w", err)

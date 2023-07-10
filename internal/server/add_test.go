@@ -21,7 +21,7 @@ import (
 type AddServerSuite struct {
 	suite.Suite
 
-	manager *server.ServerHandler
+	manager *server.Handler
 	tmpDir  string
 }
 

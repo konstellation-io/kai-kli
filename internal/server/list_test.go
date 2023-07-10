@@ -20,7 +20,7 @@ type ListServersSuite struct {
 	suite.Suite
 
 	renderer *mocks.MockRenderer
-	manager  *server.ServerHandler
+	manager  *server.Handler
 	tmpDir   string
 }
 

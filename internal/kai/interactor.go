@@ -12,13 +12,13 @@ import (
 
 type Interactor struct {
 	logger   logging.Interface
-	client   api.KaiInterface
+	client   api.Interface
 	renderer render.Renderer
 }
 
 func NewInteractor(
 	logger logging.Interface,
-	client api.KaiInterface,
+	client api.Interface,
 	renderer render.Renderer,
 ) *Interactor {
 	return &Interactor{
@@ -30,7 +30,7 @@ func NewInteractor(
 
 func NewInteractorWithDefaultRenderer(
 	logger logging.Interface,
-	client api.KaiInterface,
+	client api.Interface,
 	writer io.Writer,
 ) *Interactor {
 	renderer := render.NewDefaultCliRenderer(logger, writer)
