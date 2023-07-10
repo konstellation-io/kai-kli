@@ -27,7 +27,7 @@ func NewDefaultCmd(logger logging.Interface) *cobra.Command {
 				return err
 			}
 
-			logger.Success(fmt.Sprintf("Server %q correclty set as default.\n", name))
+			logger.Success(fmt.Sprintf("Server %q correctly set as default.\n", name))
 
 			return nil
 		},

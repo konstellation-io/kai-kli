@@ -46,8 +46,7 @@ func (c *Handler) validateServer(server Server) error {
 		return err
 	}
 
-	//return c.validateURL(server.URL) // TODO: uncomment
-	return nil
+	return c.validateURL(server.URL)
 }
 
 func (c *Handler) validateServerName(server Server) error {
@@ -59,7 +58,6 @@ func (c *Handler) validateServerName(server Server) error {
 }
 
 func (c *Handler) validateURL(serverURL string) error {
-	// TODO: this enpoint needs to be defined
 	infoURL, err := url.JoinPath(serverURL, "info")
 	if err != nil {
 		return fmt.Errorf("format URL: %w", err)

@@ -63,6 +63,7 @@ func (s *AddServerSuite) AfterTest(_, _ string) {
 
 func (s *AddServerSuite) TestAddServer_ValidServerInExistingConfig() {
 	existingConfig, err := createDefaultConfiguration()
+
 	s.renderer.EXPECT().RenderServers(gomock.Any()).Times(1)
 	s.Require().NoError(err)
 
@@ -100,6 +101,7 @@ func (s *AddServerSuite) TestAddServer_ValidServerInExistingConfig() {
 
 func (s *AddServerSuite) TestAddServer_DefaultServer() {
 	existingConfig, err := createDefaultConfiguration()
+
 	s.renderer.EXPECT().RenderServers(gomock.Any()).Times(1)
 	s.Require().NoError(err)
 

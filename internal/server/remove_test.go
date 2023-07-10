@@ -91,6 +91,7 @@ func (s *RemoveServerSuite) TestRemoveServer_RemoveExistingServer() {
 	}
 	err := currentConfig.WriteConfiguration(&givenConfig)
 	s.Require().NoError(err)
+
 	expectedConfig := &configuration.KaiConfiguration{
 		Servers: []configuration.Server{
 			{
@@ -159,6 +160,7 @@ func (s *RemoveServerSuite) TestRemoveServer_RemoveDefaultServer() {
 	}
 	err := currentConfig.WriteConfiguration(&givenConfig)
 	s.Require().NoError(err)
+
 	expectedConfig := &configuration.KaiConfiguration{
 		Servers: []configuration.Server{
 			{

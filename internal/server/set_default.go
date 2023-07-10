@@ -7,6 +7,7 @@ import (
 func (c *Handler) SetDefaultServer(server string) error {
 	configHandler := configuration.NewKaiConfigHandler(c.logger)
 	kaiConfig, err := configHandler.GetConfiguration()
+
 	if err != nil {
 		return err
 	}

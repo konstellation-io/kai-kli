@@ -55,6 +55,7 @@ func (kc *KaiConfiguration) DeleteServer(server string) error {
 	}
 
 	var index int
+
 	for i, serv := range kc.Servers {
 		if serv.Name == server {
 			index = i

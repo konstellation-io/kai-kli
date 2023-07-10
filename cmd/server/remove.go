@@ -15,7 +15,7 @@ func NewRemoveCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "remove <remote_name>",
 		Aliases: []string{"rm"},
-		Args:    cobra.ExactArgs(1), //nolint:gomnd
+		Args:    cobra.ExactArgs(1),
 		Short:   "Removes an existing server from the config file",
 		Example: `
     $ kli server rm my-server
