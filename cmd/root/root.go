@@ -48,7 +48,7 @@ func NewRootCmd(
 
 	// Child commands
 	cmd.AddCommand(newVersionCmd(version, buildDate))
-	cmd.AddCommand(server.NewServerCmd(logger, cfg))
+	cmd.AddCommand(server.NewServerCmd(logger))
 	cmd.AddCommand(kai.NewKAICmd(logger, cfg))
 	cmd.AddCommand(krt.NewKRTCmd(logger))
 
