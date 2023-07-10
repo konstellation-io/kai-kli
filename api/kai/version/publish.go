@@ -10,7 +10,7 @@ func (c *versionClient) Publish(product, versionName, comment string) error {
 	`
 	vars := map[string]interface{}{
 		"input": map[string]string{
-			"productId":   product,
+			"productID":   product,
 			"versionName": versionName,
 			"comment":     comment,
 		},

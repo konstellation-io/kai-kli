@@ -14,7 +14,8 @@ func TestProductList(t *testing.T) {
 				"data": {
 						"products": [
 								{
-										"name": "test-product"
+										"id": "test-product",
+										"name": "Test product"
 								}
 						]
 				}
@@ -28,7 +29,8 @@ func TestProductList(t *testing.T) {
 	require.NoError(t, err)
 	require.Len(t, list, 1)
 	require.Equal(t, list[0], product.Product{
-		Name: "test-product",
+		ID:   "test-product",
+		Name: "Test product",
 	})
 }
 

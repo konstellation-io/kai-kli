@@ -12,7 +12,7 @@ func (c *versionClient) Start(product, versionName, comment string) error {
 		"input": map[string]string{
 			"versionName": versionName,
 			"comment":     comment,
-			"productId":   product,
+			"productID":   product,
 		},
 	}
 

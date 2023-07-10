@@ -2,6 +2,11 @@ package server
 
 import (
 	"github.com/MakeNowJust/heredoc"
+<<<<<<<< HEAD:cmd/server/server.go
+========
+	"github.com/konstellation-io/kli/api/kai/config"
+	"github.com/konstellation-io/kli/internal/logging"
+>>>>>>>> origin/develop:cmd/kai/server/server.go
 	"github.com/spf13/cobra"
 
 	"github.com/konstellation-io/kli/api/kai/config"
@@ -15,7 +20,12 @@ func NewServerCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 		Short: "Manage servers for kli",
 		Example: heredoc.Doc(`
 			$ kli server ls
+<<<<<<<< HEAD:cmd/server/server.go
 			$ kli server add my-server http://api.kai.local
+========
+			$ kli server add my-server http://api.kai.local TOKEN_12345
+			$ kli server default my-server
+>>>>>>>> origin/develop:cmd/kai/server/server.go
 		`),
 	}
 

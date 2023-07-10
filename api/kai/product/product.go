@@ -9,10 +9,11 @@ import (
 )
 
 type Product struct {
+	ID   string
 	Name string
 }
 
-func GetProductsNames(products []Product) []string {
+func GetProductNames(products []Product) []string {
 	names := make([]string, 0, len(products))
 	for _, p := range products {
 		names = append(names, p.Name)
@@ -22,7 +23,7 @@ func GetProductsNames(products []Product) []string {
 }
 
 // ProductInterface method to interact with products.
-type ProductInterface interface { //nolint:golint
+type ProductInterface interface { //nolint:revive
 	List() ([]Product, error)
 	Create(name, description string) error
 }
@@ -42,6 +43,7 @@ func (c *productClient) List() ([]Product, error) {
 	query := `
 		query GetProducts() {
 			products() {
+				id
 				name
 			}
 		}

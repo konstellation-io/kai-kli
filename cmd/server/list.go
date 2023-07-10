@@ -1,6 +1,11 @@
 package server
 
 import (
+<<<<<<<< HEAD:cmd/server/list.go
+========
+	"github.com/konstellation-io/kli/api/kai/config"
+	"github.com/konstellation-io/kli/internal/logging"
+>>>>>>>> origin/develop:cmd/kai/server/list.go
 	"github.com/spf13/cobra"
 
 	"github.com/konstellation-io/kli/internal/logging"

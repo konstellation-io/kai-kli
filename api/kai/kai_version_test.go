@@ -11,7 +11,7 @@ import (
 )
 
 func TestVersionList(t *testing.T) {
-	srv, client := gqlMockServer(t, "{\"productId\":\"test-product\"}", `
+	srv, client := gqlMockServer(t, "{\"productID\":\"test-product\"}", `
 		{
 				"data": {
 						"versions": [
@@ -44,7 +44,7 @@ func TestVersionStart(t *testing.T) {
 	expectedVariables := fmt.Sprintf(`
 		{
 			"input": {
-					"productId": "%s",
+					"productID": "%s",
 					"versionName": "%s",
 					"comment": "%s"
 			}
@@ -67,7 +67,7 @@ func TestVersionStop(t *testing.T) {
 	expectedVariables := fmt.Sprintf(`
 		{
 			"input": {
-					"productId":"%s",
+					"productID":"%s",
 					"versionName": "%s",
 					"comment": "%s"
 			}
@@ -90,7 +90,7 @@ func TestVersionPublish(t *testing.T) {
 	expectedVariables := fmt.Sprintf(`
 		{
 			"input": {
-					"productId": "%s",
+					"productID": "%s",
 					"versionName": "%s",
 					"comment": "%s"
 			}
@@ -113,7 +113,7 @@ func TestVersionUnpublish(t *testing.T) {
 	expectedVariables := fmt.Sprintf(`
 		{
 			"input": {
-					"productId": "%s",
+					"productID": "%s",
 					"versionName": "%s",
 					"comment": "%s"
 			}
@@ -134,7 +134,7 @@ func TestVersionGetConfig(t *testing.T) {
 	versionName := "test-v1"
 	expectedVariables := fmt.Sprintf(`
 		{
-			"productId":"%s",
+			"productID":"%s",
 			"versionName": "%s"
 		}`, product, versionName)
 	srv, client := gqlMockServer(t, expectedVariables, `
@@ -199,7 +199,7 @@ func TestVersionUpdateConfig(t *testing.T) {
 					"configurationVariables": [
 						{ "key": "KEY2", "value": "newValue" }
 					],
-					"productId": "test-product",
+					"productID": "test-product",
 					"versionName": "test-v1"
 			}
 		}

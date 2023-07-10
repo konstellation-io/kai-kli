@@ -13,7 +13,7 @@ type List []Version
 func (c *versionClient) List(product string) (List, error) {
 	query := `
 		query GetVersions($productId: ID!) {
-			versions(productId: $productId) {
+			versions(productID: $productId) {
 				name
 				status
 			}
@@ -21,7 +21,7 @@ func (c *versionClient) List(product string) (List, error) {
 	`
 
 	vars := map[string]interface{}{
-		"productId": product,
+		"productID": product,
 	}
 
 	var respData struct {
