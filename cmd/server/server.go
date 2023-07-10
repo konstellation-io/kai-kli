@@ -2,11 +2,6 @@ package server
 
 import (
 	"github.com/MakeNowJust/heredoc"
-<<<<<<<< HEAD:cmd/server/server.go
-========
-	"github.com/konstellation-io/kli/api/kai/config"
-	"github.com/konstellation-io/kli/internal/logging"
->>>>>>>> origin/develop:cmd/kai/server/server.go
 	"github.com/spf13/cobra"
 
 	"github.com/konstellation-io/kli/api/kai/config"

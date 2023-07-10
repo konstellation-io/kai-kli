@@ -99,6 +99,10 @@ func (s *AddServerSuite) TestAddServer_DefaultServer() {
 	existingConfig, err := createDefaultConfiguration()
 	s.Require().NoError(err)
 
+	for i := range existingConfig.Servers {
+		existingConfig.Servers[i].IsDefault = false
+	}
+
 	var (
 		newServer = configuration.Server{
 			Name:      "valid-server",

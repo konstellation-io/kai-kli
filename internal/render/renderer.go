@@ -169,7 +169,7 @@ func (r *CliRenderer) RenderProducts(products []product.Product) {
 		r.logger.Info("No products found.")
 	}
 
-	productsNames := product.GetProductsNames(products)
+	productsNames := product.GetProductNames(products)
 	r.logger.Success(fmt.Sprintf("%d products found: %s", len(products), strings.Join(productsNames, ", ")))
 }
 
