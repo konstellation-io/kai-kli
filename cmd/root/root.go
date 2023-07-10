@@ -8,6 +8,7 @@ import (
 	"github.com/konstellation-io/kli/cmd/krt"
 	"github.com/konstellation-io/kli/cmd/server"
 	"github.com/konstellation-io/kli/internal/logging"
+	"github.com/konstellation-io/kli/internal/setup"
 	"github.com/konstellation-io/kli/pkg/iostreams"
 )
 
@@ -24,10 +25,14 @@ func NewRootCmd(
 		Short: "Konstellation CLI",
 		Long:  `Use Konstellation API from the command line.`,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-			d, err := cmd.Flags().GetBool("debug")
-			if d {
-				cfg.Debug = true
-				logger.SetDebugLevel()
+			err := setDebugLogLevel(cmd, cfg, logger)
+			if err != nil {
+				return err
+			}
+
+			err = setup.NewKaiSetup(logger).CreateConfiguration()
+			if err != nil {
+				return err
 			}
 
 			return err
@@ -53,4 +58,14 @@ func NewRootCmd(
 	cmd.AddCommand(krt.NewKRTCmd(logger))
 
 	return cmd
+}
+
+func setDebugLogLevel(cmd *cobra.Command, cfg *config.Config, logger logging.Interface) error {
+	d, err := cmd.Flags().GetBool("debug")
+	if d {
+		cfg.Debug = true
+		logger.SetDebugLevel()
+	}
+
+	return err
 }
