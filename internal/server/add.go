@@ -39,11 +39,7 @@ func (c *Handler) validateServer(server Server) error {
 		return err
 	}
 
-	if err := c.validateURL(server.URL); err != nil {
-		return err
-	}
-
-	return nil
+	return c.validateURL(server.URL)
 }
 
 func (c *Handler) validateServerName(server Server) error {

@@ -5,7 +5,6 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/konstellation-io/kli/api/kai/config"
 	"github.com/konstellation-io/kli/internal/configuration"
 	"github.com/konstellation-io/kli/internal/logging"
 
@@ -13,7 +12,7 @@ import (
 )
 
 // NewDefaultCmd creates a new command to handle 'default' keyword.
-func NewDefaultCmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
+func NewDefaultCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "default <server-name>",
 		Short: "Set a default server",
