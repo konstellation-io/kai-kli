@@ -28,16 +28,12 @@ func (kc *KaiConfiguration) AddServer(server Server) error {
 }
 
 func (kc *KaiConfiguration) UpdateServer(server Server) error {
-	if !kc.CheckServerExists(server.Name) {
+	index, _, err := kc.findServer(server.Name)
+	if err != nil {
 		return ErrServerNotFound
 	}
 
-	for i, serv := range kc.Servers {
-		// Replace the server with the same name as the one to be updated.
-		if serv.Name == server.Name {
-			kc.Servers[i] = server
-		}
-	}
+	kc.Servers[index] = server
 
 	// If the server to be updated is set as default, set the other servers to false.
 	if server.IsDefault {
@@ -49,25 +45,15 @@ func (kc *KaiConfiguration) UpdateServer(server Server) error {
 	return nil
 }
 
-func (kc *KaiConfiguration) DeleteServer(server string) error {
-	if !kc.CheckServerExists(server) {
+func (kc *KaiConfiguration) DeleteServer(serverName string) error {
+	index, server, err := kc.findServer(serverName)
+	if err != nil {
 		return ErrServerNotFound
 	}
 
-	var index int
-
-	for i, serv := range kc.Servers {
-		if serv.Name == server {
-			index = i
-			break
-		}
-	}
-
-	redefineDefaultServer := kc.Servers[index].IsDefault
-
 	kc.Servers = removeElementFromList(kc.Servers, index)
 
-	if redefineDefaultServer && len(kc.Servers) > 0 {
+	if server.IsDefault && len(kc.Servers) > 0 {
 		return kc.SetDefaultServer(kc.Servers[0].Name)
 	}
 
@@ -75,8 +61,7 @@ func (kc *KaiConfiguration) DeleteServer(server string) error {
 }
 
 func (kc *KaiConfiguration) SetDefaultServer(serverName string) error {
-	serverExists := kc.CheckServerExists(serverName)
-	if !serverExists {
+	if !kc.CheckServerExists(serverName) {
 		return ErrServerNotFound
 	}
 
@@ -89,23 +74,27 @@ func (kc *KaiConfiguration) SetDefaultServer(serverName string) error {
 }
 
 func (kc *KaiConfiguration) CheckServerExists(serverName string) bool {
-	for _, s := range kc.Servers {
-		if serverName == s.Name {
-			return true
-		}
-	}
-
-	return false
+	_, _, err := kc.findServer(serverName)
+	return err == nil
 }
 
-func (kc *KaiConfiguration) GetServer(server string) (*Server, error) {
-	for _, s := range kc.Servers {
+func (kc *KaiConfiguration) GetServer(serverName string) (*Server, error) {
+	_, server, err := kc.findServer(serverName)
+	if err != nil {
+		return nil, ErrServerNotFound
+	}
+
+	return server, nil
+}
+
+func (kc *KaiConfiguration) findServer(server string) (int, *Server, error) {
+	for i, s := range kc.Servers {
 		if server == s.Name {
-			return &s, nil
+			return i, &s, nil
 		}
 	}
 
-	return nil, ErrServerNotFound
+	return 0, nil, ErrServerNotFound
 }
 
 func (kc *KaiConfiguration) checkServerDuplication(server Server) error {

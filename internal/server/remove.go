@@ -1,15 +1,9 @@
 package server
 
-import "github.com/konstellation-io/kli/internal/configuration"
-
 func (c *Handler) RemoveServer(server string) error {
 	config, err := c.configHandler.GetConfiguration()
 	if err != nil {
 		return err
-	}
-
-	if !config.CheckServerExists(server) {
-		return configuration.ErrServerNotFound
 	}
 
 	err = config.DeleteServer(server)
