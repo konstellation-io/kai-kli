@@ -47,7 +47,7 @@ jobs:
           go tool cover -func="${{ matrix.platform }}_coverage.out"
 
       - name: Upload coverage report
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.platform }}_coverage
           path: ${{ matrix.platform }}_coverage.out
