@@ -1,10 +1,11 @@
 package config
 
 import (
+	"github.com/spf13/cobra"
+
 	"github.com/konstellation-io/kli/api/kai/config"
 	"github.com/konstellation-io/kli/cmd/args"
 	"github.com/konstellation-io/kli/internal/logging"
-	"github.com/spf13/cobra"
 )
 
 // NewConfigCmd manage config command for version.

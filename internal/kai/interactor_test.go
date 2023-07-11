@@ -20,7 +20,7 @@ type testInteractorSuite struct {
 
 type suiteMocks struct {
 	logger    *mocks.MockLogger
-	kaiClient *mocks.MockKaiClient
+	kaiClient *mocks.MockKaiInterface
 	version   *mocks.MockVersionInterface
 	product   *mocks.MockProductInterface
 	renderer  *mocks.MockRenderer
@@ -30,7 +30,7 @@ func newTestInteractorSuite(t *testing.T) *testInteractorSuite {
 	ctrl := gomock.NewController(t)
 	logger := mocks.NewMockLogger(ctrl)
 	mocks.AddLoggerExpects(logger)
-	kaiClient := mocks.NewMockKaiClient(ctrl)
+	kaiClient := mocks.NewMockKaiInterface(ctrl)
 	versionMock := mocks.NewMockVersionInterface(ctrl)
 	productMock := mocks.NewMockProductInterface(ctrl)
 	renderer := mocks.NewMockRenderer(ctrl)
@@ -118,8 +118,8 @@ func TestInteractor_CreateVersion_ClientError(t *testing.T) {
 
 func TestInteractor_ListProducts(t *testing.T) {
 	s := newTestInteractorSuite(t)
-	productID := "test-product"
-	expectedProducts := []product.Product{{ID: productID}}
+	productName := "test-product"
+	expectedProducts := []product.Product{{Name: productName}}
 
 	s.mocks.kaiClient.EXPECT().Product().Return(s.mocks.product)
 	s.mocks.product.EXPECT().List().Return(expectedProducts, nil)
@@ -156,27 +156,27 @@ func TestInteractor_ListProducts_ErrorGettingProducts(t *testing.T) {
 
 func TestInteractor_CreateProduct(t *testing.T) {
 	s := newTestInteractorSuite(t)
-	productID := "test-product"
+	productName := "test-product"
 	description := "Test description"
 
 	s.mocks.kaiClient.EXPECT().Product().Return(s.mocks.product)
-	s.mocks.product.EXPECT().Create(productID, description).Return(nil)
+	s.mocks.product.EXPECT().Create(productName, description).Return(nil)
 
 	krtInteractor := kai.NewInteractor(s.mocks.logger, s.mocks.kaiClient, s.mocks.renderer)
-	err := krtInteractor.CreateProduct(productID, description)
+	err := krtInteractor.CreateProduct(productName, description)
 	assert.NoError(t, err)
 }
 
 func TestInteractor_CreateProduct_ClientError(t *testing.T) {
 	s := newTestInteractorSuite(t)
-	productID := "test-product"
+	productName := "test-product"
 	description := "Test description"
 
 	s.mocks.kaiClient.EXPECT().Product().Return(s.mocks.product)
-	s.mocks.product.EXPECT().Create(productID, description).Return(errors.New("graphql error"))
+	s.mocks.product.EXPECT().Create(productName, description).Return(errors.New("graphql error"))
 
 	krtInteractor := kai.NewInteractor(s.mocks.logger, s.mocks.kaiClient, s.mocks.renderer)
-	err := krtInteractor.CreateProduct(productID, description)
+	err := krtInteractor.CreateProduct(productName, description)
 	assert.Error(t, err)
 	assert.ErrorContains(t, err, "error creating product")
 }

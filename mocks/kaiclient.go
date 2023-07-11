@@ -12,31 +12,31 @@ import (
 	version "github.com/konstellation-io/kli/api/kai/version"
 )
 
-// MockKaiClient is a mock of Client interface.
-type MockKaiClient struct {
+// MockKaiInterface is a mock of KaiInterface interface.
+type MockKaiInterface struct {
 	ctrl     *gomock.Controller
-	recorder *MockKaiClientMockRecorder
+	recorder *MockKaiInterfaceMockRecorder
 }
 
-// MockKaiClientMockRecorder is the mock recorder for MockKaiClient.
-type MockKaiClientMockRecorder struct {
-	mock *MockKaiClient
+// MockKaiInterfaceMockRecorder is the mock recorder for MockKaiInterface.
+type MockKaiInterfaceMockRecorder struct {
+	mock *MockKaiInterface
 }
 
-// NewMockKaiClient creates a new mock instance.
-func NewMockKaiClient(ctrl *gomock.Controller) *MockKaiClient {
-	mock := &MockKaiClient{ctrl: ctrl}
-	mock.recorder = &MockKaiClientMockRecorder{mock}
+// NewMockKaiInterface creates a new mock instance.
+func NewMockKaiInterface(ctrl *gomock.Controller) *MockKaiInterface {
+	mock := &MockKaiInterface{ctrl: ctrl}
+	mock.recorder = &MockKaiInterfaceMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockKaiClient) EXPECT() *MockKaiClientMockRecorder {
+func (m *MockKaiInterface) EXPECT() *MockKaiInterfaceMockRecorder {
 	return m.recorder
 }
 
 // Product mocks base method.
-func (m *MockKaiClient) Product() product.ProductInterface {
+func (m *MockKaiInterface) Product() product.ProductInterface {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Product")
 	ret0, _ := ret[0].(product.ProductInterface)
@@ -44,13 +44,13 @@ func (m *MockKaiClient) Product() product.ProductInterface {
 }
 
 // Product indicates an expected call of Product.
-func (mr *MockKaiClientMockRecorder) Product() *gomock.Call {
+func (mr *MockKaiInterfaceMockRecorder) Product() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Product", reflect.TypeOf((*MockKaiClient)(nil).Product))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Product", reflect.TypeOf((*MockKaiInterface)(nil).Product))
 }
 
 // Version mocks base method.
-func (m *MockKaiClient) Version() version.VersionInterface {
+func (m *MockKaiInterface) Version() version.VersionInterface {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Version")
 	ret0, _ := ret[0].(version.VersionInterface)
@@ -58,7 +58,7 @@ func (m *MockKaiClient) Version() version.VersionInterface {
 }
 
 // Version indicates an expected call of Version.
-func (mr *MockKaiClientMockRecorder) Version() *gomock.Call {
+func (mr *MockKaiInterfaceMockRecorder) Version() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Version", reflect.TypeOf((*MockKaiClient)(nil).Version))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Version", reflect.TypeOf((*MockKaiInterface)(nil).Version))
 }

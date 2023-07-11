@@ -8,9 +8,9 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	config "github.com/konstellation-io/kli/api/kai/config"
 	product "github.com/konstellation-io/kli/api/kai/product"
 	version "github.com/konstellation-io/kli/api/kai/version"
+	configuration "github.com/konstellation-io/kli/internal/configuration"
 	errors "github.com/konstellation-io/kli/internal/krt/errors"
 )
 
@@ -49,16 +49,16 @@ func (mr *MockRendererMockRecorder) RenderProducts(products interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderProducts", reflect.TypeOf((*MockRenderer)(nil).RenderProducts), products)
 }
 
-// RenderServerList mocks base method.
-func (m *MockRenderer) RenderServerList(servers []config.ServerConfig, defaultServer string) {
+// RenderServers mocks base method.
+func (m *MockRenderer) RenderServers(servers []configuration.Server) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "RenderServerList", servers, defaultServer)
+	m.ctrl.Call(m, "RenderServers", servers)
 }
 
-// RenderServerList indicates an expected call of RenderServerList.
-func (mr *MockRendererMockRecorder) RenderServerList(servers, defaultServer interface{}) *gomock.Call {
+// RenderServers indicates an expected call of RenderServers.
+func (mr *MockRendererMockRecorder) RenderServers(servers interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderServerList", reflect.TypeOf((*MockRenderer)(nil).RenderServerList), servers, defaultServer)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderServers", reflect.TypeOf((*MockRenderer)(nil).RenderServers), servers)
 }
 
 // RenderValidationErrors mocks base method.
