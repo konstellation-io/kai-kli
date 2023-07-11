@@ -5,46 +5,49 @@ on:
     branches-ignore:
       - "v*"
     tags-ignore:
-      - "v*"
+      - v*
 
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Setup Go environment
-        uses: actions/setup-go@v4
+      - name: Install Go
+        uses: actions/setup-go@v1
         with:
-          go-version: '1.20.x'
-      - name: Run golangci-lint
+          go-version: 1.20.x
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Go lint
         uses: golangci/golangci-lint-action@v3
         with:
-          version: v1.53.3
+          version: latest
           working-directory: .
           args: --timeout 5m
-          skip-pkg-cache: true
-          skip-build-cache: true
 
   tests:
     strategy:
       matrix:
-        go-version: ['1.20.x']
-        platform: [macos-latest, ubuntu-latest, windows-latest]
+        go-version: [ 1.20.x ]
+        platform: [ macos-latest, ubuntu-latest, windows-latest ]
     runs-on: ${{ matrix.platform }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Setup Go environment
-        uses: actions/setup-go@v4
+      - name: Install Go
+        uses: actions/setup-go@v1
         with:
           go-version: ${{ matrix.go-version }}
-      - name: Run tests
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Test
         run: |
           go test -coverprofile="${{ matrix.platform }}_coverage.out" -covermode=atomic -coverpkg=./... ./...
           go tool cover -func="${{ matrix.platform }}_coverage.out"
+
       - name: Upload coverage report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v1
         with:
           name: ${{ matrix.platform }}_coverage
           path: ${{ matrix.platform }}_coverage.out
@@ -53,20 +56,22 @@ jobs:
     runs-on: ubuntu-latest
     needs: tests
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Setup Go environment
-        uses: actions/setup-go@v4
+      - name: Install Go
+        uses: actions/setup-go@v1
         with:
           go-version: ${{ matrix.go-version }}
-      - name: Fetch unshallow
-        run: git fetch --prune --unshallow
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - run: git fetch --prune --unshallow
+
       - name: Download coverage report
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v1
         with:
           name: ubuntu-latest_coverage
-      # - name: Scan with SonarCloud
-      #   uses: sonarsource/sonarcloud-github-action@master
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Analyze with SonarCloud
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

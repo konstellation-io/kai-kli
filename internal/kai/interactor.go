@@ -12,13 +12,13 @@ import (
 
 type Interactor struct {
 	logger   logging.Interface
-	client   api.Client
+	client   api.Interface
 	renderer render.Renderer
 }
 
 func NewInteractor(
 	logger logging.Interface,
-	client api.Client,
+	client api.Interface,
 	renderer render.Renderer,
 ) *Interactor {
 	return &Interactor{
@@ -30,15 +30,15 @@ func NewInteractor(
 
 func NewInteractorWithDefaultRenderer(
 	logger logging.Interface,
-	client api.Client,
+	client api.Interface,
 	writer io.Writer,
 ) *Interactor {
 	renderer := render.NewDefaultCliRenderer(logger, writer)
 	return NewInteractor(logger, client, renderer)
 }
 
-func (i *Interactor) ListVersions(productID string) error {
-	list, err := i.client.Version().List(productID)
+func (i *Interactor) ListVersions(productName string) error {
+	list, err := i.client.Version().List(productName)
 	if err != nil {
 		return fmt.Errorf("error listing versions: %w", err)
 	}
@@ -48,8 +48,8 @@ func (i *Interactor) ListVersions(productID string) error {
 	return nil
 }
 
-func (i *Interactor) CreateVersion(productID, krt string) error {
-	versionName, err := i.client.Version().Create(productID, krt)
+func (i *Interactor) CreateVersion(productName, krt string) error {
+	versionName, err := i.client.Version().Create(productName, krt)
 	if err != nil {
 		return fmt.Errorf("error uploading KRT: %w", err)
 	}
@@ -59,58 +59,58 @@ func (i *Interactor) CreateVersion(productID, krt string) error {
 	return nil
 }
 
-func (i *Interactor) StartVersion(productID, versionName, comment string) error {
-	err := i.client.Version().Start(productID, versionName, comment)
+func (i *Interactor) StartVersion(productName, versionName, comment string) error {
+	err := i.client.Version().Start(productName, versionName, comment)
 	if err != nil {
 		return err
 	}
 
-	i.logger.Success(fmt.Sprintf("Starting version %q on product %q.", versionName, productID))
+	i.logger.Success(fmt.Sprintf("Starting version %q on product %q.", versionName, productName))
 
 	return nil
 }
 
-func (i *Interactor) StopVersion(productID, versionName, comment string) error {
-	err := i.client.Version().Stop(productID, versionName, comment)
+func (i *Interactor) StopVersion(productName, versionName, comment string) error {
+	err := i.client.Version().Stop(productName, versionName, comment)
 	if err != nil {
 		return err
 	}
 
-	i.logger.Success(fmt.Sprintf("Stopping version %q on product %q.", versionName, productID))
+	i.logger.Success(fmt.Sprintf("Stopping version %q on product %q.", versionName, productName))
 
 	return nil
 }
 
-func (i *Interactor) PublishVersion(productID, versionName, comment string) error {
-	err := i.client.Version().Publish(productID, versionName, comment)
+func (i *Interactor) PublishVersion(productName, versionName, comment string) error {
+	err := i.client.Version().Publish(productName, versionName, comment)
 	if err != nil {
 		return err
 	}
 
-	i.logger.Success(fmt.Sprintf("Publishing version %q on product %q.", versionName, productID))
+	i.logger.Success(fmt.Sprintf("Publishing version %q on product %q.", versionName, productName))
 
 	return nil
 }
 
-func (i *Interactor) UnpublishVersion(productID, versionName, comment string) error {
-	err := i.client.Version().Unpublish(productID, versionName, comment)
+func (i *Interactor) UnpublishVersion(productName, versionName, comment string) error {
+	err := i.client.Version().Unpublish(productName, versionName, comment)
 	if err != nil {
 		return err
 	}
 
-	i.logger.Success(fmt.Sprintf("Unpublishing version %q on product %q.", versionName, productID))
+	i.logger.Success(fmt.Sprintf("Unpublishing version %q on product %q.", versionName, productName))
 
 	return nil
 }
 
-func (i *Interactor) ListVersionConfig(productID, versionName string, showValues bool) error {
-	cfg, err := i.client.Version().GetConfig(productID, versionName)
+func (i *Interactor) ListVersionConfig(productName, versionName string, showValues bool) error {
+	cfg, err := i.client.Version().GetConfig(productName, versionName)
 	if err != nil {
 		return err
 	}
 
 	if len(cfg.Vars) == 0 {
-		i.logger.Info(fmt.Sprintf("No config found for version %q on product %q.", versionName, productID))
+		i.logger.Info(fmt.Sprintf("No config found for version %q on product %q.", versionName, productName))
 		return nil
 	}
 
@@ -119,8 +119,8 @@ func (i *Interactor) ListVersionConfig(productID, versionName string, showValues
 	return nil
 }
 
-func (i *Interactor) UpdateVersionConfig(productID, versionName string, newConfig []version.ConfigVariableInput) error {
-	completed, err := i.client.Version().UpdateConfig(productID, versionName, newConfig)
+func (i *Interactor) UpdateVersionConfig(productName, versionName string, newConfig []version.ConfigVariableInput) error {
+	completed, err := i.client.Version().UpdateConfig(productName, versionName, newConfig)
 	if err != nil {
 		return err
 	}

@@ -30,7 +30,7 @@
 
 ---
 
-This repo contains a CLI to access, query and manage KAI.
+This repo contains a CLI to access, query and manage KAI servers.
 
 
 ## Frameworks and libraries

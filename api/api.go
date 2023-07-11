@@ -23,8 +23,8 @@ func (a *KAI) Product() product.ProductInterface {
 	return a.product
 }
 
-// NewKAIClient creates an API client instance.
-func NewKAIClient(cfg *graphql.ClientConfig, server *config.ServerConfig, appVersion string) *KAI {
+// NewKaiClient creates an API client instance.
+func NewKaiClient(cfg *graphql.ClientConfig, server *config.ServerConfig, appVersion string) *KAI {
 	g := graphql.NewGqlManager(cfg, server, appVersion)
 
 	return &KAI{

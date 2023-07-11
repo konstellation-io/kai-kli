@@ -24,7 +24,7 @@ func NewVersionCmd(logger logging.Interface, cfg *config.Config) *cobra.Command 
 	}
 
 	cmd.PersistentFlags().StringP("server", "s", cfg.DefaultServer, "KAI server to use")
-	cmd.PersistentFlags().StringP(productFlag, "p", "", "product ID of the version")
+	cmd.PersistentFlags().StringP(productFlag, "r", "", "product of the version")
 	_ = cmd.MarkFlagRequired(productFlag)
 
 	cmd.AddCommand(

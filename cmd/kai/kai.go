@@ -6,7 +6,6 @@ import (
 
 	"github.com/konstellation-io/kli/api/kai/config"
 	"github.com/konstellation-io/kli/cmd/kai/product"
-	"github.com/konstellation-io/kli/cmd/kai/server"
 	"github.com/konstellation-io/kli/cmd/kai/version"
 	"github.com/konstellation-io/kli/internal/logging"
 )
@@ -24,7 +23,6 @@ func NewKAICmd(logger logging.Interface, cfg *config.Config) *cobra.Command {
 	cmd.AddCommand(
 		product.NewProductCmd(logger, cfg),
 		version.NewVersionCmd(logger, cfg),
-		server.NewServerCmd(logger, cfg),
 	)
 
 	return cmd
