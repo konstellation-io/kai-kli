@@ -14,12 +14,9 @@ func NewServerCmd(logger logging.Interface) *cobra.Command {
 		Short: "Manage servers for kli",
 		Example: heredoc.Doc(`
 			$ kli server ls
-<<<<<<<< HEAD:cmd/server/server.go
 			$ kli server add my-server http://api.kai.local
-========
-			$ kli server add my-server http://api.kai.local TOKEN_12345
+			$ kli server remove my-server
 			$ kli server default my-server
->>>>>>>> origin/develop:cmd/kai/server/server.go
 		`),
 	}
 
@@ -27,6 +24,7 @@ func NewServerCmd(logger logging.Interface) *cobra.Command {
 		NewListCmd(logger),
 		NewDefaultCmd(logger),
 		NewAddCmd(logger),
+		NewRemoveCmd(logger),
 	)
 
 	return cmd

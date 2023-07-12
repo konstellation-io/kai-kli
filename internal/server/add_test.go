@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	"github.com/jarcoal/httpmock"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
 	"gopkg.in/yaml.v3"
@@ -21,8 +20,9 @@ import (
 type AddServerSuite struct {
 	suite.Suite
 
-	manager *server.Handler
-	tmpDir  string
+	renderer *mocks.MockRenderer
+	manager  *server.Handler
+	tmpDir   string
 }
 
 func TestAddServerSuite(t *testing.T) {
@@ -35,6 +35,7 @@ func (s *AddServerSuite) SetupSuite() {
 	renderer := mocks.NewMockRenderer(ctrl)
 	mocks.AddLoggerExpects(logger)
 
+	s.renderer = renderer
 	s.manager = server.NewServerHandler(logger, renderer)
 
 	tmpDir, err := os.MkdirTemp("", "TestAddServer_*")
@@ -61,6 +62,8 @@ func (s *AddServerSuite) AfterTest(_, _ string) {
 
 func (s *AddServerSuite) TestAddServer_ValidServerInExistingConfig() {
 	existingConfig, err := createDefaultConfiguration()
+
+	s.renderer.EXPECT().RenderServers(gomock.Any()).Times(1)
 	s.Require().NoError(err)
 
 	var (
@@ -74,12 +77,6 @@ func (s *AddServerSuite) TestAddServer_ValidServerInExistingConfig() {
 			Servers: append(existingConfig.Servers, newServer),
 		}
 	)
-
-	httpmock.Activate()
-	defer httpmock.DeactivateAndReset()
-
-	httpmock.RegisterResponder("GET", newServer.URL+"/info",
-		httpmock.NewStringResponder(200, `{"isKaiServer": true}`))
 
 	err = s.manager.AddNewServer(server.Server{Name: newServer.Name, URL: newServer.URL}, false)
 	s.Assert().NoError(err)
@@ -97,6 +94,8 @@ func (s *AddServerSuite) TestAddServer_ValidServerInExistingConfig() {
 
 func (s *AddServerSuite) TestAddServer_DefaultServer() {
 	existingConfig, err := createDefaultConfiguration()
+
+	s.renderer.EXPECT().RenderServers(gomock.Any()).Times(1)
 	s.Require().NoError(err)
 
 	for i := range existingConfig.Servers {
@@ -114,12 +113,6 @@ func (s *AddServerSuite) TestAddServer_DefaultServer() {
 			Servers: append(existingConfig.Servers, newServer),
 		}
 	)
-
-	httpmock.Activate()
-	defer httpmock.DeactivateAndReset()
-
-	httpmock.RegisterResponder("GET", newServer.URL+"/info",
-		httpmock.NewStringResponder(200, `{"isKaiServer": true}`))
 
 	err = s.manager.AddNewServer(server.Server{Name: newServer.Name, URL: newServer.URL}, true)
 	s.Assert().NoError(err)
@@ -144,12 +137,6 @@ func (s *AddServerSuite) TestAddServer_DuplicatedServerName() {
 		URL:  "new-server.com",
 	}
 
-	httpmock.Activate()
-	defer httpmock.DeactivateAndReset()
-
-	httpmock.RegisterResponder("GET", newServer.URL+"/info",
-		httpmock.NewStringResponder(200, `{"isKaiServer": true}`))
-
 	err = s.manager.AddNewServer(newServer, false)
 	s.Assert().ErrorIs(err, configuration.ErrDuplicatedServerName)
 }
@@ -162,12 +149,6 @@ func (s *AddServerSuite) TestAddServer_DuplicatedServerURL() {
 		Name: "new-server",
 		URL:  existingConfig.Servers[0].URL,
 	}
-
-	httpmock.Activate()
-	defer httpmock.DeactivateAndReset()
-
-	httpmock.RegisterResponder("GET", newServer.URL+"/info",
-		httpmock.NewStringResponder(200, `{"isKaiServer": true}`))
 
 	err = s.manager.AddNewServer(newServer, false)
 	s.Assert().ErrorIs(err, configuration.ErrDuplicatedServerURL)
