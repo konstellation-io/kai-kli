@@ -5,8 +5,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/konstellation-io/kli/internal/configuration"
 	"github.com/konstellation-io/kli/internal/logging"
+	"github.com/konstellation-io/kli/internal/server"
 
 	"github.com/konstellation-io/kli/internal/render"
 )
@@ -21,26 +21,13 @@ func NewDefaultCmd(logger logging.Interface) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			name := args[0]
 
-			configHandler := configuration.NewKaiConfigHandler(logger)
-			kaiConfig, err := configHandler.GetConfiguration()
-			if err != nil {
-				return err
-			}
-
-			err = kaiConfig.SetDefaultServer(name)
-			if err != nil {
-				return err
-			}
-
-			err = configHandler.WriteConfiguration(kaiConfig)
-			if err != nil {
-				return err
-			}
-
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
-			r.RenderServers(kaiConfig.Servers)
+			err := server.NewServerHandler(logger, r).SetDefaultServer(name)
+			if err != nil {
+				return err
+			}
 
-			logger.Success(fmt.Sprintf("Server %q is now default.\n", name))
+			logger.Success(fmt.Sprintf("Server %q correctly set as default.\n", name))
 
 			return nil
 		},
