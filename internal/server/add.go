@@ -10,7 +10,6 @@ import (
 
 var (
 	_validServerName     = regexp.MustCompile(`^[A-Za-z0-9\-_]+$`)
-	ErrInvalidKaiServer  = errors.New("invalid server")
 	ErrInvalidServerName = errors.New("invalid server name, only alphanumeric and hyphens are supported")
 )
 
@@ -26,7 +25,7 @@ func (c *Handler) AddNewServer(server Server, isDefault bool) error {
 		return fmt.Errorf("add server to user configuration: %w", err)
 	}
 
-	kaiConfig, err := c.configHandler.GetConfiguration()
+	kaiConfig, err := c.configService.GetConfiguration()
 	if err != nil {
 		return err
 	}
@@ -49,12 +48,12 @@ func (c *Handler) validateServerName(server Server) error {
 }
 
 func (c *Handler) addServerToConfiguration(server Server, isDefault bool) error {
-	userConfig, err := c.configHandler.GetConfiguration()
+	userConfig, err := c.configService.GetConfiguration()
 	if err != nil {
 		return fmt.Errorf("get user configuration: %w", err)
 	}
 
-	if err := userConfig.AddServer(configuration.Server{
+	if err := userConfig.AddServer(&configuration.Server{
 		Name:      server.Name,
 		URL:       server.URL,
 		IsDefault: isDefault,
@@ -62,7 +61,7 @@ func (c *Handler) addServerToConfiguration(server Server, isDefault bool) error 
 		return err
 	}
 
-	err = c.configHandler.WriteConfiguration(userConfig)
+	err = c.configService.WriteConfiguration(userConfig)
 	if err != nil {
 		return fmt.Errorf("update user configuration: %w", err)
 	}

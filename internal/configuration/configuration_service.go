@@ -10,17 +10,17 @@ import (
 	"github.com/konstellation-io/kli/internal/logging"
 )
 
-type KaiConfigHandler struct {
+type KaiConfigService struct {
 	logger logging.Interface
 }
 
-func NewKaiConfigHandler(logger logging.Interface) *KaiConfigHandler {
-	return &KaiConfigHandler{
+func NewKaiConfigService(logger logging.Interface) *KaiConfigService {
+	return &KaiConfigService{
 		logger: logger,
 	}
 }
 
-func (c *KaiConfigHandler) GetConfiguration() (*KaiConfiguration, error) {
+func (c *KaiConfigService) GetConfiguration() (*KaiConfiguration, error) {
 	configBytes, err := os.ReadFile(viper.GetString(config.KaiConfigPath))
 	if err != nil {
 		return nil, err
@@ -36,7 +36,7 @@ func (c *KaiConfigHandler) GetConfiguration() (*KaiConfiguration, error) {
 	return &kaiConfiguration, nil
 }
 
-func (c *KaiConfigHandler) WriteConfiguration(newConfig *KaiConfiguration) error {
+func (c *KaiConfigService) WriteConfiguration(newConfig *KaiConfiguration) error {
 	updatedConfig, err := yaml.Marshal(newConfig)
 	if err != nil {
 		return err

@@ -191,7 +191,7 @@ func (r *CliRenderer) RenderServers(servers []configuration.Server) {
 		r.tableWriter.Append([]string{
 			fmt.Sprintf("%s%s", s.Name, defaultMark),
 			s.URL,
-			"",
+			fmt.Sprintf("%t", s.Token != nil && s.Token.AccessToken != ""),
 		})
 	}
 

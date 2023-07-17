@@ -8,14 +8,15 @@ var (
 	ErrDuplicatedServerName = errors.New("duplicated server name")
 	ErrDuplicatedServerURL  = errors.New("duplicated server URL")
 	ErrServerNotFound       = errors.New("server not found")
+	ErrNoServersFound       = errors.New("there are no servers configured")
 )
 
-func (kc *KaiConfiguration) AddServer(server Server) error {
+func (kc *KaiConfiguration) AddServer(server *Server) error {
 	if err := kc.checkServerDuplication(server); err != nil {
 		return err
 	}
 
-	kc.Servers = append(kc.Servers, server)
+	kc.Servers = append(kc.Servers, *server)
 
 	// If there is just one server, set the first one as default.
 	if len(kc.Servers) == 1 || server.IsDefault {
@@ -27,16 +28,16 @@ func (kc *KaiConfiguration) AddServer(server Server) error {
 	return nil
 }
 
-func (kc *KaiConfiguration) UpdateServer(server Server) error {
+func (kc *KaiConfiguration) UpdateServer(server *Server) error {
 	index, _, err := kc.findServer(server.Name)
 	if err != nil {
 		return ErrServerNotFound
 	}
 
-	kc.Servers[index] = server
+	kc.Servers[index] = *server
 
 	// If the server to be updated is set as default, set the other servers to false.
-	if server.IsDefault {
+	if server.IsDefault || len(kc.Servers) == 1 {
 		if err := kc.SetDefaultServer(server.Name); err != nil {
 			return err
 		}
@@ -73,6 +74,20 @@ func (kc *KaiConfiguration) SetDefaultServer(serverName string) error {
 	return nil
 }
 
+func (kc *KaiConfiguration) GetDefaultServer() (*Server, error) {
+	if len(kc.Servers) == 0 {
+		return nil, ErrNoServersFound
+	}
+
+	for _, s := range kc.Servers {
+		if s.IsDefault {
+			return &s, nil
+		}
+	}
+
+	return nil, ErrServerNotFound
+}
+
 func (kc *KaiConfiguration) CheckServerExists(serverName string) bool {
 	_, _, err := kc.findServer(serverName)
 	return err == nil
@@ -97,7 +112,7 @@ func (kc *KaiConfiguration) findServer(server string) (int, *Server, error) {
 	return 0, nil, ErrServerNotFound
 }
 
-func (kc *KaiConfiguration) checkServerDuplication(server Server) error {
+func (kc *KaiConfiguration) checkServerDuplication(server *Server) error {
 	for _, s := range kc.Servers {
 		if s.Name == server.Name {
 			return ErrDuplicatedServerName

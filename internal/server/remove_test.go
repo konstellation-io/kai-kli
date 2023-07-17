@@ -74,7 +74,7 @@ func (s *RemoveServerSuite) AfterTest(_, _ string) {
 func (s *RemoveServerSuite) TestRemoveServer_RemoveExistingServer() {
 	// GIVEN
 	s.renderer.EXPECT().RenderServers(gomock.Any()).Times(1)
-	currentConfig := configuration.NewKaiConfigHandler(s.logger)
+	currentConfig := configuration.NewKaiConfigService(s.logger)
 	givenConfig := configuration.KaiConfiguration{
 		Servers: []configuration.Server{
 			{
@@ -114,7 +114,7 @@ func (s *RemoveServerSuite) TestRemoveServer_RemoveExistingServer() {
 
 func (s *RemoveServerSuite) TestRemoveServer_RemoveNonExistingServer() {
 	// GIVEN
-	currentConfig := configuration.NewKaiConfigHandler(s.logger)
+	currentConfig := configuration.NewKaiConfigService(s.logger)
 	givenConfig := configuration.KaiConfiguration{
 		Servers: []configuration.Server{
 			{
@@ -143,7 +143,7 @@ func (s *RemoveServerSuite) TestRemoveServer_RemoveNonExistingServer() {
 func (s *RemoveServerSuite) TestRemoveServer_RemoveDefaultServer() {
 	// GIVEN
 	s.renderer.EXPECT().RenderServers(gomock.Any()).Times(1)
-	currentConfig := configuration.NewKaiConfigHandler(s.logger)
+	currentConfig := configuration.NewKaiConfigService(s.logger)
 	givenConfig := configuration.KaiConfiguration{
 		Servers: []configuration.Server{
 			{

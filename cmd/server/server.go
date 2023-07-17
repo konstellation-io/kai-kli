@@ -25,6 +25,7 @@ func NewServerCmd(logger logging.Interface) *cobra.Command {
 		NewDefaultCmd(logger),
 		NewAddCmd(logger),
 		NewRemoveCmd(logger),
+		NewLoginCmd(logger),
 	)
 
 	return cmd

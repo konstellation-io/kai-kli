@@ -1,22 +1,22 @@
 package server
 
 func (c *Handler) RemoveServer(server string) error {
-	config, err := c.configHandler.GetConfiguration()
+	configService, err := c.configService.GetConfiguration()
 	if err != nil {
 		return err
 	}
 
-	err = config.DeleteServer(server)
+	err = configService.DeleteServer(server)
 	if err != nil {
 		return err
 	}
 
-	err = c.configHandler.WriteConfiguration(config)
+	err = c.configService.WriteConfiguration(configService)
 	if err != nil {
 		return err
 	}
 
-	c.renderer.RenderServers(config.Servers)
+	c.renderer.RenderServers(configService.Servers)
 
 	return nil
 }

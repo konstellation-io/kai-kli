@@ -1,12 +1,7 @@
 package server
 
-import (
-	"github.com/konstellation-io/kli/internal/configuration"
-)
-
 func (c *Handler) SetDefaultServer(server string) error {
-	configHandler := configuration.NewKaiConfigHandler(c.logger)
-	kaiConfig, err := configHandler.GetConfiguration()
+	kaiConfig, err := c.configService.GetConfiguration()
 
 	if err != nil {
 		return err
@@ -17,7 +12,7 @@ func (c *Handler) SetDefaultServer(server string) error {
 		return err
 	}
 
-	err = configHandler.WriteConfiguration(kaiConfig)
+	err = c.configService.WriteConfiguration(kaiConfig)
 	if err != nil {
 		return err
 	}
