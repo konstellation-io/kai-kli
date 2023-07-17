@@ -10,7 +10,7 @@ import (
 	"github.com/konstellation-io/kli/api/kai/config"
 	"github.com/konstellation-io/kli/cmd/args"
 	config2 "github.com/konstellation-io/kli/cmd/config"
-	"github.com/konstellation-io/kli/internal/kai"
+	"github.com/konstellation-io/kli/internal/commands/kai"
 	"github.com/konstellation-io/kli/internal/logging"
 )
 

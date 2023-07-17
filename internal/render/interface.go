@@ -3,8 +3,8 @@ package render
 import (
 	"github.com/konstellation-io/kli/api/kai/product"
 	"github.com/konstellation-io/kli/api/kai/version"
-	"github.com/konstellation-io/kli/internal/configuration"
-	"github.com/konstellation-io/kli/internal/krt/errors"
+	"github.com/konstellation-io/kli/internal/commands/krt/errors"
+	"github.com/konstellation-io/kli/internal/services/configuration"
 )
 
 //go:generate mockgen -source=${GOFILE} -destination=../../mocks/renderer.go -package=mocks

@@ -5,16 +5,16 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/konstellation-io/kli/internal/commands/server"
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/konstellation-io/kli/internal/render"
-	"github.com/konstellation-io/kli/internal/server"
 )
 
 const (
 	_userFlag     = "user"
 	_passwordFlag = "password"
 	_realmFlag    = "realm"
-	_clientIdFlag = "client-id"
+	_clientIDFlag = "client-id"
 )
 
 // NewLoginCmd creates a new command to log in to an existing server.
@@ -41,14 +41,14 @@ func NewLoginCmd(logger logging.Interface) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			clientId, err := cmd.Flags().GetString(_clientIdFlag)
+			clientID, err := cmd.Flags().GetString(_clientIDFlag)
 			if err != nil {
 				return err
 			}
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
 
-			_, err = server.NewServerHandler(logger, r).Login(serverName, realm, clientId, username, password)
+			_, err = server.NewServerHandler(logger, r).Login(serverName, realm, clientID, username, password)
 			if err != nil {
 				return err
 			}
@@ -62,12 +62,12 @@ func NewLoginCmd(logger logging.Interface) *cobra.Command {
 	cmd.Flags().StringP(_userFlag, "u", "", "Username to auth.go.")
 	cmd.Flags().StringP(_passwordFlag, "p", "", "Password to auth.go.")
 	cmd.Flags().String(_realmFlag, "", "Password to auth.go.")
-	cmd.Flags().String(_clientIdFlag, "", "Password to auth.go.")
+	cmd.Flags().String(_clientIDFlag, "", "Password to auth.go.")
 
-	cmd.MarkFlagRequired(_userFlag)
-	cmd.MarkFlagRequired(_passwordFlag)
-	cmd.MarkFlagRequired(_realmFlag)
-	cmd.MarkFlagRequired(_clientIdFlag)
+	cmd.MarkFlagRequired(_userFlag)     //nolint:errcheck
+	cmd.MarkFlagRequired(_passwordFlag) //nolint:errcheck
+	cmd.MarkFlagRequired(_realmFlag)    //nolint:errcheck
+	cmd.MarkFlagRequired(_clientIDFlag) //nolint:errcheck
 
 	return cmd
 }

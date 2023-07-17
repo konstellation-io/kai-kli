@@ -7,10 +7,10 @@ import (
 	"github.com/konstellation-io/kli/cmd/kai"
 	"github.com/konstellation-io/kli/cmd/krt"
 	"github.com/konstellation-io/kli/cmd/server"
-	auth "github.com/konstellation-io/kli/internal/authentication"
-	"github.com/konstellation-io/kli/internal/configuration"
+	"github.com/konstellation-io/kli/internal/commands/setup"
 	"github.com/konstellation-io/kli/internal/logging"
-	"github.com/konstellation-io/kli/internal/setup"
+	auth "github.com/konstellation-io/kli/internal/services/authentication"
+	"github.com/konstellation-io/kli/internal/services/configuration"
 	"github.com/konstellation-io/kli/pkg/iostreams"
 )
 
@@ -78,7 +78,6 @@ func authenticateServer(logger logging.Interface, cmd *cobra.Command) error {
 		return err
 	}
 
-	//TODO force to add the server as --server in all places
 	serverName, _ := cmd.Flags().GetString("server")
 
 	srv, err := getServerOrDefault(conf, serverName)
@@ -89,6 +88,7 @@ func authenticateServer(logger logging.Interface, cmd *cobra.Command) error {
 	if _, err := kaiAuth.GetToken(srv.Name); err != nil {
 		return err
 	}
+
 	return nil
 }
 

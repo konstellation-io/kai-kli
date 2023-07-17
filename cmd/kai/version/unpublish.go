@@ -5,12 +5,12 @@ import (
 	"github.com/spf13/viper"
 
 	config2 "github.com/konstellation-io/kli/cmd/config"
+	"github.com/konstellation-io/kli/internal/commands/kai"
 
 	"github.com/konstellation-io/kli/api"
 	"github.com/konstellation-io/kli/api/graphql"
 	"github.com/konstellation-io/kli/api/kai/config"
 	"github.com/konstellation-io/kli/cmd/args"
-	"github.com/konstellation-io/kli/internal/kai"
 	"github.com/konstellation-io/kli/internal/logging"
 )
 

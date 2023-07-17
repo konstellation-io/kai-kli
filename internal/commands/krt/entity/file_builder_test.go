@@ -1,8 +1,6 @@
-package testhelpers
+package entity_test
 
 import (
-	"gopkg.in/yaml.v3"
-
 	"github.com/konstellation-io/kli/internal/commands/krt/entity"
 )
 
@@ -13,8 +11,8 @@ type KrtBuilder struct {
 func NewKrtBuilder() *KrtBuilder {
 	return &KrtBuilder{
 		krtYaml: &entity.File{
-			KrtVersion:  "v2",
 			Version:     "version-name",
+			KrtVersion:  "v2",
 			Description: "Test description",
 			Entrypoint: &entity.Entrypoint{
 				Proto: "valid.proto",
@@ -22,7 +20,7 @@ func NewKrtBuilder() *KrtBuilder {
 			},
 			Config: &entity.Config{
 				Variables: []string{"TEST_VAR"},
-				Files:     []string{"TEST_FILE"},
+				Files:     []string{"test_file"},
 			},
 			Workflows: []entity.Workflow{
 				{
@@ -35,7 +33,7 @@ func NewKrtBuilder() *KrtBuilder {
 							Image:         "test/image",
 							Src:           "src/test",
 							GPU:           false,
-							Replicas:      1,
+							Replicas:      2,
 							Subscriptions: []string{"entrypoint"},
 						},
 					},
@@ -51,9 +49,7 @@ func (k *KrtBuilder) WithKrtVersion(krtVersion string) *KrtBuilder {
 }
 
 func (k *KrtBuilder) WithVersion(version string) *KrtBuilder {
-	v, _ := entity.NewResourceName(version)
-	k.krtYaml.Version = v
-
+	k.krtYaml.Version, _ = entity.NewResourceName(version)
 	return k
 }
 
@@ -87,15 +83,16 @@ func (k *KrtBuilder) WithWorkflows(workflows []entity.Workflow) *KrtBuilder {
 	return k
 }
 
-func (k *KrtBuilder) Build() *entity.File {
-	return k.krtYaml
+func (k *KrtBuilder) WithWorkflowsNodes(nodes []entity.Node) *KrtBuilder {
+	k.krtYaml.Workflows[0].Nodes = nodes
+	return k
 }
 
-func (k *KrtBuilder) AsString() string {
-	krtFile, err := yaml.Marshal(k.krtYaml)
-	if err != nil {
-		return ""
-	}
+func (k *KrtBuilder) WithWorkflowsExitpoint(exitpoint string) *KrtBuilder {
+	k.krtYaml.Workflows[0].Exitpoint = exitpoint
+	return k
+}
 
-	return string(krtFile)
+func (k *KrtBuilder) Build() *entity.File {
+	return k.krtYaml
 }

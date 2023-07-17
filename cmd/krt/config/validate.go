@@ -2,9 +2,9 @@ package config
 
 import (
 	"github.com/MakeNowJust/heredoc"
-	"github.com/konstellation-io/kli/internal/krt/config"
 	"github.com/spf13/cobra"
 
+	"github.com/konstellation-io/kli/internal/commands/krt/config"
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/konstellation-io/kli/internal/render"
 )
