@@ -10,7 +10,7 @@ import (
 	ignore "github.com/sabhiram/go-gitignore"
 
 	"github.com/konstellation-io/kli/internal/commands/krt/entity"
-	fileutils2 "github.com/konstellation-io/kli/internal/commands/krt/fileutils"
+	"github.com/konstellation-io/kli/internal/commands/krt/fileutils"
 	"github.com/konstellation-io/kli/internal/commands/krt/fileutils/compression"
 	"github.com/konstellation-io/kli/internal/logging"
 )
@@ -29,7 +29,7 @@ func NewBuilder(logger logging.Interface, compressor compression.Compressor) *Bu
 }
 
 func (b *Builder) Build(krtSrcPath, krtDstPath, version string, updateLocal bool) error {
-	yamlPath, yamlBaseName, err := fileutils2.GetKrtYaml(krtSrcPath)
+	yamlPath, yamlBaseName, err := fileutils.GetKrtYaml(krtSrcPath)
 	if err != nil {
 		return fmt.Errorf("error getting krt yaml path: %w", err)
 	}
@@ -55,7 +55,7 @@ func (b *Builder) Build(krtSrcPath, krtDstPath, version string, updateLocal bool
 
 		tmpYamlPath := path.Join(tmpDir, yamlBaseName)
 
-		err = fileutils2.Copy(yamlPath, tmpYamlPath)
+		err = fileutils.Copy(yamlPath, tmpYamlPath)
 		if err != nil {
 			return fmt.Errorf("error copying local krt yaml to temporal directory: %w", err)
 		}
@@ -63,7 +63,7 @@ func (b *Builder) Build(krtSrcPath, krtDstPath, version string, updateLocal bool
 		yamlPath = tmpYamlPath
 	}
 
-	err = fileutils2.UpdateVersion(yamlPath, yamlPath, buildVersion)
+	err = fileutils.UpdateVersion(yamlPath, yamlPath, buildVersion)
 	if err != nil {
 		return fmt.Errorf("error updating version: %w", err)
 	}

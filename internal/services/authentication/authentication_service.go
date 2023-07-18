@@ -1,4 +1,4 @@
-package auth
+package authentication
 
 import (
 	"context"
@@ -65,7 +65,7 @@ func (a *AuthenticationService) GetToken(serveName string) (*configuration.Token
 	}
 
 	// Login to the server
-	token, err := a.Login(server.Name, server.Realm, server.ClientID, server.Username, server.Password)
+	token, err := a.Login(server.Name, server.AuthURL, server.Realm, server.ClientID, server.Username, server.Password)
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +77,7 @@ func (a *AuthenticationService) GetToken(serveName string) (*configuration.Token
 	return token, nil
 }
 
-func (a *AuthenticationService) Login(serverName, realm, clientID, username, password string) (*configuration.Token, error) {
+func (a *AuthenticationService) Login(serverName, authUrl, realm, clientID, username, password string) (*configuration.Token, error) {
 	kaiConfig, err := a.configService.GetConfiguration()
 	if err != nil {
 		return nil, err
@@ -89,6 +89,7 @@ func (a *AuthenticationService) Login(serverName, realm, clientID, username, pas
 	}
 
 	// Add credentials to the server
+	server.AuthURL = authUrl
 	server.Realm = realm
 	server.ClientID = clientID
 	server.Username = username
@@ -127,7 +128,7 @@ func (a *AuthenticationService) Login(serverName, realm, clientID, username, pas
 }
 
 func (a *AuthenticationService) loginRequest(server *configuration.Server) (*TokenResponse, error) {
-	u, err := url.Parse(fmt.Sprintf(_loginRequestTemplate, server.URL, server.Realm))
+	u, err := url.Parse(fmt.Sprintf(_loginRequestTemplate, server.AuthURL, server.Realm))
 	if err != nil {
 		return nil, err
 	}
@@ -171,6 +172,6 @@ func (a *AuthenticationService) loginRequest(server *configuration.Server) (*Tok
 }
 
 func (a *AuthenticationService) areCredentialsValid(server *configuration.Server) bool {
-	fmt.Printf("server: %+v\n", server)
-	return server.Username != "" && server.Password != "" && server.Realm != "" && server.ClientID != ""
+	return server.AuthURL != "" && server.Username != "" &&
+		server.Password != "" && server.Realm != "" && server.ClientID != ""
 }

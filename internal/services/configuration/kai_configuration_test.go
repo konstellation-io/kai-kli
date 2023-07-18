@@ -17,6 +17,75 @@ func TestKaiConfigurationSuite(t *testing.T) {
 	suite.Run(t, new(KaiConfigurationTest))
 }
 
+func (ch *KaiConfigurationTest) TestServerIsLoggedIn_ExpectTrue() {
+	// GIVEN
+	server := configuration.Server{
+		Name:     "my-server",
+		URL:      "http://my-server.com",
+		Realm:    "my-realm",
+		ClientID: "my-client-id",
+		Username: "my-username",
+		Password: "my-password",
+		Token: &configuration.Token{
+			Date:             time.Now().UTC(),
+			AccessToken:      "access_token",
+			ExpiresIn:        3600,
+			RefreshExpiresIn: 3600,
+			RefreshToken:     "refresh_token",
+			TokenType:        "Bearer",
+		},
+		IsDefault: true,
+	}
+
+	// WHEN
+	isServerLoggedIn := server.IsLoggedIn()
+
+	// THEN
+	ch.Require().True(isServerLoggedIn)
+}
+
+func (ch *KaiConfigurationTest) TestServerIsLoggedIn_NoToken_ExpectFalse() {
+	// GIVEN
+	server := configuration.Server{
+		Name:      "my-server",
+		URL:       "http://my-server.com",
+		Realm:     "my-realm",
+		ClientID:  "my-client-id",
+		Username:  "my-username",
+		Password:  "my-password",
+		Token:     nil,
+		IsDefault: true,
+	}
+
+	// WHEN
+	isServerLoggedIn := server.IsLoggedIn()
+
+	// THEN
+	ch.Require().False(isServerLoggedIn)
+}
+
+func (ch *KaiConfigurationTest) TestServerIsLoggedIn_EmptyToken_ExpectFalse() {
+	// GIVEN
+	server := configuration.Server{
+		Name:     "my-server",
+		URL:      "http://my-server.com",
+		Realm:    "my-realm",
+		ClientID: "my-client-id",
+		Username: "my-username",
+		Password: "my-password",
+		Token: &configuration.Token{
+			Date: time.Now().UTC(),
+		},
+		IsDefault: true,
+	}
+
+	// WHEN
+	isServerLoggedIn := server.IsLoggedIn()
+
+	// THEN
+	ch.Require().False(isServerLoggedIn)
+}
+
 func (ch *KaiConfigurationTest) TestTokenIsValid_ExpectTrue() {
 	// GIVEN
 	token := configuration.Token{

@@ -11,12 +11,17 @@ type KaiConfiguration struct {
 type Server struct {
 	Name      string `yaml:"name"`
 	URL       string `yaml:"url"`
+	AuthURL   string `yaml:"authUrl"`
 	Realm     string `yaml:"realm"`
 	ClientID  string `yaml:"clientId"`
 	Username  string `yaml:"username"`
 	Password  string `yaml:"password"`
 	Token     *Token `yaml:"token"`
 	IsDefault bool   `yaml:"default"`
+}
+
+func (s *Server) IsLoggedIn() bool {
+	return s.Token != nil && s.Token.AccessToken != ""
 }
 
 type Token struct {
@@ -29,5 +34,5 @@ type Token struct {
 }
 
 func (t *Token) IsValid() bool {
-	return t.Date.Add(time.Duration(t.ExpiresIn) * time.Second).After(time.Now().UTC())
+	return t.AccessToken != "" && t.Date.Add(time.Duration(t.ExpiresIn)*time.Second).After(time.Now().UTC())
 }
