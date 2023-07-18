@@ -20,7 +20,7 @@ const (
 // NewLoginCmd creates a new command to log in to an existing server.
 func NewLoginCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "login <remote_name> [--user <username>] +" +
+		Use: "login <remote_name> [--user <username>] " +
 			"[--password <password>] [--realm <realm>] [--client-id <client-id>]",
 		Args:  cobra.ExactArgs(1),
 		Short: "auth.go to an existing server",
