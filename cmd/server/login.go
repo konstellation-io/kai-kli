@@ -64,7 +64,7 @@ func NewLoginCmd(logger logging.Interface) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringP(_authURLFlag, "url", "", "URL to login.")
+	cmd.Flags().String(_authURLFlag, "", "URL to login.")
 	cmd.Flags().StringP(_userFlag, "u", "", "Username to login.")
 	cmd.Flags().StringP(_passwordFlag, "p", "", "Password to login.")
 	cmd.Flags().String(_realmFlag, "", "Realm to login.")
