@@ -1,8 +1,6 @@
 package root
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 
 	"github.com/konstellation-io/kli/api/kai/config"
@@ -87,8 +85,6 @@ func authenticateServer(logger logging.Interface, cmd *cobra.Command) error {
 	}
 
 	serverName, err := cmd.Flags().GetString(_serverFlag)
-	logger.Success(fmt.Sprintf("Logging out from %q with error %v...", serverName, err))
-
 	if err != nil {
 		defaultServer, err := conf.GetDefaultServer()
 		if err != nil {
