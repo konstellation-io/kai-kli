@@ -15,7 +15,7 @@ const _defaultFlag = "default"
 // NewAddCmd creates a new command to add a new server to config file.
 func NewAddCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "add <remote_name> <server_url> [--default]",
+		Use:     "add <server_name> <server_url> [--default]",
 		Aliases: []string{"set"},
 		Args:    cobra.ExactArgs(2), //nolint:gomnd
 		Short:   "Add a new server in config file",

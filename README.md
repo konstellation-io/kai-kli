@@ -46,7 +46,7 @@ This repo contains a CLI to access, query and manage KAI servers.
 You can compile the binary with this command: 
 
 ```bash
-go build -o kli cmd/main.go
+./scripts/generate_release.sh <version> <executable_name>
 ```
 
 Then run any command: 

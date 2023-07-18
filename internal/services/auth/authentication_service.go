@@ -15,8 +15,9 @@ import (
 )
 
 const (
-	_grantTypePassword    = "password"
-	_loginRequestTemplate = "https://%s/realms/%s/protocol/openid-connect/token"
+	_grantTypePassword     = "password"
+	_loginRequestTemplate  = "https://%s/realms/%s/protocol/openid-connect/token"
+	_logoutRequestTemplate = "https://%s/realms/%s/protocol/openid-connect/logout"
 )
 
 var (
@@ -127,6 +128,39 @@ func (a *AuthenticationService) Login(serverName, authURL, realm, clientID, user
 	return server.Token, nil
 }
 
+func (a *AuthenticationService) Logout(serverName string) error {
+	kaiConfig, err := a.configService.GetConfiguration()
+	if err != nil {
+		return err
+	}
+
+	server, err := kaiConfig.GetServer(serverName)
+	if err != nil {
+		return err
+	}
+
+	if a.areCredentialsValid(server) {
+		err = a.logoutRequest(server)
+		if err != nil {
+			return err
+		}
+	}
+
+	server.AuthURL = ""
+	server.Realm = ""
+	server.ClientID = ""
+	server.Username = ""
+	server.Password = ""
+	server.Token = nil
+
+	err = kaiConfig.UpdateServer(server)
+	if err != nil {
+		return err
+	}
+
+	return a.configService.WriteConfiguration(kaiConfig)
+}
+
 func (a *AuthenticationService) loginRequest(server *configuration.Server) (*TokenResponse, error) {
 	u, err := url.Parse(fmt.Sprintf(_loginRequestTemplate, server.AuthURL, server.Realm))
 	if err != nil {
@@ -169,6 +203,42 @@ func (a *AuthenticationService) loginRequest(server *configuration.Server) (*Tok
 	}
 
 	return &tokenResponse, nil
+}
+
+func (a *AuthenticationService) logoutRequest(server *configuration.Server) error {
+	u, err := url.Parse(fmt.Sprintf(_logoutRequestTemplate, server.AuthURL, server.Realm))
+	if err != nil {
+		return err
+	}
+
+	data := url.Values{}
+	data.Set("client_id", server.ClientID)
+	data.Add("refresh_token", server.Token.RefreshToken)
+
+	// Make the HTTP POST request
+	req, err := http.NewRequestWithContext(context.Background(),
+		http.MethodPost, u.String(), strings.NewReader(data.Encode()))
+	if err != nil {
+		return err
+	}
+
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", server.Token.AccessToken))
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+
+	if err != nil {
+		return err
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("error requesting token: %s", resp.Status)
+	}
+
+	return nil
 }
 
 func (a *AuthenticationService) areCredentialsValid(server *configuration.Server) bool {

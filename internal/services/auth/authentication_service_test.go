@@ -168,6 +168,126 @@ func (s *AuthenticationSuite) TestLogin_ExpectError() {
 	s.Require().Nil(token)
 }
 
+func (s *AuthenticationSuite) TestLogout_ExpectToken() {
+	// Given
+	err := os.MkdirAll(path.Dir(viper.GetString(config.KaiConfigPath)), 0750)
+	s.Require().NoError(err)
+
+	_, err = os.Create(viper.GetString(config.KaiConfigPath))
+	s.Require().NoError(err)
+
+	kaiConfService := configuration.NewKaiConfigService(s.logger)
+
+	kaiConf, err := kaiConfService.GetConfiguration()
+	s.Require().NoError(err)
+
+	srv := &configuration.Server{
+		Name:      "my-server",
+		URL:       "kai-dev.konstellation.io",
+		AuthURL:   "auth.kai-dev.konstellation.io",
+		Realm:     "konstellation",
+		ClientID:  "admin-cli",
+		Username:  "david",
+		Password:  "password",
+		IsDefault: true,
+		Token: &configuration.Token{
+			Date:             time.Now().UTC(),
+			AccessToken:      "access token",
+			ExpiresIn:        3600,
+			RefreshExpiresIn: 3600,
+			RefreshToken:     "refresh token",
+			TokenType:        "Bearer",
+		},
+	}
+
+	err = kaiConf.AddServer(srv)
+	s.Require().NoError(err)
+
+	err = kaiConfService.WriteConfiguration(kaiConf)
+	s.Require().NoError(err)
+
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	// Exact URL match
+	httpmock.RegisterMatcherResponder("POST",
+		fmt.Sprintf("https://%s/realms/%s/protocol/openid-connect/logout",
+			srv.AuthURL, srv.Realm),
+		httpmock.HeaderExists("Content-Type").
+			And(httpmock.HeaderContains("Content-Type", "application/x-www-form-urlencoded")),
+		httpmock.NewStringResponder(204, `{}`))
+
+	// WHEN
+	err = s.authentication.Logout(srv.Name)
+
+	// THEN
+	s.Require().NoError(err)
+
+	kaiConf, err = kaiConfService.GetConfiguration()
+	s.Require().NoError(err)
+	updatedSrv, err := kaiConf.GetServer(srv.Name)
+	s.Require().NoError(err)
+	s.Require().Empty(updatedSrv.AuthURL)
+	s.Require().Empty(updatedSrv.Realm)
+	s.Require().Empty(updatedSrv.ClientID)
+	s.Require().Empty(updatedSrv.Username)
+	s.Require().Empty(updatedSrv.Password)
+	s.Require().Nil(updatedSrv.Token)
+}
+
+func (s *AuthenticationSuite) TestLogout_ExpectError() {
+	// Given
+	err := os.MkdirAll(path.Dir(viper.GetString(config.KaiConfigPath)), 0750)
+	s.Require().NoError(err)
+
+	_, err = os.Create(viper.GetString(config.KaiConfigPath))
+	s.Require().NoError(err)
+
+	kaiConfService := configuration.NewKaiConfigService(s.logger)
+
+	kaiConf, err := kaiConfService.GetConfiguration()
+	s.Require().NoError(err)
+
+	srv := &configuration.Server{
+		Name:     "my-server",
+		URL:      "kai-dev.konstellation.io",
+		AuthURL:  "auth.kai-dev.konstellation.io",
+		Realm:    "konstellation",
+		ClientID: "admin-cli",
+		Username: "david",
+		Password: "password",
+		Token: &configuration.Token{
+			Date:             time.Now().UTC(),
+			AccessToken:      "access token",
+			ExpiresIn:        3600,
+			RefreshExpiresIn: 3600,
+			RefreshToken:     "refresh token",
+			TokenType:        "Bearer",
+		},
+		IsDefault: true,
+	}
+
+	err = kaiConf.AddServer(srv)
+	s.Require().NoError(err)
+
+	err = kaiConfService.WriteConfiguration(kaiConf)
+	s.Require().NoError(err)
+
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	// Exact URL match
+	httpmock.RegisterResponder("POST", fmt.Sprintf("https://%s/realms/%s/protocol/openid-connect/logout",
+		srv.AuthURL, srv.Realm),
+		httpmock.NewErrorResponder(errors.New("error getting token")))
+
+	// WHEN
+	err = s.authentication.Logout(srv.Name)
+
+	// THEN
+	s.Require().Error(err)
+}
+
 func (s *AuthenticationSuite) TestGetToken_GetNewToken_ExpectToken() {
 	// Given
 	err := os.MkdirAll(path.Dir(viper.GetString(config.KaiConfigPath)), 0750)
