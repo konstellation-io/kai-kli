@@ -1,4 +1,4 @@
-package authentication
+package auth
 
 import (
 	"context"
@@ -77,7 +77,7 @@ func (a *AuthenticationService) GetToken(serveName string) (*configuration.Token
 	return token, nil
 }
 
-func (a *AuthenticationService) Login(serverName, authUrl, realm, clientID, username, password string) (*configuration.Token, error) {
+func (a *AuthenticationService) Login(serverName, authURL, realm, clientID, username, password string) (*configuration.Token, error) {
 	kaiConfig, err := a.configService.GetConfiguration()
 	if err != nil {
 		return nil, err
@@ -89,7 +89,7 @@ func (a *AuthenticationService) Login(serverName, authUrl, realm, clientID, user
 	}
 
 	// Add credentials to the server
-	server.AuthURL = authUrl
+	server.AuthURL = authURL
 	server.Realm = realm
 	server.ClientID = clientID
 	server.Username = username

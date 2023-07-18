@@ -9,7 +9,7 @@ import (
 	"github.com/konstellation-io/kli/cmd/server"
 	"github.com/konstellation-io/kli/internal/commands/setup"
 	"github.com/konstellation-io/kli/internal/logging"
-	"github.com/konstellation-io/kli/internal/services/authentication"
+	"github.com/konstellation-io/kli/internal/services/auth"
 	"github.com/konstellation-io/kli/internal/services/configuration"
 	"github.com/konstellation-io/kli/pkg/iostreams"
 )
@@ -71,7 +71,7 @@ func NewRootCmd(
 
 func authenticateServer(logger logging.Interface, cmd *cobra.Command) error {
 	configService := configuration.NewKaiConfigService(logger)
-	kaiAuth := authentication.NewAuthentication(logger)
+	kaiAuth := auth.NewAuthentication(logger)
 
 	conf, err := configService.GetConfiguration()
 	if err != nil {

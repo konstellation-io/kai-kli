@@ -1,4 +1,4 @@
-package authentication_test
+package auth_test
 
 import (
 	"errors"
@@ -15,7 +15,7 @@ import (
 
 	"github.com/konstellation-io/kli/cmd/config"
 	"github.com/konstellation-io/kli/internal/logging"
-	"github.com/konstellation-io/kli/internal/services/authentication"
+	"github.com/konstellation-io/kli/internal/services/auth"
 	"github.com/konstellation-io/kli/internal/services/configuration"
 	"github.com/konstellation-io/kli/mocks"
 )
@@ -23,7 +23,7 @@ import (
 type AuthenticationSuite struct {
 	suite.Suite
 
-	authentication *authentication.AuthenticationService
+	authentication *auth.AuthenticationService
 	logger         logging.Interface
 	tmpDir         string
 }
@@ -38,7 +38,7 @@ func (s *AuthenticationSuite) SetupSuite() {
 	mocks.AddLoggerExpects(logger)
 
 	s.logger = logger
-	s.authentication = authentication.NewAuthentication(logger)
+	s.authentication = auth.NewAuthentication(logger)
 
 	tmpDir, err := os.MkdirTemp("", "TestAuthentication_*")
 	s.Require().NoError(err)

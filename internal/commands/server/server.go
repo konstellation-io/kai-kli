@@ -3,14 +3,14 @@ package server
 import (
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/konstellation-io/kli/internal/render"
-	"github.com/konstellation-io/kli/internal/services/authentication"
+	"github.com/konstellation-io/kli/internal/services/auth"
 	"github.com/konstellation-io/kli/internal/services/configuration"
 )
 
 type Handler struct {
 	logger         logging.Interface
 	renderer       render.Renderer
-	authentication *authentication.AuthenticationService
+	authentication *auth.AuthenticationService
 	configService  *configuration.KaiConfigService
 }
 
@@ -18,7 +18,7 @@ func NewServerHandler(logger logging.Interface, renderer render.Renderer) *Handl
 	return &Handler{
 		logger:         logger,
 		renderer:       renderer,
-		authentication: authentication.NewAuthentication(logger),
+		authentication: auth.NewAuthentication(logger),
 		configService:  configuration.NewKaiConfigService(logger),
 	}
 }
