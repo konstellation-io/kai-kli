@@ -5,13 +5,14 @@
 package mocks
 
 import (
-	reflect "reflect"
+	"reflect"
 
-	gomock "github.com/golang/mock/gomock"
-	product "github.com/konstellation-io/kli/api/kai/product"
-	version "github.com/konstellation-io/kli/api/kai/version"
-	configuration "github.com/konstellation-io/kli/internal/configuration"
-	errors "github.com/konstellation-io/kli/internal/krt/errors"
+	"github.com/golang/mock/gomock"
+
+	"github.com/konstellation-io/kli/api/kai/product"
+	"github.com/konstellation-io/kli/api/kai/version"
+	"github.com/konstellation-io/kli/internal/commands/krt/errors"
+	"github.com/konstellation-io/kli/internal/services/configuration"
 )
 
 // MockRenderer is a mock of Renderer interface.

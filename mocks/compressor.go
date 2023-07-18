@@ -5,11 +5,12 @@
 package mocks
 
 import (
-	os "os"
-	reflect "reflect"
+	"os"
+	"reflect"
 
-	gomock "github.com/golang/mock/gomock"
-	compression "github.com/konstellation-io/kli/internal/krt/fileutils/compression"
+	"github.com/golang/mock/gomock"
+
+	"github.com/konstellation-io/kli/internal/commands/krt/fileutils/compression"
 )
 
 // MockCompressor is a mock of Compressor interface.

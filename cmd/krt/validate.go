@@ -6,8 +6,8 @@ import (
 	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
 
-	"github.com/konstellation-io/kli/internal/krt/fileutils/compression"
-	"github.com/konstellation-io/kli/internal/krt/validate"
+	"github.com/konstellation-io/kli/internal/commands/krt/fileutils/compression"
+	"github.com/konstellation-io/kli/internal/commands/krt/validate"
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/konstellation-io/kli/internal/render"
 )

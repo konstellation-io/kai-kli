@@ -1,8 +1,9 @@
 package testhelpers
 
 import (
-	"github.com/konstellation-io/kli/internal/krt/entity"
 	"gopkg.in/yaml.v3"
+
+	"github.com/konstellation-io/kli/internal/commands/krt/entity"
 )
 
 type KrtBuilder struct {
