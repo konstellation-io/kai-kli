@@ -441,3 +441,54 @@ func (ch *KaiConfigurationTest) TestGetServer_GetNonExistingServer_ExpectError()
 	ch.Require().ErrorIs(err, configuration.ErrServerNotFound)
 	ch.Require().Nil(srv)
 }
+
+func (ch *KaiConfigurationTest) TestGetServerOrDefault_GetExistingServer_ExpectOK() {
+	// GIVEN
+	defaultConfig := configuration.KaiConfiguration{
+		Servers: []configuration.Server{
+			{Name: "test1", URL: "http://test1.com", IsDefault: true, Realm: "realm1"},
+			{Name: "test2", URL: "http://test2.com", IsDefault: false, Realm: "realm2"},
+		},
+	}
+
+	// WHEN
+	srv, err := defaultConfig.GetServerOrDefault("test1")
+
+	// THEN
+	ch.Require().NoError(err)
+	ch.Require().NotNil(srv)
+	ch.Equal(*srv, defaultConfig.Servers[0])
+}
+
+func (ch *KaiConfigurationTest) TestGetServerOrDefault_GetDefaultServer_ExpectOK() {
+	// GIVEN
+	defaultConfig := configuration.KaiConfiguration{
+		Servers: []configuration.Server{
+			{Name: "test1", URL: "http://test1.com", IsDefault: false, Realm: "realm1"},
+			{Name: "test2", URL: "http://test2.com", IsDefault: true, Realm: "realm2"},
+		},
+	}
+
+	// WHEN
+	srv, err := defaultConfig.GetServerOrDefault("test3")
+
+	// THEN
+	ch.Require().NoError(err)
+	ch.Require().NotNil(srv)
+	ch.Equal(*srv, defaultConfig.Servers[1])
+}
+
+func (ch *KaiConfigurationTest) TestGetServerOrDefault_GetNonExistingServer_ExpectError() {
+	// GIVEN
+	defaultConfig := configuration.KaiConfiguration{
+		Servers: []configuration.Server{},
+	}
+
+	// WHEN
+	srv, err := defaultConfig.GetServerOrDefault("server3")
+
+	// THEN
+	ch.Require().Error(err)
+	ch.Require().ErrorIs(err, configuration.ErrNoServersFound)
+	ch.Require().Nil(srv)
+}

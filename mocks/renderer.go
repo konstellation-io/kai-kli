@@ -5,14 +5,10 @@
 package mocks
 
 import (
-	"reflect"
+	reflect "reflect"
 
-	"github.com/golang/mock/gomock"
-
-	"github.com/konstellation-io/kli/api/kai/product"
-	"github.com/konstellation-io/kli/api/kai/version"
-	"github.com/konstellation-io/kli/internal/commands/krt/errors"
-	"github.com/konstellation-io/kli/internal/services/configuration"
+	gomock "github.com/golang/mock/gomock"
+	configuration "github.com/konstellation-io/kli/internal/services/configuration"
 )
 
 // MockRenderer is a mock of Renderer interface.
@@ -38,18 +34,6 @@ func (m *MockRenderer) EXPECT() *MockRendererMockRecorder {
 	return m.recorder
 }
 
-// RenderProducts mocks base method.
-func (m *MockRenderer) RenderProducts(products []product.Product) {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "RenderProducts", products)
-}
-
-// RenderProducts indicates an expected call of RenderProducts.
-func (mr *MockRendererMockRecorder) RenderProducts(products interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderProducts", reflect.TypeOf((*MockRenderer)(nil).RenderProducts), products)
-}
-
 // RenderServers mocks base method.
 func (m *MockRenderer) RenderServers(servers []configuration.Server) {
 	m.ctrl.T.Helper()
@@ -60,40 +44,4 @@ func (m *MockRenderer) RenderServers(servers []configuration.Server) {
 func (mr *MockRendererMockRecorder) RenderServers(servers interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderServers", reflect.TypeOf((*MockRenderer)(nil).RenderServers), servers)
-}
-
-// RenderValidationErrors mocks base method.
-func (m *MockRenderer) RenderValidationErrors(validationErrors []*errors.ValidationError) {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "RenderValidationErrors", validationErrors)
-}
-
-// RenderValidationErrors indicates an expected call of RenderValidationErrors.
-func (mr *MockRendererMockRecorder) RenderValidationErrors(validationErrors interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderValidationErrors", reflect.TypeOf((*MockRenderer)(nil).RenderValidationErrors), validationErrors)
-}
-
-// RenderVars mocks base method.
-func (m *MockRenderer) RenderVars(cfg *version.Config, showValues bool) {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "RenderVars", cfg, showValues)
-}
-
-// RenderVars indicates an expected call of RenderVars.
-func (mr *MockRendererMockRecorder) RenderVars(cfg, showValues interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderVars", reflect.TypeOf((*MockRenderer)(nil).RenderVars), cfg, showValues)
-}
-
-// RenderVersions mocks base method.
-func (m *MockRenderer) RenderVersions(versions version.List) {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "RenderVersions", versions)
-}
-
-// RenderVersions indicates an expected call of RenderVersions.
-func (mr *MockRendererMockRecorder) RenderVersions(versions interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderVersions", reflect.TypeOf((*MockRenderer)(nil).RenderVersions), versions)
 }

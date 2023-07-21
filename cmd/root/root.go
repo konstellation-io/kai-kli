@@ -2,10 +2,10 @@ package root
 
 import (
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 
-	"github.com/konstellation-io/kli/api/kai/config"
-	"github.com/konstellation-io/kli/cmd/kai"
-	"github.com/konstellation-io/kli/cmd/krt"
+	"github.com/konstellation-io/kli/cmd/config"
+	process_registry "github.com/konstellation-io/kli/cmd/process-registry"
 	"github.com/konstellation-io/kli/cmd/server"
 	"github.com/konstellation-io/kli/internal/commands/setup"
 	"github.com/konstellation-io/kli/internal/logging"
@@ -16,7 +16,6 @@ import (
 
 // NewRootCmd creates the base command where all subcommands are added.
 func NewRootCmd(
-	cfg *config.Config,
 	logger logging.Interface,
 	io *iostreams.IOStreams,
 	version,
@@ -27,7 +26,7 @@ func NewRootCmd(
 		Short: "Konstellation CLI",
 		Long:  `Use Konstellation API from the command line.`,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-			err := setDebugLogLevel(cmd, cfg, logger)
+			err := setDebugLogLevel(cmd, logger)
 			if err != nil {
 				return err
 			}
@@ -63,8 +62,7 @@ func NewRootCmd(
 	// Child commands
 	cmd.AddCommand(newVersionCmd(version, buildDate))
 	cmd.AddCommand(server.NewServerCmd(logger))
-	cmd.AddCommand(kai.NewKAICmd(logger, cfg))
-	cmd.AddCommand(krt.NewKRTCmd(logger))
+	cmd.AddCommand(process_registry.NewProcessRegistryCmd(logger))
 
 	return cmd
 }
@@ -80,7 +78,7 @@ func authenticateServer(logger logging.Interface, cmd *cobra.Command) error {
 
 	serverName, _ := cmd.Flags().GetString("server")
 
-	srv, err := getServerOrDefault(conf, serverName)
+	srv, err := conf.GetServerOrDefault(serverName)
 	if err != nil {
 		return err
 	}
@@ -97,19 +95,11 @@ func isMethodAuthenticated(cmd *cobra.Command) bool {
 	return ok && val == "true"
 }
 
-func getServerOrDefault(conf *configuration.KaiConfiguration, serverName string) (*configuration.Server, error) {
-	if serverName != "" {
-		return conf.GetDefaultServer()
-	}
-
-	return conf.GetServer(serverName)
-}
-
-func setDebugLogLevel(cmd *cobra.Command, cfg *config.Config, logger logging.Interface) error {
+func setDebugLogLevel(cmd *cobra.Command, logger logging.Interface) error {
 	d, err := cmd.Flags().GetBool("debug")
 
 	if d {
-		cfg.Debug = true
+		viper.Set(config.DebugKey, true)
 
 		logger.SetDebugLevel()
 	}

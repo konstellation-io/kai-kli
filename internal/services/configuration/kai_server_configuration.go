@@ -102,6 +102,15 @@ func (kc *KaiConfiguration) GetServer(serverName string) (*Server, error) {
 	return server, nil
 }
 
+func (kc *KaiConfiguration) GetServerOrDefault(serverName string) (*Server, error) {
+	_, server, err := kc.findServer(serverName)
+	if err != nil {
+		return kc.GetDefaultServer()
+	}
+
+	return server, nil
+}
+
 func (kc *KaiConfiguration) findServer(server string) (int, *Server, error) {
 	for i, s := range kc.Servers {
 		if server == s.Name {
