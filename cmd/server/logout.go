@@ -62,14 +62,16 @@ func getServerOrDefault(cmd *cobra.Command, logger logging.Interface) (*configur
 	}
 
 	configService := configuration.NewKaiConfigService(logger)
+
 	kaiConfig, err := configService.GetConfiguration()
 	if err != nil {
-		return nil, nil
+		return nil, err
 	}
 
 	srv, err := kaiConfig.GetServerOrDefault(serverName)
 	if err != nil {
-		return nil, nil
+		return nil, err
 	}
+
 	return srv, nil
 }
