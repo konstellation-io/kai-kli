@@ -44,10 +44,6 @@ func NewDefaultCliRenderer(logger logging.Interface, writer io.Writer) *CliRende
 	return NewCliRenderer(logger, writer, DefaultTableWriter(writer))
 }
 
-func (r *CliRenderer) printEmptyLine() {
-	_, _ = fmt.Fprintln(r.ioWriter)
-}
-
 func (r *CliRenderer) RenderServers(servers []configuration.Server) {
 	if len(servers) < 1 {
 		r.logger.Info("No servers configured.")
