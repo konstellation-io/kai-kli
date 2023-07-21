@@ -3,6 +3,7 @@ package auth_test
 import (
 	"errors"
 	"fmt"
+	"net/http"
 	"os"
 	"path"
 	"testing"
@@ -215,7 +216,7 @@ func (s *AuthenticationSuite) TestLogout_ExpectToken() {
 			srv.AuthURL, srv.Realm),
 		httpmock.HeaderExists("Content-Type").
 			And(httpmock.HeaderContains("Content-Type", "application/x-www-form-urlencoded")),
-		httpmock.NewStringResponder(204, `{}`))
+		httpmock.NewStringResponder(http.StatusNoContent, `{}`))
 
 	// WHEN
 	err = s.authentication.Logout(srv.Name)

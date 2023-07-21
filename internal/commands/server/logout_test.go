@@ -3,6 +3,7 @@ package server_test
 import (
 	"errors"
 	"fmt"
+	"net/http"
 	"os"
 	"path"
 	"testing"
@@ -101,7 +102,7 @@ func (s *ServerLogoutSuite) TestLogoutServer_ExpectOk() {
 	// Exact URL match
 	httpmock.RegisterResponder("POST", fmt.Sprintf("https://%s/realms/%s/protocol/openid-connect/logout",
 		srv.AuthURL, srv.Realm),
-		httpmock.NewStringResponder(204, `{}`))
+		httpmock.NewStringResponder(http.StatusNoContent, `{}`))
 
 	// WHEN
 	err = s.manager.Logout(srv.Name)
