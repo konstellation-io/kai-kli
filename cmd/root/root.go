@@ -14,6 +14,12 @@ import (
 	"github.com/konstellation-io/kli/pkg/iostreams"
 )
 
+const (
+	_serverFlag              = "server"
+	_debugFlag               = "debug"
+	_authenticatedAnnotation = "authenticated"
+)
+
 // NewRootCmd creates the base command where all subcommands are added.
 func NewRootCmd(
 	logger logging.Interface,
@@ -57,7 +63,7 @@ func NewRootCmd(
 		Hidden: true,
 	})
 
-	cmd.PersistentFlags().Bool("debug", false, "Set debug mode")
+	cmd.PersistentFlags().Bool(_debugFlag, false, "Set debug mode")
 
 	// Child commands
 	cmd.AddCommand(newVersionCmd(version, buildDate))
@@ -76,7 +82,7 @@ func authenticateServer(logger logging.Interface, cmd *cobra.Command) error {
 		return err
 	}
 
-	serverName, _ := cmd.Flags().GetString("server")
+	serverName, _ := cmd.Flags().GetString(_serverFlag)
 
 	srv, err := conf.GetServerOrDefault(serverName)
 	if err != nil {
@@ -91,12 +97,12 @@ func authenticateServer(logger logging.Interface, cmd *cobra.Command) error {
 }
 
 func isMethodAuthenticated(cmd *cobra.Command) bool {
-	val, ok := cmd.Annotations["authenticated"]
+	val, ok := cmd.Annotations[_authenticatedAnnotation]
 	return ok && val == "true"
 }
 
 func setDebugLogLevel(cmd *cobra.Command, logger logging.Interface) error {
-	d, err := cmd.Flags().GetBool("debug")
+	d, err := cmd.Flags().GetBool(_debugFlag)
 
 	if d {
 		viper.Set(config.DebugKey, true)
