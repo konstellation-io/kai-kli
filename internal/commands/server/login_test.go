@@ -3,6 +3,7 @@ package server_test
 import (
 	"errors"
 	"fmt"
+	"net/http"
 	"os"
 	"path"
 	"testing"
@@ -101,7 +102,7 @@ func (s *ServerLoginSuite) TestLoginServer_ExpectToken() {
 	// Exact URL match
 	httpmock.RegisterResponder("POST", fmt.Sprintf("https://%s/realms/%s/protocol/openid-connect/token",
 		srv.AuthURL, srv.Realm),
-		httpmock.NewStringResponder(200, `{
+		httpmock.NewStringResponder(http.StatusOK, `{
 					"access_token": "access token",
 					"expires_in": 300,
 					"refresh_expires_in": 5000,

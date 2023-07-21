@@ -102,7 +102,7 @@ func (s *AuthenticationSuite) TestLogin_ExpectToken() {
 		srv.AuthURL, srv.Realm),
 		httpmock.HeaderExists("Content-Type").
 			And(httpmock.HeaderContains("Content-Type", "application/x-www-form-urlencoded")),
-		httpmock.NewStringResponder(200, `{
+		httpmock.NewStringResponder(http.StatusOK, `{
 					"access_token": "access token",
 					"expires_in": 300,
 					"refresh_expires_in": 5000,
@@ -328,7 +328,7 @@ func (s *AuthenticationSuite) TestGetToken_GetNewToken_ExpectToken() {
 		srv.AuthURL, srv.Realm),
 		httpmock.HeaderExists("Content-Type").
 			And(httpmock.HeaderContains("Content-Type", "application/x-www-form-urlencoded")),
-		httpmock.NewStringResponder(200, `{
+		httpmock.NewStringResponder(http.StatusOK, `{
 					"access_token": "new access token",
 					"expires_in": 300,
 					"refresh_expires_in": 5000,
@@ -447,7 +447,7 @@ func (s *AuthenticationSuite) TestGetToken_GetRenewedToken_ExpectToken() {
 		srv.AuthURL, srv.Realm),
 		httpmock.HeaderExists("Content-Type").
 			And(httpmock.HeaderContains("Content-Type", "application/x-www-form-urlencoded")),
-		httpmock.NewStringResponder(200, `{
+		httpmock.NewStringResponder(http.StatusOK, `{
 					"access_token": "renewed access token",
 					"expires_in": 300,
 					"refresh_expires_in": 5000,

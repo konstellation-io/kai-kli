@@ -152,7 +152,7 @@ func (s *ServerLogoutSuite) TestLogoutServer_NotLoggedInServer_ExpectOk() {
 	// Exact URL match
 	httpmock.RegisterResponder("POST", fmt.Sprintf("https://%s/realms/%s/protocol/openid-connect/logout",
 		srv.AuthURL, srv.Realm),
-		httpmock.NewStringResponder(401, `{}`))
+		httpmock.NewStringResponder(http.StatusUnauthorized, `{}`))
 
 	// WHEN
 	err = s.manager.Logout(srv.Name)
