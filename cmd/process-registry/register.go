@@ -82,8 +82,6 @@ func NewRegisterCmd(logger logging.Interface) *cobra.Command {
 				return err
 			}
 
-			logger.Success(fmt.Sprintf("Process successfully registered with ID %s.", "someId"))
-
 			return nil
 		},
 	}
