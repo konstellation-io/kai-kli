@@ -32,19 +32,19 @@ func NewLogoutCmd(logger logging.Interface) *cobra.Command {
     $ kli server logout my-server
 		`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			serverName, err := getServerName(cmd, logger)
-			if err != nil {
-				return ErrServerNotFound
-			}
-
-			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
-
-			err = server.NewServerHandler(logger, r).Logout(serverName)
+			srv, err := getServerOrDefault(cmd, logger)
 			if err != nil {
 				return err
 			}
 
-			logger.Success(fmt.Sprintf("Logged out from %q.", serverName))
+			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
+
+			err = server.NewServerHandler(logger, r).Logout(srv.Name)
+			if err != nil {
+				return err
+			}
+
+			logger.Success(fmt.Sprintf("Logged out from %q.", srv.Name))
 
 			return nil
 		},
@@ -55,23 +55,21 @@ func NewLogoutCmd(logger logging.Interface) *cobra.Command {
 	return cmd
 }
 
-func getServerName(cmd *cobra.Command, logger logging.Interface) (string, error) {
+func getServerOrDefault(cmd *cobra.Command, logger logging.Interface) (*configuration.Server, error) {
 	serverName, err := cmd.Flags().GetString(_serverFlag)
-	if err == nil && serverName != "" {
-		return serverName, nil
+	if err != nil {
+		serverName = ""
 	}
 
 	configService := configuration.NewKaiConfigService(logger)
-
 	kaiConfig, err := configService.GetConfiguration()
 	if err != nil {
-		return "", err
+		return nil, nil
 	}
 
-	defaultServer, err := kaiConfig.GetDefaultServer()
+	srv, err := kaiConfig.GetServerOrDefault(serverName)
 	if err != nil {
-		return "", err
+		return nil, nil
 	}
-
-	return defaultServer.Name, nil
+	return srv, nil
 }
