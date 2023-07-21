@@ -21,12 +21,12 @@ const (
 // NewLoginCmd creates a new command to log in to an existing server.
 func NewLoginCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "login <remote_name> --auth-url <auth_url> --user <username> " +
+		Use: "login <server_name> --auth-url <auth_url> --user <username> " +
 			"--password <password> --realm <realm> --client-id <client-id>",
 		Args:  cobra.ExactArgs(1),
-		Short: "auth.go to an existing server",
+		Short: "login to an existing server",
 		Example: `
-    $ kli server auth.go my-server --user my-user --password my-password
+    $ kli server login my-server --user my-user --password my-password
 		`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			serverName := args[0]

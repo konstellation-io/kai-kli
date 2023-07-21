@@ -14,6 +14,12 @@ import (
 	"github.com/konstellation-io/kli/pkg/iostreams"
 )
 
+const (
+	_serverFlag              = "server"
+	_debugFlag               = "debug"
+	_authenticatedAnnotation = "authenticated"
+)
+
 // NewRootCmd creates the base command where all subcommands are added.
 func NewRootCmd(
 	cfg *config.Config,
@@ -58,7 +64,7 @@ func NewRootCmd(
 		Hidden: true,
 	})
 
-	cmd.PersistentFlags().Bool("debug", false, "Set debug mode")
+	cmd.PersistentFlags().Bool(_debugFlag, false, "Set debug mode")
 
 	// Child commands
 	cmd.AddCommand(newVersionCmd(version, buildDate))
@@ -78,14 +84,17 @@ func authenticateServer(logger logging.Interface, cmd *cobra.Command) error {
 		return err
 	}
 
-	serverName, _ := cmd.Flags().GetString("server")
-
-	srv, err := getServerOrDefault(conf, serverName)
+	serverName, err := cmd.Flags().GetString(_serverFlag)
 	if err != nil {
-		return err
+		defaultServer, err := conf.GetDefaultServer()
+		if err != nil {
+			return err
+		}
+
+		serverName = defaultServer.Name
 	}
 
-	if _, err := kaiAuth.GetToken(srv.Name); err != nil {
+	if _, err := kaiAuth.GetToken(serverName); err != nil {
 		return err
 	}
 
@@ -93,20 +102,12 @@ func authenticateServer(logger logging.Interface, cmd *cobra.Command) error {
 }
 
 func isMethodAuthenticated(cmd *cobra.Command) bool {
-	val, ok := cmd.Annotations["authenticated"]
+	val, ok := cmd.Annotations[_authenticatedAnnotation]
 	return ok && val == "true"
 }
 
-func getServerOrDefault(conf *configuration.KaiConfiguration, serverName string) (*configuration.Server, error) {
-	if serverName != "" {
-		return conf.GetDefaultServer()
-	}
-
-	return conf.GetServer(serverName)
-}
-
 func setDebugLogLevel(cmd *cobra.Command, cfg *config.Config, logger logging.Interface) error {
-	d, err := cmd.Flags().GetBool("debug")
+	d, err := cmd.Flags().GetBool(_debugFlag)
 
 	if d {
 		cfg.Debug = true

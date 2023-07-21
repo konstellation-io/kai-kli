@@ -179,7 +179,7 @@ func (r *CliRenderer) RenderServers(servers []configuration.Server) {
 		return
 	}
 
-	r.tableWriter.SetHeader([]string{"Server", "URL", "Auth"})
+	r.tableWriter.SetHeader([]string{"Server", "URL", "Authenticated"})
 
 	for _, s := range servers {
 		defaultMark := ""
