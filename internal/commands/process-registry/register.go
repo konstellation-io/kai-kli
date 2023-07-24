@@ -59,7 +59,6 @@ func (c *Handler) creteTempZipFile(paths ...string) (*os.File, error) {
 	writer := zip.NewWriter(f)
 	defer writer.Close()
 
-	// 2. Go through all the files of the source
 	for _, path := range paths {
 		if err := c.addToZipFile(writer, path); err != nil {
 			return nil, err
@@ -76,16 +75,13 @@ func (c *Handler) addToZipFile(writer *zip.Writer, sourcePath string) error {
 			return err
 		}
 
-		// 3. Create a local file header
 		header, err := zip.FileInfoHeader(info)
 		if err != nil {
 			return err
 		}
 
-		// set compression
 		header.Method = zip.Deflate
 
-		// 4. Set relative path of a file as the header name
 		header.Name, err = filepath.Rel(filepath.Dir(sourcePath), path)
 		if err != nil {
 			return err
@@ -94,7 +90,6 @@ func (c *Handler) addToZipFile(writer *zip.Writer, sourcePath string) error {
 			header.Name += "/"
 		}
 
-		// 5. Create writer for the file header and save content of the file
 		headerWriter, err := writer.CreateHeader(header)
 		if err != nil {
 			return err
