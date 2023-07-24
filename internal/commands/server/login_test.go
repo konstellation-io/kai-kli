@@ -80,8 +80,8 @@ func (s *ServerLoginSuite) TestLoginServer_ExpectToken() {
 
 	srv := &configuration.Server{
 		Name:      "my-server",
-		URL:       "kai-dev.konstellation.io",
-		AuthURL:   "auth.kai-dev.konstellation.io",
+		URL:       "https://kai-dev.konstellation.io",
+		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
 		Username:  "david",
@@ -100,7 +100,7 @@ func (s *ServerLoginSuite) TestLoginServer_ExpectToken() {
 	defer httpmock.DeactivateAndReset()
 
 	// Exact URL match
-	httpmock.RegisterResponder("POST", fmt.Sprintf("https://%s/realms/%s/protocol/openid-connect/token",
+	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/realms/%s/protocol/openid-connect/token",
 		srv.AuthURL, srv.Realm),
 		httpmock.NewStringResponder(http.StatusOK, `{
 					"access_token": "access token",
@@ -137,8 +137,8 @@ func (s *ServerLoginSuite) TestLoginServer_ExpectError() {
 
 	srv := &configuration.Server{
 		Name:      "my-server",
-		URL:       "kai-dev.konstellation.io",
-		AuthURL:   "auth.kai-dev.konstellation.io",
+		URL:       "https://kai-dev.konstellation.io",
+		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
 		Username:  "david",
@@ -156,7 +156,7 @@ func (s *ServerLoginSuite) TestLoginServer_ExpectError() {
 	defer httpmock.DeactivateAndReset()
 
 	// Exact URL match
-	httpmock.RegisterResponder("POST", fmt.Sprintf("https://%s/realms/%s/protocol/openid-connect/token",
+	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/realms/%s/protocol/openid-connect/token",
 		srv.AuthURL, srv.Realm),
 		httpmock.NewErrorResponder(errors.New("error getting token")))
 

@@ -16,8 +16,8 @@ import (
 
 const (
 	_grantTypePassword     = "password"
-	_loginRequestTemplate  = "https://%s/realms/%s/protocol/openid-connect/token"
-	_logoutRequestTemplate = "https://%s/realms/%s/protocol/openid-connect/logout"
+	_loginRequestTemplate  = "%s/realms/%s/protocol/openid-connect/token"
+	_logoutRequestTemplate = "%s/realms/%s/protocol/openid-connect/logout"
 )
 
 var (

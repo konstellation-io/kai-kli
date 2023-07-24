@@ -1,7 +1,8 @@
 package processregistry
 
 import (
-	"archive/zip"
+	"archive/tar"
+	"compress/gzip"
 	"errors"
 	"fmt"
 	"io"
@@ -11,7 +12,7 @@ import (
 
 var (
 	ErrPathDoesNotExist         = errors.New("path does not exist")
-	ErrZipFileCouldNotBeCreated = errors.New("zip file could not be created")
+	ErrZipFileCouldNotBeCreated = errors.New("tar.gz file could not be created")
 )
 
 func (c *Handler) RegisterProcess(serverName, productID, processType, processID,
@@ -30,10 +31,12 @@ func (c *Handler) RegisterProcess(serverName, productID, processType, processID,
 		return ErrPathDoesNotExist
 	}
 
-	tmpZipFile, err := c.creteTempZipFile(sourcesPath, dockerfilePath)
+	tmpZipFile, err := c.createTempTarGzFile(sourcesPath, dockerfilePath)
 	if err != nil {
 		return ErrZipFileCouldNotBeCreated
 	}
+
+	defer tmpZipFile.Close()
 
 	registeredProcess, err := c.processRegistryClient.
 		Register(srv, tmpZipFile, productID, processID, processType, version)
@@ -46,21 +49,22 @@ func (c *Handler) RegisterProcess(serverName, productID, processType, processID,
 	return nil
 }
 
-func (c *Handler) creteTempZipFile(paths ...string) (*os.File, error) {
+func (c *Handler) createTempTarGzFile(paths ...string) (*os.File, error) {
 	tmpPath := os.TempDir()
 
-	f, err := os.CreateTemp(tmpPath, "process-*.zip")
+	f, err := os.CreateTemp(tmpPath, "process-*.tar.gz")
 	if err != nil {
 		return nil, err
 	}
 
-	defer f.Close()
+	gw := gzip.NewWriter(f)
+	defer gw.Close()
 
-	writer := zip.NewWriter(f)
-	defer writer.Close()
+	tw := tar.NewWriter(gw)
+	defer tw.Close()
 
 	for _, path := range paths {
-		if err := c.addToZipFile(writer, path); err != nil {
+		if err := c.addToTarGz(tw, path); err != nil {
 			return nil, err
 		}
 	}
@@ -68,19 +72,17 @@ func (c *Handler) creteTempZipFile(paths ...string) (*os.File, error) {
 	return f, nil
 }
 
-func (c *Handler) addToZipFile(writer *zip.Writer, sourcePath string) error {
+func (c *Handler) addToTarGz(tw *tar.Writer, sourcePath string) error {
 	return filepath.Walk(sourcePath, func(path string, info os.FileInfo, err error) error {
-		c.logger.Debug(fmt.Sprintf("Adding %s to zip file, error %s\n", path, err))
+		c.logger.Debug(fmt.Sprintf("Adding %s to tar.gz file, error %s\n", path, err))
 		if err != nil {
 			return err
 		}
 
-		header, err := zip.FileInfoHeader(info)
+		header, err := tar.FileInfoHeader(info, info.Name())
 		if err != nil {
 			return err
 		}
-
-		header.Method = zip.Deflate
 
 		header.Name, err = filepath.Rel(filepath.Dir(sourcePath), path)
 		if err != nil {
@@ -90,7 +92,7 @@ func (c *Handler) addToZipFile(writer *zip.Writer, sourcePath string) error {
 			header.Name += "/"
 		}
 
-		headerWriter, err := writer.CreateHeader(header)
+		err = tw.WriteHeader(header)
 		if err != nil {
 			return err
 		}
@@ -105,7 +107,7 @@ func (c *Handler) addToZipFile(writer *zip.Writer, sourcePath string) error {
 		}
 		defer f.Close()
 
-		_, err = io.Copy(headerWriter, f)
+		_, err = io.Copy(tw, f)
 		return err
 	})
 }
