@@ -5,8 +5,12 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/konstellation-io/kli/cmd/config"
+	configuration2 "github.com/konstellation-io/kli/cmd/configuration"
+	"github.com/konstellation-io/kli/cmd/process"
 	process_registry "github.com/konstellation-io/kli/cmd/process-registry"
+	"github.com/konstellation-io/kli/cmd/product"
 	"github.com/konstellation-io/kli/cmd/server"
+	"github.com/konstellation-io/kli/cmd/workflow"
 	"github.com/konstellation-io/kli/internal/commands/setup"
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/konstellation-io/kli/internal/services/auth"
@@ -15,9 +19,10 @@ import (
 )
 
 const (
-	_serverFlag              = "server"
-	_debugFlag               = "debug"
-	_authenticatedAnnotation = "authenticated"
+	_serverFlag                     = "server"
+	_debugFlag                      = "debug"
+	_authenticatedAnnotation        = "authenticated"
+	_productConfigurationAnnotation = "needs-product-config"
 )
 
 // NewRootCmd creates the base command where all subcommands are added.
@@ -37,7 +42,7 @@ func NewRootCmd(
 				return err
 			}
 
-			err = setup.NewKaiSetup(logger).CreateConfiguration()
+			err = setup.NewHandler(logger).CreateConfiguration()
 			if err != nil {
 				return err
 			}
@@ -68,6 +73,10 @@ func NewRootCmd(
 	// Child commands
 	cmd.AddCommand(newVersionCmd(version, buildDate))
 	cmd.AddCommand(server.NewServerCmd(logger))
+	cmd.AddCommand(product.NewProductCmd(logger))
+	cmd.AddCommand(workflow.NewWorkflowCmd(logger))
+	cmd.AddCommand(process.NewProcessCmd(logger))
+	cmd.AddCommand(configuration2.NewConfigurationCmd(logger))
 	cmd.AddCommand(process_registry.NewProcessRegistryCmd(logger))
 
 	return cmd

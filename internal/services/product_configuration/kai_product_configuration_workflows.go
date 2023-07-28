@@ -4,14 +4,14 @@ import (
 	"github.com/konstellation-io/krt/pkg/krt"
 )
 
-func (c *KaiProductConfiguration) GetWorkflow(workflowName string) (*krt.Workflow, error) {
-	for _, workflow := range c.Workflows {
+func (c *KaiProductConfiguration) GetWorkflow(workflowName string) (*int, *krt.Workflow, error) {
+	for i, workflow := range c.Workflows {
 		if workflow.Name == workflowName {
-			return &workflow, nil
+			return &i, &workflow, nil
 		}
 	}
 
-	return nil, ErrWorkflowNotFound
+	return nil, nil, ErrWorkflowNotFound
 }
 
 func (c *KaiProductConfiguration) AddWorkflow(wf krt.Workflow) error {
@@ -34,6 +34,9 @@ func (c *KaiProductConfiguration) UpdateWorkflow(wf krt.Workflow) error {
 	for i, workflow := range c.Workflows {
 		if workflow.Name == wf.Name {
 			c.Workflows[i] = wf
+			c.Workflows[i].Config = workflow.Config
+			c.Workflows[i].Processes = workflow.Processes
+
 			return nil
 		}
 	}

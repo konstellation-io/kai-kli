@@ -53,7 +53,7 @@ func NewLoginCmd(logger logging.Interface) *cobra.Command {
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
 
-			_, err = server.NewServerHandler(logger, r).Login(serverName, authURL, realm, clientID, username, password)
+			_, err = server.NewHandler(logger, r).Login(serverName, authURL, realm, clientID, username, password)
 			if err != nil {
 				return err
 			}

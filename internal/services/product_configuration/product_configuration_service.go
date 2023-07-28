@@ -26,19 +26,19 @@ func NewProductConfigService(logger logging.Interface) *ProductConfigService {
 func (c *ProductConfigService) GetConfiguration(product string, productPath ...string) (*KaiProductConfiguration, error) {
 	productConfigPath, err := config.GetProductConfigFilePath(product, productPath...)
 	if err != nil {
-		return nil, err
+		return nil, ErrProductConfigNotFound
 	}
 
 	configBytes, err := os.ReadFile(productConfigPath)
 	if err != nil {
-		return nil, err
+		return nil, ErrProductConfigNotFound
 	}
 
 	var productConfiguration KaiProductConfiguration
 
 	err = yaml.Unmarshal(configBytes, &productConfiguration)
 	if err != nil {
-		return nil, err
+		return nil, ErrProductConfigNotFound
 	}
 
 	return &productConfiguration, nil

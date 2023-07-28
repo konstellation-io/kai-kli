@@ -16,7 +16,7 @@ type Handler struct {
 	configService         *configuration.KaiConfigService
 }
 
-func NewProcessRegistryHandler(logger logging.Interface, renderer render.Renderer,
+func NewHandler(logger logging.Interface, renderer render.Renderer,
 	registryCli registry.ProcessRegistryInterface, authService *auth.AuthenticationService,
 	configService *configuration.KaiConfigService) *Handler {
 	return &Handler{

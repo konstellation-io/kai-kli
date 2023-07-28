@@ -35,7 +35,7 @@ func (s *ListServersSuite) SetupSuite() {
 	mocks.AddLoggerExpects(logger)
 
 	s.renderer = renderer
-	s.manager = server.NewServerHandler(logger, renderer)
+	s.manager = server.NewHandler(logger, renderer)
 
 	tmpDir, err := os.MkdirTemp("", "TestAddServer_*")
 	s.Require().NoError(err)

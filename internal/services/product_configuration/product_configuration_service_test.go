@@ -152,7 +152,7 @@ func (ch *ProductConfigurationServiceTest) getDefaultConfiguration() productconf
 	isGpu := false
 
 	return productconfiguration.KaiProductConfiguration{
-		Krt: krt.Krt{
+		Krt: &krt.Krt{
 			Version:     "v0.0.1",
 			Description: "KRT for Kai",
 			Config:      map[string]string{"test1": "value1"},

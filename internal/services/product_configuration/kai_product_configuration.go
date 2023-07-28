@@ -17,7 +17,7 @@ type ConfigProperty struct {
 }
 
 type KaiProductConfiguration struct {
-	krt.Krt
+	*krt.Krt
 }
 
 func (c *KaiProductConfiguration) GetProductVersion() string {
@@ -52,7 +52,7 @@ func (c *KaiProductConfiguration) DeleteVersionConfig(keys ...string) map[string
 }
 
 func (c *KaiProductConfiguration) GetWorkflowConfiguration(workflowName string) (map[string]string, error) {
-	workflow, err := c.GetWorkflow(workflowName)
+	_, workflow, err := c.GetWorkflow(workflowName)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +61,7 @@ func (c *KaiProductConfiguration) GetWorkflowConfiguration(workflowName string) 
 }
 
 func (c *KaiProductConfiguration) UpdateWorkflowConfig(workflowName string, properties ...ConfigProperty) (map[string]string, error) {
-	wf, err := c.GetWorkflow(workflowName)
+	_, wf, err := c.GetWorkflow(workflowName)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func (c *KaiProductConfiguration) UpdateWorkflowConfig(workflowName string, prop
 }
 
 func (c *KaiProductConfiguration) DeleteWorkflowConfig(workflowName string, keys ...string) (map[string]string, error) {
-	wf, err := c.GetWorkflow(workflowName)
+	_, wf, err := c.GetWorkflow(workflowName)
 	if err != nil {
 		return nil, err
 	}

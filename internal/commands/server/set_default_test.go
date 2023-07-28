@@ -39,7 +39,7 @@ func (s *SetDefaultServerSuite) SetupSuite() {
 
 	s.logger = logger
 	s.renderer = renderer
-	s.manager = server.NewServerHandler(logger, renderer)
+	s.manager = server.NewHandler(logger, renderer)
 
 	tmpDir, err := os.MkdirTemp("", "TestSetDefaultServer_*")
 	s.Require().NoError(err)

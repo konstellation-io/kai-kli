@@ -3,7 +3,10 @@ package render
 import (
 	"fmt"
 	"io"
+	"strconv"
+	"strings"
 
+	"github.com/konstellation-io/krt/pkg/krt"
 	"github.com/olekukonko/tablewriter"
 
 	"github.com/konstellation-io/kli/internal/logging"
@@ -63,6 +66,76 @@ func (r *CliRenderer) RenderServers(servers []configuration.Server) {
 			fmt.Sprintf("%s%s", s.Name, defaultMark),
 			s.URL,
 			fmt.Sprintf("%t", s.IsLoggedIn()),
+		})
+	}
+
+	r.tableWriter.Render()
+}
+
+func (r *CliRenderer) RenderWorkflows(workflows []krt.Workflow) {
+	if len(workflows) < 1 {
+		r.logger.Info("No workflows found.")
+		return
+	}
+
+	r.tableWriter.SetHeader([]string{"Workflow Name", "Workflow type", "Configured properties", "Configured processes"})
+
+	for _, wf := range workflows {
+		r.tableWriter.Append([]string{
+			wf.Name,
+			string(wf.Type),
+			fmt.Sprintf("%d", len(wf.Config)),
+			fmt.Sprintf("%d", len(wf.Processes)),
+		})
+	}
+
+	r.tableWriter.Render()
+}
+
+func (r *CliRenderer) RenderProcesses(processes []krt.Process) {
+	if len(processes) < 1 {
+		r.logger.Info("No processes found.")
+		return
+	}
+
+	r.tableWriter.SetHeader([]string{"Process Name", "Process type", "Image",
+		"Replicas", "GPU", "Subscriptions", "Configured properties"})
+
+	for _, pr := range processes {
+		gpu := "No"
+
+		if *pr.GPU {
+			gpu = "Yes"
+		}
+
+		r.tableWriter.Append([]string{
+			pr.Name,
+			string(pr.Type),
+			pr.Image,
+			strconv.Itoa(*pr.Replicas),
+			gpu,
+			strings.Join(pr.Subscriptions, ","),
+			fmt.Sprintf("%d", len(pr.Config)),
+		})
+	}
+
+	r.tableWriter.Render()
+}
+
+func (r *CliRenderer) RenderConfiguration(scope string, config map[string]string) {
+	if len(config) < 1 {
+		r.logger.Info("No processes found.")
+		return
+	}
+
+	r.logger.Info(fmt.Sprintf("Rendering configuration for %q scope", scope))
+
+	r.tableWriter.SetHeader([]string{"Key", "Value"})
+
+	for key, value := range config {
+		r.tableWriter.Append([]string{
+			key,
+			value,
 		})
 	}
 

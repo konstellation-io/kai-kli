@@ -14,7 +14,7 @@ type Handler struct {
 	configService  *configuration.KaiConfigService
 }
 
-func NewServerHandler(logger logging.Interface, renderer render.Renderer) *Handler {
+func NewHandler(logger logging.Interface, renderer render.Renderer) *Handler {
 	return &Handler{
 		logger:         logger,
 		renderer:       renderer,

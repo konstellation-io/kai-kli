@@ -41,7 +41,7 @@ func (s *ServerLoginSuite) SetupSuite() {
 
 	s.logger = logger
 	s.renderer = renderer
-	s.manager = server.NewServerHandler(logger, renderer)
+	s.manager = server.NewHandler(logger, renderer)
 
 	tmpDir, err := os.MkdirTemp("", "TestServerLogin_*")
 	s.Require().NoError(err)

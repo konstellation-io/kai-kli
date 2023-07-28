@@ -5,3 +5,4 @@ dist
 golangci-report.xml
 kli
 bin
+testdata/.kai

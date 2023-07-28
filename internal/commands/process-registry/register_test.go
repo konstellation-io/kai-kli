@@ -50,7 +50,7 @@ func (s *RegisterProcessSuite) SetupSuite() {
 
 	s.processRegistryAPI = mocks.NewMockProcessRegistryInterface(ctrl)
 
-	s.manager = processregistry.NewProcessRegistryHandler(
+	s.manager = processregistry.NewHandler(
 		s.logger,
 		renderer,
 		s.processRegistryAPI,

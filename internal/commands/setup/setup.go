@@ -15,7 +15,7 @@ type KaiSetup struct {
 	logger logging.Interface
 }
 
-func NewKaiSetup(logger logging.Interface) *KaiSetup {
+func NewHandler(logger logging.Interface) *KaiSetup {
 	return &KaiSetup{
 		logger: logger,
 	}

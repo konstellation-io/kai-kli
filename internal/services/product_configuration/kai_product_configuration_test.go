@@ -158,7 +158,7 @@ func (ch *KaiProductConfigurationTest) TestUpdateWorkflowConfiguration_ExpectOk(
 
 	// THEN
 	ch.Require().NoError(err)
-	wConf, err := kaiProductConfig.GetWorkflow(_defaultWorkflowName)
+	_, wConf, err := kaiProductConfig.GetWorkflow(_defaultWorkflowName)
 	ch.Require().NoError(err)
 	ch.Require().Len(wConf.Config, 2)
 	ch.Require().True(reflect.DeepEqual(expectedConfig, workflowConfig))
@@ -190,7 +190,7 @@ func (ch *KaiProductConfigurationTest) TestUpdateWorkflowConfiguration_UpdateExi
 
 	// THEN
 	ch.Require().NoError(err)
-	wConf, err := kaiProductConfig.GetWorkflow(_defaultWorkflowName)
+	_, wConf, err := kaiProductConfig.GetWorkflow(_defaultWorkflowName)
 	ch.Require().NoError(err)
 	ch.Require().Len(wConf.Config, 1)
 	ch.Require().True(reflect.DeepEqual(map[string]string{"test1": "value2"}, workflowConfig))
@@ -203,8 +203,9 @@ func (ch *KaiProductConfigurationTest) TestDeleteWorkflowConfiguration_ExpectOk(
 		productconfiguration.ConfigProperty{Key: "test2", Value: "value2"})
 	ch.Require().NoError(err)
 
-	wConf, err := kaiProductConfig.GetWorkflow(_defaultWorkflowName)
+	i, wConf, err := kaiProductConfig.GetWorkflow(_defaultWorkflowName)
 	ch.Require().NoError(err)
+	ch.Require().Equal(0, *i)
 	ch.Require().Len(wConf.Config, 2)
 
 	// WHEN
@@ -212,9 +213,10 @@ func (ch *KaiProductConfigurationTest) TestDeleteWorkflowConfiguration_ExpectOk(
 
 	// THEN
 	ch.Require().NoError(err)
-	wConf, err = kaiProductConfig.GetWorkflow(_defaultWorkflowName)
+	i, wConf, err = kaiProductConfig.GetWorkflow(_defaultWorkflowName)
 	ch.Require().NoError(err)
 	ch.Require().Len(wConf.Config, 1)
+	ch.Require().Equal(0, *i)
 	ch.Require().True(reflect.DeepEqual(_defaultConfiguration, versionConfig))
 }
 
@@ -224,8 +226,9 @@ func (ch *KaiProductConfigurationTest) TestDeleteWorkflowConfiguration_NonExisti
 	_, err := kaiProductConfig.UpdateWorkflowConfig(_defaultWorkflowName,
 		productconfiguration.ConfigProperty{Key: "test2", Value: "value2"})
 	ch.Require().NoError(err)
-	wConf, err := kaiProductConfig.GetWorkflow(_defaultWorkflowName)
+	i, wConf, err := kaiProductConfig.GetWorkflow(_defaultWorkflowName)
 	ch.Require().NoError(err)
+	ch.Require().Equal(0, *i)
 	ch.Require().Len(wConf.Config, 2)
 
 	// WHEN
@@ -243,8 +246,9 @@ func (ch *KaiProductConfigurationTest) TestDeleteAllWorkflowConfiguration_Expect
 	_, err := kaiProductConfig.UpdateWorkflowConfig(_defaultWorkflowName,
 		productconfiguration.ConfigProperty{Key: "test2", Value: "value2"})
 	ch.Require().NoError(err)
-	wConf, err := kaiProductConfig.GetWorkflow(_defaultWorkflowName)
+	i, wConf, err := kaiProductConfig.GetWorkflow(_defaultWorkflowName)
 	ch.Require().NoError(err)
+	ch.Require().Equal(0, *i)
 	ch.Require().Len(wConf.Config, 2)
 
 	// WHEN
@@ -386,7 +390,7 @@ func (ch *KaiProductConfigurationTest) TestDeleteProcessConfiguration_NonExisten
 
 func (ch *KaiProductConfigurationTest) getDefaultConfiguration() productconfiguration.KaiProductConfiguration {
 	return productconfiguration.KaiProductConfiguration{
-		Krt: krt.Krt{
+		Krt: &krt.Krt{
 			Version:     _defaultProductVersion,
 			Description: _defaultProductDescription,
 			Config:      map[string]string{"test1": "value1"},
