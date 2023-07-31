@@ -16,6 +16,9 @@ const (
 	_memLimitFlag      = "mem-limit"
 	_replicasFlag      = "replicas"
 	_subscriptionsFlag = "subscriptions"
+	_networkSourcePort = "source-port"
+	_networkTargetPort = "target-port"
+	_networkProtocol   = "protocol"
 )
 
 // NewAddCmd creates a new command to add a process to the given product workflow.
@@ -45,6 +48,26 @@ func NewAddCmd(logger logging.Interface) *cobra.Command {
 				return err
 			}
 
+			cpuRequest, err := cmd.Flags().GetString(_cpuRequestFlag)
+			if err != nil {
+				return err
+			}
+
+			cpuLimit, err := cmd.Flags().GetString(_cpuLimitFlag)
+			if err != nil {
+				return err
+			}
+
+			memRequest, err := cmd.Flags().GetString(_memRequestFlag)
+			if err != nil {
+				return err
+			}
+
+			memLimit, err := cmd.Flags().GetString(_memLimitFlag)
+			if err != nil {
+				return err
+			}
+
 			replicas, err := cmd.Flags().GetInt(_replicasFlag)
 			if err != nil {
 				return err
@@ -55,19 +78,41 @@ func NewAddCmd(logger logging.Interface) *cobra.Command {
 				return err
 			}
 
+			sourcePort, err := cmd.Flags().GetInt(_networkSourcePort)
+			if err != nil {
+				return err
+			}
+
+			targetPort, err := cmd.Flags().GetInt(_networkTargetPort)
+			if err != nil {
+				return err
+			}
+
+			protocol, err := cmd.Flags().GetString(_networkProtocol)
+			if err != nil {
+				return err
+			}
+
 			// TODO Get the given product or the default one
 			// TODO Get the given server or the default one
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
 			err = process.NewHandler(logger, r).AddProcess(&process.AddProcessOpts{
-				ServerName:    serverName,
-				ProductID:     productID,
-				WorkflowID:    workflowID,
-				ProcessID:     processID,
-				ProcessType:   krt.ProcessType(processType),
-				Image:         image,
-				Replicas:      replicas,
-				Subscriptions: subscriptions,
+				ServerName:        serverName,
+				ProductID:         productID,
+				WorkflowID:        workflowID,
+				ProcessID:         processID,
+				ProcessType:       krt.ProcessType(processType),
+				Image:             image,
+				Replicas:          replicas,
+				Subscriptions:     subscriptions,
+				CPURequest:        cpuRequest,
+				CPULimit:          cpuLimit,
+				MemoryRequest:     memRequest,
+				MemoryLimit:       memLimit,
+				NetworkSourcePort: sourcePort,
+				NetworkTargetPort: targetPort,
+				NetworkProtocol:   krt.NetworkingProtocol(protocol),
 			})
 			if err != nil {
 				return err
@@ -81,7 +126,19 @@ func NewAddCmd(logger logging.Interface) *cobra.Command {
 	cmd.Flags().String(_productIDFlag, "", "The product ID to register the process.")
 	cmd.Flags().String(_workflowIDFlag, "", "The workflow ID to register the process.")
 	cmd.Flags().Int(_replicasFlag, 1, "The number of replicas to be deployed for the current process.")
+	cmd.Flags().String(_cpuRequestFlag, "", "The CPU request resources needed to deploy the current process.")
+	cmd.Flags().String(_cpuLimitFlag, "", "The maximum CPU resources allowed to deploy the current process.")
+	cmd.Flags().String(_memRequestFlag, "", "The memory request resources needed to deploy the current process.")
+	cmd.Flags().String(_memLimitFlag, "", "The maximum memory resources allowed to deploy the current process.")
+	cmd.Flags().String(_networkSourcePort, "", "The source port used by the current process.")
+	cmd.Flags().String(_networkTargetPort, "", "The target port exposed by the current process.")
+	cmd.Flags().String(_networkProtocol, "", "The network protocol used by the current process.")
 	cmd.Flags().StringSlice(_subscriptionsFlag, []string{}, "The subscriptions to be used by the current process.")
+
+	cmd.MarkFlagRequired(_productIDFlag)
+	cmd.MarkFlagRequired(_workflowIDFlag)
+	cmd.MarkFlagRequired(_cpuRequestFlag)
+	cmd.MarkFlagRequired(_memRequestFlag)
 
 	return cmd
 }

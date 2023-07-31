@@ -109,28 +109,50 @@ func (s *AddProcessSuite) TestAddProcess_NonExistingProduct_ExpectError() {
 	product := "product-test"
 	workflow := "Workflow-test"
 	newProcess := krt.Process{
-		Name:          "My process",
-		Type:          krt.ProcessTypeTask,
-		Image:         "kst/task",
-		Replicas:      &replicas,
-		GPU:           &gpu,
-		Config:        nil,
-		ObjectStore:   nil,
+		Name:     "My process",
+		Type:     krt.ProcessTypeTask,
+		Image:    "kst/task",
+		Replicas: &replicas,
+		GPU:      &gpu,
+		Config:   nil,
+		ObjectStore: &krt.ProcessObjectStore{
+			Name:  "my-object-store",
+			Scope: krt.ObjectStoreScopeWorkflow,
+		},
 		Secrets:       map[string]string{},
 		Subscriptions: []string{"subject1", "subject2"},
-		Networking:    nil,
+		ResourceLimits: &krt.ProcessResourceLimits{
+			CPU: &krt.ResourceLimit{
+				Request: "100m",
+				Limit:   "100m",
+			},
+			Memory: &krt.ResourceLimit{
+				Request: "100Mi",
+				Limit:   "100Mi",
+			},
+		},
+		Networking: &krt.ProcessNetworking{
+			TargetPort:      20000,
+			DestinationPort: 30000,
+			Protocol:        krt.NetworkingProtocolTCP,
+		},
 	}
 
 	// WHEN
 	err := s.handler.AddProcess(&process.AddProcessOpts{
-		ServerName:    server,
-		ProductID:     product,
-		WorkflowID:    workflow,
-		ProcessID:     newProcess.Name,
-		ProcessType:   newProcess.Type,
-		Image:         newProcess.Image,
-		Replicas:      *newProcess.Replicas,
-		Subscriptions: newProcess.Subscriptions,
+		ServerName:        server,
+		ProductID:         product,
+		WorkflowID:        workflow,
+		ProcessID:         newProcess.Name,
+		ProcessType:       newProcess.Type,
+		Image:             newProcess.Image,
+		Replicas:          *newProcess.Replicas,
+		CPURequest:        "100m",
+		MemoryRequest:     "100Mi",
+		Subscriptions:     newProcess.Subscriptions,
+		ObjectStoreName:   newProcess.ObjectStore.Name,
+		NetworkSourcePort: 20000,
+		NetworkTargetPort: 30000,
 	})
 
 	// THEN
