@@ -106,7 +106,13 @@ func (s *RemoveConfigurationSuite) TestRemoveConfiguration_VersionScope_ExpectOk
 	s.renderer.EXPECT().RenderConfiguration(scope, map[string]string{})
 
 	// WHEN
-	err := s.handler.RemoveConfiguration(s.productName, workflow, process, scope, key)
+	err := s.handler.RemoveConfiguration(&productconfiguration.RemoveConfigurationOpts{
+		ProductID:  s.productName,
+		WorkflowID: workflow,
+		ProcessID:  process,
+		Scope:      scope,
+		Key:        key,
+	})
 
 	// THEN
 	s.Require().NoError(err)
@@ -124,7 +130,13 @@ func (s *RemoveConfigurationSuite) TestRemoveConfiguration_WorkflowScope_ExpectO
 	s.renderer.EXPECT().RenderConfiguration(scope, map[string]string{})
 
 	// WHEN
-	err := s.handler.RemoveConfiguration(s.productName, workflow, process, scope, key)
+	err := s.handler.RemoveConfiguration(&productconfiguration.RemoveConfigurationOpts{
+		ProductID:  s.productName,
+		WorkflowID: workflow,
+		ProcessID:  process,
+		Scope:      scope,
+		Key:        key,
+	})
 
 	// THEN
 	s.Require().NoError(err)
@@ -143,7 +155,13 @@ func (s *RemoveConfigurationSuite) TestRemoveConfiguration_WorkflowScope_NoWorkf
 	scope := "workflow"
 
 	// WHEN
-	err := s.handler.RemoveConfiguration(s.productName, workflow, process, scope, key)
+	err := s.handler.RemoveConfiguration(&productconfiguration.RemoveConfigurationOpts{
+		ProductID:  s.productName,
+		WorkflowID: workflow,
+		ProcessID:  process,
+		Scope:      scope,
+		Key:        key,
+	})
 
 	// THEN
 	s.Require().Error(err)
@@ -159,7 +177,13 @@ func (s *RemoveConfigurationSuite) TestRemoveConfiguration_ProcessScope_ExpectOk
 	s.renderer.EXPECT().RenderConfiguration(scope, map[string]string{})
 
 	// WHEN
-	err := s.handler.RemoveConfiguration(s.productName, workflow, process, scope, key)
+	err := s.handler.RemoveConfiguration(&productconfiguration.RemoveConfigurationOpts{
+		ProductID:  s.productName,
+		WorkflowID: workflow,
+		ProcessID:  process,
+		Scope:      scope,
+		Key:        key,
+	})
 
 	// THEN
 	s.Require().NoError(err)
@@ -178,7 +202,13 @@ func (s *RemoveConfigurationSuite) TestRemoveConfiguration_ProcessScope_NoWorkfl
 	scope := "process"
 
 	// WHEN
-	err := s.handler.RemoveConfiguration(s.productName, workflow, process, scope, key)
+	err := s.handler.RemoveConfiguration(&productconfiguration.RemoveConfigurationOpts{
+		ProductID:  s.productName,
+		WorkflowID: workflow,
+		ProcessID:  process,
+		Scope:      scope,
+		Key:        key,
+	})
 
 	// THEN
 	s.Require().Error(err)
@@ -193,7 +223,13 @@ func (s *RemoveConfigurationSuite) TestRemoveConfiguration_ProcessScope_NoProces
 	scope := "process"
 
 	// WHEN
-	err := s.handler.RemoveConfiguration(s.productName, workflow, process, scope, key)
+	err := s.handler.RemoveConfiguration(&productconfiguration.RemoveConfigurationOpts{
+		ProductID:  s.productName,
+		WorkflowID: workflow,
+		ProcessID:  process,
+		Scope:      scope,
+		Key:        key,
+	})
 
 	// THEN
 	s.Require().Error(err)

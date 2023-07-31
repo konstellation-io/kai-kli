@@ -4,24 +4,34 @@ import (
 	productconfiguration "github.com/konstellation-io/kli/internal/services/product_configuration"
 )
 
-func (c *Handler) AddConfiguration(productID, workflowID, processID, scope, key, value string) error {
-	config, err := c.productConfig.GetConfiguration(productID)
+type AddConfigurationOpts struct {
+	ProductID  string
+	WorkflowID string
+	ProcessID  string
+	Scope      string
+	Key        string
+	Value      string
+}
+
+func (c *Handler) AddConfiguration(opts *AddConfigurationOpts) error {
+	config, err := c.productConfig.GetConfiguration(opts.ProductID)
 	if err != nil {
 		return err
 	}
 
 	var updatedConf map[string]string
 
-	switch scope {
-	case "version":
-		updatedConf = config.UpdateVersionConfig(productconfiguration.ConfigProperty{Key: key, Value: value})
-	case "workflow":
-		updatedConf, err = config.UpdateWorkflowConfig(workflowID, productconfiguration.ConfigProperty{Key: key, Value: value})
+	switch opts.Scope {
+	case _versionScope:
+		updatedConf = config.UpdateVersionConfig(productconfiguration.ConfigProperty{Key: opts.Key, Value: opts.Value})
+	case _workflowScope:
+		updatedConf, err = config.UpdateWorkflowConfig(opts.WorkflowID, productconfiguration.ConfigProperty{Key: opts.Key, Value: opts.Value})
 		if err != nil {
 			return err
 		}
-	case "process":
-		updatedConf, err = config.UpdateProcessConfig(workflowID, processID, productconfiguration.ConfigProperty{Key: key, Value: value})
+	case _processScope:
+		updatedConf, err = config.UpdateProcessConfig(opts.WorkflowID, opts.ProcessID,
+			productconfiguration.ConfigProperty{Key: opts.Key, Value: opts.Value})
 		if err != nil {
 			return err
 		}
@@ -29,12 +39,12 @@ func (c *Handler) AddConfiguration(productID, workflowID, processID, scope, key,
 		return ErrScopeNotValid
 	}
 
-	err = c.productConfig.WriteConfiguration(config, productID)
+	err = c.productConfig.WriteConfiguration(config, opts.ProductID)
 	if err != nil {
 		return err
 	}
 
-	c.renderer.RenderConfiguration(scope, updatedConf)
+	c.renderer.RenderConfiguration(opts.Scope, updatedConf)
 
 	return nil
 }

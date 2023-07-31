@@ -38,7 +38,12 @@ func NewRemoveCmd(logger logging.Interface) *cobra.Command {
 			// TODO Get the given server or the default one
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
-			err = process.NewHandler(logger, r).RemoveProcess(serverName, productID, workflowID, processID)
+			err = process.NewHandler(logger, r).RemoveProcess(&process.RemoveProcessOpts{
+				ServerName: serverName,
+				ProductID:  productID,
+				WorkflowID: workflowID,
+				ProcessID:  processID,
+			})
 			if err != nil {
 				return err
 			}

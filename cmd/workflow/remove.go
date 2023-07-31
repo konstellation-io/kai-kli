@@ -1,8 +1,6 @@
 package workflow
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 
 	"github.com/konstellation-io/kli/internal/commands/workflow"
@@ -35,14 +33,11 @@ func NewRemoveCmd(logger logging.Interface) *cobra.Command {
 			// TODO Get the given server or the default one
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
-			err = workflow.NewHandler(logger, r).RemoveWorkflow(serverName, productID, workflowID)
-			if err != nil {
-				return err
-			}
-
-			logger.Success(fmt.Sprintf("Workflow %q successfully removed.", workflowID))
-
-			return nil
+			return workflow.NewHandler(logger, r).RemoveWorkflow(&workflow.RemoveWorkflowOpts{
+				ServerName: serverName,
+				ProductID:  productID,
+				WorkflowID: workflowID,
+			})
 		},
 	}
 

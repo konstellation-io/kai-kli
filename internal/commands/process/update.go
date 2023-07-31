@@ -2,32 +2,41 @@ package process
 
 import "github.com/konstellation-io/krt/pkg/krt"
 
-func (w *Handler) UpdateProcess(serverName, productID, workflowID, processID, processType, image string,
-	replicas int, subscriptions []string) error {
-	productConfig, err := w.configService.GetConfiguration(productID)
+type UpdateProcessOpts struct {
+	ServerName    string
+	ProductID     string
+	WorkflowID    string
+	ProcessID     string
+	ProcessType   krt.ProcessType
+	Image         string
+	Replicas      int
+	GPU           bool
+	Subscriptions []string
+}
+
+func (w *Handler) UpdateProcess(opts *UpdateProcessOpts) error {
+	productConfig, err := w.configService.GetConfiguration(opts.ProductID)
 	if err != nil {
 		return err
 	}
 
-	GPU := false
-
-	existingProcess, err := productConfig.GetProcess(workflowID, processID)
+	existingProcess, err := productConfig.GetProcess(opts.WorkflowID, opts.ProcessID)
 	if err != nil {
 		return err
 	}
 
 	err = productConfig.UpdateProcess(
-		workflowID,
+		opts.WorkflowID,
 		&krt.Process{
-			Name:          processID,
-			Type:          krt.ProcessType(processType),
-			Image:         image,
-			Replicas:      &replicas,
-			GPU:           &GPU,
+			Name:          opts.ProcessID,
+			Type:          opts.ProcessType,
+			Image:         opts.Image,
+			Replicas:      &opts.Replicas,
+			GPU:           &opts.GPU,
 			Config:        existingProcess.Config,
 			ObjectStore:   existingProcess.ObjectStore,
 			Secrets:       existingProcess.Secrets,
-			Subscriptions: subscriptions,
+			Subscriptions: opts.Subscriptions,
 			Networking:    existingProcess.Networking,
 		})
 
@@ -35,12 +44,12 @@ func (w *Handler) UpdateProcess(serverName, productID, workflowID, processID, pr
 		return err
 	}
 
-	err = w.configService.WriteConfiguration(productConfig, productID)
+	err = w.configService.WriteConfiguration(productConfig, opts.ProductID)
 	if err != nil {
 		return err
 	}
 
-	_, wf, err := productConfig.GetWorkflow(workflowID)
+	_, wf, err := productConfig.GetWorkflow(opts.WorkflowID)
 	if err != nil {
 		return err
 	}

@@ -43,7 +43,14 @@ func NewAddCmd(logger logging.Interface) *cobra.Command {
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
 			return processconfiguration.NewHandler(logger, r).
-				AddConfiguration(productID, workflowID, processID, scope, key, value)
+				AddConfiguration(&processconfiguration.AddConfigurationOpts{
+					ProductID:  productID,
+					WorkflowID: workflowID,
+					ProcessID:  processID,
+					Scope:      scope,
+					Key:        key,
+					Value:      value,
+				})
 		},
 	}
 

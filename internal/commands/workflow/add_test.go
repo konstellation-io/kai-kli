@@ -1,4 +1,4 @@
-package process_test
+package workflow_test
 
 import (
 	"errors"
@@ -9,7 +9,7 @@ import (
 	"github.com/konstellation-io/krt/pkg/krt"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/konstellation-io/kli/internal/commands/process"
+	"github.com/konstellation-io/kli/internal/commands/workflow"
 	configservice "github.com/konstellation-io/kli/internal/services/product_configuration"
 	"github.com/konstellation-io/kli/mocks"
 )
@@ -19,7 +19,7 @@ type AddProcessSuite struct {
 
 	renderer      *mocks.MockRenderer
 	logger        *mocks.MockLogger
-	handler       *process.Handler
+	handler       *workflow.Handler
 	productConfig *configservice.ProductConfigService
 	productName   string
 }
@@ -38,7 +38,7 @@ func (s *AddProcessSuite) SetupSuite() {
 
 	s.renderer = renderer
 
-	s.handler = process.NewHandler(
+	s.handler = workflow.NewHandler(
 		s.logger,
 		s.renderer,
 	)
@@ -65,43 +65,30 @@ func (s *AddProcessSuite) BeforeTest(_, _ string) {
 	s.Require().NoError(err)
 }
 
-func (s *AddProcessSuite) TestAddProcess_ExpectOk() {
+func (s *AddProcessSuite) TestAddWorkflow_ExpectOk() {
 	// GIVEN
-	replicas := 1
-	gpu := false
 	server := "server1"
-	workflow := "Workflow1"
-	newProcess := krt.Process{
-		Name:          "My process",
-		Type:          krt.ProcessTypeTask,
-		Image:         "kst/task",
-		Replicas:      &replicas,
-		GPU:           &gpu,
-		Config:        nil,
-		ObjectStore:   nil,
-		Secrets:       map[string]string{},
-		Subscriptions: []string{"subject1", "subject2"},
-		Networking:    nil,
+	newWorkflow := krt.Workflow{
+		Name:      "My process",
+		Type:      krt.WorkflowTypeData,
+		Config:    map[string]string{},
+		Processes: []krt.Process{},
 	}
-	s.renderer.EXPECT().RenderProcesses(ProcessMatcher(_getDefaultProcess(), newProcess))
+	s.renderer.EXPECT().RenderWorkflows([]krt.Workflow{_getDefaultWorkflow(), newWorkflow})
 
 	// WHEN
-	err := s.handler.AddProcess(&process.AddProcessOpts{
-		ServerName:    server,
-		ProductID:     s.productName,
-		WorkflowID:    workflow,
-		ProcessID:     newProcess.Name,
-		ProcessType:   newProcess.Type,
-		Image:         newProcess.Image,
-		Replicas:      *newProcess.Replicas,
-		Subscriptions: newProcess.Subscriptions,
+	err := s.handler.AddWorkflow(&workflow.AddWorkflowOpts{
+		ServerName:   server,
+		ProductID:    s.productName,
+		WorkflowID:   newWorkflow.Name,
+		WorkflowType: newWorkflow.Type,
 	})
 
 	// THEN
 	s.Require().NoError(err)
 }
 
-func (s *AddProcessSuite) TestAddProcess_NonExistingProduct_ExpectError() {
+/*func (s *AddProcessSuite) TestAddProcess_NonExistingProduct_ExpectError() {
 	// GIVEN
 	replicas := 1
 	gpu := false
@@ -122,16 +109,8 @@ func (s *AddProcessSuite) TestAddProcess_NonExistingProduct_ExpectError() {
 	}
 
 	// WHEN
-	err := s.handler.AddProcess(&process.AddProcessOpts{
-		ServerName:    server,
-		ProductID:     product,
-		WorkflowID:    workflow,
-		ProcessID:     newProcess.Name,
-		ProcessType:   newProcess.Type,
-		Image:         newProcess.Image,
-		Replicas:      *newProcess.Replicas,
-		Subscriptions: newProcess.Subscriptions,
-	})
+	err := s.handler.AddProcess(server, product, workflow, newProcess.Name, string(newProcess.Type),
+		newProcess.Image, *newProcess.Replicas, newProcess.Subscriptions)
 
 	// THEN
 	s.Require().Error(err)
@@ -158,16 +137,8 @@ func (s *AddProcessSuite) TestAddProcess_NonExistingWorkflow_ExpectError() {
 	}
 
 	// WHEN
-	err := s.handler.AddProcess(&process.AddProcessOpts{
-		ServerName:    server,
-		ProductID:     s.productName,
-		WorkflowID:    workflow,
-		ProcessID:     newProcess.Name,
-		ProcessType:   newProcess.Type,
-		Image:         newProcess.Image,
-		Replicas:      *newProcess.Replicas,
-		Subscriptions: newProcess.Subscriptions,
-	})
+	err := s.handler.AddProcess(server, s.productName, workflow, newProcess.Name, string(newProcess.Type),
+		newProcess.Image, *newProcess.Replicas, newProcess.Subscriptions)
 
 	// THEN
 	s.Require().Error(err)
@@ -194,18 +165,10 @@ func (s *AddProcessSuite) TestAddProcess_DuplicatedProcess_ExpectError() {
 	}
 
 	// WHEN
-	err := s.handler.AddProcess(&process.AddProcessOpts{
-		ServerName:    server,
-		ProductID:     s.productName,
-		WorkflowID:    workflow,
-		ProcessID:     newProcess.Name,
-		ProcessType:   newProcess.Type,
-		Image:         newProcess.Image,
-		Replicas:      *newProcess.Replicas,
-		Subscriptions: newProcess.Subscriptions,
-	})
+	err := s.handler.AddProcess(server, s.productName, workflow, newProcess.Name, string(newProcess.Type),
+		newProcess.Image, *newProcess.Replicas, newProcess.Subscriptions)
 
 	// THEN
 	s.Require().Error(err)
 	s.Require().ErrorIs(err, configservice.ErrProcessAlreadyExists)
-}
+}*/

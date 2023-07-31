@@ -7,6 +7,8 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+
+	"github.com/konstellation-io/krt/pkg/krt"
 )
 
 var (
@@ -14,29 +16,38 @@ var (
 	ErrZipFileCouldNotBeCreated = errors.New("zip file could not be created")
 )
 
-func (c *Handler) RegisterProcess(serverName, productID, processType, processID,
-	sourcesPath, dockerfilePath, version string) error {
+type RegisterProcessOpts struct {
+	ServerName  string
+	ProductID   string
+	ProcessType krt.ProcessType
+	ProcessID   string
+	SourcesPath string
+	Dockerfile  string
+	Version     string
+}
+
+func (c *Handler) RegisterProcess(opts *RegisterProcessOpts) error {
 	kaiConfig, err := c.configService.GetConfiguration()
 	if err != nil {
 		return err
 	}
 
-	srv, err := kaiConfig.GetServerOrDefault(serverName)
+	srv, err := kaiConfig.GetServerOrDefault(opts.ServerName)
 	if err != nil {
 		return err
 	}
 
-	if !c.pathExists(sourcesPath) || !c.pathExists(dockerfilePath) {
+	if !c.pathExists(opts.SourcesPath) || !c.pathExists(opts.Dockerfile) {
 		return ErrPathDoesNotExist
 	}
 
-	tmpZipFile, err := c.creteTempZipFile(sourcesPath, dockerfilePath)
+	tmpZipFile, err := c.creteTempZipFile(opts.SourcesPath, opts.Dockerfile)
 	if err != nil {
 		return ErrZipFileCouldNotBeCreated
 	}
 
 	registeredProcess, err := c.processRegistryClient.
-		Register(srv, tmpZipFile, productID, processID, processType, version)
+		Register(srv, tmpZipFile, opts.ProductID, opts.ProcessID, string(opts.ProcessType), opts.Version)
 	if err != nil {
 		return err
 	}

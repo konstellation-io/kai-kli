@@ -1,6 +1,7 @@
 package workflow
 
 import (
+	"github.com/konstellation-io/krt/pkg/krt"
 	"github.com/spf13/cobra"
 
 	"github.com/konstellation-io/kli/internal/commands/workflow"
@@ -41,14 +42,12 @@ func NewUpdateCmd(logger logging.Interface) *cobra.Command {
 			// TODO Get the given server or the default one
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
-			err = workflow.NewHandler(logger, r).UpdateWorkflow(serverName, productID, workflowID, workflowType)
-			if err != nil {
-				return err
-			}
-
-			logger.Success("Workflow successfully updated.")
-
-			return nil
+			return workflow.NewHandler(logger, r).UpdateWorkflow(&workflow.UpdateWorkflowOpts{
+				ServerName:   serverName,
+				ProductID:    productID,
+				WorkflowID:   workflowID,
+				WorkflowType: krt.WorkflowType(workflowType),
+			})
 		},
 	}
 

@@ -20,6 +20,7 @@ const (
 	_defaultProcessImage       = "test/trigger-image"
 )
 
+//nolint:gochecknoglobals
 var (
 	_defaultReplicas      = 1
 	_defaultGPU           = false

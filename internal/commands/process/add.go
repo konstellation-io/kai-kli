@@ -4,27 +4,47 @@ import (
 	"github.com/konstellation-io/krt/pkg/krt"
 )
 
-func (w *Handler) AddProcess(serverName, productID, workflowID, processID, processType, image string,
-	replicas int, subscriptions []string) error {
-	productConfig, err := w.configService.GetConfiguration(productID)
+type AddProcessOpts struct {
+	ServerName  string
+	ProductID   string
+	WorkflowID  string
+	ProcessID   string
+	ProcessType krt.ProcessType
+	// not implemented yet
+	ObjectStoreName   string
+	ObjectStoreScope  krt.ObjectStoreScope
+	NetworkSourcePort int
+	NetworkTargetPort int
+	NetworkProtocol   krt.NetworkingProtocol
+	// end of not implemented yet
+	Image         string
+	Replicas      int
+	GPU           bool
+	Subscriptions []string
+}
+
+func (w *Handler) AddProcess(opts *AddProcessOpts) error {
+	productConfig, err := w.configService.GetConfiguration(opts.ProductID)
 	if err != nil {
 		return err
 	}
 
-	GPU := false
+	// TODO create object store if needed
+
+	// TODO create networking if needed
 
 	err = productConfig.AddProcess(
-		workflowID,
+		opts.WorkflowID,
 		&krt.Process{
-			Name:          processID,
-			Type:          krt.ProcessType(processType),
-			Image:         image,
-			Replicas:      &replicas,
-			GPU:           &GPU,
+			Name:          opts.ProcessID,
+			Type:          opts.ProcessType,
+			Image:         opts.Image,
+			Replicas:      &opts.Replicas,
+			GPU:           &opts.GPU,
 			Config:        map[string]string{},
 			ObjectStore:   nil,
 			Secrets:       map[string]string{},
-			Subscriptions: subscriptions,
+			Subscriptions: opts.Subscriptions,
 			Networking:    nil,
 		})
 
@@ -32,12 +52,12 @@ func (w *Handler) AddProcess(serverName, productID, workflowID, processID, proce
 		return err
 	}
 
-	err = w.configService.WriteConfiguration(productConfig, productID)
+	err = w.configService.WriteConfiguration(productConfig, opts.ProductID)
 	if err != nil {
 		return err
 	}
 
-	_, wf, err := productConfig.GetWorkflow(workflowID)
+	_, wf, err := productConfig.GetWorkflow(opts.WorkflowID)
 	if err != nil {
 		return err
 	}

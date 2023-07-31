@@ -86,8 +86,16 @@ func (s *UpdateProcessSuite) TestUpdateProcess_ExpectOk() {
 
 	// WHEN
 	err := s.handler.
-		UpdateProcess(server, s.productName, workflow, newProcess.Name, string(newProcess.Type),
-			newProcess.Image, *newProcess.Replicas, newProcess.Subscriptions)
+		UpdateProcess(&process.UpdateProcessOpts{
+			ServerName:    server,
+			ProductID:     s.productName,
+			WorkflowID:    workflow,
+			ProcessID:     newProcess.Name,
+			ProcessType:   newProcess.Type,
+			Image:         newProcess.Image,
+			Replicas:      *newProcess.Replicas,
+			Subscriptions: newProcess.Subscriptions,
+		})
 
 	// THEN
 	s.Require().NoError(err)
@@ -113,8 +121,16 @@ func (s *UpdateProcessSuite) TestUpdateProcess_NonExistingProduct_ExpectError() 
 	}
 
 	// WHEN
-	err := s.handler.UpdateProcess(server, product, workflow, newProcess.Name, string(newProcess.Type),
-		newProcess.Image, *newProcess.Replicas, newProcess.Subscriptions)
+	err := s.handler.UpdateProcess(&process.UpdateProcessOpts{
+		ServerName:    server,
+		ProductID:     product,
+		WorkflowID:    workflow,
+		ProcessID:     newProcess.Name,
+		ProcessType:   newProcess.Type,
+		Image:         newProcess.Image,
+		Replicas:      *newProcess.Replicas,
+		Subscriptions: newProcess.Subscriptions,
+	})
 
 	// THEN
 	s.Require().Error(err)
@@ -140,8 +156,16 @@ func (s *UpdateProcessSuite) TestUpdateProcess_NonExistingWorkflow_ExpectError()
 	}
 
 	// WHEN
-	err := s.handler.UpdateProcess(server, s.productName, workflow, newProcess.Name, string(newProcess.Type),
-		newProcess.Image, *newProcess.Replicas, newProcess.Subscriptions)
+	err := s.handler.UpdateProcess(&process.UpdateProcessOpts{
+		ServerName:    server,
+		ProductID:     s.productName,
+		WorkflowID:    workflow,
+		ProcessID:     newProcess.Name,
+		ProcessType:   newProcess.Type,
+		Image:         newProcess.Image,
+		Replicas:      *newProcess.Replicas,
+		Subscriptions: newProcess.Subscriptions,
+	})
 
 	// THEN
 	s.Require().Error(err)
@@ -167,8 +191,16 @@ func (s *UpdateProcessSuite) TestUpdateProcess_NonExistingProcess_ExpectError() 
 	}
 
 	// WHEN
-	err := s.handler.UpdateProcess(server, s.productName, workflow, newProcess.Name, string(newProcess.Type),
-		newProcess.Image, *newProcess.Replicas, newProcess.Subscriptions)
+	err := s.handler.UpdateProcess(&process.UpdateProcessOpts{
+		ServerName:    server,
+		ProductID:     s.productName,
+		WorkflowID:    workflow,
+		ProcessID:     newProcess.Name,
+		ProcessType:   newProcess.Type,
+		Image:         newProcess.Image,
+		Replicas:      *newProcess.Replicas,
+		Subscriptions: newProcess.Subscriptions,
+	})
 
 	// THEN
 	s.Require().Error(err)

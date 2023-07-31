@@ -52,7 +52,11 @@ func NewCreateCmd(logger logging.Interface) *cobra.Command {
 				}*/
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
-			err = product.NewHandler(logger, r).CreateProduct( /*server,*/ productName, version, description /*, initLocal, localPath*/)
+			err = product.NewHandler(logger, r).CreateProduct(&product.CreateProductOpts{
+				ProductName: productName,
+				Version:     version,
+				Description: description,
+			})
 			if err != nil {
 				return err
 			}

@@ -1,23 +1,31 @@
 package productconfiguration
 
-func (c *Handler) RemoveConfiguration(productID, workflowID, processID, scope, key string) error {
-	config, err := c.productConfig.GetConfiguration(productID)
+type RemoveConfigurationOpts struct {
+	ProductID  string
+	WorkflowID string
+	ProcessID  string
+	Scope      string
+	Key        string
+}
+
+func (c *Handler) RemoveConfiguration(opts *RemoveConfigurationOpts) error {
+	config, err := c.productConfig.GetConfiguration(opts.ProductID)
 	if err != nil {
 		return err
 	}
 
 	var updatedConf map[string]string
 
-	switch scope {
-	case "version":
-		updatedConf = config.DeleteVersionConfig(key)
-	case "workflow":
-		updatedConf, err = config.DeleteWorkflowConfig(workflowID, key)
+	switch opts.Scope {
+	case _versionScope:
+		updatedConf = config.DeleteVersionConfig(opts.Key)
+	case _workflowScope:
+		updatedConf, err = config.DeleteWorkflowConfig(opts.WorkflowID, opts.Key)
 		if err != nil {
 			return err
 		}
-	case "process":
-		updatedConf, err = config.DeleteProcessConfig(workflowID, processID, key)
+	case _processScope:
+		updatedConf, err = config.DeleteProcessConfig(opts.WorkflowID, opts.ProcessID, opts.Key)
 		if err != nil {
 			return err
 		}
@@ -25,12 +33,12 @@ func (c *Handler) RemoveConfiguration(productID, workflowID, processID, scope, k
 		return ErrScopeNotValid
 	}
 
-	err = c.productConfig.WriteConfiguration(config, productID)
+	err = c.productConfig.WriteConfiguration(config, opts.ProductID)
 	if err != nil {
 		return err
 	}
 
-	c.renderer.RenderConfiguration(scope, updatedConf)
+	c.renderer.RenderConfiguration(opts.Scope, updatedConf)
 
 	return nil
 }

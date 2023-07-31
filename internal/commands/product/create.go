@@ -12,12 +12,19 @@ import (
 
 var ErrProductConfigurationAlreadyExists = errors.New("product configuration already exists")
 
-func (c *Handler) CreateProduct( /*server configuration.Server, */ productName, version, description string,
+type CreateProductOpts struct {
+	Server      string
+	ProductName string
+	Version     string
+	Description string
+	InitLocal   bool
+	LocalPath   string
+}
 
-/*initLocal bool, localPath string*/) error {
+func (c *Handler) CreateProduct(opts *CreateProductOpts) error {
 	// TODO create product in KAI server
 
-	productConfigPath, err := config.GetProductConfigFilePath(productName)
+	productConfigPath, err := config.GetProductConfigFilePath(opts.ProductName)
 	if err != nil {
 		return err
 	}
@@ -30,15 +37,17 @@ func (c *Handler) CreateProduct( /*server configuration.Server, */ productName, 
 	err = c.configService.WriteConfiguration(
 		&productconfiguration.KaiProductConfiguration{
 			Krt: &krt.Krt{
-				Version:     productName,
-				Description: description,
-				Config:      map[string]string{"test": "value"},
+				Version:     opts.ProductName,
+				Description: opts.Description,
+				Config:      map[string]string{},
 				Workflows:   []krt.Workflow{},
 			},
-		}, productName)
+		}, opts.ProductName)
 	if err != nil {
 		return err
 	}
+
+	// TODO add renderer method to show product
 
 	return nil
 }

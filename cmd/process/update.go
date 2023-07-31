@@ -1,6 +1,7 @@
 package process
 
 import (
+	"github.com/konstellation-io/krt/pkg/krt"
 	"github.com/spf13/cobra"
 
 	"github.com/konstellation-io/kli/internal/commands/process"
@@ -49,8 +50,15 @@ func NewUpdateCmd(logger logging.Interface) *cobra.Command {
 			// TODO Get the given server or the default one
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
-			err = process.NewHandler(logger, r).UpdateProcess(serverName, productID, workflowID,
-				processID, processType, image, replicas, subscriptions)
+			err = process.NewHandler(logger, r).UpdateProcess(&process.UpdateProcessOpts{
+				ServerName:    serverName,
+				ProductID:     productID,
+				WorkflowID:    workflowID,
+				ProcessID:     processID,
+				ProcessType:   krt.ProcessType(processType),
+				Image:         image,
+				Replicas:      replicas,
+				Subscriptions: subscriptions})
 			if err != nil {
 				return err
 			}

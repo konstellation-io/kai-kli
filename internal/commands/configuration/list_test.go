@@ -73,7 +73,12 @@ func (s *ListConfigurationSuite) TestListConfiguration_VersionScope_ExpectOk() {
 	s.renderer.EXPECT().RenderConfiguration(scope, _getDefaultKaiConfig().Config)
 
 	// WHEN
-	err := s.handler.ListConfiguration(s.productName, workflow, process, scope)
+	err := s.handler.ListConfiguration(&productconfiguration.ListConfigurationOpts{
+		ProductID:  s.productName,
+		WorkflowID: workflow,
+		ProcessID:  process,
+		Scope:      scope,
+	})
 
 	// THEN
 	s.Require().NoError(err)
@@ -87,7 +92,12 @@ func (s *ListConfigurationSuite) TestListConfiguration_WorkflowScope_ExpectOk() 
 	s.renderer.EXPECT().RenderConfiguration(scope, _getDefaultWorkflow().Config)
 
 	// WHEN
-	err := s.handler.ListConfiguration(s.productName, workflow, process, scope)
+	err := s.handler.ListConfiguration(&productconfiguration.ListConfigurationOpts{
+		ProductID:  s.productName,
+		WorkflowID: workflow,
+		ProcessID:  process,
+		Scope:      scope,
+	})
 
 	// THEN
 	s.Require().NoError(err)
@@ -100,7 +110,12 @@ func (s *ListConfigurationSuite) TestListConfiguration_WorkflowScope_NoWorkflow_
 	scope := "workflow"
 
 	// WHEN
-	err := s.handler.ListConfiguration(s.productName, workflow, process, scope)
+	err := s.handler.ListConfiguration(&productconfiguration.ListConfigurationOpts{
+		ProductID:  s.productName,
+		WorkflowID: workflow,
+		ProcessID:  process,
+		Scope:      scope,
+	})
 
 	// THEN
 	s.Require().Error(err)
@@ -115,7 +130,12 @@ func (s *ListConfigurationSuite) TestListConfiguration_ProcessScope_ExpectOk() {
 	s.renderer.EXPECT().RenderConfiguration(scope, _getDefaultProcess().Config)
 
 	// WHEN
-	err := s.handler.ListConfiguration(s.productName, workflow, process, scope)
+	err := s.handler.ListConfiguration(&productconfiguration.ListConfigurationOpts{
+		ProductID:  s.productName,
+		WorkflowID: workflow,
+		ProcessID:  process,
+		Scope:      scope,
+	})
 
 	// THEN
 	s.Require().NoError(err)
@@ -128,7 +148,12 @@ func (s *ListConfigurationSuite) TestListConfiguration_ProcessScope_NoWorkflow_E
 	scope := "process"
 
 	// WHEN
-	err := s.handler.ListConfiguration(s.productName, workflow, process, scope)
+	err := s.handler.ListConfiguration(&productconfiguration.ListConfigurationOpts{
+		ProductID:  s.productName,
+		WorkflowID: workflow,
+		ProcessID:  process,
+		Scope:      scope,
+	})
 
 	// THEN
 	s.Require().Error(err)
@@ -142,7 +167,12 @@ func (s *ListConfigurationSuite) TestListConfiguration_ProcessScope_NoProcess_Ex
 	scope := "process"
 
 	// WHEN
-	err := s.handler.ListConfiguration(s.productName, workflow, process, scope)
+	err := s.handler.ListConfiguration(&productconfiguration.ListConfigurationOpts{
+		ProductID:  s.productName,
+		WorkflowID: workflow,
+		ProcessID:  process,
+		Scope:      scope,
+	})
 
 	// THEN
 	s.Require().Error(err)

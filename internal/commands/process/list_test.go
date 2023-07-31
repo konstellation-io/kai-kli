@@ -71,7 +71,11 @@ func (s *ListProcessSuite) TestListProcess_ExpectOk() {
 	s.renderer.EXPECT().RenderProcesses(ProcessMatcher(_getDefaultProcess()))
 
 	// WHEN
-	err := s.handler.ListProcesses(server, s.productName, workflow)
+	err := s.handler.ListProcesses(&process.ListProcessOpts{
+		ServerName: server,
+		ProductID:  s.productName,
+		WorkflowID: workflow,
+	})
 
 	// THEN
 	s.Require().NoError(err)
@@ -84,7 +88,11 @@ func (s *ListProcessSuite) TestListProcess_NonExistingProduct_ExpectError() {
 	workflow := "Workflow-test"
 
 	// WHEN
-	err := s.handler.ListProcesses(server, product, workflow)
+	err := s.handler.ListProcesses(&process.ListProcessOpts{
+		ServerName: server,
+		ProductID:  product,
+		WorkflowID: workflow,
+	})
 
 	// THEN
 	s.Require().Error(err)
@@ -97,7 +105,11 @@ func (s *ListProcessSuite) TestListProcess_NonExistingWorkflow_ExpectError() {
 	workflow := "Workflow-test"
 
 	// WHEN
-	err := s.handler.ListProcesses(server, s.productName, workflow)
+	err := s.handler.ListProcesses(&process.ListProcessOpts{
+		ServerName: server,
+		ProductID:  s.productName,
+		WorkflowID: workflow,
+	})
 
 	// THEN
 	s.Require().Error(err)

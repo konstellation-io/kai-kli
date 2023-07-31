@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/konstellation-io/krt/pkg/krt"
 	"github.com/spf13/cobra"
 
 	"github.com/konstellation-io/kli/api"
@@ -76,8 +77,15 @@ func NewRegisterCmd(logger logging.Interface) *cobra.Command {
 				auth.NewAuthentication(logger),
 				configuration.NewKaiConfigService(logger),
 			).
-				RegisterProcess(serverName, productID, processType,
-					processID, sourcesPath, dockerFile, version)
+				RegisterProcess(&processregistry.RegisterProcessOpts{
+					ServerName:  serverName,
+					ProductID:   productID,
+					ProcessType: krt.ProcessType(processType),
+					ProcessID:   processID,
+					SourcesPath: sourcesPath,
+					Dockerfile:  dockerFile,
+					Version:     version,
+				})
 			if err != nil {
 				return err
 			}

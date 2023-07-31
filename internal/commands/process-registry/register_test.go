@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
+	"github.com/konstellation-io/krt/pkg/krt"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
 
@@ -114,7 +115,15 @@ func (s *RegisterProcessSuite) TestRegisterNewServer_ValidPaths_ExpectOk() {
 		Return(registeredProcessID, nil)
 
 	// WHEN
-	err := s.manager.RegisterProcess(serverName, productID, processType, processID, processPath, dockerfilePath, version)
+	err := s.manager.RegisterProcess(&processregistry.RegisterProcessOpts{
+		ServerName:  serverName,
+		ProductID:   productID,
+		ProcessType: krt.ProcessType(processType),
+		ProcessID:   processID,
+		SourcesPath: processPath,
+		Dockerfile:  dockerfilePath,
+		Version:     version,
+	})
 
 	// THEN
 	s.Require().NoError(err)
@@ -131,7 +140,15 @@ func (s *RegisterProcessSuite) TestRegisterNewServer_InvalidSourcePath_ExpectErr
 	productID := _productID
 
 	// WHEN
-	err := s.manager.RegisterProcess(serverName, productID, processType, processID, processPath, dockerfilePath, version)
+	err := s.manager.RegisterProcess(&processregistry.RegisterProcessOpts{
+		ServerName:  serverName,
+		ProductID:   productID,
+		ProcessType: krt.ProcessType(processType),
+		ProcessID:   processID,
+		SourcesPath: processPath,
+		Dockerfile:  dockerfilePath,
+		Version:     version,
+	})
 
 	// THEN
 	s.Require().Error(err)
@@ -149,7 +166,15 @@ func (s *RegisterProcessSuite) TestRegisterNewServer_InvalidDockerfilePath_Expec
 	productID := _productID
 
 	// WHEN
-	err := s.manager.RegisterProcess(serverName, productID, processType, processID, processPath, dockerfilePath, version)
+	err := s.manager.RegisterProcess(&processregistry.RegisterProcessOpts{
+		ServerName:  serverName,
+		ProductID:   productID,
+		ProcessType: krt.ProcessType(processType),
+		ProcessID:   processID,
+		SourcesPath: processPath,
+		Dockerfile:  dockerfilePath,
+		Version:     version,
+	})
 
 	// THEN
 	s.Require().Error(err)

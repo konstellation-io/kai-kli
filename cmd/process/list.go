@@ -36,7 +36,11 @@ func NewListCmd(logger logging.Interface) *cobra.Command {
 			// TODO Get the given server or the default one
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
-			err = process.NewHandler(logger, r).ListProcesses(serverName, productID, workflowID)
+			err = process.NewHandler(logger, r).ListProcesses(&process.ListProcessOpts{
+				ServerName: serverName,
+				ProductID:  productID,
+				WorkflowID: workflowID,
+			})
 			if err != nil {
 				return err
 			}

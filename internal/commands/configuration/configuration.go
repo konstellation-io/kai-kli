@@ -12,6 +12,12 @@ var (
 	ErrScopeNotValid = errors.New("scope not valid, valid scopes are: version, workflow, process")
 )
 
+const (
+	_versionScope  = "version"
+	_workflowScope = "workflow"
+	_processScope  = "process"
+)
+
 type Handler struct {
 	logger        logging.Interface
 	renderer      render.Renderer

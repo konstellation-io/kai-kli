@@ -74,7 +74,12 @@ func (s *RemoveProcessSuite) TestRemoveProcess_ExpectOk() {
 	s.renderer.EXPECT().RenderProcesses(gomock.Eq([]krt.Process{}))
 
 	// WHEN
-	err := s.handler.RemoveProcess(server, s.productName, workflow, processName)
+	err := s.handler.RemoveProcess(&process.RemoveProcessOpts{
+		ServerName: server,
+		ProductID:  s.productName,
+		WorkflowID: workflow,
+		ProcessID:  processName,
+	})
 
 	// THEN
 	s.Require().NoError(err)
@@ -88,7 +93,12 @@ func (s *RemoveProcessSuite) TestRemoveProcess_NonExistingProduct_ExpectError() 
 	processName := _getDefaultProcess().Name
 
 	// WHEN
-	err := s.handler.RemoveProcess(server, product, workflow, processName)
+	err := s.handler.RemoveProcess(&process.RemoveProcessOpts{
+		ServerName: server,
+		ProductID:  product,
+		WorkflowID: workflow,
+		ProcessID:  processName,
+	})
 
 	// THEN
 	s.Require().Error(err)
@@ -102,7 +112,12 @@ func (s *RemoveProcessSuite) TestRemoveProcess_NonExistingWorkflow_ExpectError()
 	processName := _getDefaultProcess().Name
 
 	// WHEN
-	err := s.handler.RemoveProcess(server, s.productName, workflow, processName)
+	err := s.handler.RemoveProcess(&process.RemoveProcessOpts{
+		ServerName: server,
+		ProductID:  s.productName,
+		WorkflowID: workflow,
+		ProcessID:  processName,
+	})
 
 	// THEN
 	s.Require().Error(err)
@@ -116,7 +131,12 @@ func (s *RemoveProcessSuite) TestRemoveProcess_NonExistingProcess_ExpectError() 
 	processName := "some-process"
 
 	// WHEN
-	err := s.handler.RemoveProcess(server, s.productName, workflow, processName)
+	err := s.handler.RemoveProcess(&process.RemoveProcessOpts{
+		ServerName: server,
+		ProductID:  s.productName,
+		WorkflowID: workflow,
+		ProcessID:  processName,
+	})
 
 	// THEN
 	s.Require().Error(err)

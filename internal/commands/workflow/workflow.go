@@ -6,14 +6,14 @@ import (
 	productconfiguration "github.com/konstellation-io/kli/internal/services/product_configuration"
 )
 
-type KaiWorkflow struct {
+type Handler struct {
 	logger        logging.Interface
 	renderer      render.Renderer
 	configService *productconfiguration.ProductConfigService
 }
 
-func NewHandler(logger logging.Interface, renderer render.Renderer) *KaiWorkflow {
-	return &KaiWorkflow{
+func NewHandler(logger logging.Interface, renderer render.Renderer) *Handler {
+	return &Handler{
 		logger:        logger,
 		renderer:      renderer,
 		configService: productconfiguration.NewProductConfigService(logger),

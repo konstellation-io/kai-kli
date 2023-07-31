@@ -1,23 +1,30 @@
 package productconfiguration
 
-func (c *Handler) ListConfiguration(productID, workflowID, processID, scope string) error {
-	config, err := c.productConfig.GetConfiguration(productID)
+type ListConfigurationOpts struct {
+	ProductID  string
+	WorkflowID string
+	ProcessID  string
+	Scope      string
+}
+
+func (c *Handler) ListConfiguration(opts *ListConfigurationOpts) error {
+	config, err := c.productConfig.GetConfiguration(opts.ProductID)
 	if err != nil {
 		return err
 	}
 
 	var productConf map[string]string
 
-	switch scope {
-	case "version":
+	switch opts.Scope {
+	case _versionScope:
 		productConf = config.GetVersionConfiguration()
-	case "workflow":
-		productConf, err = config.GetWorkflowConfiguration(workflowID)
+	case _workflowScope:
+		productConf, err = config.GetWorkflowConfiguration(opts.WorkflowID)
 		if err != nil {
 			return err
 		}
-	case "process":
-		productConf, err = config.GetProcessConfiguration(workflowID, processID)
+	case _processScope:
+		productConf, err = config.GetProcessConfiguration(opts.WorkflowID, opts.ProcessID)
 		if err != nil {
 			return err
 		}
@@ -25,7 +32,7 @@ func (c *Handler) ListConfiguration(productID, workflowID, processID, scope stri
 		return ErrScopeNotValid
 	}
 
-	c.renderer.RenderConfiguration(scope, productConf)
+	c.renderer.RenderConfiguration(opts.Scope, productConf)
 
 	return nil
 }

@@ -2,28 +2,35 @@ package workflow
 
 import "github.com/konstellation-io/krt/pkg/krt"
 
-func (w *KaiWorkflow) UpdateWorkflow(serverName, productID, workflowID, workflowType string) error {
-	productConfig, err := w.configService.GetConfiguration(productID)
+type UpdateWorkflowOpts struct {
+	ServerName   string
+	ProductID    string
+	WorkflowID   string
+	WorkflowType krt.WorkflowType
+}
+
+func (w *Handler) UpdateWorkflow(opts *UpdateWorkflowOpts) error {
+	productConfig, err := w.configService.GetConfiguration(opts.ProductID)
 	if err != nil {
 		return err
 	}
 
 	err = productConfig.UpdateWorkflow(
-		krt.Workflow{
-			Name:      workflowID,
-			Type:      krt.WorkflowType(workflowType),
-			Config:    map[string]string{},
-			Processes: []krt.Process{},
+		&krt.Workflow{
+			Name: opts.WorkflowID,
+			Type: opts.WorkflowType,
 		})
 
 	if err != nil {
 		return err
 	}
 
-	err = w.configService.WriteConfiguration(productConfig, productID)
+	err = w.configService.WriteConfiguration(productConfig, opts.ProductID)
 	if err != nil {
 		return err
 	}
+
+	w.renderer.RenderWorkflows(productConfig.Workflows)
 
 	return nil
 }

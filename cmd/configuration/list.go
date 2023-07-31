@@ -41,7 +41,12 @@ func NewListCmd(logger logging.Interface) *cobra.Command {
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
 			return processconfiguration.NewHandler(logger, r).
-				ListConfiguration(productID, workflowID, processID, scope)
+				ListConfiguration(&processconfiguration.ListConfigurationOpts{
+					ProductID:  productID,
+					WorkflowID: workflowID,
+					ProcessID:  processID,
+					Scope:      scope,
+				})
 		},
 	}
 

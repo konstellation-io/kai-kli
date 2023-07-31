@@ -31,12 +31,10 @@ func NewListCmd(logger logging.Interface) *cobra.Command {
 			// TODO Get the given server or the default one
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
-			err = workflow.NewHandler(logger, r).ListWorkflows(serverName, productID)
-			if err != nil {
-				return err
-			}
-
-			return nil
+			return workflow.NewHandler(logger, r).ListWorkflows(&workflow.ListWorkflowOpts{
+				ServerName: serverName,
+				ProductID:  productID,
+			})
 		},
 	}
 

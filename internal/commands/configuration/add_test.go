@@ -109,7 +109,14 @@ func (s *AddConfigurationSuite) TestAddConfiguration_VersionScope_ExpectOk() {
 
 	// WHEN
 	err := s.handler.
-		AddConfiguration(s.productName, workflow, process, scope, key, value)
+		AddConfiguration(&productconfiguration.AddConfigurationOpts{
+			ProductID:  s.productName,
+			WorkflowID: workflow,
+			ProcessID:  process,
+			Scope:      scope,
+			Key:        key,
+			Value:      value,
+		})
 
 	// THEN
 	s.Require().NoError(err)
@@ -130,7 +137,14 @@ func (s *AddConfigurationSuite) TestAddConfiguration_WorkflowScope_ExpectOk() {
 
 	// WHEN
 	err := s.handler.
-		AddConfiguration(s.productName, workflow, process, scope, key, value)
+		AddConfiguration(&productconfiguration.AddConfigurationOpts{
+			ProductID:  s.productName,
+			WorkflowID: workflow,
+			ProcessID:  process,
+			Scope:      scope,
+			Key:        key,
+			Value:      value,
+		})
 
 	// THEN
 	s.Require().NoError(err)
@@ -151,7 +165,14 @@ func (s *AddConfigurationSuite) TestAddConfiguration_WorkflowScope_NoWorkflow_Ex
 
 	// WHEN
 	err := s.handler.
-		AddConfiguration(s.productName, workflow, process, scope, key, value)
+		AddConfiguration(&productconfiguration.AddConfigurationOpts{
+			ProductID:  s.productName,
+			WorkflowID: workflow,
+			ProcessID:  process,
+			Scope:      scope,
+			Key:        key,
+			Value:      value,
+		})
 
 	// THEN
 	s.Require().Error(err)
@@ -170,7 +191,14 @@ func (s *AddConfigurationSuite) TestAddConfiguration_ProcessScope_ExpectOk() {
 
 	// WHEN
 	err := s.handler.
-		AddConfiguration(s.productName, workflow, process, scope, key, value)
+		AddConfiguration(&productconfiguration.AddConfigurationOpts{
+			ProductID:  s.productName,
+			WorkflowID: workflow,
+			ProcessID:  process,
+			Scope:      scope,
+			Key:        key,
+			Value:      value,
+		})
 
 	// THEN
 	s.Require().NoError(err)
@@ -191,7 +219,14 @@ func (s *AddConfigurationSuite) TestAddConfiguration_ProcessScope_NoWorkflow_Exp
 
 	// WHEN
 	err := s.handler.
-		AddConfiguration(s.productName, workflow, process, scope, key, value)
+		AddConfiguration(&productconfiguration.AddConfigurationOpts{
+			ProductID:  s.productName,
+			WorkflowID: workflow,
+			ProcessID:  process,
+			Scope:      scope,
+			Key:        key,
+			Value:      value,
+		})
 
 	// THEN
 	s.Require().Error(err)
@@ -208,7 +243,14 @@ func (s *AddConfigurationSuite) TestAddConfiguration_ProcessScope_NoProcess_Expe
 
 	// WHEN
 	err := s.handler.
-		AddConfiguration(s.productName, workflow, process, scope, key, value)
+		AddConfiguration(&productconfiguration.AddConfigurationOpts{
+			ProductID:  s.productName,
+			WorkflowID: workflow,
+			ProcessID:  process,
+			Scope:      scope,
+			Key:        key,
+			Value:      value,
+		})
 
 	// THEN
 	s.Require().Error(err)

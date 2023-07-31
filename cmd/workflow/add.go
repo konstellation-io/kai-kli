@@ -1,17 +1,12 @@
 package workflow
 
 import (
-	"fmt"
-
+	"github.com/konstellation-io/krt/pkg/krt"
 	"github.com/spf13/cobra"
 
 	"github.com/konstellation-io/kli/internal/commands/workflow"
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/konstellation-io/kli/internal/render"
-)
-
-var (
-	ErrDockerfileNotFound = fmt.Errorf("dockerfile not found, the file must be named 'Dockerfile'")
 )
 
 const (
@@ -40,18 +35,13 @@ func NewAddCmd(logger logging.Interface) *cobra.Command {
 				serverName = ""
 			}
 
-			// TODO Get the given product or the default one
-			// TODO Get the given server or the default one
-
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
-			err = workflow.NewHandler(logger, r).AddWorkflow(serverName, productID, workflowID, workflowType)
-			if err != nil {
-				return err
-			}
-
-			logger.Success(fmt.Sprintf("Workflow successfully registered with ID %s.", workflowID))
-
-			return nil
+			return workflow.NewHandler(logger, r).AddWorkflow(&workflow.AddWorkflowOpts{
+				ServerName:   serverName,
+				ProductID:    productID,
+				WorkflowID:   workflowID,
+				WorkflowType: krt.WorkflowType(workflowType),
+			})
 		},
 	}
 

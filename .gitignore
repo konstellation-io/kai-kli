@@ -6,3 +6,5 @@ golangci-report.xml
 kli
 bin
 testdata/.kai
+cover.out
+cover.html

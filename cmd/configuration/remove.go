@@ -43,7 +43,13 @@ func NewRemoveCmd(logger logging.Interface) *cobra.Command {
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
 			return processconfiguration.NewHandler(logger, r).
-				RemoveConfiguration(productID, workflowID, processID, scope, key)
+				RemoveConfiguration(&processconfiguration.RemoveConfigurationOpts{
+					ProductID:  productID,
+					WorkflowID: workflowID,
+					ProcessID:  processID,
+					Scope:      scope,
+					Key:        key,
+				})
 		},
 	}
 

@@ -55,7 +55,7 @@ func (c *KaiProductConfiguration) UpdateProcess(workflowName string, pc *krt.Pro
 	}
 
 	for i, process := range wf.Processes {
-		if process.Name == pc.Name {
+		if pc.Name == process.Name {
 			c.Workflows[*wi].Processes[i] = *pc
 			c.Workflows[*wi].Processes[i].Config = pc.Config
 			c.Workflows[*wi].Processes[i].GPU = pc.GPU
