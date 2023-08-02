@@ -11,11 +11,11 @@ import (
 // NewAddCmd creates a new command to add a new configuration to the given scope.
 func NewAddCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "add <key> <value> [--scope <scope>] [--process-id <process_id>] [--workflow-id <workflow_id>] [--product_id <product_id>] [--server <server>]",
+		Use:   "add <key> <value> [opts...]",
 		Args:  cobra.ExactArgs(2), //nolint:gomnd
 		Short: "Add a new configuration key-value pair to the given scope",
 		Example: `
-    $ kli config add <key> <value> [--scope <scope>] [--process-id <process_id>] [--workflow-id <workflow_id>] [--product_id <product_id>] [--server <server>]
+    $ kli config add <key> <value> [opts...]
 		`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			key := args[0]

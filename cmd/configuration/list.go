@@ -11,12 +11,12 @@ import (
 // NewListCmd creates a new command to list existing configuration from the given scope.
 func NewListCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "list [--scope <scope>] [--process-id <process_id>] [--workflow-id <workflow_id>] [--product_id <product_id>] [--server <server>]",
+		Use:     "list [opts...]",
 		Aliases: []string{"ls"},
-		Args:    cobra.ExactArgs(0), //nolint:gomnd
+		Args:    cobra.ExactArgs(0),
 		Short:   "List the existing configuration from the given scope",
 		Example: `
-    $ kli config list [--scope <scope>] [--process-id <process_id>] [--workflow-id <workflow_id>] [--product_id <product_id>] [--server <server>]
+    $ kli config list [opts...]
 		`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			productID, err := cmd.Flags().GetString(_productIDFlag)

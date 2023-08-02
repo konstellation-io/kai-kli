@@ -11,12 +11,12 @@ import (
 // NewRemoveCmd creates a new command to remove an existing configuration from the given scope.
 func NewRemoveCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "remove <key> [--scope <scope>] [--process-id <process_id>] [--workflow-id <workflow_id>] [--product_id <product_id>] [--server <server>]",
+		Use:     "remove <key> [opts...]",
 		Aliases: []string{"rm", "del", "delete"},
-		Args:    cobra.ExactArgs(1), //nolint:gomnd
+		Args:    cobra.ExactArgs(1),
 		Short:   "Remove an existing configuration key-value pair from the given scope",
 		Example: `
-    $ kli config remove <key> <value> [--scope <scope>] [--process-id <process_id>] [--workflow-id <workflow_id>] [--product_id <product_id>] [--server <server>]
+    $ kli config remove <key> <value> [opts...]
 		`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			key := args[0]

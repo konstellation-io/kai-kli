@@ -51,10 +51,10 @@ func NewAddCmd(logger logging.Interface) *cobra.Command {
 	cmd.Flags().String(_networkProtocol, "", "The network protocol used by the current process.")
 	cmd.Flags().StringSlice(_subscriptionsFlag, []string{}, "The subscriptions to be used by the current process.")
 
-	cmd.MarkFlagRequired(_productIDFlag)
-	cmd.MarkFlagRequired(_workflowIDFlag)
-	cmd.MarkFlagRequired(_cpuRequestFlag)
-	cmd.MarkFlagRequired(_memRequestFlag)
+	cmd.MarkFlagRequired(_productIDFlag)  //nolint:errcheck
+	cmd.MarkFlagRequired(_workflowIDFlag) //nolint:errcheck
+	cmd.MarkFlagRequired(_cpuRequestFlag) //nolint:errcheck
+	cmd.MarkFlagRequired(_memRequestFlag) //nolint:errcheck
 
 	return cmd
 }

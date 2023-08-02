@@ -13,9 +13,9 @@ func NewProductCmd(logger logging.Interface) *cobra.Command {
 		Use:   "product <command>",
 		Short: "Manage products",
 		Example: heredoc.Doc(`
-			$ kli products ls [--server <server_name>]
-			$ kli product create <product_name> [--server <server_name>] [--version <initial_version>] [--description <description>] [--init-local] [--local-path <local_path>]
-			$ kli product bind <product_name> [local_path] [--server <server_name>] [--force]
+			$ kli products ls [opts...]
+			$ kli product create <product_name> [opts...]
+			$ kli product bind <product_name> [opts...]
 		`),
 	}
 

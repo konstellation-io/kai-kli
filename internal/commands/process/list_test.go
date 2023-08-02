@@ -68,6 +68,7 @@ func (s *ListProcessSuite) TestListProcess_ExpectOk() {
 	// GIVEN
 	server := "server1"
 	workflow := "Workflow1"
+
 	s.renderer.EXPECT().RenderProcesses(ProcessMatcher(_getDefaultProcess()))
 
 	// WHEN

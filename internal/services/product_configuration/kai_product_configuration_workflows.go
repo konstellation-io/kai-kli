@@ -38,17 +38,19 @@ func (c *KaiProductConfiguration) AddWorkflow(wf *krt.Workflow) error {
 
 func (c *KaiProductConfiguration) UpdateWorkflow(wf *krt.Workflow) error {
 	for i, workflow := range c.Workflows {
-		if workflow.Name == wf.Name {
-			if err := c.validateWorkflow(i, wf); err != nil {
-				return err
-			}
-
-			c.Workflows[i] = *wf
-			c.Workflows[i].Config = workflow.Config
-			c.Workflows[i].Processes = workflow.Processes
-
-			return nil
+		if workflow.Name != wf.Name {
+			continue
 		}
+
+		if err := c.validateWorkflow(i, wf); err != nil {
+			return err
+		}
+
+		c.Workflows[i] = *wf
+		c.Workflows[i].Config = workflow.Config
+		c.Workflows[i].Processes = workflow.Processes
+
+		return nil
 	}
 
 	return ErrWorkflowNotFound

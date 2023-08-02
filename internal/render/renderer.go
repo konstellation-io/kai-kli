@@ -101,7 +101,7 @@ func (r *CliRenderer) RenderProcesses(processes []krt.Process) {
 	r.tableWriter.SetHeader([]string{"Process Name", "Process type", "Image", "Replicas", "GPU", "Subscriptions",
 		"Object store", "CPU limits", "Memory limits", "Networking", "Configured properties", "Configured secrets"})
 
-	for _, pr := range processes {
+	for _, pr := range processes { //nolint:gocritic
 		gpu := "No"
 
 		if *pr.GPU {

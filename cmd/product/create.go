@@ -18,13 +18,12 @@ const (
 // NewCreateCmd creates a new command to create a new product.
 func NewCreateCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "create <product_name> [--server <server_name>] [--version <initial_version>] " +
-			"[--description <description>] [--init-local] [--local-path <local_path>]",
+		Use:     "create <product_name> [opts...]",
 		Aliases: []string{"add"},
 		Args:    cobra.ExactArgs(1),
 		Short:   "Add a new product",
 		Example: `
-    $ kli product create <product_name> [--version <initial_version>] [--description <description>] [--init-local] [--local-path <local_path>] [--server <server_name>]
+    $ kli product create <product_name> [opts...]
 		`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			productName := args[0]
@@ -39,6 +38,7 @@ func NewCreateCmd(logger logging.Interface) *cobra.Command {
 				return err
 			}
 
+			//nolint:gocritic // Needed for future features
 			/*	initLocal, err := cmd.Flags().GetBool(_initLocalFlag)
 				if err != nil {
 					return err

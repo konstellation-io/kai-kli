@@ -21,12 +21,12 @@ func NewConfigurationCmd(logger logging.Interface) *cobra.Command {
 		Use:   "config <command>",
 		Short: "Manage configuration",
 		Example: heredoc.Doc(`
-			$ kli config add <key> <value> [--scope <scope>] [--process-id <process_id>] [--workflow-id <workflow_id>] [--product_id <product_id>] [--server <server>]
-			$ kli config update <key> <value> [--scope <scope>] [--process-id <process_id>] [--workflow-id <workflow_id>] [--product_id <product_id>] [--server <server>]
-			$ kli config remove <key> [--scope <scope>] [--process-id <process_id>] [--workflow-id <workflow_id>] [--product_id <product_id>] [--server <server>]
-			$ kli config ls [--scope <scope>] [--process-id <process_id>] [--workflow-id <workflow_id>] [--product_id <product_id>] [--server <server>]
-			$ kli config dump [--scope <scope>] [--process-id <process_id>] [--workflow-id <workflow_id>] [--product_id <product_id>] [version_id <version_id>] [--server <server>]
-			$ kli config sync [--scope <scope>] [--process-id <process_id>] [--workflow-id <workflow_id>] [--product_id <product_id>] [version_id <version_id>] [--server <server>]
+			$ kli config add <key> <value> [opts...]
+			$ kli config update <key> <value> [opts...]
+			$ kli config remove <key> [opts...]
+			$ kli config ls [opts...]
+			$ kli config dump [opts...]
+			$ kli config sync [opts...]
 		`),
 	}
 

@@ -8,6 +8,7 @@ import (
 	productconfiguration "github.com/konstellation-io/kli/internal/services/product_configuration"
 )
 
+//nolint:revive // the name needs to be ProcessOpts
 type ProcessOpts struct {
 	ServerName  string
 	ProductID   string

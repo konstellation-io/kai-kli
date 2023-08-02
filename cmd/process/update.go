@@ -20,6 +20,9 @@ func NewUpdateCmd(logger logging.Interface) *cobra.Command {
 			processID := args[0]
 
 			updateProcessOpts, err := getUpdateProcessOpts(processID, cmd)
+			if err != nil {
+				return err
+			}
 
 			// TODO Get the given product or the default one
 			// TODO Get the given server or the default one

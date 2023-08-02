@@ -75,7 +75,7 @@ func (ch *ProductConfigurationServiceTest) TestReadProductConfig_ReadExistingCon
 		ch.Equal(defaultConfig.Workflows[i].Type, wf.Type)
 		ch.True(reflect.DeepEqual(defaultConfig.Workflows[i].Config, wf.Config))
 
-		for j, pr := range wf.Processes {
+		for j, pr := range wf.Processes { //nolint:gocritic
 			ch.Equal(defaultConfig.Workflows[i].Processes[j].Name, pr.Name)
 			ch.Equal(defaultConfig.Workflows[i].Processes[j].Type, pr.Type)
 			ch.Equal(defaultConfig.Workflows[i].Processes[j].Image, pr.Image)
@@ -121,7 +121,7 @@ func (ch *ProductConfigurationServiceTest) TestWriteProductConfig_WriteValidConf
 		ch.Equal(defaultConfig.Workflows[i].Type, wf.Type)
 		ch.True(reflect.DeepEqual(defaultConfig.Workflows[i].Config, wf.Config))
 
-		for j, pr := range wf.Processes {
+		for j, pr := range wf.Processes { //nolint:gocritic
 			ch.Equal(defaultConfig.Workflows[i].Processes[j].Name, pr.Name)
 			ch.Equal(defaultConfig.Workflows[i].Processes[j].Type, pr.Type)
 			ch.Equal(defaultConfig.Workflows[i].Processes[j].Image, pr.Image)

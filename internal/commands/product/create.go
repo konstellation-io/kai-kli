@@ -22,12 +22,12 @@ type CreateProductOpts struct {
 }
 
 func (c *Handler) CreateProduct(opts *CreateProductOpts) error {
-	// TODO create product in KAI server
-
 	productConfigPath, err := productconfiguration.GetProductConfigFilePath(opts.ProductName)
 	if err != nil {
 		return err
 	}
+
+	// TODO create product in KAI server
 
 	_, err = os.Stat(productConfigPath)
 	if !os.IsNotExist(err) {

@@ -24,7 +24,7 @@ func (pm *processMatcher) Matches(arg interface{}) bool {
 		return false
 	}
 
-	for i, p := range pm.processes {
+	for i, p := range pm.processes { //nolint:gocritic
 		return p.Name == actual[i].Name &&
 			p.Type == actual[i].Type &&
 			p.Image == actual[i].Image &&

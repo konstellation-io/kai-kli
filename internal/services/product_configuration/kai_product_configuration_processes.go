@@ -14,7 +14,7 @@ var (
 func (c *KaiProductConfiguration) GetProcess(workflowName, processName string) (*krt.Process, error) {
 	for _, workflow := range c.Workflows {
 		if workflow.Name == workflowName {
-			for _, process := range workflow.Processes {
+			for _, process := range workflow.Processes { //nolint:gocritic
 				if process.Name == processName {
 					return &process, nil
 				}
@@ -41,7 +41,7 @@ func (c *KaiProductConfiguration) AddProcess(workflowName string, pc *krt.Proces
 		c.Workflows[*i].Processes = []krt.Process{}
 	}
 
-	for _, process := range wf.Processes {
+	for _, process := range wf.Processes { //nolint:gocritic
 		if process.Name == pc.Name {
 			return ErrProcessAlreadyExists
 		}
@@ -62,12 +62,12 @@ func (c *KaiProductConfiguration) UpdateProcess(workflowName string, pc *krt.Pro
 		return err
 	}
 
-	for i, process := range wf.Processes {
+	for i, process := range wf.Processes { //nolint:gocritic
 		if process.Name != pc.Name {
 			continue
 		}
 
-		tmpProcess := c.updateWorkflowInternal(c.Workflows[*wi].Processes[i], pc)
+		tmpProcess := c.updateWorkflowInternal(&c.Workflows[*wi].Processes[i], pc)
 
 		if err := c.validateProcess(*wi, i, tmpProcess); err != nil {
 			return err
@@ -85,7 +85,7 @@ func (c *KaiProductConfiguration) UpdateProcess(workflowName string, pc *krt.Pro
 	return ErrProcessNotFound
 }
 
-func (c *KaiProductConfiguration) updateWorkflowInternal(current krt.Process, updated *krt.Process) *krt.Process {
+func (c *KaiProductConfiguration) updateWorkflowInternal(current, updated *krt.Process) *krt.Process {
 	tmpProcess := current
 
 	if updated.Type != "" {
@@ -120,7 +120,7 @@ func (c *KaiProductConfiguration) updateWorkflowInternal(current krt.Process, up
 		tmpProcess.ResourceLimits = updated.ResourceLimits
 	}
 
-	return &tmpProcess
+	return tmpProcess
 }
 
 func (c *KaiProductConfiguration) RemoveProcess(workflowName, processName string) error {
@@ -129,7 +129,7 @@ func (c *KaiProductConfiguration) RemoveProcess(workflowName, processName string
 		return err
 	}
 
-	for i, process := range wf.Processes {
+	for i, process := range wf.Processes { //nolint:gocritic
 		if process.Name == processName {
 			c.Workflows[*wi].Processes = append(c.Workflows[*wi].Processes[:i], c.Workflows[*wi].Processes[i+1:]...)
 			return nil
