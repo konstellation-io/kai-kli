@@ -8,21 +8,32 @@ import (
 )
 
 const (
-	_serverFlag     = "server"
-	_productIDFlag  = "product-id"
-	_workflowIDFlag = "workflow-id"
+	_serverFlag        = "server"
+	_productIDFlag     = "product"
+	_workflowIDFlag    = "workflow"
+	_processTypeFlag   = "type"
+	_processImageFlag  = "image"
+	_cpuRequestFlag    = "cpu-request"
+	_cpuLimitFlag      = "cpu-limit"
+	_memRequestFlag    = "mem-request"
+	_memLimitFlag      = "mem-limit"
+	_replicasFlag      = "replicas"
+	_subscriptionsFlag = "subscriptions"
+	_networkSourcePort = "source-port"
+	_networkTargetPort = "target-port"
+	_networkProtocol   = "protocol"
 )
 
 // NewProcessCmd creates a new command to handle 'process' subcommands.
 func NewProcessCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "process <command>",
+		Use:   "process <command> [opts...]",
 		Short: "Manage processes",
 		Example: heredoc.Doc(`
-			$ kli process ls [--server <server_name>] [--product_id <product_id>]  [--workflow-id <workflow_id>]
-			$ kli process add <process_id> <process_type> <image> [--server <server_name>] [--product-id <product_id>] [--workflow-id <workflow_id>] [--cpu-request <cpu_request>] [--cpu-limit <cpu_limit>] [--mem-request <mem_request>] [--mem-limit <mem_limit>]
-			$ kli process update <process_id> <process_type> [--server <server_name>] [--product-id <product_id>] [--workflow-id <workflow_id>] [--process-type <process_type>] [--cpu-request <cpu_request>] [--cpu-limit <cpu_limit>] [--mem-request <mem_request>] [--mem-limit <mem_limit>]
-			$ kli process remove <process_id> [--server <server_name>] [--product-id <product_id>] [--workflow-id <workflow_id>]
+			$ kli process ls [opts...]
+			$ kli process add <process_id> <process_type> <image> [opts...]
+			$ kli process update <process_id> <process_type> [opts...]
+			$ kli process remove <process_id> [opts...]
 		`),
 	}
 

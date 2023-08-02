@@ -9,11 +9,6 @@ import (
 	"github.com/konstellation-io/kli/internal/render"
 )
 
-const (
-	_productIDFlag = "product-id"
-	_serverFlag    = "server"
-)
-
 // NewAddCmd creates a new command to add a workflow to the given product.
 func NewAddCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{

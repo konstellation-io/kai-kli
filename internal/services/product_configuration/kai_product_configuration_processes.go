@@ -33,6 +33,10 @@ func (c *KaiProductConfiguration) AddProcess(workflowName string, pc *krt.Proces
 		return err
 	}
 
+	if err := c.validateProcess(*i, len(wf.Processes)+1, pc); err != nil {
+		return err
+	}
+
 	if len(wf.Processes) == 0 {
 		c.Workflows[*i].Processes = []krt.Process{}
 	}
@@ -41,6 +45,10 @@ func (c *KaiProductConfiguration) AddProcess(workflowName string, pc *krt.Proces
 		if process.Name == pc.Name {
 			return ErrProcessAlreadyExists
 		}
+	}
+
+	if pc.Type != krt.ProcessTypeTrigger {
+		pc.Networking = nil
 	}
 
 	c.Workflows[*i].Processes = append(c.Workflows[*i].Processes, *pc)
@@ -55,20 +63,64 @@ func (c *KaiProductConfiguration) UpdateProcess(workflowName string, pc *krt.Pro
 	}
 
 	for i, process := range wf.Processes {
-		if pc.Name == process.Name {
-			c.Workflows[*wi].Processes[i] = *pc
-			c.Workflows[*wi].Processes[i].Config = pc.Config
-			c.Workflows[*wi].Processes[i].GPU = pc.GPU
-			c.Workflows[*wi].Processes[i].ObjectStore = pc.ObjectStore
-			c.Workflows[*wi].Processes[i].Secrets = pc.Secrets
-			c.Workflows[*wi].Processes[i].Subscriptions = pc.Subscriptions
-			c.Workflows[*wi].Processes[i].Networking = pc.Networking
-
-			return nil
+		if process.Name != pc.Name {
+			continue
 		}
+
+		tmpProcess := c.updateWorkflowInternal(c.Workflows[*wi].Processes[i], pc)
+
+		if err := c.validateProcess(*wi, i, tmpProcess); err != nil {
+			return err
+		}
+
+		if tmpProcess.Type != krt.ProcessTypeTrigger {
+			tmpProcess.Networking = nil
+		}
+
+		c.Workflows[*wi].Processes[i] = *tmpProcess
+
+		return nil
 	}
 
 	return ErrProcessNotFound
+}
+
+func (c *KaiProductConfiguration) updateWorkflowInternal(current krt.Process, updated *krt.Process) *krt.Process {
+	tmpProcess := current
+
+	if updated.Type != "" {
+		tmpProcess.Type = updated.Type
+	}
+
+	if updated.Image != "" {
+		tmpProcess.Image = updated.Image
+	}
+
+	if updated.Replicas != nil {
+		tmpProcess.Replicas = updated.Replicas
+	}
+
+	if updated.GPU != nil {
+		tmpProcess.GPU = updated.GPU
+	}
+
+	if updated.ObjectStore != nil {
+		tmpProcess.ObjectStore = updated.ObjectStore
+	}
+
+	if updated.Subscriptions != nil {
+		tmpProcess.Subscriptions = updated.Subscriptions
+	}
+
+	if updated.Networking != nil {
+		tmpProcess.Networking = updated.Networking
+	}
+
+	if updated.ResourceLimits != nil {
+		tmpProcess.ResourceLimits = updated.ResourceLimits
+	}
+
+	return &tmpProcess
 }
 
 func (c *KaiProductConfiguration) RemoveProcess(workflowName, processName string) error {
@@ -85,4 +137,8 @@ func (c *KaiProductConfiguration) RemoveProcess(workflowName, processName string
 	}
 
 	return ErrProcessNotFound
+}
+
+func (c *KaiProductConfiguration) validateProcess(workflowIndex, processIndex int, pc *krt.Process) error {
+	return pc.Validate(workflowIndex, processIndex)
 }

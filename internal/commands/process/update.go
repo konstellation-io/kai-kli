@@ -2,42 +2,46 @@ package process
 
 import "github.com/konstellation-io/krt/pkg/krt"
 
-type UpdateProcessOpts struct {
-	ServerName    string
-	ProductID     string
-	WorkflowID    string
-	ProcessID     string
-	ProcessType   krt.ProcessType
-	Image         string
-	Replicas      int
-	GPU           bool
-	Subscriptions []string
-}
-
-func (w *Handler) UpdateProcess(opts *UpdateProcessOpts) error {
+func (w *Handler) UpdateProcess(opts *ProcessOpts) error {
 	productConfig, err := w.configService.GetConfiguration(opts.ProductID)
 	if err != nil {
 		return err
 	}
 
-	existingProcess, err := productConfig.GetProcess(opts.WorkflowID, opts.ProcessID)
-	if err != nil {
-		return err
+	obj := w.getObjectStore(opts)
+	network := w.getNetwork(opts)
+	CPULimits := w.getCPULimits(opts)
+	memoryLimits := w.getMemoryLimits(opts)
+
+	limits := &krt.ProcessResourceLimits{}
+
+	// TODO if the limits are already set and they are not included in the update command,
+	// use the ones from the old version of the process
+	if CPULimits != nil {
+		limits.CPU = CPULimits
+	}
+
+	if memoryLimits != nil {
+		limits.Memory = memoryLimits
+	}
+
+	repl := &opts.Replicas
+	if opts.Replicas == -1 {
+		repl = nil
 	}
 
 	err = productConfig.UpdateProcess(
 		opts.WorkflowID,
 		&krt.Process{
-			Name:          opts.ProcessID,
-			Type:          opts.ProcessType,
-			Image:         opts.Image,
-			Replicas:      &opts.Replicas,
-			GPU:           &opts.GPU,
-			Config:        existingProcess.Config,
-			ObjectStore:   existingProcess.ObjectStore,
-			Secrets:       existingProcess.Secrets,
-			Subscriptions: opts.Subscriptions,
-			Networking:    existingProcess.Networking,
+			Name:           opts.ProcessID,
+			Type:           opts.ProcessType,
+			Image:          opts.Image,
+			Replicas:       repl,
+			GPU:            &opts.GPU,
+			ObjectStore:    obj,
+			Subscriptions:  opts.Subscriptions,
+			ResourceLimits: limits,
+			Networking:     network,
 		})
 
 	if err != nil {

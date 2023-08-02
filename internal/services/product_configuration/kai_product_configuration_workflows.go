@@ -1,6 +1,8 @@
 package productconfiguration
 
 import (
+	"errors"
+
 	"github.com/konstellation-io/krt/pkg/krt"
 )
 
@@ -19,6 +21,10 @@ func (c *KaiProductConfiguration) AddWorkflow(wf *krt.Workflow) error {
 		c.Workflows = []krt.Workflow{}
 	}
 
+	if err := c.validateWorkflow(len(c.Workflows)+1, wf); err != nil {
+		return err
+	}
+
 	for _, workflow := range c.Workflows {
 		if workflow.Name == wf.Name {
 			return ErrWorkflowAlreadyExists
@@ -33,6 +39,10 @@ func (c *KaiProductConfiguration) AddWorkflow(wf *krt.Workflow) error {
 func (c *KaiProductConfiguration) UpdateWorkflow(wf *krt.Workflow) error {
 	for i, workflow := range c.Workflows {
 		if workflow.Name == wf.Name {
+			if err := c.validateWorkflow(i, wf); err != nil {
+				return err
+			}
+
 			c.Workflows[i] = *wf
 			c.Workflows[i].Config = workflow.Config
 			c.Workflows[i].Processes = workflow.Processes
@@ -53,4 +63,12 @@ func (c *KaiProductConfiguration) RemoveWorkflow(workflowName string) error {
 	}
 
 	return ErrWorkflowNotFound
+}
+
+func (c *KaiProductConfiguration) validateWorkflow(index int, wf *krt.Workflow) error {
+	return errors.Join(
+		wf.ValidateName(index),
+		wf.ValidateType(index),
+		wf.ValidateVersionConfig(index),
+	)
 }

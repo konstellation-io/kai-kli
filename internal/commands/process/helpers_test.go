@@ -68,7 +68,7 @@ func _getDefaultProcess() krt.Process {
 	gpu := false
 
 	return krt.Process{
-		Name:          "Process1",
+		Name:          "process-1",
 		Type:          krt.ProcessTypeTrigger,
 		Image:         "kst/trigger",
 		Replicas:      &replicas,

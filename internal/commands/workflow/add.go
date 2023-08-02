@@ -34,5 +34,7 @@ func (w *Handler) AddWorkflow(opts *AddWorkflowOpts) error {
 
 	w.renderer.RenderWorkflows(productConfig.Workflows)
 
+	w.logger.Success("Workflow added successfully")
+
 	return nil
 }

@@ -12,7 +12,6 @@ import (
 	"github.com/stretchr/testify/suite"
 	"gopkg.in/yaml.v3"
 
-	"github.com/konstellation-io/kli/cmd/config"
 	productconfiguration "github.com/konstellation-io/kli/internal/services/product_configuration"
 	"github.com/konstellation-io/kli/mocks"
 )
@@ -196,7 +195,7 @@ func (ch *ProductConfigurationServiceTest) createDefaultConfiguration() (*produc
 }
 
 func (ch *ProductConfigurationServiceTest) createConfigFile(cfg productconfiguration.KaiProductConfiguration) error {
-	confPath, err := config.GetProductConfigFilePath(ch.productName, ch.tmpDir)
+	confPath, err := productconfiguration.GetProductConfigFilePath(ch.productName, ch.tmpDir)
 	if err != nil {
 		return err
 	}

@@ -86,15 +86,18 @@ func (s *UpdateProcessSuite) TestUpdateProcess_ExpectOk() {
 
 	// WHEN
 	err := s.handler.
-		UpdateProcess(&process.UpdateProcessOpts{
-			ServerName:    server,
-			ProductID:     s.productName,
-			WorkflowID:    workflow,
-			ProcessID:     newProcess.Name,
-			ProcessType:   newProcess.Type,
-			Image:         newProcess.Image,
-			Replicas:      *newProcess.Replicas,
-			Subscriptions: newProcess.Subscriptions,
+		UpdateProcess(&process.ProcessOpts{
+			ServerName:        server,
+			ProductID:         s.productName,
+			WorkflowID:        workflow,
+			ProcessID:         newProcess.Name,
+			ProcessType:       newProcess.Type,
+			Image:             newProcess.Image,
+			Replicas:          *newProcess.Replicas,
+			Subscriptions:     newProcess.Subscriptions,
+			NetworkTargetPort: newProcess.Networking.TargetPort,
+			NetworkSourcePort: newProcess.Networking.DestinationPort,
+			NetworkProtocol:   newProcess.Networking.Protocol,
 		})
 
 	// THEN
@@ -121,15 +124,18 @@ func (s *UpdateProcessSuite) TestUpdateProcess_NonExistingProduct_ExpectError() 
 	}
 
 	// WHEN
-	err := s.handler.UpdateProcess(&process.UpdateProcessOpts{
-		ServerName:    server,
-		ProductID:     product,
-		WorkflowID:    workflow,
-		ProcessID:     newProcess.Name,
-		ProcessType:   newProcess.Type,
-		Image:         newProcess.Image,
-		Replicas:      *newProcess.Replicas,
-		Subscriptions: newProcess.Subscriptions,
+	err := s.handler.UpdateProcess(&process.ProcessOpts{
+		ServerName:        server,
+		ProductID:         product,
+		WorkflowID:        workflow,
+		ProcessID:         newProcess.Name,
+		ProcessType:       newProcess.Type,
+		Image:             newProcess.Image,
+		Replicas:          *newProcess.Replicas,
+		Subscriptions:     newProcess.Subscriptions,
+		NetworkTargetPort: newProcess.Networking.TargetPort,
+		NetworkSourcePort: newProcess.Networking.DestinationPort,
+		NetworkProtocol:   newProcess.Networking.Protocol,
 	})
 
 	// THEN
@@ -156,15 +162,18 @@ func (s *UpdateProcessSuite) TestUpdateProcess_NonExistingWorkflow_ExpectError()
 	}
 
 	// WHEN
-	err := s.handler.UpdateProcess(&process.UpdateProcessOpts{
-		ServerName:    server,
-		ProductID:     s.productName,
-		WorkflowID:    workflow,
-		ProcessID:     newProcess.Name,
-		ProcessType:   newProcess.Type,
-		Image:         newProcess.Image,
-		Replicas:      *newProcess.Replicas,
-		Subscriptions: newProcess.Subscriptions,
+	err := s.handler.UpdateProcess(&process.ProcessOpts{
+		ServerName:        server,
+		ProductID:         s.productName,
+		WorkflowID:        workflow,
+		ProcessID:         newProcess.Name,
+		ProcessType:       newProcess.Type,
+		Image:             newProcess.Image,
+		Replicas:          *newProcess.Replicas,
+		Subscriptions:     newProcess.Subscriptions,
+		NetworkTargetPort: newProcess.Networking.TargetPort,
+		NetworkSourcePort: newProcess.Networking.DestinationPort,
+		NetworkProtocol:   newProcess.Networking.Protocol,
 	})
 
 	// THEN
@@ -191,15 +200,18 @@ func (s *UpdateProcessSuite) TestUpdateProcess_NonExistingProcess_ExpectError() 
 	}
 
 	// WHEN
-	err := s.handler.UpdateProcess(&process.UpdateProcessOpts{
-		ServerName:    server,
-		ProductID:     s.productName,
-		WorkflowID:    workflow,
-		ProcessID:     newProcess.Name,
-		ProcessType:   newProcess.Type,
-		Image:         newProcess.Image,
-		Replicas:      *newProcess.Replicas,
-		Subscriptions: newProcess.Subscriptions,
+	err := s.handler.UpdateProcess(&process.ProcessOpts{
+		ServerName:        server,
+		ProductID:         s.productName,
+		WorkflowID:        workflow,
+		ProcessID:         newProcess.Name,
+		ProcessType:       newProcess.Type,
+		Image:             newProcess.Image,
+		Replicas:          *newProcess.Replicas,
+		Subscriptions:     newProcess.Subscriptions,
+		NetworkTargetPort: newProcess.Networking.TargetPort,
+		NetworkSourcePort: newProcess.Networking.DestinationPort,
+		NetworkProtocol:   newProcess.Networking.Protocol,
 	})
 
 	// THEN

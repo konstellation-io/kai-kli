@@ -28,22 +28,13 @@ func NewUpdateCmd(logger logging.Interface) *cobra.Command {
 				return err
 			}
 
-			serverName, err := cmd.Flags().GetString(_serverFlag)
-			if err != nil {
-				serverName = ""
-			}
-
 			productID, err := cmd.Flags().GetString(_productIDFlag)
 			if err != nil {
 				return err
 			}
 
-			// TODO Get the given product or the default one
-			// TODO Get the given server or the default one
-
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
 			return workflow.NewHandler(logger, r).UpdateWorkflow(&workflow.UpdateWorkflowOpts{
-				ServerName:   serverName,
 				ProductID:    productID,
 				WorkflowID:   workflowID,
 				WorkflowType: krt.WorkflowType(workflowType),

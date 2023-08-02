@@ -24,17 +24,8 @@ func NewRemoveCmd(logger logging.Interface) *cobra.Command {
 				return err
 			}
 
-			serverName, err := cmd.Flags().GetString(_serverFlag)
-			if err != nil {
-				serverName = ""
-			}
-
-			// TODO Get the given product or the default one
-			// TODO Get the given server or the default one
-
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
 			return workflow.NewHandler(logger, r).RemoveWorkflow(&workflow.RemoveWorkflowOpts{
-				ServerName: serverName,
 				ProductID:  productID,
 				WorkflowID: workflowID,
 			})

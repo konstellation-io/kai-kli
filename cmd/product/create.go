@@ -1,8 +1,6 @@
 package product
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 
 	"github.com/konstellation-io/kli/internal/commands/product"
@@ -60,8 +58,6 @@ func NewCreateCmd(logger logging.Interface) *cobra.Command {
 			if err != nil {
 				return err
 			}
-
-			logger.Success(fmt.Sprintf("Product %q added.", productName))
 
 			return nil
 		},

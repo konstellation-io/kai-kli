@@ -69,7 +69,7 @@ func (s *AddProcessSuite) TestAddWorkflow_ExpectOk() {
 	// GIVEN
 	server := "server1"
 	newWorkflow := krt.Workflow{
-		Name:      "My process",
+		Name:      "my-process",
 		Type:      krt.WorkflowTypeData,
 		Config:    map[string]string{},
 		Processes: []krt.Process{},

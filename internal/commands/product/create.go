@@ -2,11 +2,11 @@ package product
 
 import (
 	"errors"
+	"fmt"
 	"os"
 
 	"github.com/konstellation-io/krt/pkg/krt"
 
-	"github.com/konstellation-io/kli/cmd/config"
 	productconfiguration "github.com/konstellation-io/kli/internal/services/product_configuration"
 )
 
@@ -24,7 +24,7 @@ type CreateProductOpts struct {
 func (c *Handler) CreateProduct(opts *CreateProductOpts) error {
 	// TODO create product in KAI server
 
-	productConfigPath, err := config.GetProductConfigFilePath(opts.ProductName)
+	productConfigPath, err := productconfiguration.GetProductConfigFilePath(opts.ProductName)
 	if err != nil {
 		return err
 	}
@@ -47,7 +47,9 @@ func (c *Handler) CreateProduct(opts *CreateProductOpts) error {
 		return err
 	}
 
-	// TODO add renderer method to show product
+	// TODO add renderer method to show products
+
+	c.logger.Success(fmt.Sprintf("Product %q added.", opts.ProductName))
 
 	return nil
 }

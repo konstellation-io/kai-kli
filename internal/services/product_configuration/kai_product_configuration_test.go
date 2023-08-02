@@ -13,9 +13,10 @@ import (
 const (
 	_defaultProductVersion     = "v1.0.0"
 	_defaultProductDescription = "KRT Product description"
-	_defaultWorkflowName       = "Workflow-1"
+	_defaultWorkflowName       = "workflow-1"
 	_defaultWorkflowType       = krt.WorkflowTypeData
-	_defaultProcessName        = "Process-1"
+	_defaultTriggerProcess     = "trigger-1"
+	_defaultExitProcess        = "exit-1"
 	_defaultProcessType        = krt.ProcessTypeTrigger
 	_defaultProcessImage       = "test/trigger-image"
 )
@@ -265,7 +266,7 @@ func (ch *KaiProductConfigurationTest) TestGetProcessConfiguration_ExpectOk() {
 	kaiProductConfig := ch.getDefaultConfiguration()
 
 	// WHEN
-	processConfig, err := kaiProductConfig.GetProcessConfiguration(_defaultWorkflowName, _defaultProcessName)
+	processConfig, err := kaiProductConfig.GetProcessConfiguration(_defaultWorkflowName, _defaultTriggerProcess)
 
 	// THEN
 	ch.Require().NoError(err)
@@ -277,7 +278,7 @@ func (ch *KaiProductConfigurationTest) TestGetProcessConfiguration_NonExistentWo
 	kaiProductConfig := ch.getDefaultConfiguration()
 
 	// WHEN
-	processConfig, err := kaiProductConfig.GetProcessConfiguration("some-non-existent-workflow", _defaultProcessName)
+	processConfig, err := kaiProductConfig.GetProcessConfiguration("some-non-existent-workflow", _defaultTriggerProcess)
 
 	// THEN
 	ch.Require().Error(err)
@@ -306,11 +307,11 @@ func (ch *KaiProductConfigurationTest) TestUpdateProcessConfiguration_ExpectOk()
 	expectedConfig[newConfig.Key] = newConfig.Value
 
 	// WHEN
-	workflowConfig, err := kaiProductConfig.UpdateProcessConfig(_defaultWorkflowName, _defaultProcessName, newConfig)
+	workflowConfig, err := kaiProductConfig.UpdateProcessConfig(_defaultWorkflowName, _defaultTriggerProcess, newConfig)
 
 	// THEN
 	ch.Require().NoError(err)
-	pConf, err := kaiProductConfig.GetProcess(_defaultWorkflowName, _defaultProcessName)
+	pConf, err := kaiProductConfig.GetProcess(_defaultWorkflowName, _defaultTriggerProcess)
 	ch.Require().NoError(err)
 	ch.Require().Len(pConf.Config, 2)
 	ch.Require().True(reflect.DeepEqual(expectedConfig, workflowConfig))
@@ -323,7 +324,7 @@ func (ch *KaiProductConfigurationTest) TestUpdateProcessConfiguration_NonExisten
 
 	// WHEN
 	workflowConfig, err := kaiProductConfig.
-		UpdateProcessConfig("some-nonexisting-workflow", _defaultProcessName, newConfig)
+		UpdateProcessConfig("some-nonexisting-workflow", _defaultTriggerProcess, newConfig)
 
 	// THEN
 	ch.Require().Error(err)
@@ -351,11 +352,11 @@ func (ch *KaiProductConfigurationTest) TestDeleteProcessConfiguration_ExpectOk()
 	kaiProductConfig := ch.getDefaultConfiguration()
 
 	// WHEN
-	workflowConfig, err := kaiProductConfig.DeleteProcessConfig(_defaultWorkflowName, _defaultProcessName, "test1")
+	workflowConfig, err := kaiProductConfig.DeleteProcessConfig(_defaultWorkflowName, _defaultTriggerProcess, "test1")
 
 	// THEN
 	ch.Require().NoError(err)
-	pConf, err := kaiProductConfig.GetProcess(_defaultWorkflowName, _defaultProcessName)
+	pConf, err := kaiProductConfig.GetProcess(_defaultWorkflowName, _defaultTriggerProcess)
 	ch.Require().NoError(err)
 	ch.Require().Len(pConf.Config, 0)
 	ch.Require().Empty(workflowConfig)
@@ -367,7 +368,7 @@ func (ch *KaiProductConfigurationTest) TestDeleteProcessConfiguration_NonExisten
 
 	// WHEN
 	workflowConfig, err := kaiProductConfig.
-		DeleteProcessConfig("some-nonexisting-workflow", _defaultProcessName, "test1")
+		DeleteProcessConfig("some-nonexisting-workflow", _defaultTriggerProcess, "test1")
 
 	// THEN
 	ch.Require().Error(err)
@@ -402,7 +403,7 @@ func (ch *KaiProductConfigurationTest) getDefaultConfiguration() productconfigur
 					Config: map[string]string{"test1": "value1"},
 					Processes: []krt.Process{
 						{
-							Name:          _defaultProcessName,
+							Name:          _defaultTriggerProcess,
 							Type:          _defaultProcessType,
 							Image:         _defaultProcessImage,
 							Replicas:      &_defaultReplicas,
@@ -410,11 +411,42 @@ func (ch *KaiProductConfigurationTest) getDefaultConfiguration() productconfigur
 							Config:        map[string]string{"test1": "value1"},
 							ObjectStore:   nil,
 							Secrets:       nil,
-							Subscriptions: []string{"test1", "test2"},
+							Subscriptions: []string{},
+							ResourceLimits: &krt.ProcessResourceLimits{
+								CPU: &krt.ResourceLimit{
+									Request: "100m",
+									Limit:   "200m",
+								},
+								Memory: &krt.ResourceLimit{
+									Request: "100Mi",
+									Limit:   "200Mi",
+								},
+							},
 							Networking: &krt.ProcessNetworking{
 								TargetPort:      10000,
 								DestinationPort: 15000,
 								Protocol:        krt.NetworkingProtocolTCP,
+							},
+						},
+						{
+							Name:          _defaultExitProcess,
+							Type:          krt.ProcessTypeExit,
+							Image:         _defaultProcessImage,
+							Replicas:      &_defaultReplicas,
+							GPU:           &_defaultGPU,
+							Config:        map[string]string{"test1": "value1"},
+							ObjectStore:   nil,
+							Secrets:       nil,
+							Subscriptions: []string{_defaultTriggerProcess},
+							ResourceLimits: &krt.ProcessResourceLimits{
+								CPU: &krt.ResourceLimit{
+									Request: "100m",
+									Limit:   "200m",
+								},
+								Memory: &krt.ResourceLimit{
+									Request: "100Mi",
+									Limit:   "200Mi",
+								},
 							},
 						},
 					},

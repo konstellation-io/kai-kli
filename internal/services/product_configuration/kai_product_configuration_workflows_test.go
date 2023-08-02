@@ -12,9 +12,9 @@ func (ch *KaiProductConfigurationTest) TestAddWorkflow_FirstWorkflow_ExpectOk() 
 	kaiProductConfig.Workflows = nil
 	newWorkflow := &krt.Workflow{
 		Name:      "new-process",
-		Type:      "task",
+		Type:      "data",
 		Config:    map[string]string{"test1": "value1"},
-		Processes: []krt.Process{},
+		Processes: ch.getDefaultConfiguration().Workflows[0].Processes,
 	}
 
 	// WHEN
@@ -31,9 +31,9 @@ func (ch *KaiProductConfigurationTest) TestAddWorkflow_WithExistingWorkflow_Expe
 	kaiProductConfig := ch.getDefaultConfiguration()
 	newWorkflow := &krt.Workflow{
 		Name:      "new-process",
-		Type:      "task",
+		Type:      "data",
 		Config:    map[string]string{"test1": "value1"},
-		Processes: []krt.Process{},
+		Processes: ch.getDefaultConfiguration().Workflows[0].Processes,
 	}
 
 	// WHEN
@@ -50,9 +50,9 @@ func (ch *KaiProductConfigurationTest) TestAddWorkflow_WorkflowAlreadyExists_Exp
 	kaiProductConfig := ch.getDefaultConfiguration()
 	newWorkflow := &krt.Workflow{
 		Name:      _defaultWorkflowName,
-		Type:      "task",
+		Type:      "data",
 		Config:    map[string]string{"test1": "value1"},
-		Processes: []krt.Process{},
+		Processes: ch.getDefaultConfiguration().Workflows[0].Processes,
 	}
 
 	// WHEN
@@ -67,8 +67,9 @@ func (ch *KaiProductConfigurationTest) TestUpdateWorkflow_ExpectOk() {
 	// GIVEN
 	kaiProductConfig := ch.getDefaultConfiguration()
 	newWorkflow := &krt.Workflow{
-		Name: _defaultWorkflowName,
-		Type: "task",
+		Name:      _defaultWorkflowName,
+		Type:      "data",
+		Processes: []krt.Process{},
 	}
 
 	// WHEN

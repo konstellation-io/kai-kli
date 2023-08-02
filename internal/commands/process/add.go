@@ -4,33 +4,14 @@ import (
 	"github.com/konstellation-io/krt/pkg/krt"
 )
 
-type AddProcessOpts struct {
-	ServerName  string
-	ProductID   string
-	WorkflowID  string
-	ProcessID   string
-	ProcessType krt.ProcessType
+const (
+	_defaultCPURequest    = "500m"
+	_defaultCPULimit      = "1.5"
+	_defaultMemoryRequest = "64Mi"
+	_defaultMemoryLimit   = "128Mi"
+)
 
-	// not implemented yet
-	CPURequest    string
-	CPULimit      string
-	MemoryRequest string
-	MemoryLimit   string
-
-	ObjectStoreName  string
-	ObjectStoreScope krt.ObjectStoreScope
-
-	NetworkSourcePort int
-	NetworkTargetPort int
-	NetworkProtocol   krt.NetworkingProtocol
-	// end of not implemented yet
-	Image         string
-	Replicas      int
-	GPU           bool
-	Subscriptions []string
-}
-
-func (w *Handler) AddProcess(opts *AddProcessOpts) error {
+func (w *Handler) AddProcess(opts *ProcessOpts) error {
 	productConfig, err := w.configService.GetConfiguration(opts.ProductID)
 	if err != nil {
 		return err
@@ -43,8 +24,11 @@ func (w *Handler) AddProcess(opts *AddProcessOpts) error {
 
 	limits := &krt.ProcessResourceLimits{}
 
-	if CPULimits != nil || memoryLimits != nil {
+	if CPULimits != nil {
 		limits.CPU = CPULimits
+	}
+
+	if memoryLimits != nil {
 		limits.Memory = memoryLimits
 	}
 
@@ -81,64 +65,4 @@ func (w *Handler) AddProcess(opts *AddProcessOpts) error {
 	w.renderer.RenderProcesses(wf.Processes)
 
 	return nil
-}
-
-func (w *Handler) getCPULimits(opts *AddProcessOpts) *krt.ResourceLimit {
-	res := &krt.ResourceLimit{}
-
-	if opts.CPURequest != "" {
-		res.Request = opts.CPURequest
-		res.Limit = res.Request
-
-		if opts.CPULimit != "" {
-			res.Limit = opts.CPULimit
-		}
-	}
-
-	return res
-}
-
-func (w *Handler) getMemoryLimits(opts *AddProcessOpts) *krt.ResourceLimit {
-	res := &krt.ResourceLimit{}
-
-	if opts.MemoryRequest != "" {
-		res.Request = opts.MemoryRequest
-		res.Limit = res.Request
-
-		if opts.MemoryLimit != "" {
-			res.Limit = opts.MemoryLimit
-		}
-	}
-
-	return res
-}
-
-func (w *Handler) getNetwork(opts *AddProcessOpts) *krt.ProcessNetworking {
-	net := &krt.ProcessNetworking{}
-
-	if opts.NetworkSourcePort != 0 && opts.NetworkTargetPort != 0 {
-		net.TargetPort = opts.NetworkSourcePort
-		net.DestinationPort = opts.NetworkTargetPort
-		net.Protocol = krt.NetworkingProtocolTCP
-
-		if opts.NetworkProtocol != "" {
-			net.Protocol = opts.NetworkProtocol
-		}
-	}
-
-	return net
-}
-
-func (w *Handler) getObjectStore(opts *AddProcessOpts) *krt.ProcessObjectStore {
-	obj := &krt.ProcessObjectStore{}
-	if opts.ObjectStoreName != "" {
-		obj.Name = opts.ObjectStoreName
-		obj.Scope = krt.ObjectStoreScopeWorkflow
-
-		if opts.ObjectStoreScope != "" {
-			obj.Scope = opts.ObjectStoreScope
-		}
-	}
-
-	return obj
 }

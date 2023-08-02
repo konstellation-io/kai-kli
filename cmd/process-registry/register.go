@@ -22,7 +22,7 @@ var (
 const (
 	_sourcesFlag    = "src"
 	_dockerfileFlag = "dockerfile"
-	_productIDFlag  = "product-id"
+	_productIDFlag  = "product"
 	_serverFlag     = "server"
 	_versionFlag    = "version"
 )
@@ -30,15 +30,13 @@ const (
 // NewRegisterCmd creates a new command to register a new process in the given server.
 func NewRegisterCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "register <process_type> <process_id>" +
-			" --src <sources> --dockerfile <dockerfile> --product_id <product_id> [--server <server_name>]",
+		Use:  "register <process_type> <process_id> [opts...]",
 		Args: cobra.ExactArgs(2), //nolint:gomnd
 		Annotations: map[string]string{
 			"authenticated": "true",
 		},
-		Short: "Register a new process for the given product on the given server",
-		Example: "$ kli process-registry register <process_type> <process_id> --src <sources>" +
-			" --dockerfile <dockerfile> --product-id <product_id> [--server <server_name>]",
+		Short:   "Register a new process for the given product on the given server",
+		Example: "$ kli process-registry register <process_type> <process_id> [opts...]",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			processType := args[0]
 			processID := args[1]

@@ -27,6 +27,10 @@ type RegisterProcessOpts struct {
 }
 
 func (c *Handler) RegisterProcess(opts *RegisterProcessOpts) error {
+	if !opts.ProcessType.IsValid() {
+		return fmt.Errorf("invalid process type: %q", opts.ProcessType)
+	}
+
 	kaiConfig, err := c.configService.GetConfiguration()
 	if err != nil {
 		return err

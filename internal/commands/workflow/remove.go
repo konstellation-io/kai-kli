@@ -25,5 +25,7 @@ func (w *Handler) RemoveWorkflow(opts *RemoveWorkflowOpts) error {
 
 	w.renderer.RenderWorkflows(productConfig.Workflows)
 
+	w.logger.Success("Workflow removed successfully")
+
 	return nil
 }

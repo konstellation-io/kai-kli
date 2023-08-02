@@ -32,5 +32,7 @@ func (w *Handler) UpdateWorkflow(opts *UpdateWorkflowOpts) error {
 
 	w.renderer.RenderWorkflows(productConfig.Workflows)
 
+	w.logger.Success("Workflow updated successfully")
+
 	return nil
 }

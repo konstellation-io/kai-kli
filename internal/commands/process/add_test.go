@@ -72,7 +72,7 @@ func (s *AddProcessSuite) TestAddProcess_ExpectOk() {
 	server := "server1"
 	workflow := "Workflow1"
 	newProcess := krt.Process{
-		Name:          "My process",
+		Name:          "my-process",
 		Type:          krt.ProcessTypeTask,
 		Image:         "kst/task",
 		Replicas:      &replicas,
@@ -86,15 +86,17 @@ func (s *AddProcessSuite) TestAddProcess_ExpectOk() {
 	s.renderer.EXPECT().RenderProcesses(ProcessMatcher(_getDefaultProcess(), newProcess))
 
 	// WHEN
-	err := s.handler.AddProcess(&process.AddProcessOpts{
-		ServerName:    server,
-		ProductID:     s.productName,
-		WorkflowID:    workflow,
-		ProcessID:     newProcess.Name,
-		ProcessType:   newProcess.Type,
-		Image:         newProcess.Image,
-		Replicas:      *newProcess.Replicas,
-		Subscriptions: newProcess.Subscriptions,
+	err := s.handler.AddProcess(&process.ProcessOpts{
+		ServerName:        server,
+		ProductID:         s.productName,
+		WorkflowID:        workflow,
+		ProcessID:         newProcess.Name,
+		ProcessType:       newProcess.Type,
+		Image:             newProcess.Image,
+		Replicas:          *newProcess.Replicas,
+		Subscriptions:     newProcess.Subscriptions,
+		NetworkSourcePort: -1,
+		NetworkTargetPort: -1,
 	})
 
 	// THEN
@@ -109,7 +111,7 @@ func (s *AddProcessSuite) TestAddProcess_NonExistingProduct_ExpectError() {
 	product := "product-test"
 	workflow := "Workflow-test"
 	newProcess := krt.Process{
-		Name:     "My process",
+		Name:     "my-process",
 		Type:     krt.ProcessTypeTask,
 		Image:    "kst/task",
 		Replicas: &replicas,
@@ -139,7 +141,7 @@ func (s *AddProcessSuite) TestAddProcess_NonExistingProduct_ExpectError() {
 	}
 
 	// WHEN
-	err := s.handler.AddProcess(&process.AddProcessOpts{
+	err := s.handler.AddProcess(&process.ProcessOpts{
 		ServerName:        server,
 		ProductID:         product,
 		WorkflowID:        workflow,
@@ -167,7 +169,7 @@ func (s *AddProcessSuite) TestAddProcess_NonExistingWorkflow_ExpectError() {
 	server := "server1"
 	workflow := "Workflow-test"
 	newProcess := krt.Process{
-		Name:          "My process",
+		Name:          "my-process",
 		Type:          krt.ProcessTypeTask,
 		Image:         "kst/task",
 		Replicas:      &replicas,
@@ -180,7 +182,7 @@ func (s *AddProcessSuite) TestAddProcess_NonExistingWorkflow_ExpectError() {
 	}
 
 	// WHEN
-	err := s.handler.AddProcess(&process.AddProcessOpts{
+	err := s.handler.AddProcess(&process.ProcessOpts{
 		ServerName:    server,
 		ProductID:     s.productName,
 		WorkflowID:    workflow,
@@ -216,15 +218,17 @@ func (s *AddProcessSuite) TestAddProcess_DuplicatedProcess_ExpectError() {
 	}
 
 	// WHEN
-	err := s.handler.AddProcess(&process.AddProcessOpts{
-		ServerName:    server,
-		ProductID:     s.productName,
-		WorkflowID:    workflow,
-		ProcessID:     newProcess.Name,
-		ProcessType:   newProcess.Type,
-		Image:         newProcess.Image,
-		Replicas:      *newProcess.Replicas,
-		Subscriptions: newProcess.Subscriptions,
+	err := s.handler.AddProcess(&process.ProcessOpts{
+		ServerName:        server,
+		ProductID:         s.productName,
+		WorkflowID:        workflow,
+		ProcessID:         newProcess.Name,
+		ProcessType:       newProcess.Type,
+		Image:             newProcess.Image,
+		Replicas:          *newProcess.Replicas,
+		Subscriptions:     newProcess.Subscriptions,
+		NetworkSourcePort: -1,
+		NetworkTargetPort: -1,
 	})
 
 	// THEN

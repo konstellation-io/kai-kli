@@ -78,7 +78,7 @@ func (r *CliRenderer) RenderWorkflows(workflows []krt.Workflow) {
 		return
 	}
 
-	r.tableWriter.SetHeader([]string{"Workflow Name", "Workflow type", "Configured properties", "Configured processes"})
+	r.tableWriter.SetHeader([]string{"Workflow Name", "Workflow type", "Configured properties", "Processes"})
 
 	for _, wf := range workflows {
 		r.tableWriter.Append([]string{
@@ -98,14 +98,27 @@ func (r *CliRenderer) RenderProcesses(processes []krt.Process) {
 		return
 	}
 
-	r.tableWriter.SetHeader([]string{"Process Name", "Process type", "Image",
-		"Replicas", "GPU", "Subscriptions", "Configured properties"})
+	r.tableWriter.SetHeader([]string{"Process Name", "Process type", "Image", "Replicas", "GPU", "Subscriptions",
+		"Object store", "CPU limits", "Memory limits", "Networking", "Configured properties", "Configured secrets"})
 
 	for _, pr := range processes {
 		gpu := "No"
 
 		if *pr.GPU {
 			gpu = "Yes"
+		}
+
+		obj := "-"
+
+		if pr.ObjectStore != nil {
+			obj = fmt.Sprintf("ObjectStore: %s, Scope: %s", pr.ObjectStore.Name, pr.ObjectStore.Scope)
+		}
+
+		net := "-"
+
+		if pr.Networking != nil {
+			net = fmt.Sprintf("Source Port: %d, Exposed Port: %d, Protocol: %s",
+				pr.Networking.TargetPort, pr.Networking.DestinationPort, pr.Networking.Protocol)
 		}
 
 		r.tableWriter.Append([]string{
@@ -115,7 +128,12 @@ func (r *CliRenderer) RenderProcesses(processes []krt.Process) {
 			strconv.Itoa(*pr.Replicas),
 			gpu,
 			strings.Join(pr.Subscriptions, ","),
+			obj,
+			fmt.Sprintf("Request: %s, Limit: %s", pr.ResourceLimits.CPU.Request, pr.ResourceLimits.CPU.Limit),
+			fmt.Sprintf("Request: %s, Limit: %s", pr.ResourceLimits.Memory.Request, pr.ResourceLimits.Memory.Limit),
+			net,
 			fmt.Sprintf("%d", len(pr.Config)),
+			fmt.Sprintf("%d", len(pr.Secrets)),
 		})
 	}
 
