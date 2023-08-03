@@ -26,8 +26,9 @@ func DefaultTableWriter(w io.Writer) *tablewriter.Table {
 	table.SetHeaderAlignment(tablewriter.ALIGN_CENTER)
 	table.SetAlignment(tablewriter.ALIGN_LEFT)
 	table.SetCenterSeparator("-")
-	table.SetColumnSeparator(" ")
+	table.SetColumnSeparator("|")
 	table.SetRowSeparator("-")
+	table.SetRowLine(true)
 	table.SetHeaderLine(true)
 	table.SetTablePadding(" ") // pad with spaces
 	table.SetAlignment(tablewriter.ALIGN_LEFT)
@@ -111,13 +112,13 @@ func (r *CliRenderer) RenderProcesses(processes []krt.Process) {
 		obj := "-"
 
 		if pr.ObjectStore != nil {
-			obj = fmt.Sprintf("ObjectStore: %s, Scope: %s", pr.ObjectStore.Name, pr.ObjectStore.Scope)
+			obj = fmt.Sprintf("ObjectStore: %s\nScope: %s", pr.ObjectStore.Name, pr.ObjectStore.Scope)
 		}
 
 		net := "-"
 
 		if pr.Networking != nil {
-			net = fmt.Sprintf("Source Port: %d, Exposed Port: %d, Protocol: %s",
+			net = fmt.Sprintf("Source Port: %d\nExposed Port: %d\nProtocol: %s",
 				pr.Networking.TargetPort, pr.Networking.DestinationPort, pr.Networking.Protocol)
 		}
 
@@ -127,10 +128,10 @@ func (r *CliRenderer) RenderProcesses(processes []krt.Process) {
 			pr.Image,
 			strconv.Itoa(*pr.Replicas),
 			gpu,
-			strings.Join(pr.Subscriptions, ","),
+			strings.Join(pr.Subscriptions, "\n"),
 			obj,
-			fmt.Sprintf("Request: %s, Limit: %s", pr.ResourceLimits.CPU.Request, pr.ResourceLimits.CPU.Limit),
-			fmt.Sprintf("Request: %s, Limit: %s", pr.ResourceLimits.Memory.Request, pr.ResourceLimits.Memory.Limit),
+			fmt.Sprintf("Request: %s\nLimit: %s", pr.ResourceLimits.CPU.Request, pr.ResourceLimits.CPU.Limit),
+			fmt.Sprintf("Request: %s\nLimit: %s", pr.ResourceLimits.Memory.Request, pr.ResourceLimits.Memory.Limit),
 			net,
 			fmt.Sprintf("%d", len(pr.Config)),
 			fmt.Sprintf("%d", len(pr.Secrets)),
@@ -142,7 +143,7 @@ func (r *CliRenderer) RenderProcesses(processes []krt.Process) {
 
 func (r *CliRenderer) RenderConfiguration(scope string, config map[string]string) {
 	if len(config) < 1 {
-		r.logger.Info("No processes found.")
+		r.logger.Info("No configuration found.")
 		return
 	}
 

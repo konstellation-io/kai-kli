@@ -9,9 +9,9 @@ import (
 
 const (
 	_serverFlag     = "server"
-	_productIDFlag  = "product-id"
-	_workflowIDFlag = "workflow-id"
-	_processIDFlag  = "process-id"
+	_productIDFlag  = "product"
+	_workflowIDFlag = "workflow"
+	_processIDFlag  = "process"
 	_scopeFlag      = "scope"
 )
 

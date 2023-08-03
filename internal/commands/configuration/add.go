@@ -46,5 +46,7 @@ func (c *Handler) AddConfiguration(opts *AddConfigurationOpts) error {
 
 	c.renderer.RenderConfiguration(opts.Scope, updatedConf)
 
+	c.logger.Success("Configuration added successfully")
+
 	return nil
 }

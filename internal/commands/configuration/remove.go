@@ -40,5 +40,7 @@ func (c *Handler) RemoveConfiguration(opts *RemoveConfigurationOpts) error {
 
 	c.renderer.RenderConfiguration(opts.Scope, updatedConf)
 
+	c.logger.Success("Configuration removed successfully")
+
 	return nil
 }
