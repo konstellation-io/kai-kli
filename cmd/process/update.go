@@ -54,8 +54,8 @@ func NewUpdateCmd(logger logging.Interface) *cobra.Command {
 	cmd.Flags().String(_networkProtocol, "", "The network protocol used by the current process.")
 	cmd.Flags().StringSlice(_subscriptionsFlag, nil, "The subscriptions to be used by the current process.")
 
-	cmd.MarkFlagRequired(_productIDFlag)
-	cmd.MarkFlagRequired(_workflowIDFlag)
+	cmd.MarkFlagRequired(_productIDFlag)  //nolint:errcheck
+	cmd.MarkFlagRequired(_workflowIDFlag) //nolint:errcheck
 
 	return cmd
 }
@@ -72,90 +72,19 @@ func getUpdateProcessOpts(processID string, cmd *cobra.Command) (*process.Proces
 
 	opts.ServerName = serverName
 
-	productID, err := cmd.Flags().GetString(_productIDFlag)
+	err = getUpdateOptsProcessMetadata(cmd, opts)
 	if err != nil {
 		return nil, err
 	}
 
-	opts.ProductID = productID
-
-	workflowID, err := cmd.Flags().GetString(_workflowIDFlag)
+	err = getUpdateOptsResourceLimts(cmd, opts)
 	if err != nil {
 		return nil, err
 	}
 
-	opts.WorkflowID = workflowID
-
-	if cmd.Flag(_processTypeFlag).Changed {
-		processType, err := cmd.Flags().GetString(_processTypeFlag)
-		if err != nil {
-			return nil, err
-		}
-
-		opts.ProcessType = krt.ProcessType(processType)
-	}
-
-	if cmd.Flag(_processImageFlag).Changed {
-		processImage, err := cmd.Flags().GetString(_processImageFlag)
-		if err != nil {
-			return nil, err
-		}
-
-		opts.Image = processImage
-	}
-
-	if cmd.Flag(_processTypeFlag).Changed {
-		cpuRequest, err := cmd.Flags().GetString(_cpuRequestFlag)
-		if err != nil {
-			return nil, err
-		}
-
-		opts.CPURequest = cpuRequest
-	}
-
-	if cmd.Flag(_processTypeFlag).Changed {
-		cpuLimit, err := cmd.Flags().GetString(_cpuLimitFlag)
-		if err != nil {
-			return nil, err
-		}
-
-		opts.CPULimit = cpuLimit
-	}
-
-	if cmd.Flag(_memRequestFlag).Changed {
-		memRequest, err := cmd.Flags().GetString(_memRequestFlag)
-		if err != nil {
-			return nil, err
-		}
-
-		opts.MemoryRequest = memRequest
-	}
-
-	if cmd.Flag(_memLimitFlag).Changed {
-		memLimit, err := cmd.Flags().GetString(_memLimitFlag)
-		if err != nil {
-			return nil, err
-		}
-
-		opts.MemoryLimit = memLimit
-	}
-
-	if cmd.Flag(_objectStoreNameFlag).Changed {
-		objectStoreName, err := cmd.Flags().GetString(_objectStoreNameFlag)
-		if err != nil {
-			return nil, err
-		}
-
-		opts.ObjectStoreName = objectStoreName
-	}
-
-	if cmd.Flag(_objectStoreScopeFlag).Changed {
-		objectStoreScope, err := cmd.Flags().GetString(_objectStoreScopeFlag)
-		if err != nil {
-			return nil, err
-		}
-
-		opts.ObjectStoreScope = krt.ObjectStoreScope(objectStoreScope)
+	err = getUpdateOpsObjectStore(cmd, opts)
+	if err != nil {
+		return nil, err
 	}
 
 	if cmd.Flag(_replicasFlag).Changed {
@@ -176,10 +105,117 @@ func getUpdateProcessOpts(processID string, cmd *cobra.Command) (*process.Proces
 		opts.Subscriptions = subscriptions
 	}
 
+	err = getUpdateOptsNetworking(cmd, opts)
+	if err != nil {
+		return nil, err
+	}
+
+	return opts, nil
+}
+
+func getUpdateOptsProcessMetadata(cmd *cobra.Command, opts *process.ProcessOpts) error {
+	productID, err := cmd.Flags().GetString(_productIDFlag)
+	if err != nil {
+		return err
+	}
+
+	opts.ProductID = productID
+
+	workflowID, err := cmd.Flags().GetString(_workflowIDFlag)
+	if err != nil {
+		return err
+	}
+
+	opts.WorkflowID = workflowID
+
+	if cmd.Flag(_processTypeFlag).Changed {
+		processType, err := cmd.Flags().GetString(_processTypeFlag)
+		if err != nil {
+			return err
+		}
+
+		opts.ProcessType = krt.ProcessType(processType)
+	}
+
+	if cmd.Flag(_processImageFlag).Changed {
+		processImage, err := cmd.Flags().GetString(_processImageFlag)
+		if err != nil {
+			return err
+		}
+
+		opts.Image = processImage
+	}
+
+	return nil
+}
+
+func getUpdateOptsResourceLimts(cmd *cobra.Command, opts *process.ProcessOpts) error {
+	if cmd.Flag(_cpuRequestFlag).Changed {
+		cpuRequest, err := cmd.Flags().GetString(_cpuRequestFlag)
+		if err != nil {
+			return err
+		}
+
+		opts.CPURequest = cpuRequest
+	}
+
+	if cmd.Flag(_cpuLimitFlag).Changed {
+		cpuLimit, err := cmd.Flags().GetString(_cpuLimitFlag)
+		if err != nil {
+			return err
+		}
+
+		opts.CPULimit = cpuLimit
+	}
+
+	if cmd.Flag(_memRequestFlag).Changed {
+		memRequest, err := cmd.Flags().GetString(_memRequestFlag)
+		if err != nil {
+			return err
+		}
+
+		opts.MemoryRequest = memRequest
+	}
+
+	if cmd.Flag(_memLimitFlag).Changed {
+		memLimit, err := cmd.Flags().GetString(_memLimitFlag)
+		if err != nil {
+			return err
+		}
+
+		opts.MemoryLimit = memLimit
+	}
+
+	return nil
+}
+
+func getUpdateOpsObjectStore(cmd *cobra.Command, opts *process.ProcessOpts) error {
+	if cmd.Flag(_objectStoreNameFlag).Changed {
+		objectStoreName, err := cmd.Flags().GetString(_objectStoreNameFlag)
+		if err != nil {
+			return err
+		}
+
+		opts.ObjectStoreName = objectStoreName
+	}
+
+	if cmd.Flag(_objectStoreScopeFlag).Changed {
+		objectStoreScope, err := cmd.Flags().GetString(_objectStoreScopeFlag)
+		if err != nil {
+			return err
+		}
+
+		opts.ObjectStoreScope = krt.ObjectStoreScope(objectStoreScope)
+	}
+
+	return nil
+}
+
+func getUpdateOptsNetworking(cmd *cobra.Command, opts *process.ProcessOpts) error {
 	if cmd.Flag(_networkSourcePort).Changed {
 		sourcePort, err := cmd.Flags().GetInt(_networkSourcePort)
 		if err != nil {
-			return nil, err
+			return err
 		}
 
 		opts.NetworkSourcePort = &sourcePort
@@ -188,7 +224,7 @@ func getUpdateProcessOpts(processID string, cmd *cobra.Command) (*process.Proces
 	if cmd.Flag(_networkTargetPort).Changed {
 		targetPort, err := cmd.Flags().GetInt(_networkTargetPort)
 		if err != nil {
-			return nil, err
+			return err
 		}
 
 		opts.NetworkTargetPort = &targetPort
@@ -197,11 +233,11 @@ func getUpdateProcessOpts(processID string, cmd *cobra.Command) (*process.Proces
 	if cmd.Flag(_networkProtocol).Changed {
 		protocol, err := cmd.Flags().GetString(_networkProtocol)
 		if err != nil {
-			return nil, err
+			return err
 		}
 
 		opts.NetworkProtocol = krt.NetworkingProtocol(protocol)
 	}
 
-	return opts, nil
+	return nil
 }
