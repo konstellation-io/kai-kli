@@ -72,6 +72,7 @@ func (s *RemoveWorkflowSuite) BeforeTest(_, _ string) {
 func (s *RemoveWorkflowSuite) TestRemoveWorkflow_ExpectOk() {
 	// GIVEN
 	server := "server1"
+
 	s.renderer.EXPECT().RenderWorkflows([]krt.Workflow{})
 
 	// WHEN

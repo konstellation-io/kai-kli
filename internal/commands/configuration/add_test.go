@@ -124,9 +124,9 @@ func (s *AddConfigurationSuite) TestAddConfiguration_VersionScope_ExpectOk() {
 
 	// THEN
 	s.Require().NoError(err)
-	config, err := s.productConfig.GetConfiguration(s.productName)
+	productConfig, err := s.productConfig.GetConfiguration(s.productName)
 	s.Require().NoError(err)
-	s.Assert().Equal(config.GetVersionConfiguration()[key], value)
+	s.Assert().Equal(productConfig.GetVersionConfiguration()[key], value)
 }
 
 func (s *AddConfigurationSuite) TestAddConfiguration_WorkflowScope_ExpectOk() {
@@ -152,9 +152,9 @@ func (s *AddConfigurationSuite) TestAddConfiguration_WorkflowScope_ExpectOk() {
 
 	// THEN
 	s.Require().NoError(err)
-	config, err := s.productConfig.GetConfiguration(s.productName)
+	productConfig, err := s.productConfig.GetConfiguration(s.productName)
 	s.Require().NoError(err)
-	workflowConfig, err := config.GetWorkflowConfiguration(workflow)
+	workflowConfig, err := productConfig.GetWorkflowConfiguration(workflow)
 	s.Assert().NoError(err)
 	s.Assert().Equal(workflowConfig[key], value)
 }
@@ -206,9 +206,9 @@ func (s *AddConfigurationSuite) TestAddConfiguration_ProcessScope_ExpectOk() {
 
 	// THEN
 	s.Require().NoError(err)
-	config, err := s.productConfig.GetConfiguration(s.productName)
+	productConfig, err := s.productConfig.GetConfiguration(s.productName)
 	s.Require().NoError(err)
-	processConfig, err := config.GetProcessConfiguration(workflow, process)
+	processConfig, err := productConfig.GetProcessConfiguration(workflow, process)
 	s.Assert().NoError(err)
 	s.Assert().Equal(processConfig[key], value)
 }
