@@ -7,8 +7,10 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/konstellation-io/krt/pkg/krt"
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
 
+	"github.com/konstellation-io/kli/cmd/config"
 	productconfiguration "github.com/konstellation-io/kli/internal/commands/configuration"
 	configservice "github.com/konstellation-io/kli/internal/services/product_configuration"
 	"github.com/konstellation-io/kli/mocks"
@@ -33,6 +35,8 @@ func (s *ListConfigurationSuite) SetupSuite() {
 	s.logger = mocks.NewMockLogger(ctrl)
 	renderer := mocks.NewMockRenderer(ctrl)
 	mocks.AddLoggerExpects(s.logger)
+
+	viper.SetDefault(config.KaiProductConfigFolder, ".kai")
 
 	s.productName = "my-product"
 

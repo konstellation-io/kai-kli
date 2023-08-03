@@ -47,6 +47,8 @@ func (s *RegisterProcessSuite) SetupSuite() {
 	renderer := mocks.NewMockRenderer(ctrl)
 	mocks.AddLoggerExpects(s.logger)
 
+	viper.SetDefault(config.KaiProductConfigFolder, ".kai")
+
 	s.renderer = renderer
 
 	s.processRegistryAPI = mocks.NewMockProcessRegistryInterface(ctrl)

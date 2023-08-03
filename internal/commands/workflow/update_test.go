@@ -16,7 +16,7 @@ import (
 	"github.com/konstellation-io/kli/mocks"
 )
 
-type AddWorkflowSuite struct {
+type UpdateWorkflowSuite struct {
 	suite.Suite
 
 	renderer      *mocks.MockRenderer
@@ -26,11 +26,11 @@ type AddWorkflowSuite struct {
 	productName   string
 }
 
-func TestAddWorkflowSuite(t *testing.T) {
-	suite.Run(t, new(AddWorkflowSuite))
+func TestUpdateWorkflowSuite(t *testing.T) {
+	suite.Run(t, new(UpdateWorkflowSuite))
 }
 
-func (s *AddWorkflowSuite) SetupSuite() {
+func (s *UpdateWorkflowSuite) SetupSuite() {
 	ctrl := gomock.NewController(s.T())
 	s.logger = mocks.NewMockLogger(ctrl)
 	renderer := mocks.NewMockRenderer(ctrl)
@@ -48,12 +48,12 @@ func (s *AddWorkflowSuite) SetupSuite() {
 	)
 }
 
-func (s *AddWorkflowSuite) TearDownSuite(_, _ string) {
+func (s *UpdateWorkflowSuite) TearDownSuite(_, _ string) {
 	err := os.RemoveAll(".kai")
 	s.Require().NoError(err)
 }
 
-func (s *AddWorkflowSuite) AfterTest(_, _ string) {
+func (s *UpdateWorkflowSuite) AfterTest(_, _ string) {
 	if err := os.RemoveAll(".kai"); err != nil {
 		if !errors.Is(err, os.ErrNotExist) {
 			s.T().Fatalf("error cleaning tmp path: %s", err)
@@ -61,7 +61,7 @@ func (s *AddWorkflowSuite) AfterTest(_, _ string) {
 	}
 }
 
-func (s *AddWorkflowSuite) BeforeTest(_, _ string) {
+func (s *UpdateWorkflowSuite) BeforeTest(_, _ string) {
 	err := s.productConfig.WriteConfiguration(
 		_getDefaultKaiConfig(),
 		s.productName,
@@ -69,45 +69,39 @@ func (s *AddWorkflowSuite) BeforeTest(_, _ string) {
 	s.Require().NoError(err)
 }
 
-func (s *AddWorkflowSuite) TestAddWorkflow_ExpectOk() {
+func (s *UpdateWorkflowSuite) TestUpdateWorkflow_UpdateFullWorkflow_ExpectOk() {
 	// GIVEN
 	server := "server1"
-	newWorkflow := krt.Workflow{
-		Name:      "my-process",
-		Type:      krt.WorkflowTypeData,
-		Config:    map[string]string{},
-		Processes: []krt.Process{},
+	updatedWorkflow := krt.Workflow{
+		Name:      _getDefaultWorkflow().Name,
+		Type:      krt.WorkflowTypeTraining,
+		Config:    _getDefaultWorkflow().Config,
+		Processes: _getDefaultWorkflow().Processes,
 	}
-	s.renderer.EXPECT().RenderWorkflows([]krt.Workflow{_getDefaultWorkflow(), newWorkflow})
+	s.renderer.EXPECT().RenderWorkflows([]krt.Workflow{updatedWorkflow})
 
 	// WHEN
-	err := s.handler.AddWorkflow(&workflow.AddWorkflowOpts{
+	err := s.handler.UpdateWorkflow(&workflow.UpdateWorkflowOpts{
 		ServerName:   server,
 		ProductID:    s.productName,
-		WorkflowID:   newWorkflow.Name,
-		WorkflowType: newWorkflow.Type,
+		WorkflowID:   updatedWorkflow.Name,
+		WorkflowType: updatedWorkflow.Type,
 	})
 
 	// THEN
 	s.Require().NoError(err)
 }
 
-func (s *AddWorkflowSuite) TestAddWorkflow_NoExistingProduct_ExpectError() {
+func (s *UpdateWorkflowSuite) TestUpdateWorkflow_NoExistingProduct_ExpectError() {
 	// GIVEN
 	server := "server1"
-	newWorkflow := krt.Workflow{
-		Name:      "my-process",
-		Type:      krt.WorkflowTypeData,
-		Config:    map[string]string{},
-		Processes: []krt.Process{},
-	}
 
 	// WHEN
-	err := s.handler.AddWorkflow(&workflow.AddWorkflowOpts{
+	err := s.handler.UpdateWorkflow(&workflow.UpdateWorkflowOpts{
 		ServerName:   server,
 		ProductID:    "some-product",
-		WorkflowID:   newWorkflow.Name,
-		WorkflowType: newWorkflow.Type,
+		WorkflowID:   _getDefaultWorkflow().Name,
+		WorkflowType: _getDefaultWorkflow().Type,
 	})
 
 	// THEN
@@ -115,25 +109,20 @@ func (s *AddWorkflowSuite) TestAddWorkflow_NoExistingProduct_ExpectError() {
 	s.Require().ErrorIs(err, configservice.ErrProductConfigNotFound)
 }
 
-func (s *AddWorkflowSuite) TestAddWorkflow_DuplicatedWorkflow_ExpectError() {
+func (s *UpdateWorkflowSuite) TestUpdateWorkflow_NoExistingWorkflow_ExpectError() {
 	// GIVEN
 	server := "server1"
-	newWorkflow := krt.Workflow{
-		Name:      _getDefaultWorkflow().Name,
-		Type:      krt.WorkflowTypeData,
-		Config:    map[string]string{},
-		Processes: []krt.Process{},
-	}
+	workflowName := "some-workflow"
 
 	// WHEN
-	err := s.handler.AddWorkflow(&workflow.AddWorkflowOpts{
+	err := s.handler.UpdateWorkflow(&workflow.UpdateWorkflowOpts{
 		ServerName:   server,
 		ProductID:    s.productName,
-		WorkflowID:   newWorkflow.Name,
-		WorkflowType: newWorkflow.Type,
+		WorkflowID:   workflowName,
+		WorkflowType: _getDefaultWorkflow().Type,
 	})
 
 	// THEN
 	s.Require().Error(err)
-	s.Require().ErrorIs(err, configservice.ErrWorkflowAlreadyExists)
+	s.Require().ErrorIs(err, configservice.ErrWorkflowNotFound)
 }

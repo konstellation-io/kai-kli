@@ -1,4 +1,4 @@
-package process_test
+package workflow_test
 
 import (
 	"errors"
@@ -6,30 +6,31 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
+	"github.com/konstellation-io/krt/pkg/krt"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/konstellation-io/kli/cmd/config"
-	"github.com/konstellation-io/kli/internal/commands/process"
+	"github.com/konstellation-io/kli/internal/commands/workflow"
 	configservice "github.com/konstellation-io/kli/internal/services/product_configuration"
 	"github.com/konstellation-io/kli/mocks"
 )
 
-type ListProcessSuite struct {
+type AddProcessSuite struct {
 	suite.Suite
 
 	renderer      *mocks.MockRenderer
 	logger        *mocks.MockLogger
-	handler       *process.Handler
+	handler       *workflow.Handler
 	productConfig *configservice.ProductConfigService
 	productName   string
 }
 
-func TestListProcessSuite(t *testing.T) {
-	suite.Run(t, new(ListProcessSuite))
+func TestAddProcessSuite(t *testing.T) {
+	suite.Run(t, new(AddProcessSuite))
 }
 
-func (s *ListProcessSuite) SetupSuite() {
+func (s *AddProcessSuite) SetupSuite() {
 	ctrl := gomock.NewController(s.T())
 	s.logger = mocks.NewMockLogger(ctrl)
 	renderer := mocks.NewMockRenderer(ctrl)
@@ -41,18 +42,18 @@ func (s *ListProcessSuite) SetupSuite() {
 
 	s.renderer = renderer
 
-	s.handler = process.NewHandler(
+	s.handler = workflow.NewHandler(
 		s.logger,
 		s.renderer,
 	)
 }
 
-func (s *ListProcessSuite) TearDownSuite(_, _ string) {
+func (s *AddProcessSuite) TearDownSuite(_, _ string) {
 	err := os.RemoveAll(".kai")
 	s.Require().NoError(err)
 }
 
-func (s *ListProcessSuite) AfterTest(_, _ string) {
+func (s *AddProcessSuite) AfterTest(_, _ string) {
 	if err := os.RemoveAll(".kai"); err != nil {
 		if !errors.Is(err, os.ErrNotExist) {
 			s.T().Fatalf("error cleaning tmp path: %s", err)
@@ -60,7 +61,7 @@ func (s *ListProcessSuite) AfterTest(_, _ string) {
 	}
 }
 
-func (s *ListProcessSuite) BeforeTest(_, _ string) {
+func (s *AddProcessSuite) BeforeTest(_, _ string) {
 	err := s.productConfig.WriteConfiguration(
 		_getDefaultKaiConfig(),
 		s.productName,
@@ -68,55 +69,34 @@ func (s *ListProcessSuite) BeforeTest(_, _ string) {
 	s.Require().NoError(err)
 }
 
-func (s *ListProcessSuite) TestListProcess_ExpectOk() {
+func (s *AddProcessSuite) TestListWorkflows_ExpectOk() {
 	// GIVEN
 	server := "server1"
-	workflow := "Workflow1"
-
-	s.renderer.EXPECT().RenderProcesses(ProcessMatcher(_getDefaultProcess()))
+	productID := s.productName
+	s.renderer.EXPECT().RenderWorkflows([]krt.Workflow{_getDefaultWorkflow()})
 
 	// WHEN
-	err := s.handler.ListProcesses(&process.ListProcessOpts{
+	err := s.handler.ListWorkflows(&workflow.ListWorkflowOpts{
 		ServerName: server,
-		ProductID:  s.productName,
-		WorkflowID: workflow,
+		ProductID:  productID,
 	})
 
 	// THEN
 	s.Require().NoError(err)
 }
 
-func (s *ListProcessSuite) TestListProcess_NonExistingProduct_ExpectError() {
+func (s *AddProcessSuite) TestListWorkflows_ProductConfigNotExists_ExpectError() {
 	// GIVEN
 	server := "server1"
-	product := "product-test"
-	workflow := "Workflow-test"
+	productID := "non-existing-product"
 
 	// WHEN
-	err := s.handler.ListProcesses(&process.ListProcessOpts{
+	err := s.handler.ListWorkflows(&workflow.ListWorkflowOpts{
 		ServerName: server,
-		ProductID:  product,
-		WorkflowID: workflow,
+		ProductID:  productID,
 	})
 
 	// THEN
 	s.Require().Error(err)
 	s.Require().ErrorIs(err, configservice.ErrProductConfigNotFound)
-}
-
-func (s *ListProcessSuite) TestListProcess_NonExistingWorkflow_ExpectError() {
-	// GIVEN
-	server := "server1"
-	workflow := "Workflow-test"
-
-	// WHEN
-	err := s.handler.ListProcesses(&process.ListProcessOpts{
-		ServerName: server,
-		ProductID:  s.productName,
-		WorkflowID: workflow,
-	})
-
-	// THEN
-	s.Require().Error(err)
-	s.Require().ErrorIs(err, configservice.ErrWorkflowNotFound)
 }

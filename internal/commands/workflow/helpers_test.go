@@ -56,7 +56,7 @@ func _getDefaultKaiConfig() *configservice.KaiProductConfiguration {
 
 func _getDefaultWorkflow() krt.Workflow {
 	return krt.Workflow{
-		Name:      "Workflow1",
+		Name:      "workflow-1",
 		Type:      "data",
 		Config:    map[string]string{"test2": "value2"},
 		Processes: []krt.Process{},
