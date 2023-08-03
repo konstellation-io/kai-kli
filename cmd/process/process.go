@@ -8,20 +8,23 @@ import (
 )
 
 const (
-	_serverFlag        = "server"
-	_productIDFlag     = "product"
-	_workflowIDFlag    = "workflow"
-	_processTypeFlag   = "type"
-	_processImageFlag  = "image"
-	_cpuRequestFlag    = "cpu-request"
-	_cpuLimitFlag      = "cpu-limit"
-	_memRequestFlag    = "mem-request"
-	_memLimitFlag      = "mem-limit"
-	_replicasFlag      = "replicas"
-	_subscriptionsFlag = "subscriptions"
-	_networkSourcePort = "source-port"
-	_networkTargetPort = "target-port"
-	_networkProtocol   = "protocol"
+	_serverFlag           = "server"
+	_productIDFlag        = "product"
+	_workflowIDFlag       = "workflow"
+	_processTypeFlag      = "type"
+	_processImageFlag     = "image"
+	_gpuFlag              = "gpu"
+	_cpuRequestFlag       = "cpu-request"
+	_cpuLimitFlag         = "cpu-limit"
+	_memRequestFlag       = "mem-request"
+	_memLimitFlag         = "mem-limit"
+	_replicasFlag         = "replicas"
+	_objectStoreNameFlag  = "object-store"
+	_objectStoreScopeFlag = "object-store-scope"
+	_subscriptionsFlag    = "subscriptions"
+	_networkSourcePort    = "source-port"
+	_networkTargetPort    = "target-port"
+	_networkProtocol      = "protocol"
 )
 
 // NewProcessCmd creates a new command to handle 'process' subcommands.

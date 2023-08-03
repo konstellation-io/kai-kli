@@ -93,10 +93,10 @@ func (s *AddProcessSuite) TestAddProcess_ExpectOk() {
 		ProcessID:         newProcess.Name,
 		ProcessType:       newProcess.Type,
 		Image:             newProcess.Image,
-		Replicas:          *newProcess.Replicas,
+		Replicas:          newProcess.Replicas,
 		Subscriptions:     newProcess.Subscriptions,
-		NetworkSourcePort: -1,
-		NetworkTargetPort: -1,
+		NetworkSourcePort: nil,
+		NetworkTargetPort: nil,
 	})
 
 	// THEN
@@ -148,13 +148,13 @@ func (s *AddProcessSuite) TestAddProcess_NonExistingProduct_ExpectError() {
 		ProcessID:         newProcess.Name,
 		ProcessType:       newProcess.Type,
 		Image:             newProcess.Image,
-		Replicas:          *newProcess.Replicas,
+		Replicas:          newProcess.Replicas,
 		CPURequest:        "100m",
 		MemoryRequest:     "100Mi",
 		Subscriptions:     newProcess.Subscriptions,
 		ObjectStoreName:   newProcess.ObjectStore.Name,
-		NetworkSourcePort: 20000,
-		NetworkTargetPort: 30000,
+		NetworkSourcePort: &newProcess.Networking.TargetPort,
+		NetworkTargetPort: &newProcess.Networking.DestinationPort,
 	})
 
 	// THEN
@@ -189,7 +189,7 @@ func (s *AddProcessSuite) TestAddProcess_NonExistingWorkflow_ExpectError() {
 		ProcessID:     newProcess.Name,
 		ProcessType:   newProcess.Type,
 		Image:         newProcess.Image,
-		Replicas:      *newProcess.Replicas,
+		Replicas:      newProcess.Replicas,
 		Subscriptions: newProcess.Subscriptions,
 	})
 
@@ -225,10 +225,10 @@ func (s *AddProcessSuite) TestAddProcess_DuplicatedProcess_ExpectError() {
 		ProcessID:         newProcess.Name,
 		ProcessType:       newProcess.Type,
 		Image:             newProcess.Image,
-		Replicas:          *newProcess.Replicas,
+		Replicas:          newProcess.Replicas,
 		Subscriptions:     newProcess.Subscriptions,
-		NetworkSourcePort: -1,
-		NetworkTargetPort: -1,
+		NetworkSourcePort: nil,
+		NetworkTargetPort: nil,
 	})
 
 	// THEN

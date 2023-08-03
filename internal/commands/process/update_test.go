@@ -71,16 +71,17 @@ func (s *UpdateProcessSuite) TestUpdateProcess_ExpectOk() {
 	server := "server1"
 	workflow := "Workflow1"
 	newProcess := krt.Process{
-		Name:          _getDefaultProcess().Name,
-		Type:          krt.ProcessTypeTask,
-		Image:         "kst/task2",
-		Replicas:      &replicas,
-		GPU:           _getDefaultProcess().GPU,
-		Config:        _getDefaultProcess().Config,
-		ObjectStore:   _getDefaultProcess().ObjectStore,
-		Secrets:       _getDefaultProcess().Secrets,
-		Subscriptions: []string{"subject1", "subject2"},
-		Networking:    _getDefaultProcess().Networking,
+		Name:           _getDefaultProcess().Name,
+		Type:           krt.ProcessTypeTask,
+		Image:          "kst/task2",
+		Replicas:       &replicas,
+		GPU:            _getDefaultProcess().GPU,
+		Config:         _getDefaultProcess().Config,
+		ObjectStore:    _getDefaultProcess().ObjectStore,
+		Secrets:        _getDefaultProcess().Secrets,
+		Subscriptions:  []string{"subject1", "subject2"},
+		ResourceLimits: _getDefaultProcess().ResourceLimits,
+		Networking:     _getDefaultProcess().Networking,
 	}
 	s.renderer.EXPECT().RenderProcesses(ProcessMatcher(newProcess))
 
@@ -93,10 +94,10 @@ func (s *UpdateProcessSuite) TestUpdateProcess_ExpectOk() {
 			ProcessID:         newProcess.Name,
 			ProcessType:       newProcess.Type,
 			Image:             newProcess.Image,
-			Replicas:          *newProcess.Replicas,
+			Replicas:          newProcess.Replicas,
 			Subscriptions:     newProcess.Subscriptions,
-			NetworkTargetPort: newProcess.Networking.TargetPort,
-			NetworkSourcePort: newProcess.Networking.DestinationPort,
+			NetworkTargetPort: &newProcess.Networking.TargetPort,
+			NetworkSourcePort: &newProcess.Networking.DestinationPort,
 			NetworkProtocol:   newProcess.Networking.Protocol,
 		})
 
@@ -131,10 +132,10 @@ func (s *UpdateProcessSuite) TestUpdateProcess_NonExistingProduct_ExpectError() 
 		ProcessID:         newProcess.Name,
 		ProcessType:       newProcess.Type,
 		Image:             newProcess.Image,
-		Replicas:          *newProcess.Replicas,
+		Replicas:          newProcess.Replicas,
 		Subscriptions:     newProcess.Subscriptions,
-		NetworkTargetPort: newProcess.Networking.TargetPort,
-		NetworkSourcePort: newProcess.Networking.DestinationPort,
+		NetworkTargetPort: &newProcess.Networking.TargetPort,
+		NetworkSourcePort: &newProcess.Networking.DestinationPort,
 		NetworkProtocol:   newProcess.Networking.Protocol,
 	})
 
@@ -169,10 +170,10 @@ func (s *UpdateProcessSuite) TestUpdateProcess_NonExistingWorkflow_ExpectError()
 		ProcessID:         newProcess.Name,
 		ProcessType:       newProcess.Type,
 		Image:             newProcess.Image,
-		Replicas:          *newProcess.Replicas,
+		Replicas:          newProcess.Replicas,
 		Subscriptions:     newProcess.Subscriptions,
-		NetworkTargetPort: newProcess.Networking.TargetPort,
-		NetworkSourcePort: newProcess.Networking.DestinationPort,
+		NetworkTargetPort: &newProcess.Networking.TargetPort,
+		NetworkSourcePort: &newProcess.Networking.DestinationPort,
 		NetworkProtocol:   newProcess.Networking.Protocol,
 	})
 
@@ -207,10 +208,10 @@ func (s *UpdateProcessSuite) TestUpdateProcess_NonExistingProcess_ExpectError() 
 		ProcessID:         newProcess.Name,
 		ProcessType:       newProcess.Type,
 		Image:             newProcess.Image,
-		Replicas:          *newProcess.Replicas,
+		Replicas:          newProcess.Replicas,
 		Subscriptions:     newProcess.Subscriptions,
-		NetworkTargetPort: newProcess.Networking.TargetPort,
-		NetworkSourcePort: newProcess.Networking.DestinationPort,
+		NetworkTargetPort: &newProcess.Networking.TargetPort,
+		NetworkSourcePort: &newProcess.Networking.DestinationPort,
 		NetworkProtocol:   newProcess.Networking.Protocol,
 	})
 

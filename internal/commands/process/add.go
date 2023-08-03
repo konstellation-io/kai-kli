@@ -38,7 +38,7 @@ func (w *Handler) AddProcess(opts *ProcessOpts) error {
 			Name:           opts.ProcessID,
 			Type:           opts.ProcessType,
 			Image:          opts.Image,
-			Replicas:       &opts.Replicas,
+			Replicas:       opts.Replicas,
 			GPU:            &opts.GPU,
 			Config:         map[string]string{},
 			ObjectStore:    obj,
@@ -65,4 +65,40 @@ func (w *Handler) AddProcess(opts *ProcessOpts) error {
 	w.renderer.RenderProcesses(wf.Processes)
 
 	return nil
+}
+
+func (w *Handler) getCPULimits(opts *ProcessOpts) *krt.ResourceLimit {
+	res := &krt.ResourceLimit{}
+
+	res.Request = _defaultCPURequest
+	res.Limit = _defaultCPULimit
+
+	if opts.CPURequest != "" {
+		res.Request = opts.CPURequest
+		res.Limit = res.Request
+	}
+
+	if opts.CPULimit != "" {
+		res.Limit = opts.CPULimit
+	}
+
+	return res
+}
+
+func (w *Handler) getMemoryLimits(opts *ProcessOpts) *krt.ResourceLimit {
+	res := &krt.ResourceLimit{}
+
+	res.Request = _defaultMemoryRequest
+	res.Limit = _defaultMemoryLimit
+
+	if opts.MemoryRequest != "" {
+		res.Request = opts.MemoryRequest
+		res.Limit = res.Request
+	}
+
+	if opts.MemoryLimit != "" {
+		res.Limit = opts.MemoryLimit
+	}
+
+	return res
 }

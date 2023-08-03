@@ -46,6 +46,8 @@ func NewAddCmd(logger logging.Interface) *cobra.Command {
 	cmd.Flags().String(_cpuLimitFlag, "", "The maximum CPU resources allowed to deploy the current process.")
 	cmd.Flags().String(_memRequestFlag, "", "The memory request resources needed to deploy the current process.")
 	cmd.Flags().String(_memLimitFlag, "", "The maximum memory resources allowed to deploy the current process.")
+	cmd.Flags().String(_objectStoreNameFlag, "", "The object store name to be used by the current process.")
+	cmd.Flags().String(_objectStoreScopeFlag, "", "The object store scope to be used by the current process.")
 	cmd.Flags().Int(_networkSourcePort, -1, "The source port used by the current process.")
 	cmd.Flags().Int(_networkTargetPort, -1, "The target port exposed by the current process.")
 	cmd.Flags().String(_networkProtocol, "", "The network protocol used by the current process.")
@@ -95,6 +97,16 @@ func getAddProcessOpts(processID, processType, image string, cmd *cobra.Command)
 		return nil, err
 	}
 
+	objectStoreName, err := cmd.Flags().GetString(_objectStoreNameFlag)
+	if err != nil {
+		return nil, err
+	}
+
+	objectStoreScope, err := cmd.Flags().GetString(_objectStoreScopeFlag)
+	if err != nil {
+		return nil, err
+	}
+
 	replicas, err := cmd.Flags().GetInt(_replicasFlag)
 	if err != nil {
 		return nil, err
@@ -127,14 +139,16 @@ func getAddProcessOpts(processID, processType, image string, cmd *cobra.Command)
 		ProcessID:         processID,
 		ProcessType:       krt.ProcessType(processType),
 		Image:             image,
-		Replicas:          replicas,
+		Replicas:          &replicas,
 		Subscriptions:     subscriptions,
+		ObjectStoreName:   objectStoreName,
+		ObjectStoreScope:  krt.ObjectStoreScope(objectStoreScope),
 		CPURequest:        cpuRequest,
 		CPULimit:          cpuLimit,
 		MemoryRequest:     memRequest,
 		MemoryLimit:       memLimit,
-		NetworkSourcePort: sourcePort,
-		NetworkTargetPort: targetPort,
+		NetworkSourcePort: &sourcePort,
+		NetworkTargetPort: &targetPort,
 		NetworkProtocol:   krt.NetworkingProtocol(protocol),
 	}, nil
 }

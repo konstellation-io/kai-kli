@@ -25,12 +25,12 @@ type ProcessOpts struct {
 	ObjectStoreName  string
 	ObjectStoreScope krt.ObjectStoreScope
 
-	NetworkSourcePort int
-	NetworkTargetPort int
+	NetworkSourcePort *int
+	NetworkTargetPort *int
 	NetworkProtocol   krt.NetworkingProtocol
 	// end of not implemented yet
 	Image         string
-	Replicas      int
+	Replicas      *int
 	GPU           bool
 	Subscriptions []string
 }
@@ -49,47 +49,11 @@ func NewHandler(logger logging.Interface, renderer render.Renderer) *Handler {
 	}
 }
 
-func (w *Handler) getCPULimits(opts *ProcessOpts) *krt.ResourceLimit {
-	res := &krt.ResourceLimit{}
-
-	res.Request = _defaultCPURequest
-	res.Limit = _defaultCPULimit
-
-	if opts.CPURequest != "" {
-		res.Request = opts.CPURequest
-		res.Limit = res.Request
-	}
-
-	if opts.CPULimit != "" {
-		res.Limit = opts.CPULimit
-	}
-
-	return res
-}
-
-func (w *Handler) getMemoryLimits(opts *ProcessOpts) *krt.ResourceLimit {
-	res := &krt.ResourceLimit{}
-
-	res.Request = _defaultMemoryRequest
-	res.Limit = _defaultMemoryLimit
-
-	if opts.MemoryRequest != "" {
-		res.Request = opts.MemoryRequest
-		res.Limit = res.Request
-	}
-
-	if opts.MemoryLimit != "" {
-		res.Limit = opts.MemoryLimit
-	}
-
-	return res
-}
-
 func (w *Handler) getNetwork(opts *ProcessOpts) *krt.ProcessNetworking {
-	if opts.NetworkSourcePort != -1 && opts.NetworkTargetPort != -1 {
+	if opts.NetworkSourcePort != nil && opts.NetworkTargetPort != nil {
 		net := &krt.ProcessNetworking{}
-		net.TargetPort = opts.NetworkSourcePort
-		net.DestinationPort = opts.NetworkTargetPort
+		net.TargetPort = *opts.NetworkSourcePort
+		net.DestinationPort = *opts.NetworkTargetPort
 		net.Protocol = krt.NetworkingProtocolTCP
 
 		if opts.NetworkProtocol != "" {

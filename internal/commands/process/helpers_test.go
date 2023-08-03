@@ -77,6 +77,16 @@ func _getDefaultProcess() krt.Process {
 		ObjectStore:   nil,
 		Secrets:       map[string]string{},
 		Subscriptions: []string{"subject1", "subject2"},
+		ResourceLimits: &krt.ProcessResourceLimits{
+			CPU: &krt.ResourceLimit{
+				Request: "500m",
+				Limit:   "1.5",
+			},
+			Memory: &krt.ResourceLimit{
+				Request: "64Mi",
+				Limit:   "128Mi",
+			},
+		},
 		Networking: &krt.ProcessNetworking{
 			TargetPort:      20000,
 			DestinationPort: 21000,

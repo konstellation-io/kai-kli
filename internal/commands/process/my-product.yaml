@@ -25,4 +25,10 @@ krt:
                 targetPort: 20000
                 destinationPort: 21000
                 protocol: TCP
-              resourceLimits: null
+              resourceLimits:
+                CPU:
+                    request: 500m
+                    limit: "1.5"
+                memory:
+                    request: 64Mi
+                    limit: 128Mi

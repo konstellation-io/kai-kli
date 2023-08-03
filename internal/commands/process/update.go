@@ -8,10 +8,15 @@ func (w *Handler) UpdateProcess(opts *ProcessOpts) error {
 		return err
 	}
 
+	proc, err := productConfig.GetProcess(opts.WorkflowID, opts.ProcessID)
+	if err != nil {
+		return err
+	}
+
 	obj := w.getObjectStore(opts)
 	network := w.getNetwork(opts)
-	CPULimits := w.getCPULimits(opts)
-	memoryLimits := w.getMemoryLimits(opts)
+	CPULimits := w.updateCPULimits(opts, proc)
+	memoryLimits := w.updateMemoryLimits(opts, proc)
 
 	limits := &krt.ProcessResourceLimits{}
 
@@ -25,18 +30,13 @@ func (w *Handler) UpdateProcess(opts *ProcessOpts) error {
 		limits.Memory = memoryLimits
 	}
 
-	repl := &opts.Replicas
-	if opts.Replicas == -1 {
-		repl = nil
-	}
-
 	err = productConfig.UpdateProcess(
 		opts.WorkflowID,
 		&krt.Process{
 			Name:           opts.ProcessID,
 			Type:           opts.ProcessType,
 			Image:          opts.Image,
-			Replicas:       repl,
+			Replicas:       opts.Replicas,
 			GPU:            &opts.GPU,
 			ObjectStore:    obj,
 			Subscriptions:  opts.Subscriptions,
@@ -61,4 +61,48 @@ func (w *Handler) UpdateProcess(opts *ProcessOpts) error {
 	w.renderer.RenderProcesses(wf.Processes)
 
 	return nil
+}
+
+func (w *Handler) updateCPULimits(opts *ProcessOpts, pc *krt.Process) *krt.ResourceLimit {
+	res := &krt.ResourceLimit{}
+
+	res.Request = _defaultCPURequest
+	res.Limit = _defaultCPULimit
+
+	if pc.ResourceLimits.CPU != nil {
+		res.Request = pc.ResourceLimits.CPU.Request
+		res.Limit = pc.ResourceLimits.CPU.Limit
+	}
+
+	if opts.CPURequest != "" {
+		res.Request = opts.CPURequest
+	}
+
+	if opts.CPULimit != "" {
+		res.Limit = opts.CPULimit
+	}
+
+	return res
+}
+
+func (w *Handler) updateMemoryLimits(opts *ProcessOpts, pc *krt.Process) *krt.ResourceLimit {
+	res := &krt.ResourceLimit{}
+
+	res.Request = _defaultMemoryRequest
+	res.Limit = _defaultMemoryLimit
+
+	if pc.ResourceLimits.Memory != nil {
+		res.Request = pc.ResourceLimits.Memory.Request
+		res.Limit = pc.ResourceLimits.Memory.Limit
+	}
+
+	if opts.MemoryRequest != "" {
+		res.Request = opts.MemoryRequest
+	}
+
+	if opts.MemoryLimit != "" {
+		res.Limit = opts.MemoryLimit
+	}
+
+	return res
 }
