@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/konstellation-io/kli/authserver"
 	"net/http"
 	"net/url"
 	"strings"
@@ -15,9 +16,9 @@ import (
 )
 
 const (
-	_grantTypePassword     = "password"
-	_loginRequestTemplate  = "https://%s/realms/%s/protocol/openid-connect/token"
-	_logoutRequestTemplate = "https://%s/realms/%s/protocol/openid-connect/logout"
+	_grantTypeRefreshToken       = "refresh_token"
+	_refreshTokenRequestTemplate = "%s/realms/%s/protocol/openid-connect/token"
+	_logoutRequestTemplate       = "%s/realms/%s/protocol/openid-connect/logout"
 )
 
 var (
@@ -66,7 +67,7 @@ func (a *AuthenticationService) GetToken(serveName string) (*configuration.Token
 	}
 
 	// Login to the server
-	token, err := a.Login(server.Name, server.AuthURL, server.Realm, server.ClientID, server.Username, server.Password)
+	token, err := a.refreshTokenRequest(server)
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +76,14 @@ func (a *AuthenticationService) GetToken(serveName string) (*configuration.Token
 		return nil, ErrInvalidToken
 	}
 
-	return token, nil
+	return &configuration.Token{
+		Date:             time.Now().UTC(),
+		AccessToken:      token.AccessToken,
+		ExpiresIn:        token.ExpiresIn,
+		RefreshExpiresIn: token.RefreshExpiresIn,
+		RefreshToken:     token.RefreshToken,
+		TokenType:        token.TokenType,
+	}, nil
 }
 
 func (a *AuthenticationService) Login(serverName, authURL, realm, clientID, username, password string) (*configuration.Token, error) {
@@ -162,50 +170,40 @@ func (a *AuthenticationService) Logout(serverName string) error {
 }
 
 func (a *AuthenticationService) loginRequest(server *configuration.Server) (*TokenResponse, error) {
-	u, err := url.Parse(fmt.Sprintf(_loginRequestTemplate, server.AuthURL, server.Realm))
+	a.logger.Info("Logging in...")
+	authServer := authserver.NewAuthServer(
+		a.logger,
+		authserver.Config{
+			KeycloakConfig: authserver.KeycloakConfig{
+				KeycloakURL: server.AuthURL,
+				Realm:       server.Realm,
+				ClientID:    server.ClientID,
+			},
+			EmbeddedServerConfig: authserver.EmbeddedServerConfig{
+				CallbackPath: "sso-callback",
+				Port:         0,
+			},
+		},
+	)
+
+	authResponse, err := authServer.StartServer()
 	if err != nil {
 		return nil, err
 	}
 
-	data := url.Values{}
-	data.Set("username", server.Username)
-	data.Add("password", server.Password)
-	data.Add("grant_type", _grantTypePassword)
-	data.Add("client_id", server.ClientID)
+	a.logger.Debug(fmt.Sprintf("Login successful. The token is %s", authResponse.AccessToken))
 
-	// Make the HTTP POST request
-	req, err := http.NewRequestWithContext(context.Background(),
-		http.MethodPost, u.String(), strings.NewReader(data.Encode()))
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-
-	if err != nil {
-		return nil, err
-	}
-
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("error requesting token: %s", resp.Status)
-	}
-
-	var tokenResponse TokenResponse
-	err = json.NewDecoder(resp.Body).Decode(&tokenResponse)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return &tokenResponse, nil
+	return &TokenResponse{
+		AccessToken:      authResponse.AccessToken,
+		ExpiresIn:        authResponse.ExpiresIn,
+		RefreshExpiresIn: authResponse.RefreshExpiresIn,
+		RefreshToken:     authResponse.RefreshToken,
+		TokenType:        authResponse.TokenType,
+	}, nil
 }
 
 func (a *AuthenticationService) logoutRequest(server *configuration.Server) error {
+	a.logger.Info("Logging out...")
 	u, err := url.Parse(fmt.Sprintf(_logoutRequestTemplate, server.AuthURL, server.Realm))
 	if err != nil {
 		return err
@@ -239,6 +237,50 @@ func (a *AuthenticationService) logoutRequest(server *configuration.Server) erro
 	}
 
 	return nil
+}
+
+func (a *AuthenticationService) refreshTokenRequest(server *configuration.Server) (*TokenResponse, error) {
+	a.logger.Info("Refreshing token...")
+	u, err := url.Parse(fmt.Sprintf(_refreshTokenRequestTemplate, server.AuthURL, server.Realm))
+	if err != nil {
+		return nil, err
+	}
+
+	data := url.Values{}
+	data.Set("client_id", server.ClientID)
+	data.Set("grant_type", _grantTypeRefreshToken)
+	data.Add("refresh_token", server.Token.RefreshToken)
+
+	// Make the HTTP POST request
+	req, err := http.NewRequestWithContext(context.Background(),
+		http.MethodPost, u.String(), strings.NewReader(data.Encode()))
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("error requesting token: %s", resp.Status)
+	}
+
+	var tokenResponse TokenResponse
+	err = json.NewDecoder(resp.Body).Decode(&tokenResponse)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &tokenResponse, nil
 }
 
 func (a *AuthenticationService) areCredentialsValid(server *configuration.Server) bool {

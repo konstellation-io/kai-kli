@@ -23,10 +23,7 @@ const (
 // NewLogoutCmd creates a new command to log out from an existing server.
 func NewLogoutCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "logout [--server <server_name>]",
-		Annotations: map[string]string{
-			"authenticated": "true",
-		},
+		Use:   "logout [--server <server_name>]",
 		Short: "logout from an existing server",
 		Example: `
     $ kli server logout my-server
