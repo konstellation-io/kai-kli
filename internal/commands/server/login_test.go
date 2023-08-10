@@ -2,10 +2,11 @@ package server_test
 
 import (
 	"errors"
-	"github.com/konstellation-io/kli/authserver"
 	"os"
 	"path"
 	"testing"
+
+	"github.com/konstellation-io/kli/authserver"
 
 	"github.com/golang/mock/gomock"
 	"github.com/spf13/viper"

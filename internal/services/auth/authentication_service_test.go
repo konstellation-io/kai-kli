@@ -3,12 +3,13 @@ package auth_test
 import (
 	"errors"
 	"fmt"
-	"github.com/konstellation-io/kli/authserver"
 	"net/http"
 	"os"
 	"path"
 	"testing"
 	"time"
+
+	"github.com/konstellation-io/kli/authserver"
 
 	"github.com/golang/mock/gomock"
 	"github.com/jarcoal/httpmock"

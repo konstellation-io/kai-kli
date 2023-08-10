@@ -24,7 +24,7 @@ const (
 var successPage string
 
 //go:generate mockgen -source=${GOFILE} -destination=../mocks/auth_server.go -package=mocks AuthServer
-type AuthServerInterface interface {
+type AuthServerInterface interface { //nolint:revive
 	StartServer(config KeycloakConfig) (*AuthResponse, error)
 }
 
