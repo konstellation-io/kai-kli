@@ -1,6 +1,7 @@
 package authserver
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -29,7 +30,9 @@ func (as *AuthServer) buildTokenExchangeRequest(code string) (*http.Request, err
 		"redirect_uri": {as.getCallbackURL()},
 	}
 
-	req, err := http.NewRequest("POST", tokenURL, strings.NewReader(body.Encode()))
+	req, err := http.NewRequestWithContext(context.Background(), http.MethodPost, tokenURL, strings.NewReader(body.Encode()))
+
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
 	return req, err
 }

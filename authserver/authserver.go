@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"runtime"
 	"sync"
+	"time"
 
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/phayes/freeport"
@@ -29,8 +30,10 @@ func NewAuthServer(logger logging.Interface, config Config) *AuthServer {
 		port, err := freeport.GetFreePort()
 		if err != nil {
 			logger.Error(fmt.Sprintf("Error getting free port: %s", err))
+
 			config.EmbeddedServerConfig.Port = 3000
 		}
+
 		config.EmbeddedServerConfig.Port = uint32(port)
 	}
 
@@ -67,6 +70,7 @@ type AuthResponse struct {
 
 func (as *AuthServer) openBrowser(url string) error {
 	var browserCommand *exec.Cmd
+
 	switch runtime.GOOS {
 	case "linux":
 		browserCommand = exec.Command("xdg-open", url)
@@ -77,7 +81,9 @@ func (as *AuthServer) openBrowser(url string) error {
 	default:
 		return fmt.Errorf("unsupported operating system: %v", runtime.GOOS)
 	}
+
 	err := browserCommand.Run()
+
 	return err
 }
 
@@ -88,7 +94,6 @@ func (as *AuthServer) getCallbackURL() string {
 }
 
 func (as *AuthServer) StartServer() (*AuthResponse, error) {
-
 	serverAddress := fmt.Sprintf("localhost:%v", as.config.EmbeddedServerConfig.Port)
 
 	as.logger.Info(fmt.Sprintf("Booting up the server at: %s", serverAddress))
@@ -100,48 +105,36 @@ func (as *AuthServer) StartServer() (*AuthResponse, error) {
 			as.logger.Info(fmt.Sprintf("Callback received: %v", r.URL))
 
 			code := r.URL.Query().Get("code")
-			if code != "" {
-				request, err := as.buildTokenExchangeRequest(code)
-				if err == nil {
-					var resp *http.Response
-					var body []byte
-					resp, err = http.DefaultClient.Do(request)
-					if err == nil {
-						defer resp.Body.Close()
-						if resp.StatusCode == http.StatusOK {
-							content, _, _ := mime.ParseMediaType(resp.Header.Get("Content-Type"))
-							switch content {
-							case "application/json":
-								var tokenResponse AuthResponse
-								err = json.NewDecoder(resp.Body).Decode(&tokenResponse)
-								if err != nil {
-									as.logger.Error(fmt.Sprintf("Error decoding token response: %v", err))
-								}
-
-								as.response = &tokenResponse
-							default:
-								as.logger.Warn(fmt.Sprintf("Unexpected content type: %v", body))
-							}
-						} else {
-							as.logger.Error(fmt.Sprintf("invalid Status code (%v)", resp.StatusCode))
-						}
-						_, err := fmt.Fprintf(w, successPage)
-						if err != nil {
-							as.logger.Error(fmt.Sprintf("Error writing response: %v", err))
-						}
-						as.closeApp.Done()
-						return
-					}
-					as.logger.Error(fmt.Sprintf("Unable to exchange code for token: %v", err))
-				}
-				as.logger.Error(fmt.Sprintf("Unable to exchange code for token: %v", err))
+			if code == "" {
+				as.logger.Info("Code not found in the callback URL")
+				as.closeApp.Done()
+				return
 			}
 
-			as.logger.Info("Code not found in the callback URL")
+			tokenResponse, err := as.tokenExchangeRequest(code)
+			if err != nil {
+				as.logger.Error(fmt.Sprintf("Error exchanging token: %v", err))
+				as.closeApp.Done()
+				return
+			}
+
+			as.response = tokenResponse
+
+			_, err = fmt.Fprint(w, successPage)
+			if err != nil {
+				as.logger.Error(fmt.Sprintf("Error writing response: %v", err))
+			}
+
+			as.closeApp.Done()
 		})
 
 	go func() {
-		if err := http.ListenAndServe(serverAddress, nil); err != nil {
+		server := http.Server{
+			Addr:              serverAddress,
+			ReadHeaderTimeout: 5 * time.Minute,
+		}
+
+		if err := server.ListenAndServe(); err != nil {
 			as.logger.Error(fmt.Sprintf("Unable to start server: %v\n", err))
 			as.closeApp.Done()
 		}
@@ -159,4 +152,41 @@ func (as *AuthServer) StartServer() (*AuthResponse, error) {
 	}
 
 	return nil, fmt.Errorf("unable to get access token")
+}
+
+func (as *AuthServer) tokenExchangeRequest(code string) (*AuthResponse, error) {
+	request, err := as.buildTokenExchangeRequest(code)
+	if err != nil {
+		return nil, fmt.Errorf("unable to exchange code for token: %v", err)
+	}
+
+	var resp *http.Response
+
+	var body []byte
+
+	resp, err = http.DefaultClient.Do(request)
+	if err != nil {
+		return nil, fmt.Errorf("unable to exchange code for token: %v", err)
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusOK {
+		content, _, _ := mime.ParseMediaType(resp.Header.Get("Content-Type"))
+		switch content {
+		case "application/json":
+			var tokenResponse AuthResponse
+
+			err = json.NewDecoder(resp.Body).Decode(&tokenResponse)
+			if err != nil {
+				return nil, fmt.Errorf("error decoding token response: %v", err)
+			}
+
+			return &tokenResponse, nil
+		default:
+			return nil, fmt.Errorf("unexpected content type: %v", body)
+		}
+	}
+
+	return nil, fmt.Errorf("invalid Status code (%v)", resp.StatusCode)
 }
