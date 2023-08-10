@@ -1,6 +1,7 @@
 package root
 
 import (
+	"github.com/konstellation-io/kli/authserver"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -84,7 +85,7 @@ func NewRootCmd(
 
 func authenticateServer(logger logging.Interface, cmd *cobra.Command) error {
 	configService := configuration.NewKaiConfigService(logger)
-	kaiAuth := auth.NewAuthentication(logger)
+	kaiAuth := auth.NewAuthentication(logger, authserver.NewDefaultAuthServer(logger))
 
 	conf, err := configService.GetConfiguration()
 	if err != nil {

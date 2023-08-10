@@ -11,8 +11,6 @@ import (
 	processregistry "github.com/konstellation-io/kli/internal/commands/process-registry"
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/konstellation-io/kli/internal/render"
-	"github.com/konstellation-io/kli/internal/services/auth"
-	"github.com/konstellation-io/kli/internal/services/configuration"
 )
 
 var (
@@ -20,6 +18,7 @@ var (
 )
 
 const (
+	_callbackPath   = "sso-callback"
 	_sourcesFlag    = "src"
 	_dockerfileFlag = "dockerfile"
 	_productIDFlag  = "product"
@@ -72,8 +71,6 @@ func NewRegisterCmd(logger logging.Interface) *cobra.Command {
 				logger,
 				r,
 				api.NewKaiClient().ProcessRegistry(),
-				auth.NewAuthentication(logger),
-				configuration.NewKaiConfigService(logger),
 			).
 				RegisterProcess(&processregistry.RegisterProcessOpts{
 					ServerName:  serverName,

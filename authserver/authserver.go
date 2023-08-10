@@ -15,26 +15,43 @@ import (
 	"github.com/phayes/freeport"
 )
 
+const (
+	_defaultRandomPort   = 0
+	_defaultCallbackPath = "sso-callback"
+)
+
 //go:embed static/success.html
 var successPage string
 
+//go:generate mockgen -source=${GOFILE} -destination=../mocks/auth_server.go -package=mocks AuthServer
+type AuthServerInterface interface {
+	StartServer(config KeycloakConfig) (*AuthResponse, error)
+}
+
 type AuthServer struct {
-	config   Config
+	config   EmbeddedServerConfig
 	closeApp sync.WaitGroup
 	logger   logging.Interface
 	response *AuthResponse
 }
 
-func NewAuthServer(logger logging.Interface, config Config) *AuthServer {
-	if config.EmbeddedServerConfig.Port <= 0 {
+func NewDefaultAuthServer(logger logging.Interface) *AuthServer {
+	return NewAuthServer(logger, EmbeddedServerConfig{
+		Port:         _defaultRandomPort,
+		CallbackPath: _defaultCallbackPath,
+	})
+}
+
+func NewAuthServer(logger logging.Interface, config EmbeddedServerConfig) *AuthServer {
+	if config.Port <= 0 {
 		port, err := freeport.GetFreePort()
 		if err != nil {
 			logger.Error(fmt.Sprintf("Error getting free port: %s", err))
 
-			config.EmbeddedServerConfig.Port = 3000
+			config.Port = 3000
 		}
 
-		config.EmbeddedServerConfig.Port = uint32(port)
+		config.Port = uint32(port)
 	}
 
 	return &AuthServer{
@@ -42,11 +59,6 @@ func NewAuthServer(logger logging.Interface, config Config) *AuthServer {
 		config:   config,
 		closeApp: sync.WaitGroup{},
 	}
-}
-
-type Config struct {
-	KeycloakConfig       KeycloakConfig
-	EmbeddedServerConfig EmbeddedServerConfig
 }
 
 type KeycloakConfig struct {
@@ -89,18 +101,18 @@ func (as *AuthServer) openBrowser(url string) error {
 
 func (as *AuthServer) getCallbackURL() string {
 	return fmt.Sprintf("http://localhost:%v/%v",
-		as.config.EmbeddedServerConfig.Port,
-		as.config.EmbeddedServerConfig.CallbackPath)
+		as.config.Port,
+		as.config.CallbackPath)
 }
 
-func (as *AuthServer) StartServer() (*AuthResponse, error) {
-	serverAddress := fmt.Sprintf("localhost:%v", as.config.EmbeddedServerConfig.Port)
+func (as *AuthServer) StartServer(config KeycloakConfig) (*AuthResponse, error) {
+	serverAddress := fmt.Sprintf("localhost:%v", as.config.Port)
 
 	as.logger.Info(fmt.Sprintf("Booting up the server at: %s", serverAddress))
 
 	as.closeApp.Add(1)
 
-	http.HandleFunc(fmt.Sprintf("/%s", as.config.EmbeddedServerConfig.CallbackPath),
+	http.HandleFunc(fmt.Sprintf("/%s", as.config.CallbackPath),
 		func(w http.ResponseWriter, r *http.Request) {
 			as.logger.Info(fmt.Sprintf("Callback received: %v", r.URL))
 
@@ -111,7 +123,7 @@ func (as *AuthServer) StartServer() (*AuthResponse, error) {
 				return
 			}
 
-			tokenResponse, err := as.tokenExchangeRequest(code)
+			tokenResponse, err := as.tokenExchangeRequest(code, config)
 			if err != nil {
 				as.logger.Error(fmt.Sprintf("Error exchanging token: %v", err))
 				as.closeApp.Done()
@@ -140,9 +152,9 @@ func (as *AuthServer) StartServer() (*AuthResponse, error) {
 		}
 	}()
 
-	err := as.openBrowser(as.buildAuthorizationRequest())
+	err := as.openBrowser(as.buildAuthorizationRequest(config))
 	if err != nil {
-		return nil, fmt.Errorf("could not open the browser for url %v", as.buildAuthorizationRequest())
+		return nil, fmt.Errorf("could not open the browser for url %v", as.buildAuthorizationRequest(config))
 	}
 
 	as.closeApp.Wait()
@@ -154,8 +166,8 @@ func (as *AuthServer) StartServer() (*AuthResponse, error) {
 	return nil, fmt.Errorf("unable to get access token")
 }
 
-func (as *AuthServer) tokenExchangeRequest(code string) (*AuthResponse, error) {
-	request, err := as.buildTokenExchangeRequest(code)
+func (as *AuthServer) tokenExchangeRequest(code string, config KeycloakConfig) (*AuthResponse, error) {
+	request, err := as.buildTokenExchangeRequest(code, config)
 	if err != nil {
 		return nil, fmt.Errorf("unable to exchange code for token: %v", err)
 	}

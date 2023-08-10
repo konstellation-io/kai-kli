@@ -13,7 +13,6 @@ import (
 
 	"github.com/konstellation-io/kli/cmd/config"
 	processregistry "github.com/konstellation-io/kli/internal/commands/process-registry"
-	"github.com/konstellation-io/kli/internal/services/auth"
 	"github.com/konstellation-io/kli/internal/services/configuration"
 	"github.com/konstellation-io/kli/mocks"
 )
@@ -57,8 +56,6 @@ func (s *RegisterProcessSuite) SetupSuite() {
 		s.logger,
 		renderer,
 		s.processRegistryAPI,
-		auth.NewAuthentication(s.logger),
-		configuration.NewKaiConfigService(s.logger),
 	)
 
 	tmpDir, err := os.MkdirTemp("", "TestAddServer_*")

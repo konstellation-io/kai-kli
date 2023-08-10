@@ -29,6 +29,7 @@ var (
 
 type AuthenticationService struct {
 	logger        logging.Interface
+	authServer    authserver.AuthServerInterface
 	configService *configuration.KaiConfigService
 }
 
@@ -40,9 +41,10 @@ type TokenResponse struct {
 	TokenType        string `json:"token_type"`
 }
 
-func NewAuthentication(logger logging.Interface) *AuthenticationService {
+func NewAuthentication(logger logging.Interface, authServer authserver.AuthServerInterface) *AuthenticationService {
 	return &AuthenticationService{
 		logger:        logger,
+		authServer:    authServer,
 		configService: configuration.NewKaiConfigService(logger),
 	}
 }
@@ -68,6 +70,10 @@ func (a *AuthenticationService) GetToken(serveName string) (*configuration.Token
 	}
 
 	// Login to the server
+	if server.Token == nil || server.Token.RefreshToken == "" {
+		return nil, ErrInvalidToken
+	}
+
 	token, err := a.refreshTokenRequest(server)
 	if err != nil {
 		return nil, err
@@ -77,14 +83,26 @@ func (a *AuthenticationService) GetToken(serveName string) (*configuration.Token
 		return nil, ErrInvalidToken
 	}
 
-	return &configuration.Token{
+	server.Token = &configuration.Token{
 		Date:             time.Now().UTC(),
 		AccessToken:      token.AccessToken,
 		ExpiresIn:        token.ExpiresIn,
 		RefreshExpiresIn: token.RefreshExpiresIn,
 		RefreshToken:     token.RefreshToken,
 		TokenType:        token.TokenType,
-	}, nil
+	}
+
+	err = kaiConfig.UpdateServer(server)
+	if err != nil {
+		return nil, err
+	}
+
+	err = a.configService.WriteConfiguration(kaiConfig)
+	if err != nil {
+		return nil, err
+	}
+
+	return server.Token, nil
 }
 
 func (a *AuthenticationService) Login(serverName, authURL, realm, clientID, username, password string) (*configuration.Token, error) {
@@ -172,22 +190,14 @@ func (a *AuthenticationService) Logout(serverName string) error {
 
 func (a *AuthenticationService) loginRequest(server *configuration.Server) (*TokenResponse, error) {
 	a.logger.Info("Logging in...")
-	authServer := authserver.NewAuthServer(
-		a.logger,
-		authserver.Config{
-			KeycloakConfig: authserver.KeycloakConfig{
-				KeycloakURL: server.AuthURL,
-				Realm:       server.Realm,
-				ClientID:    server.ClientID,
-			},
-			EmbeddedServerConfig: authserver.EmbeddedServerConfig{
-				CallbackPath: "sso-callback",
-				Port:         0,
-			},
+
+	authResponse, err := a.authServer.StartServer(
+		authserver.KeycloakConfig{
+			KeycloakURL: server.AuthURL,
+			Realm:       server.Realm,
+			ClientID:    server.ClientID,
 		},
 	)
-
-	authResponse, err := authServer.StartServer()
 	if err != nil {
 		return nil, err
 	}
