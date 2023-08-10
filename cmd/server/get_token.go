@@ -14,7 +14,7 @@ import (
 func NewGetTokenCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:    "get-token <server_name>",
-		Args:   cobra.ExactArgs(1), //nolint:gomnd
+		Args:   cobra.ExactArgs(1),
 		Short:  "Retrieve server session token.",
 		Hidden: true,
 		Example: `

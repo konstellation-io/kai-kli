@@ -5,11 +5,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/konstellation-io/kli/authserver"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/konstellation-io/kli/authserver"
 
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/konstellation-io/kli/internal/services/configuration"
@@ -17,7 +18,7 @@ import (
 
 const (
 	_grantTypeRefreshToken       = "refresh_token"
-	_refreshTokenRequestTemplate = "%s/realms/%s/protocol/openid-connect/token"
+	_refreshTokenRequestTemplate = "%s/realms/%s/protocol/openid-connect/token" //nolint:gosec // False positive
 	_logoutRequestTemplate       = "%s/realms/%s/protocol/openid-connect/logout"
 )
 
@@ -204,6 +205,7 @@ func (a *AuthenticationService) loginRequest(server *configuration.Server) (*Tok
 
 func (a *AuthenticationService) logoutRequest(server *configuration.Server) error {
 	a.logger.Info("Logging out...")
+
 	u, err := url.Parse(fmt.Sprintf(_logoutRequestTemplate, server.AuthURL, server.Realm))
 	if err != nil {
 		return err
@@ -241,6 +243,7 @@ func (a *AuthenticationService) logoutRequest(server *configuration.Server) erro
 
 func (a *AuthenticationService) refreshTokenRequest(server *configuration.Server) (*TokenResponse, error) {
 	a.logger.Info("Refreshing token...")
+
 	u, err := url.Parse(fmt.Sprintf(_refreshTokenRequestTemplate, server.AuthURL, server.Realm))
 	if err != nil {
 		return nil, err
