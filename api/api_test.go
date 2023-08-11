@@ -2,14 +2,13 @@ package api_test
 
 import (
 	"testing"
+	"time"
 
 	"github.com/spf13/viper"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"github.com/konstellation-io/kli/api"
-	"github.com/konstellation-io/kli/api/graphql"
-	"github.com/konstellation-io/kli/api/kai/config"
+	"github.com/konstellation-io/kli/cmd/config"
 	"github.com/konstellation-io/kli/internal/testhelpers"
 )
 
@@ -17,23 +16,10 @@ func TestNewKaiClient(t *testing.T) {
 	d := testhelpers.SetupConfigDir(t)
 	defer testhelpers.CleanConfigDir(t, d)
 
-	cfg, err := config.NewConfig("")
-	assert.NoError(t, err)
+	viper.Set(config.RequestTimeoutKey, 2*time.Minute)
+	viper.Set(config.DebugKey, true)
 
-	clientCfg := &graphql.ClientConfig{
-		DefaultRequestTimeout: viper.GetDuration("request_timeout"),
-		Debug:                 cfg.Debug,
-	}
+	k := api.NewKaiClient()
 
-	srv := config.ServerConfig{
-		Name:     "test",
-		URL:      "http://test",
-		APIToken: "12345",
-	}
-	err = cfg.AddServer(srv)
-	require.NoError(t, err)
-
-	k := api.NewKaiClient(clientCfg, &srv, "test-version")
-
-	require.NotEmpty(t, k.Version())
+	require.NotEmpty(t, k.ProcessRegistry())
 }

@@ -34,7 +34,7 @@ func NewAddCmd(logger logging.Interface) *cobra.Command {
 			}
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
-			err = server.NewServerHandler(logger, r).AddNewServer(newServer, setDefault)
+			err = server.NewHandler(logger, r).AddNewServer(newServer, setDefault)
 			if err != nil {
 				return err
 			}

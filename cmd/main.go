@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/konstellation-io/kli/api/kai/config"
 	config2 "github.com/konstellation-io/kli/cmd/config"
 	"github.com/konstellation-io/kli/cmd/root"
 	"github.com/konstellation-io/kli/internal/logging"
@@ -21,18 +20,12 @@ func main() {
 	logger := logging.NewDefaultLogger()
 	io := iostreams.System()
 
-	cfg, err := config.NewConfig(version)
-	if err != nil {
-		logger.Error(err.Error())
-		return
-	}
-
-	err = config2.InitConfigWithBuildVersion(version)
+	err := config2.InitConfigWithBuildVersion(version)
 	if err != nil {
 		log.Fatalf("initialize configuration: %s", err)
 	}
 
-	rootCmd := root.NewRootCmd(cfg, logger, io, version, date)
+	rootCmd := root.NewRootCmd(logger, io, version, date)
 
 	if err := rootCmd.Execute(); err != nil {
 		logger.Error(fmt.Sprintf("execution error: %s\n", err))

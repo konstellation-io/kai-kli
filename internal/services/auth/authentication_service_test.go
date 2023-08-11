@@ -9,6 +9,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/konstellation-io/kli/authserver"
+
 	"github.com/golang/mock/gomock"
 	"github.com/jarcoal/httpmock"
 	"github.com/spf13/viper"
@@ -26,6 +28,7 @@ type AuthenticationSuite struct {
 
 	authentication *auth.AuthenticationService
 	logger         logging.Interface
+	authServer     *mocks.MockAuthServerInterface
 	tmpDir         string
 }
 
@@ -37,9 +40,10 @@ func (s *AuthenticationSuite) SetupSuite() {
 	ctrl := gomock.NewController(s.T())
 	logger := mocks.NewMockLogger(ctrl)
 	mocks.AddLoggerExpects(logger)
+	s.authServer = mocks.NewMockAuthServerInterface(ctrl)
 
 	s.logger = logger
-	s.authentication = auth.NewAuthentication(logger)
+	s.authentication = auth.NewAuthentication(logger, s.authServer)
 
 	tmpDir, err := os.MkdirTemp("", "TestAuthentication_*")
 	s.Require().NoError(err)
@@ -79,7 +83,7 @@ func (s *AuthenticationSuite) TestLogin_ExpectToken() {
 	srv := &configuration.Server{
 		Name:      "my-server",
 		URL:       "kai-dev.konstellation.io",
-		AuthURL:   "auth.kai-dev.konstellation.io",
+		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
 		Username:  "david",
@@ -94,20 +98,13 @@ func (s *AuthenticationSuite) TestLogin_ExpectToken() {
 	err = kaiConfService.WriteConfiguration(kaiConf)
 	s.Require().NoError(err)
 
-	httpmock.Activate()
-	defer httpmock.DeactivateAndReset()
-
-	// Exact URL match
-	httpmock.RegisterMatcherResponder("POST", fmt.Sprintf("https://%s/realms/%s/protocol/openid-connect/token",
-		srv.AuthURL, srv.Realm),
-		httpmock.HeaderExists("Content-Type").
-			And(httpmock.HeaderContains("Content-Type", "application/x-www-form-urlencoded")),
-		httpmock.NewStringResponder(http.StatusOK, `{
-					"access_token": "access token",
-					"expires_in": 300,
-					"refresh_expires_in": 5000,
-					"refresh_token": "refresh token",
-					"token_type": "Bearer"}`))
+	s.authServer.EXPECT().StartServer(gomock.Any()).Return(&authserver.AuthResponse{
+		AccessToken:      "access token",
+		ExpiresIn:        300,
+		RefreshExpiresIn: 5000,
+		RefreshToken:     "refresh token",
+		TokenType:        "Bearer",
+	}, nil)
 
 	// WHEN
 	token, err := s.authentication.Login(srv.Name, srv.AuthURL, srv.Realm, srv.ClientID, srv.Username, srv.Password)
@@ -139,7 +136,7 @@ func (s *AuthenticationSuite) TestLogin_ExpectError() {
 	srv := &configuration.Server{
 		Name:      "my-server",
 		URL:       "kai-dev.konstellation.io",
-		AuthURL:   "auth.kai-dev.konstellation.io",
+		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
 		Username:  "david",
@@ -153,13 +150,7 @@ func (s *AuthenticationSuite) TestLogin_ExpectError() {
 	err = kaiConfService.WriteConfiguration(kaiConf)
 	s.Require().NoError(err)
 
-	httpmock.Activate()
-	defer httpmock.DeactivateAndReset()
-
-	// Exact URL match
-	httpmock.RegisterResponder("POST", fmt.Sprintf("https://%s/realms/%s/protocol/openid-connect/token",
-		srv.AuthURL, srv.Realm),
-		httpmock.NewErrorResponder(errors.New("error getting token")))
+	s.authServer.EXPECT().StartServer(gomock.Any()).Return(nil, errors.New("error getting token"))
 
 	// WHEN
 	token, err := s.authentication.Login(srv.Name, srv.AuthURL, srv.Realm, srv.ClientID, srv.Username, srv.Password)
@@ -169,7 +160,7 @@ func (s *AuthenticationSuite) TestLogin_ExpectError() {
 	s.Require().Nil(token)
 }
 
-func (s *AuthenticationSuite) TestLogout_ExpectToken() {
+func (s *AuthenticationSuite) TestLogout_ExpectOk() {
 	// Given
 	err := os.MkdirAll(path.Dir(viper.GetString(config.KaiConfigPath)), 0750)
 	s.Require().NoError(err)
@@ -185,7 +176,7 @@ func (s *AuthenticationSuite) TestLogout_ExpectToken() {
 	srv := &configuration.Server{
 		Name:      "my-server",
 		URL:       "kai-dev.konstellation.io",
-		AuthURL:   "auth.kai-dev.konstellation.io",
+		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
 		Username:  "david",
@@ -212,7 +203,7 @@ func (s *AuthenticationSuite) TestLogout_ExpectToken() {
 
 	// Exact URL match
 	httpmock.RegisterMatcherResponder("POST",
-		fmt.Sprintf("https://%s/realms/%s/protocol/openid-connect/logout",
+		fmt.Sprintf("%s/realms/%s/protocol/openid-connect/logout",
 			srv.AuthURL, srv.Realm),
 		httpmock.HeaderExists("Content-Type").
 			And(httpmock.HeaderContains("Content-Type", "application/x-www-form-urlencoded")),
@@ -278,7 +269,7 @@ func (s *AuthenticationSuite) TestLogout_ExpectError() {
 	defer httpmock.DeactivateAndReset()
 
 	// Exact URL match
-	httpmock.RegisterResponder("POST", fmt.Sprintf("https://%s/realms/%s/protocol/openid-connect/logout",
+	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/realms/%s/protocol/openid-connect/logout",
 		srv.AuthURL, srv.Realm),
 		httpmock.NewErrorResponder(errors.New("error getting token")))
 
@@ -289,7 +280,7 @@ func (s *AuthenticationSuite) TestLogout_ExpectError() {
 	s.Require().Error(err)
 }
 
-func (s *AuthenticationSuite) TestGetToken_GetNewToken_ExpectToken() {
+func (s *AuthenticationSuite) TestGetToken_NoRefreshToken_ExpectError() {
 	// Given
 	err := os.MkdirAll(path.Dir(viper.GetString(config.KaiConfigPath)), 0750)
 	s.Require().NoError(err)
@@ -305,7 +296,7 @@ func (s *AuthenticationSuite) TestGetToken_GetNewToken_ExpectToken() {
 	srv := &configuration.Server{
 		Name:      "my-server",
 		URL:       "kai-dev.konstellation.io",
-		AuthURL:   "auth.kai-dev.konstellation.io",
+		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
 		Username:  "david",
@@ -324,29 +315,20 @@ func (s *AuthenticationSuite) TestGetToken_GetNewToken_ExpectToken() {
 	defer httpmock.DeactivateAndReset()
 
 	// Exact URL match
-	httpmock.RegisterMatcherResponder("POST", fmt.Sprintf("https://%s/realms/%s/protocol/openid-connect/token",
-		srv.AuthURL, srv.Realm),
+	// Exact URL match
+	httpmock.RegisterMatcherResponder("POST",
+		fmt.Sprintf("%s/realms/%s/protocol/openid-connect/token",
+			srv.AuthURL, srv.Realm),
 		httpmock.HeaderExists("Content-Type").
 			And(httpmock.HeaderContains("Content-Type", "application/x-www-form-urlencoded")),
-		httpmock.NewStringResponder(http.StatusOK, `{
-					"access_token": "new access token",
-					"expires_in": 300,
-					"refresh_expires_in": 5000,
-					"refresh_token": "refresh token",
-					"token_type": "Bearer"}`))
+		httpmock.NewStringResponder(http.StatusNoContent, `{}`))
 
 	// WHEN
 	token, err := s.authentication.GetToken(srv.Name)
 
 	// THEN
-	s.Require().NoError(err)
-	s.Require().NotNil(token)
-
-	kaiConf, err = kaiConfService.GetConfiguration()
-	s.Require().NoError(err)
-	updatedSrv, err := kaiConf.GetServer(srv.Name)
-	s.Require().NoError(err)
-	s.Require().Equal("new access token", updatedSrv.Token.AccessToken)
+	s.Require().Error(err)
+	s.Require().Nil(token)
 }
 
 func (s *AuthenticationSuite) TestGetToken_GetStoredToken_ExpectToken() {
@@ -365,7 +347,7 @@ func (s *AuthenticationSuite) TestGetToken_GetStoredToken_ExpectToken() {
 	srv := &configuration.Server{
 		Name:      "my-server",
 		URL:       "kai-dev.konstellation.io",
-		AuthURL:   "auth.kai-dev.konstellation.io",
+		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
 		Username:  "david",
@@ -417,7 +399,7 @@ func (s *AuthenticationSuite) TestGetToken_GetRenewedToken_ExpectToken() {
 	srv := &configuration.Server{
 		Name:      "my-server",
 		URL:       "kai-dev.konstellation.io",
-		AuthURL:   "auth.kai-dev.konstellation.io",
+		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
 		Username:  "david",
@@ -443,7 +425,7 @@ func (s *AuthenticationSuite) TestGetToken_GetRenewedToken_ExpectToken() {
 	defer httpmock.DeactivateAndReset()
 
 	// Exact URL match
-	httpmock.RegisterMatcherResponder("POST", fmt.Sprintf("https://%s/realms/%s/protocol/openid-connect/token",
+	httpmock.RegisterMatcherResponder("POST", fmt.Sprintf("%s/realms/%s/protocol/openid-connect/token",
 		srv.AuthURL, srv.Realm),
 		httpmock.HeaderExists("Content-Type").
 			And(httpmock.HeaderContains("Content-Type", "application/x-www-form-urlencoded")),
@@ -484,7 +466,7 @@ func (s *AuthenticationSuite) TestGetToken_ExpectError() {
 	srv := &configuration.Server{
 		Name:      "my-server",
 		URL:       "kai-dev.konstellation.io",
-		AuthURL:   "auth.kai-dev.konstellation.io",
+		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
 		Username:  "david",
@@ -502,7 +484,7 @@ func (s *AuthenticationSuite) TestGetToken_ExpectError() {
 	defer httpmock.DeactivateAndReset()
 
 	// Exact URL match
-	httpmock.RegisterResponder("POST", fmt.Sprintf("https://%s/realms/%s/protocol/openid-connect/token",
+	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/realms/%s/protocol/openid-connect/token",
 		srv.AuthURL, srv.Realm),
 		httpmock.NewErrorResponder(errors.New("error getting token")))
 

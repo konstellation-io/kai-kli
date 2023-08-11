@@ -6,53 +6,34 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/konstellation-io/kli/api/kai/config"
+	"github.com/spf13/viper"
 
 	"github.com/konstellation-io/graphql"
+
+	"github.com/konstellation-io/kli/cmd/config"
+	"github.com/konstellation-io/kli/internal/services/configuration"
 )
 
 // GqlManager struct to implement access to GraphQL endpoints with gql client.
 type GqlManager struct {
 	appVersion string
-	cfg        *ClientConfig
-	server     *config.ServerConfig
 	client     *graphql.Client
 	httpClient *http.Client
 }
 
-func (g *GqlManager) setupClient(args ...graphql.ClientOption) error {
-	if g.client != nil {
-		return nil
+// NewGqlManager creates an instance of GqlManager that takes cares of authentication.
+func NewGqlManager() *GqlManager {
+	return &GqlManager{
+		viper.GetString(config.BuildVersionKey),
+		nil,
+		nil,
 	}
-
-	accessToken, err := g.getAccessToken()
-	if err != nil {
-		return err
-	}
-
-	c := NewHTTPClient([]Option{
-		AddHeader("User-Agent", "Konstellation KLI"),
-		AddHeader("KLI-Version", g.appVersion),
-		AddHeader("Cache-Control", "no-cache"),
-		AddHeader("Authorization", fmt.Sprintf("Bearer %s", accessToken)),
-	}...)
-
-	opts := []graphql.ClientOption{graphql.WithHTTPClient(c)}
-	opts = append(opts, args...)
-
-	g.client = graphql.NewClient(fmt.Sprintf("%s/graphql", g.server.URL), opts...)
-	g.httpClient = c
-
-	if g.cfg.Debug {
-		g.client.Log = func(s string) { log.Println(s) }
-	}
-
-	return nil
 }
 
 // MakeRequest call to GraphQL endpoint.
-func (g *GqlManager) MakeRequest(query string, vars map[string]interface{}, respData interface{}) error {
-	err := g.setupClient()
+func (g *GqlManager) MakeRequest(server *configuration.Server, query string, vars map[string]interface{},
+	respData interface{}) error {
+	err := g.setupClient(server.URL)
 	if err != nil {
 		return err
 	}
@@ -63,7 +44,7 @@ func (g *GqlManager) MakeRequest(query string, vars map[string]interface{}, resp
 		req.Var(k, v)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), g.cfg.DefaultRequestTimeout)
+	ctx, cancel := context.WithTimeout(context.Background(), viper.GetDuration(config.RequestTimeoutKey))
 	defer cancel()
 
 	err = g.client.Run(ctx, req, respData)
@@ -75,15 +56,16 @@ func (g *GqlManager) MakeRequest(query string, vars map[string]interface{}, resp
 }
 
 // UploadFile uploads a file to KAI server.
-func (g *GqlManager) UploadFile(file graphql.File, query string, vars map[string]interface{}, respData interface{}) error {
-	err := g.setupClient(graphql.UseMultipartForm())
+func (g *GqlManager) UploadFile(server *configuration.Server, file graphql.File, query string,
+	vars map[string]interface{}, respData interface{}) error {
+	err := g.setupClient(server.URL, graphql.UseMultipartForm())
 	if err != nil {
 		return err
 	}
 
 	req := graphql.NewRequest(query)
 
-	ctx, cancel := context.WithTimeout(context.Background(), g.cfg.DefaultRequestTimeout)
+	ctx, cancel := context.WithTimeout(context.Background(), viper.GetDuration(config.RequestTimeoutKey))
 	defer cancel()
 
 	req.File(file.Field, file.Name, file.R)
@@ -100,13 +82,26 @@ func (g *GqlManager) UploadFile(file graphql.File, query string, vars map[string
 	return nil
 }
 
-// NewGqlManager creates an instance of GqlManager that takes cares of authentication.
-func NewGqlManager(cfg *ClientConfig, server *config.ServerConfig, appVersion string) *GqlManager {
-	return &GqlManager{
-		appVersion,
-		cfg,
-		server,
-		nil,
-		nil,
+func (g *GqlManager) setupClient(serverURL string, args ...graphql.ClientOption) error {
+	if g.client != nil {
+		return nil
 	}
+
+	c := NewHTTPClient([]Option{
+		AddHeader("User-Agent", "Konstellation KLI"),
+		AddHeader("KLI-Version", g.appVersion),
+		AddHeader("Cache-Control", "no-cache"),
+	}...)
+
+	opts := []graphql.ClientOption{graphql.WithHTTPClient(c)}
+	opts = append(opts, args...)
+
+	g.client = graphql.NewClient(fmt.Sprintf("%s/graphql", serverURL), opts...)
+	g.httpClient = c
+
+	if viper.GetBool(config.DebugKey) {
+		g.client.Log = func(s string) { log.Println(s) }
+	}
+
+	return nil
 }

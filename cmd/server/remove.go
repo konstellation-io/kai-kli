@@ -25,7 +25,7 @@ func NewRemoveCmd(logger logging.Interface) *cobra.Command {
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
 
-			err := server.NewServerHandler(logger, r).RemoveServer(serverName)
+			err := server.NewHandler(logger, r).RemoveServer(serverName)
 			if err != nil {
 				return err
 			}
