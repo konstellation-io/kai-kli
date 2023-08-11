@@ -134,6 +134,15 @@ func getAddProcessOpts(processID, processType, image string, cmd *cobra.Command)
 		MemoryLimit:      memLimit,
 	}
 
+	prc, err = getNetworkingConfig(cmd, prc)
+	if err != nil {
+		return nil, err
+	}
+
+	return prc, nil
+}
+
+func getNetworkingConfig(cmd *cobra.Command, prc *process.ProcessOpts) (*process.ProcessOpts, error) {
 	if cmd.Flag(_networkSourcePort).Changed {
 		sourcePort, err := cmd.Flags().GetInt(_networkSourcePort)
 		if err != nil {
