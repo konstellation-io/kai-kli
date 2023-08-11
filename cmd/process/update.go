@@ -77,7 +77,7 @@ func getUpdateProcessOpts(processID string, cmd *cobra.Command) (*process.Proces
 		return nil, err
 	}
 
-	err = getUpdateOptsResourceLimts(cmd, opts)
+	err = getUpdateOptsResourceLimits(cmd, opts)
 	if err != nil {
 		return nil, err
 	}
@@ -149,7 +149,7 @@ func getUpdateOptsProcessMetadata(cmd *cobra.Command, opts *process.ProcessOpts)
 	return nil
 }
 
-func getUpdateOptsResourceLimts(cmd *cobra.Command, opts *process.ProcessOpts) error {
+func getUpdateOptsResourceLimits(cmd *cobra.Command, opts *process.ProcessOpts) error {
 	if cmd.Flag(_cpuRequestFlag).Changed {
 		cpuRequest, err := cmd.Flags().GetString(_cpuRequestFlag)
 		if err != nil {

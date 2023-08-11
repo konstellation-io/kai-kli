@@ -117,38 +117,49 @@ func getAddProcessOpts(processID, processType, image string, cmd *cobra.Command)
 		return nil, err
 	}
 
-	sourcePort, err := cmd.Flags().GetInt(_networkSourcePort)
-	if err != nil {
-		return nil, err
+	prc := &process.ProcessOpts{
+		ServerName:       serverName,
+		ProductID:        productID,
+		WorkflowID:       workflowID,
+		ProcessID:        processID,
+		ProcessType:      krt.ProcessType(processType),
+		Image:            image,
+		Replicas:         &replicas,
+		Subscriptions:    subscriptions,
+		ObjectStoreName:  objectStoreName,
+		ObjectStoreScope: krt.ObjectStoreScope(objectStoreScope),
+		CPURequest:       cpuRequest,
+		CPULimit:         cpuLimit,
+		MemoryRequest:    memRequest,
+		MemoryLimit:      memLimit,
 	}
 
-	targetPort, err := cmd.Flags().GetInt(_networkTargetPort)
-	if err != nil {
-		return nil, err
+	if cmd.Flag(_networkSourcePort).Changed {
+		sourcePort, err := cmd.Flags().GetInt(_networkSourcePort)
+		if err != nil {
+			return nil, err
+		}
+
+		prc.NetworkSourcePort = &sourcePort
 	}
 
-	protocol, err := cmd.Flags().GetString(_networkProtocol)
-	if err != nil {
-		return nil, err
+	if cmd.Flag(_networkTargetPort).Changed {
+		targetPort, err := cmd.Flags().GetInt(_networkTargetPort)
+		if err != nil {
+			return nil, err
+		}
+
+		prc.NetworkTargetPort = &targetPort
 	}
 
-	return &process.ProcessOpts{
-		ServerName:        serverName,
-		ProductID:         productID,
-		WorkflowID:        workflowID,
-		ProcessID:         processID,
-		ProcessType:       krt.ProcessType(processType),
-		Image:             image,
-		Replicas:          &replicas,
-		Subscriptions:     subscriptions,
-		ObjectStoreName:   objectStoreName,
-		ObjectStoreScope:  krt.ObjectStoreScope(objectStoreScope),
-		CPURequest:        cpuRequest,
-		CPULimit:          cpuLimit,
-		MemoryRequest:     memRequest,
-		MemoryLimit:       memLimit,
-		NetworkSourcePort: &sourcePort,
-		NetworkTargetPort: &targetPort,
-		NetworkProtocol:   krt.NetworkingProtocol(protocol),
-	}, nil
+	if cmd.Flag(_networkProtocol).Changed {
+		protocol, err := cmd.Flags().GetString(_networkProtocol)
+		if err != nil {
+			return nil, err
+		}
+
+		prc.NetworkProtocol = krt.NetworkingProtocol(protocol)
+	}
+
+	return prc, nil
 }
