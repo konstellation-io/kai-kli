@@ -5,10 +5,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/konstellation-io/kli/internal/render"
-	"github.com/konstellation-io/kli/internal/server"
-
+	"github.com/konstellation-io/kli/internal/commands/server"
 	"github.com/konstellation-io/kli/internal/logging"
+	"github.com/konstellation-io/kli/internal/render"
 )
 
 const _defaultFlag = "default"
@@ -16,7 +15,7 @@ const _defaultFlag = "default"
 // NewAddCmd creates a new command to add a new server to config file.
 func NewAddCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "add <remote_name> <server_url> [--default]",
+		Use:     "add <server_name> <server_url> [--default]",
 		Aliases: []string{"set"},
 		Args:    cobra.ExactArgs(2), //nolint:gomnd
 		Short:   "Add a new server in config file",
@@ -35,8 +34,7 @@ func NewAddCmd(logger logging.Interface) *cobra.Command {
 			}
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
-
-			err = server.NewServerHandler(logger, r).AddNewServer(newServer, setDefault)
+			err = server.NewHandler(logger, r).AddNewServer(newServer, setDefault)
 			if err != nil {
 				return err
 			}

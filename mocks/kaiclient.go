@@ -8,57 +8,42 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	product "github.com/konstellation-io/kli/api/kai/product"
-	version "github.com/konstellation-io/kli/api/kai/version"
+	registry "github.com/konstellation-io/kli/api/process-registry"
 )
 
-// MockKaiInterface is a mock of KaiInterface interface.
-type MockKaiInterface struct {
+// MockInterface is a mock of Interface interface.
+type MockInterface struct {
 	ctrl     *gomock.Controller
-	recorder *MockKaiInterfaceMockRecorder
+	recorder *MockInterfaceMockRecorder
 }
 
-// MockKaiInterfaceMockRecorder is the mock recorder for MockKaiInterface.
-type MockKaiInterfaceMockRecorder struct {
-	mock *MockKaiInterface
+// MockInterfaceMockRecorder is the mock recorder for MockInterface.
+type MockInterfaceMockRecorder struct {
+	mock *MockInterface
 }
 
-// NewMockKaiInterface creates a new mock instance.
-func NewMockKaiInterface(ctrl *gomock.Controller) *MockKaiInterface {
-	mock := &MockKaiInterface{ctrl: ctrl}
-	mock.recorder = &MockKaiInterfaceMockRecorder{mock}
+// NewMockInterface creates a new mock instance.
+func NewMockInterface(ctrl *gomock.Controller) *MockInterface {
+	mock := &MockInterface{ctrl: ctrl}
+	mock.recorder = &MockInterfaceMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockKaiInterface) EXPECT() *MockKaiInterfaceMockRecorder {
+func (m *MockInterface) EXPECT() *MockInterfaceMockRecorder {
 	return m.recorder
 }
 
-// Product mocks base method.
-func (m *MockKaiInterface) Product() product.ProductInterface {
+// ProcessRegistry mocks base method.
+func (m *MockInterface) ProcessRegistry() registry.ProcessRegistryInterface {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Product")
-	ret0, _ := ret[0].(product.ProductInterface)
+	ret := m.ctrl.Call(m, "ProcessRegistry")
+	ret0, _ := ret[0].(registry.ProcessRegistryInterface)
 	return ret0
 }
 
-// Product indicates an expected call of Product.
-func (mr *MockKaiInterfaceMockRecorder) Product() *gomock.Call {
+// ProcessRegistry indicates an expected call of ProcessRegistry.
+func (mr *MockInterfaceMockRecorder) ProcessRegistry() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Product", reflect.TypeOf((*MockKaiInterface)(nil).Product))
-}
-
-// Version mocks base method.
-func (m *MockKaiInterface) Version() version.VersionInterface {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Version")
-	ret0, _ := ret[0].(version.VersionInterface)
-	return ret0
-}
-
-// Version indicates an expected call of Version.
-func (mr *MockKaiInterfaceMockRecorder) Version() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Version", reflect.TypeOf((*MockKaiInterface)(nil).Version))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ProcessRegistry", reflect.TypeOf((*MockInterface)(nil).ProcessRegistry))
 }

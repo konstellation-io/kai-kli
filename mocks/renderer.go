@@ -8,10 +8,8 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	product "github.com/konstellation-io/kli/api/kai/product"
-	version "github.com/konstellation-io/kli/api/kai/version"
-	configuration "github.com/konstellation-io/kli/internal/configuration"
-	errors "github.com/konstellation-io/kli/internal/krt/errors"
+	configuration "github.com/konstellation-io/kli/internal/services/configuration"
+	krt "github.com/konstellation-io/krt/pkg/krt"
 )
 
 // MockRenderer is a mock of Renderer interface.
@@ -37,16 +35,28 @@ func (m *MockRenderer) EXPECT() *MockRendererMockRecorder {
 	return m.recorder
 }
 
-// RenderProducts mocks base method.
-func (m *MockRenderer) RenderProducts(products []product.Product) {
+// RenderConfiguration mocks base method.
+func (m *MockRenderer) RenderConfiguration(scope string, config map[string]string) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "RenderProducts", products)
+	m.ctrl.Call(m, "RenderConfiguration", scope, config)
 }
 
-// RenderProducts indicates an expected call of RenderProducts.
-func (mr *MockRendererMockRecorder) RenderProducts(products interface{}) *gomock.Call {
+// RenderConfiguration indicates an expected call of RenderConfiguration.
+func (mr *MockRendererMockRecorder) RenderConfiguration(scope, config interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderProducts", reflect.TypeOf((*MockRenderer)(nil).RenderProducts), products)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderConfiguration", reflect.TypeOf((*MockRenderer)(nil).RenderConfiguration), scope, config)
+}
+
+// RenderProcesses mocks base method.
+func (m *MockRenderer) RenderProcesses(processes []krt.Process) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderProcesses", processes)
+}
+
+// RenderProcesses indicates an expected call of RenderProcesses.
+func (mr *MockRendererMockRecorder) RenderProcesses(processes interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderProcesses", reflect.TypeOf((*MockRenderer)(nil).RenderProcesses), processes)
 }
 
 // RenderServers mocks base method.
@@ -61,38 +71,14 @@ func (mr *MockRendererMockRecorder) RenderServers(servers interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderServers", reflect.TypeOf((*MockRenderer)(nil).RenderServers), servers)
 }
 
-// RenderValidationErrors mocks base method.
-func (m *MockRenderer) RenderValidationErrors(validationErrors []*errors.ValidationError) {
+// RenderWorkflows mocks base method.
+func (m *MockRenderer) RenderWorkflows(workflows []krt.Workflow) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "RenderValidationErrors", validationErrors)
+	m.ctrl.Call(m, "RenderWorkflows", workflows)
 }
 
-// RenderValidationErrors indicates an expected call of RenderValidationErrors.
-func (mr *MockRendererMockRecorder) RenderValidationErrors(validationErrors interface{}) *gomock.Call {
+// RenderWorkflows indicates an expected call of RenderWorkflows.
+func (mr *MockRendererMockRecorder) RenderWorkflows(workflows interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderValidationErrors", reflect.TypeOf((*MockRenderer)(nil).RenderValidationErrors), validationErrors)
-}
-
-// RenderVars mocks base method.
-func (m *MockRenderer) RenderVars(cfg *version.Config, showValues bool) {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "RenderVars", cfg, showValues)
-}
-
-// RenderVars indicates an expected call of RenderVars.
-func (mr *MockRendererMockRecorder) RenderVars(cfg, showValues interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderVars", reflect.TypeOf((*MockRenderer)(nil).RenderVars), cfg, showValues)
-}
-
-// RenderVersions mocks base method.
-func (m *MockRenderer) RenderVersions(versions version.List) {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "RenderVersions", versions)
-}
-
-// RenderVersions indicates an expected call of RenderVersions.
-func (mr *MockRendererMockRecorder) RenderVersions(versions interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderVersions", reflect.TypeOf((*MockRenderer)(nil).RenderVersions), versions)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderWorkflows", reflect.TypeOf((*MockRenderer)(nil).RenderWorkflows), workflows)
 }

@@ -2,34 +2,26 @@ package api
 
 import (
 	"github.com/konstellation-io/kli/api/graphql"
-	"github.com/konstellation-io/kli/api/kai/config"
-	"github.com/konstellation-io/kli/api/kai/product"
-	"github.com/konstellation-io/kli/api/kai/version"
+	registry "github.com/konstellation-io/kli/api/process-registry"
 )
 
 // KAI object to implement access to KAI API.
 type KAI struct {
-	gqlManager *graphql.GqlManager
-	version    version.VersionInterface
-	product    product.ProductInterface
+	gqlManager      *graphql.GqlManager
+	processRegistry registry.ProcessRegistryInterface
 }
 
-// Version access to methods to interact with Versions.
-func (a *KAI) Version() version.VersionInterface {
-	return a.version
-}
-
-func (a *KAI) Product() product.ProductInterface {
-	return a.product
+// ProcessRegistry access to methods to interact with the Process Registry.
+func (a *KAI) ProcessRegistry() registry.ProcessRegistryInterface {
+	return a.processRegistry
 }
 
 // NewKaiClient creates an API client instance.
-func NewKaiClient(cfg *graphql.ClientConfig, server *config.ServerConfig, appVersion string) *KAI {
-	g := graphql.NewGqlManager(cfg, server, appVersion)
+func NewKaiClient() *KAI {
+	g := graphql.NewGqlManager()
 
 	return &KAI{
 		g,
-		version.New(g),
-		product.New(g),
+		registry.New(g),
 	}
 }
