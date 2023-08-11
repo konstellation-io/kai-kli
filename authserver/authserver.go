@@ -114,7 +114,7 @@ func (as *AuthServer) StartServer(config KeycloakConfig) (*AuthResponse, error) 
 
 	http.HandleFunc(fmt.Sprintf("/%s", as.config.CallbackPath),
 		func(w http.ResponseWriter, r *http.Request) {
-			as.logger.Info(fmt.Sprintf("Callback received: %v", r.URL))
+			as.logger.Debug(fmt.Sprintf("Callback received: %v", r.URL))
 
 			code := r.URL.Query().Get("code")
 			if code == "" {
