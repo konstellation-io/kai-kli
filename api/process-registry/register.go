@@ -1,6 +1,7 @@
 package registry
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/konstellation-io/graphql"
@@ -33,13 +34,20 @@ func (c *processRegistryClient) Register(server *configuration.Server, processFi
 		} `json:"createdProcessImage"`
 	}
 
-	file := graphql.File{
-		Field: "variables.input.file",
-		Name:  processFile.Name(),
-		R:     processFile,
+	processFileOpen, err := os.Open(processFile.Name())
+	if err != nil {
+		return "", fmt.Errorf("reading file content: %w", err)
 	}
 
-	err := c.client.UploadFile(server, file, query, vars, &respData)
+	defer processFileOpen.Close()
+
+	file := graphql.File{
+		Field: "variables.input.file",
+		Name:  processFileOpen.Name(),
+		R:     processFileOpen,
+	}
+
+	err = c.client.UploadFile(server, file, query, vars, &respData)
 	registeredProcessID := respData.RegisteredProcess.ProcessedImageID
 
 	return registeredProcessID, err

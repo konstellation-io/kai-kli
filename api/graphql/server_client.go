@@ -58,7 +58,7 @@ func (g *GqlManager) MakeRequest(server *configuration.Server, query string, var
 // UploadFile uploads a file to KAI server.
 func (g *GqlManager) UploadFile(server *configuration.Server, file graphql.File, query string,
 	vars map[string]interface{}, respData interface{}) error {
-	err := g.setupClient(server.URL, graphql.UseMultipartForm())
+	err := g.setupClientWithAccessTokenToken(server.URL, server.Token.AccessToken, graphql.UseMultipartForm())
 	if err != nil {
 		return err
 	}
@@ -91,6 +91,31 @@ func (g *GqlManager) setupClient(serverURL string, args ...graphql.ClientOption)
 		AddHeader("User-Agent", "Konstellation KLI"),
 		AddHeader("KLI-Version", g.appVersion),
 		AddHeader("Cache-Control", "no-cache"),
+	}...)
+
+	opts := []graphql.ClientOption{graphql.WithHTTPClient(c)}
+	opts = append(opts, args...)
+
+	g.client = graphql.NewClient(fmt.Sprintf("%s/graphql", serverURL), opts...)
+	g.httpClient = c
+
+	if viper.GetBool(config.DebugKey) {
+		g.client.Log = func(s string) { log.Println(s) }
+	}
+
+	return nil
+}
+
+func (g *GqlManager) setupClientWithAccessTokenToken(serverURL, accessToken string, args ...graphql.ClientOption) error {
+	if g.client != nil {
+		return nil
+	}
+
+	c := NewHTTPClient([]Option{
+		AddHeader("User-Agent", "Konstellation KLI"),
+		AddHeader("KLI-Version", g.appVersion),
+		AddHeader("Cache-Control", "no-cache"),
+		AddHeader("Authorization", fmt.Sprintf("Bearer %s", accessToken)),
 	}...)
 
 	opts := []graphql.ClientOption{graphql.WithHTTPClient(c)}

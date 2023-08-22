@@ -1,7 +1,8 @@
 package processregistry
 
 import (
-	"archive/zip"
+	"archive/tar"
+	"compress/gzip"
 	"errors"
 	"fmt"
 	"io"
@@ -56,12 +57,15 @@ func (c *Handler) creteTempZipFile(paths ...string) (*os.File, error) {
 
 	defer f.Close()
 
-	writer := zip.NewWriter(f)
+	writer := gzip.NewWriter(f)
 	defer writer.Close()
+
+	tarWriter := tar.NewWriter(writer)
+	defer tarWriter.Close()
 
 	// 2. Go through all the files of the source
 	for _, path := range paths {
-		if err := c.addToZipFile(writer, path); err != nil {
+		if err := c.addToZipFile(writer, tarWriter, path); err != nil {
 			return nil, err
 		}
 	}
@@ -69,49 +73,99 @@ func (c *Handler) creteTempZipFile(paths ...string) (*os.File, error) {
 	return f, nil
 }
 
-func (c *Handler) addToZipFile(writer *zip.Writer, sourcePath string) error {
-	return filepath.Walk(sourcePath, func(path string, info os.FileInfo, err error) error {
-		c.logger.Debug(fmt.Sprintf("Adding %s to zip file, error %s\n", path, err))
+func (c *Handler) addToZipFile(writer *gzip.Writer, tarWriter *tar.Writer, sourcePath string) error {
+	return filepath.WalkDir(sourcePath, func(filePath string, info os.DirEntry, err error) error {
+		c.logger.Debug(fmt.Sprintf("Adding %s to zip file, error %s\n", filePath, err))
 		if err != nil {
 			return err
 		}
-
-		// 3. Create a local file header
-		header, err := zip.FileInfoHeader(info)
-		if err != nil {
-			return err
-		}
-
-		// set compression
-		header.Method = zip.Deflate
-
-		// 4. Set relative path of a file as the header name
-		header.Name, err = filepath.Rel(filepath.Dir(sourcePath), path)
-		if err != nil {
-			return err
-		}
-		if info.IsDir() {
-			header.Name += "/"
-		}
-
-		// 5. Create writer for the file header and save content of the file
-		headerWriter, err := writer.CreateHeader(header)
-		if err != nil {
-			return err
-		}
-
-		if info.IsDir() {
+		if filePath == sourcePath {
 			return nil
 		}
 
-		f, err := os.Open(path)
+		fileInfo, err := info.Info()
 		if err != nil {
 			return err
 		}
-		defer f.Close()
 
-		_, err = io.Copy(headerWriter, f)
-		return err
+		relativePath, err := filepath.Rel(sourcePath, filePath)
+		if err != nil {
+			return err
+		}
+
+		// generate tar header
+		header, err := tar.FileInfoHeader(fileInfo, relativePath)
+		if err != nil {
+			return err
+		}
+
+		header.Name = filepath.ToSlash(relativePath)
+
+		err = tarWriter.WriteHeader(header)
+		if err != nil {
+			return err
+		}
+
+		// if not a dir, write file content
+		if !fileInfo.IsDir() {
+			data, err := os.Open(filePath)
+			if err != nil {
+				return err
+			}
+
+			_, err = io.Copy(tarWriter, data)
+			if err != nil {
+				return err
+			}
+		}
+
+		return nil
+		//
+		//// 3. Create a local file header
+		//header, err := tar.FileInfoHeader(info, relativePath)
+		//if err != nil {
+		//	return err
+		//}
+		//
+		//// set compression
+		////header.Method = zip.Deflate
+		//
+		//// 4. Set relative filePath of a file as the header name
+		//header.Name, err = filepath.Rel(filepath.Dir(sourcePath), filePath)
+		//if err != nil {
+		//	return err
+		//}
+		//header.Name = filepath.ToSlash(relativePath)
+		//
+		//// 5. Create writer for the file header and save content of the file
+		//err = tarWriter.WriteHeader(header)
+		//if err != nil {
+		//	return err
+		//}
+		//
+		//if !file.IsDir() {
+		//	data, err := os.Open(filePath)
+		//	if err != nil {
+		//		return err
+		//	}
+		//
+		//	_, err = io.Copy(c.tarWriter, data)
+		//	if err != nil {
+		//		return err
+		//	}
+		//}
+
+		//	return nil
+		//}
+		//
+		//	f, err := os.Open(filePath)
+		//	if err != nil {
+		//		return err
+		//	}
+		//	defer f.Close()
+		//
+		//	_, err = io.Copy(headerWriter, f)
+		//	return err
 	})
 }
 
