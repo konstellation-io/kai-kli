@@ -28,18 +28,18 @@ func (c *processRegistryClient) Register(server *configuration.Server, processFi
 		},
 	}
 
+	var respData struct {
+		RegisteredProcess struct {
+			ProcessedImageID string `json:"processedImageID"`
+		} `json:"createdProcessImage"`
+	}
+
 	processFileOpen, err := os.Open(processFile.Name())
 	if err != nil {
 		return "", fmt.Errorf("reading file content: %w", err)
 	}
 
 	defer processFileOpen.Close()
-
-	var respData struct {
-		RegisteredProcess struct {
-			ProcessedImageID string `json:"processedImageID"`
-		} `json:"createdProcessImage"`
-	}
 
 	file := graphql.File{
 		Field: "variables.input.file",
