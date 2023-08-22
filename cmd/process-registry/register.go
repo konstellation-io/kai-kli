@@ -92,9 +92,12 @@ func NewRegisterCmd(logger logging.Interface) *cobra.Command {
 	cmd.Flags().String(_sourcesFlag, "", "Path to the source code of the process.")
 	cmd.Flags().String(_dockerfileFlag, "", "Path to the Dockerfile of the process.")
 	cmd.Flags().String(_productIDFlag, "", "The product ID to register the process.")
+	cmd.Flags().String(_versionFlag, "s", "The version with which register the process.")
+	cmd.Flags().String(_serverFlag, "v", "The server where the process will be registered.")
 
 	cmd.MarkFlagRequired(_sourcesFlag)    //nolint:errcheck
 	cmd.MarkFlagRequired(_dockerfileFlag) //nolint:errcheck
+	cmd.MarkFlagRequired(_versionFlag)    //nolint:errcheck
 	cmd.MarkFlagRequired(_productIDFlag)  //nolint:errcheck
 
 	return cmd
