@@ -39,7 +39,7 @@ func (s *RemoveServerSuite) SetupSuite() {
 
 	s.logger = logger
 	s.renderer = renderer
-	s.manager = server.NewServerHandler(logger, renderer)
+	s.manager = server.NewHandler(logger, renderer)
 
 	tmpDir, err := os.MkdirTemp("", "TestAddServer_*")
 	s.Require().NoError(err)
@@ -59,7 +59,7 @@ func (s *RemoveServerSuite) TearDownSuite(_, _ string) {
 }
 
 func (s *RemoveServerSuite) BeforeTest(_, _ string) {
-	err := setup.NewKaiSetup(s.logger).CreateConfiguration()
+	err := setup.NewHandler(s.logger).CreateConfiguration()
 	s.Require().NoError(err)
 }
 

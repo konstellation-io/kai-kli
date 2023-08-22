@@ -31,7 +31,7 @@ func (ks *KliSetupTest) SetupSuite() {
 	logger := mocks.NewMockLogger(ctrl)
 	mocks.AddLoggerExpects(logger)
 
-	ks.setup = *setup.NewKaiSetup(logger)
+	ks.setup = *setup.NewHandler(logger)
 
 	tmpDir, err := os.MkdirTemp("", "TestAddServer_*")
 	ks.Require().NoError(err)

@@ -2,6 +2,7 @@ package processregistry
 
 import (
 	registry "github.com/konstellation-io/kli/api/process-registry"
+	"github.com/konstellation-io/kli/authserver"
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/konstellation-io/kli/internal/render"
 	"github.com/konstellation-io/kli/internal/services/auth"
@@ -16,14 +17,13 @@ type Handler struct {
 	configService         *configuration.KaiConfigService
 }
 
-func NewProcessRegistryHandler(logger logging.Interface, renderer render.Renderer,
-	registryCli registry.ProcessRegistryInterface, authService *auth.AuthenticationService,
-	configService *configuration.KaiConfigService) *Handler {
+func NewHandler(logger logging.Interface, renderer render.Renderer,
+	registryCli registry.ProcessRegistryInterface) *Handler {
 	return &Handler{
 		logger:                logger,
 		renderer:              renderer,
 		processRegistryClient: registryCli,
-		authentication:        authService,
-		configService:         configService,
+		authentication:        auth.NewAuthentication(logger, authserver.NewDefaultAuthServer(logger)),
+		configService:         configuration.NewKaiConfigService(logger),
 	}
 }

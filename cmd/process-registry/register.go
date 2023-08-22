@@ -4,14 +4,13 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/konstellation-io/krt/pkg/krt"
 	"github.com/spf13/cobra"
 
 	"github.com/konstellation-io/kli/api"
 	processregistry "github.com/konstellation-io/kli/internal/commands/process-registry"
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/konstellation-io/kli/internal/render"
-	"github.com/konstellation-io/kli/internal/services/auth"
-	"github.com/konstellation-io/kli/internal/services/configuration"
 )
 
 var (
@@ -19,9 +18,10 @@ var (
 )
 
 const (
+	_callbackPath   = "sso-callback"
 	_sourcesFlag    = "src"
 	_dockerfileFlag = "dockerfile"
-	_productIDFlag  = "product-id"
+	_productIDFlag  = "product"
 	_serverFlag     = "server"
 	_versionFlag    = "version"
 )
@@ -29,15 +29,13 @@ const (
 // NewRegisterCmd creates a new command to register a new process in the given server.
 func NewRegisterCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "register <process_type> <process_id>" +
-			" --src <sources> --dockerfile <dockerfile> --product_id <product_id> [--server <server_name>]",
+		Use:  "register <process_type> <process_id> [opts...]",
 		Args: cobra.ExactArgs(2), //nolint:gomnd
 		Annotations: map[string]string{
 			"authenticated": "true",
 		},
-		Short: "Register a new process for the given product on the given server",
-		Example: "$ kli process-registry register <process_type> <process_id> --src <sources>" +
-			" --dockerfile <dockerfile> --product-id <product_id> [--server <server_name>]",
+		Short:   "Register a new process for the given product on the given server",
+		Example: "$ kli process-registry register <process_type> <process_id> [opts...]",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			processType := args[0]
 			processID := args[1]
@@ -69,15 +67,20 @@ func NewRegisterCmd(logger logging.Interface) *cobra.Command {
 			}
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
-			err = processregistry.NewProcessRegistryHandler(
+			err = processregistry.NewHandler(
 				logger,
 				r,
 				api.NewKaiClient().ProcessRegistry(),
-				auth.NewAuthentication(logger),
-				configuration.NewKaiConfigService(logger),
 			).
-				RegisterProcess(serverName, productID, processType,
-					processID, sourcesPath, dockerFile, version)
+				RegisterProcess(&processregistry.RegisterProcessOpts{
+					ServerName:  serverName,
+					ProductID:   productID,
+					ProcessType: krt.ProcessType(processType),
+					ProcessID:   processID,
+					SourcesPath: sourcesPath,
+					Dockerfile:  dockerFile,
+					Version:     version,
+				})
 			if err != nil {
 				return err
 			}

@@ -21,7 +21,7 @@ func NewDefaultCmd(logger logging.Interface) *cobra.Command {
 			name := args[0]
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
-			err := server.NewServerHandler(logger, r).SetDefaultServer(name)
+			err := server.NewHandler(logger, r).SetDefaultServer(name)
 			if err != nil {
 				return err
 			}

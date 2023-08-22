@@ -1,6 +1,7 @@
 package server
 
 import (
+	"github.com/konstellation-io/kli/authserver"
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/konstellation-io/kli/internal/render"
 	"github.com/konstellation-io/kli/internal/services/auth"
@@ -14,11 +15,11 @@ type Handler struct {
 	configService  *configuration.KaiConfigService
 }
 
-func NewServerHandler(logger logging.Interface, renderer render.Renderer) *Handler {
+func NewHandler(logger logging.Interface, renderer render.Renderer) *Handler {
 	return &Handler{
 		logger:         logger,
 		renderer:       renderer,
-		authentication: auth.NewAuthentication(logger),
+		authentication: auth.NewAuthentication(logger, authserver.NewDefaultAuthServer(logger)),
 		configService:  configuration.NewKaiConfigService(logger),
 	}
 }
