@@ -58,7 +58,7 @@ func (g *GqlManager) MakeRequest(server *configuration.Server, query string, var
 // UploadFile uploads a file to KAI server.
 func (g *GqlManager) UploadFile(server *configuration.Server, file graphql.File, query string,
 	vars map[string]interface{}, respData interface{}) error {
-	err := g.setupClient(server)
+	err := g.setupClient(server, graphql.UseMultipartForm())
 	if err != nil {
 		return err
 	}

@@ -31,7 +31,7 @@ func (c *processRegistryClient) Register(server *configuration.Server, processFi
 	var respData struct {
 		RegisteredProcess struct {
 			ProcessedImageID string `json:"processedImageID"`
-		} `json:"createdProcessImage"`
+		} `json:"registerProcess"`
 	}
 
 	processFileOpen, err := os.Open(processFile.Name())

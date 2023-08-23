@@ -44,14 +44,17 @@ func NewRegisterCmd(logger logging.Interface) *cobra.Command {
 			if err != nil {
 				return err
 			}
+
 			sourcesPath, err := cmd.Flags().GetString(_sourcesFlag)
 			if err != nil {
 				return err
 			}
+
 			dockerFile, err := cmd.Flags().GetString(_dockerfileFlag)
 			if err != nil {
 				return err
 			}
+
 			version, err := cmd.Flags().GetString(_versionFlag)
 			if err != nil {
 				return err

@@ -8,6 +8,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/konstellation-io/krt/pkg/krt"
 )
@@ -44,6 +45,12 @@ func (c *Handler) RegisterProcess(opts *RegisterProcessOpts) error {
 
 	if !c.pathExists(opts.SourcesPath) || !c.pathExists(opts.Dockerfile) {
 		return ErrPathDoesNotExist
+	}
+
+	if info, err := os.Stat(opts.SourcesPath); err == nil && info.IsDir() {
+		if !strings.HasSuffix(opts.SourcesPath, "/") {
+			opts.SourcesPath += "/"
+		}
 	}
 
 	tmpZipFile, err := c.createTempTarGzFile(opts.SourcesPath, opts.Dockerfile)
