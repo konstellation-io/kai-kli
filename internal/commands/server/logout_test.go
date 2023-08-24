@@ -80,7 +80,7 @@ func (s *ServerLogoutSuite) TestLogoutServer_ExpectOk() {
 
 	srv := &configuration.Server{
 		Name:      "my-server",
-		URL:       "kai-dev.konstellation.io",
+		URL:       "https://kai-dev.konstellation.io",
 		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
@@ -136,7 +136,7 @@ func (s *ServerLogoutSuite) TestLogoutServer_NotLoggedInServer_ExpectOk() {
 
 	srv := &configuration.Server{
 		Name:      "my-server",
-		URL:       "kai-dev.konstellation.io",
+		URL:       "https://kai-dev.konstellation.io",
 		IsDefault: true,
 	}
 
@@ -150,7 +150,7 @@ func (s *ServerLogoutSuite) TestLogoutServer_NotLoggedInServer_ExpectOk() {
 	defer httpmock.DeactivateAndReset()
 
 	// Exact URL match
-	httpmock.RegisterResponder("POST", fmt.Sprintf("https://%s/realms/%s/protocol/openid-connect/logout",
+	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/realms/%s/protocol/openid-connect/logout",
 		srv.AuthURL, srv.Realm),
 		httpmock.NewStringResponder(http.StatusUnauthorized, `{}`))
 

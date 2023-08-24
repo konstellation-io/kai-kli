@@ -79,8 +79,8 @@ func (ch *ProductConfigurationServiceTest) TestReadProductConfig_ReadExistingCon
 			ch.Equal(defaultConfig.Workflows[i].Processes[j].Name, pr.Name)
 			ch.Equal(defaultConfig.Workflows[i].Processes[j].Type, pr.Type)
 			ch.Equal(defaultConfig.Workflows[i].Processes[j].Image, pr.Image)
-			ch.Equal(&defaultConfig.Workflows[i].Processes[j].Replicas, &pr.Replicas)
-			ch.Equal(&defaultConfig.Workflows[i].Processes[j].GPU, &pr.GPU)
+			ch.Equal(&defaultConfig.Workflows[i].Processes[j].Replicas, &pr.Replicas) //nolint:gosec
+			ch.Equal(&defaultConfig.Workflows[i].Processes[j].GPU, &pr.GPU)           //nolint:gosec
 			ch.Equal(defaultConfig.Workflows[i].Processes[j].ObjectStore, pr.ObjectStore)
 			ch.Equal(defaultConfig.Workflows[i].Processes[j].Subscriptions, pr.Subscriptions)
 			ch.Empty(pr.Secrets)
@@ -125,8 +125,8 @@ func (ch *ProductConfigurationServiceTest) TestWriteProductConfig_WriteValidConf
 			ch.Equal(defaultConfig.Workflows[i].Processes[j].Name, pr.Name)
 			ch.Equal(defaultConfig.Workflows[i].Processes[j].Type, pr.Type)
 			ch.Equal(defaultConfig.Workflows[i].Processes[j].Image, pr.Image)
-			ch.Equal(&defaultConfig.Workflows[i].Processes[j].Replicas, &pr.Replicas)
-			ch.Equal(&defaultConfig.Workflows[i].Processes[j].GPU, &pr.GPU)
+			ch.Equal(&defaultConfig.Workflows[i].Processes[j].Replicas, &pr.Replicas) //nolint:gosec
+			ch.Equal(&defaultConfig.Workflows[i].Processes[j].GPU, &pr.GPU)           //nolint:gosec
 			ch.Equal(defaultConfig.Workflows[i].Processes[j].ObjectStore, pr.ObjectStore)
 			ch.Equal(defaultConfig.Workflows[i].Processes[j].Subscriptions, pr.Subscriptions)
 			ch.Empty(pr.Secrets)

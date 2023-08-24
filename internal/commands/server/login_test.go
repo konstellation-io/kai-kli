@@ -81,7 +81,7 @@ func (s *ServerLoginSuite) TestLoginServer_ExpectToken() {
 
 	srv := &configuration.Server{
 		Name:      "my-server",
-		URL:       "kai-dev.konstellation.io",
+		URL:       "https://kai-dev.konstellation.io",
 		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
@@ -133,7 +133,7 @@ func (s *ServerLoginSuite) TestLoginServer_ExpectError() {
 
 	srv := &configuration.Server{
 		Name:      "my-server",
-		URL:       "kai-dev.konstellation.io",
+		URL:       "https://kai-dev.konstellation.io",
 		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",

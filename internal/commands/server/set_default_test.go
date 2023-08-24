@@ -69,8 +69,8 @@ func (s *SetDefaultServerSuite) BeforeTest(_, _ string) {
 
 	err = kaiConf.AddServer(&configuration.Server{
 		Name:      "my-server1",
-		URL:       "kai-dev.konstellation.io",
-		AuthURL:   "auth.kai-dev.konstellation1.io",
+		URL:       "https://kai-dev.konstellation.io",
+		AuthURL:   "https://auth.kai-dev.konstellation1.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
 		Username:  "david",
@@ -82,7 +82,7 @@ func (s *SetDefaultServerSuite) BeforeTest(_, _ string) {
 
 	err = kaiConf.AddServer(&configuration.Server{
 		Name:      "my-server2",
-		URL:       "kai-dev.konstellation2.io",
+		URL:       "https://kai-dev.konstellation2.io",
 		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
