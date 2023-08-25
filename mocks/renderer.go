@@ -8,6 +8,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
+	registry "github.com/konstellation-io/kli/api/process-registry"
 	configuration "github.com/konstellation-io/kli/internal/services/configuration"
 	krt "github.com/konstellation-io/krt/pkg/krt"
 )
@@ -45,6 +46,18 @@ func (m *MockRenderer) RenderConfiguration(scope string, config map[string]strin
 func (mr *MockRendererMockRecorder) RenderConfiguration(scope, config interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderConfiguration", reflect.TypeOf((*MockRenderer)(nil).RenderConfiguration), scope, config)
+}
+
+// RenderProcessRegistries mocks base method.
+func (m *MockRenderer) RenderProcessRegistries(registries []registry.ProcessRegistry) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderProcessRegistries", registries)
+}
+
+// RenderProcessRegistries indicates an expected call of RenderProcessRegistries.
+func (mr *MockRendererMockRecorder) RenderProcessRegistries(registries interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderProcessRegistries", reflect.TypeOf((*MockRenderer)(nil).RenderProcessRegistries), registries)
 }
 
 // RenderProcesses mocks base method.

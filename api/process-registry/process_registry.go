@@ -2,16 +2,28 @@ package registry
 
 import (
 	"os"
+	"time"
 
 	"github.com/konstellation-io/kli/api/graphql"
 	"github.com/konstellation-io/kli/internal/services/configuration"
 )
+
+type ProcessRegistry struct {
+	ID         string    `json:"id"`
+	Name       string    `json:"name"`
+	Version    string    `json:"version"`
+	Type       string    `json:"type"`
+	Image      string    `json:"image"`
+	UploadDate time.Time `json:"uploadDate"`
+	Owner      string    `json:"owner"`
+}
 
 //go:generate mockgen -source=${GOFILE} -destination=../../mocks/registry_client.go -package=mocks
 
 type ProcessRegistryInterface interface {
 	Register(server *configuration.Server, processFile *os.File, productID,
 		processID, processType, version string) (string, error)
+	List(server *configuration.Server, productID, processType string) ([]ProcessRegistry, error)
 }
 
 type processRegistryClient struct {
