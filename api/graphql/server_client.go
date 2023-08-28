@@ -33,7 +33,7 @@ func NewGqlManager() *GqlManager {
 // MakeRequest call to GraphQL endpoint.
 func (g *GqlManager) MakeRequest(server *configuration.Server, query string, vars map[string]interface{},
 	respData interface{}) error {
-	err := g.setupClient(server.URL)
+	err := g.setupClient(server)
 	if err != nil {
 		return err
 	}
@@ -58,7 +58,7 @@ func (g *GqlManager) MakeRequest(server *configuration.Server, query string, var
 // UploadFile uploads a file to KAI server.
 func (g *GqlManager) UploadFile(server *configuration.Server, file graphql.File, query string,
 	vars map[string]interface{}, respData interface{}) error {
-	err := g.setupClient(server.URL, graphql.UseMultipartForm())
+	err := g.setupClient(server, graphql.UseMultipartForm())
 	if err != nil {
 		return err
 	}
@@ -82,21 +82,28 @@ func (g *GqlManager) UploadFile(server *configuration.Server, file graphql.File,
 	return nil
 }
 
-func (g *GqlManager) setupClient(serverURL string, args ...graphql.ClientOption) error {
+func (g *GqlManager) setupClient(server *configuration.Server, args ...graphql.ClientOption) error {
 	if g.client != nil {
 		return nil
 	}
 
-	c := NewHTTPClient([]Option{
+	clientOpts := []Option{
 		AddHeader("User-Agent", "Konstellation KLI"),
 		AddHeader("KLI-Version", g.appVersion),
 		AddHeader("Cache-Control", "no-cache"),
-	}...)
+	}
+
+	if server.IsLoggedIn() {
+		clientOpts = append(clientOpts,
+			AddHeader("Authorization", fmt.Sprintf("Bearer %s", server.Token.AccessToken)))
+	}
+
+	c := NewHTTPClient(clientOpts...)
 
 	opts := []graphql.ClientOption{graphql.WithHTTPClient(c)}
 	opts = append(opts, args...)
 
-	g.client = graphql.NewClient(fmt.Sprintf("%s/graphql", serverURL), opts...)
+	g.client = graphql.NewClient(fmt.Sprintf("%s/graphql", server.URL), opts...)
 	g.httpClient = c
 
 	if viper.GetBool(config.DebugKey) {

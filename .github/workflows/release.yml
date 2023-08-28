@@ -10,7 +10,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Generate release
-        uses: intelygenz/action-product-version-tags@v0.1.8
+        uses: intelygenz/action-product-version-tags@v0.2.1
         with:
           prefix: "release-"
           mode: 'release'

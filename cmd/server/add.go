@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/spf13/cobra"
 
@@ -31,6 +32,10 @@ func NewAddCmd(logger logging.Interface) *cobra.Command {
 			newServer := server.Server{
 				Name: args[0],
 				URL:  args[1],
+			}
+
+			if !strings.HasPrefix(newServer.URL, "http://") && !strings.HasPrefix(newServer.URL, "https://") {
+				return fmt.Errorf("invalid server URL, the URL must have the protocol (http:// or https://)")
 			}
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())

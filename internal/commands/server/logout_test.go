@@ -80,12 +80,10 @@ func (s *ServerLogoutSuite) TestLogoutServer_ExpectOk() {
 
 	srv := &configuration.Server{
 		Name:      "my-server",
-		URL:       "kai-dev.konstellation.io",
+		URL:       "https://kai-dev.konstellation.io",
 		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
-		Username:  "david",
-		Password:  "password",
 		IsDefault: true,
 		Token:     &configuration.Token{},
 	}
@@ -116,8 +114,6 @@ func (s *ServerLogoutSuite) TestLogoutServer_ExpectOk() {
 	s.Require().Empty(updatedSrv.AuthURL)
 	s.Require().Empty(updatedSrv.Realm)
 	s.Require().Empty(updatedSrv.ClientID)
-	s.Require().Empty(updatedSrv.Username)
-	s.Require().Empty(updatedSrv.Password)
 	s.Require().Nil(updatedSrv.Token)
 }
 
@@ -136,7 +132,7 @@ func (s *ServerLogoutSuite) TestLogoutServer_NotLoggedInServer_ExpectOk() {
 
 	srv := &configuration.Server{
 		Name:      "my-server",
-		URL:       "kai-dev.konstellation.io",
+		URL:       "https://kai-dev.konstellation.io",
 		IsDefault: true,
 	}
 
@@ -150,7 +146,7 @@ func (s *ServerLogoutSuite) TestLogoutServer_NotLoggedInServer_ExpectOk() {
 	defer httpmock.DeactivateAndReset()
 
 	// Exact URL match
-	httpmock.RegisterResponder("POST", fmt.Sprintf("https://%s/realms/%s/protocol/openid-connect/logout",
+	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/realms/%s/protocol/openid-connect/logout",
 		srv.AuthURL, srv.Realm),
 		httpmock.NewStringResponder(http.StatusUnauthorized, `{}`))
 
@@ -166,7 +162,5 @@ func (s *ServerLogoutSuite) TestLogoutServer_NotLoggedInServer_ExpectOk() {
 	s.Require().Empty(updatedSrv.AuthURL)
 	s.Require().Empty(updatedSrv.Realm)
 	s.Require().Empty(updatedSrv.ClientID)
-	s.Require().Empty(updatedSrv.Username)
-	s.Require().Empty(updatedSrv.Password)
 	s.Require().Nil(updatedSrv.Token)
 }
