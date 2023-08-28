@@ -170,12 +170,11 @@ func (r *CliRenderer) RenderProcessRegistries(processRegistries []registry.Proce
 	}
 
 	r.tableWriter.SetHeader([]string{
-		"Process ID", "Process Name", "Process Version", "Process type", "Image", "Upload Date", "Owner",
+		"Process Name", "Process Version", "Process type", "Image", "Upload Date", "Owner",
 	})
 
 	for _, pr := range processRegistries {
 		r.tableWriter.Append([]string{
-			pr.ID,
 			pr.Name,
 			pr.Version,
 			pr.Type,
