@@ -108,7 +108,7 @@ func (as *AuthServer) getCallbackURL() string {
 func (as *AuthServer) StartServer(config KeycloakConfig) (*AuthResponse, error) {
 	serverAddress := fmt.Sprintf("localhost:%v", as.config.Port)
 
-	as.logger.Info(fmt.Sprintf("Booting up the server at: %s", serverAddress))
+	as.logger.Debug(fmt.Sprintf("Booting up the server at: %s", serverAddress))
 
 	as.closeApp.Add(1)
 

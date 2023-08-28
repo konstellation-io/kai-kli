@@ -86,8 +86,6 @@ func (s *AuthenticationSuite) TestLogin_ExpectToken() {
 		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
-		Username:  "david",
-		Password:  "password",
 		IsDefault: true,
 		Token:     &configuration.Token{},
 	}
@@ -107,7 +105,7 @@ func (s *AuthenticationSuite) TestLogin_ExpectToken() {
 	}, nil)
 
 	// WHEN
-	token, err := s.authentication.Login(srv.Name, srv.AuthURL, srv.Realm, srv.ClientID, srv.Username, srv.Password)
+	token, err := s.authentication.Login(srv.Name, srv.AuthURL, srv.Realm, srv.ClientID)
 
 	// THEN
 	s.Require().NoError(err)
@@ -139,8 +137,6 @@ func (s *AuthenticationSuite) TestLogin_ExpectError() {
 		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
-		Username:  "david",
-		Password:  "password",
 		IsDefault: true,
 	}
 
@@ -153,7 +149,7 @@ func (s *AuthenticationSuite) TestLogin_ExpectError() {
 	s.authServer.EXPECT().StartServer(gomock.Any()).Return(nil, errors.New("error getting token"))
 
 	// WHEN
-	token, err := s.authentication.Login(srv.Name, srv.AuthURL, srv.Realm, srv.ClientID, srv.Username, srv.Password)
+	token, err := s.authentication.Login(srv.Name, srv.AuthURL, srv.Realm, srv.ClientID)
 
 	// THEN
 	s.Require().Error(err)
@@ -179,8 +175,6 @@ func (s *AuthenticationSuite) TestLogout_ExpectOk() {
 		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
-		Username:  "david",
-		Password:  "password",
 		IsDefault: true,
 		Token: &configuration.Token{
 			Date:             time.Now().UTC(),
@@ -222,8 +216,6 @@ func (s *AuthenticationSuite) TestLogout_ExpectOk() {
 	s.Require().Empty(updatedSrv.AuthURL)
 	s.Require().Empty(updatedSrv.Realm)
 	s.Require().Empty(updatedSrv.ClientID)
-	s.Require().Empty(updatedSrv.Username)
-	s.Require().Empty(updatedSrv.Password)
 	s.Require().Nil(updatedSrv.Token)
 }
 
@@ -246,8 +238,6 @@ func (s *AuthenticationSuite) TestLogout_ExpectError() {
 		AuthURL:  "auth.kai-dev.konstellation.io",
 		Realm:    "konstellation",
 		ClientID: "admin-cli",
-		Username: "david",
-		Password: "password",
 		Token: &configuration.Token{
 			Date:             time.Now().UTC(),
 			AccessToken:      "access token",
@@ -299,8 +289,6 @@ func (s *AuthenticationSuite) TestGetToken_NoRefreshToken_ExpectError() {
 		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
-		Username:  "david",
-		Password:  "password",
 		IsDefault: true,
 		Token:     &configuration.Token{},
 	}
@@ -350,8 +338,6 @@ func (s *AuthenticationSuite) TestGetToken_GetStoredToken_ExpectToken() {
 		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
-		Username:  "david",
-		Password:  "password",
 		IsDefault: true,
 		Token: &configuration.Token{
 			Date:             time.Now().UTC(),
@@ -402,8 +388,6 @@ func (s *AuthenticationSuite) TestGetToken_GetRenewedToken_ExpectToken() {
 		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
-		Username:  "david",
-		Password:  "password",
 		IsDefault: true,
 		Token: &configuration.Token{
 			Date:             time.Now().AddDate(0, 0, -1).UTC(),
@@ -469,8 +453,6 @@ func (s *AuthenticationSuite) TestGetToken_ExpectError() {
 		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
-		Username:  "david",
-		Password:  "password",
 		IsDefault: true,
 	}
 
