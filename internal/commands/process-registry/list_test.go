@@ -111,7 +111,7 @@ func (s *ListProcessSuite) TestListProcessRegistries() {
 
 	retrievedProcessRegistries := []registry.ProcessRegistry{testProcessRegistry}
 
-	s.processRegistryAPI.EXPECT().List(gomock.Any(), productID, string(processType)).Return(
+	s.processRegistryAPI.EXPECT().List(gomock.Any(), productID, processType).Return(
 		retrievedProcessRegistries,
 		nil,
 	)
@@ -134,7 +134,7 @@ func (s *ListProcessSuite) TestListProcessRegistriesAPIError() {
 	productID := _productID
 	serverName := _serverName
 
-	s.processRegistryAPI.EXPECT().List(gomock.Any(), productID, string(processType)).Return(
+	s.processRegistryAPI.EXPECT().List(gomock.Any(), productID, processType).Return(
 		nil,
 		fmt.Errorf("mock error"),
 	)
