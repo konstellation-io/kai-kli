@@ -84,8 +84,6 @@ func (s *ServerLogoutSuite) TestLogoutServer_ExpectOk() {
 		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
-		Username:  "david",
-		Password:  "password",
 		IsDefault: true,
 		Token:     &configuration.Token{},
 	}
@@ -116,8 +114,6 @@ func (s *ServerLogoutSuite) TestLogoutServer_ExpectOk() {
 	s.Require().Empty(updatedSrv.AuthURL)
 	s.Require().Empty(updatedSrv.Realm)
 	s.Require().Empty(updatedSrv.ClientID)
-	s.Require().Empty(updatedSrv.Username)
-	s.Require().Empty(updatedSrv.Password)
 	s.Require().Nil(updatedSrv.Token)
 }
 
@@ -166,7 +162,5 @@ func (s *ServerLogoutSuite) TestLogoutServer_NotLoggedInServer_ExpectOk() {
 	s.Require().Empty(updatedSrv.AuthURL)
 	s.Require().Empty(updatedSrv.Realm)
 	s.Require().Empty(updatedSrv.ClientID)
-	s.Require().Empty(updatedSrv.Username)
-	s.Require().Empty(updatedSrv.Password)
 	s.Require().Nil(updatedSrv.Token)
 }

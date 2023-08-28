@@ -73,8 +73,6 @@ func (s *SetDefaultServerSuite) BeforeTest(_, _ string) {
 		AuthURL:   "https://auth.kai-dev.konstellation1.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
-		Username:  "david",
-		Password:  "password",
 		IsDefault: false,
 		Token:     &configuration.Token{},
 	})
@@ -86,8 +84,6 @@ func (s *SetDefaultServerSuite) BeforeTest(_, _ string) {
 		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
-		Username:  "david",
-		Password:  "password",
 		IsDefault: true,
 		Token:     &configuration.Token{},
 	})

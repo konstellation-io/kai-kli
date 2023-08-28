@@ -14,8 +14,6 @@ type Server struct {
 	AuthURL   string `yaml:"authUrl"`
 	Realm     string `yaml:"realm"`
 	ClientID  string `yaml:"clientId"`
-	Username  string `yaml:"username"`
-	Password  string `yaml:"password"`
 	Token     *Token `yaml:"token"`
 	IsDefault bool   `yaml:"default"`
 }
