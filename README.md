@@ -32,6 +32,17 @@
 
 This repo contains a CLI to access, query and manage KAI servers.
 
+## Installation
+
+### From releases page
+
+Go to [release page](https://github.com/konstellation-io/kai-kli/releases) and download the binary you prefer.
+
+### Homebrew
+
+```
+brew install konstellation-io/kli
+```
 
 ## Frameworks and libraries
 

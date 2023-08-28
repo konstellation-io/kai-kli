@@ -21,8 +21,7 @@ const (
 // NewLoginCmd creates a new command to log in to an existing server.
 func NewLoginCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "login <server_name> --auth-url <auth_url> --user <username> " +
-			"--password <password> --realm <realm> --client-id <client-id>",
+		Use:   "login <server_name> --auth-url <auth_url> --realm <realm> --client-id <client-id>",
 		Args:  cobra.ExactArgs(1),
 		Short: "login to an existing server",
 		Example: `
@@ -31,14 +30,6 @@ func NewLoginCmd(logger logging.Interface) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			serverName := args[0]
 			authURL, err := cmd.Flags().GetString(_authURLFlag)
-			if err != nil {
-				return err
-			}
-			username, err := cmd.Flags().GetString(_userFlag)
-			if err != nil {
-				return err
-			}
-			password, err := cmd.Flags().GetString(_passwordFlag)
 			if err != nil {
 				return err
 			}
@@ -53,7 +44,7 @@ func NewLoginCmd(logger logging.Interface) *cobra.Command {
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
 
-			_, err = server.NewHandler(logger, r).Login(serverName, authURL, realm, clientID, username, password)
+			_, err = server.NewHandler(logger, r).Login(serverName, authURL, realm, clientID)
 			if err != nil {
 				return err
 			}
@@ -65,14 +56,10 @@ func NewLoginCmd(logger logging.Interface) *cobra.Command {
 	}
 
 	cmd.Flags().String(_authURLFlag, "", "URL to login.")
-	cmd.Flags().StringP(_userFlag, "u", "", "Username to login.")
-	cmd.Flags().StringP(_passwordFlag, "p", "", "Password to login.")
 	cmd.Flags().String(_realmFlag, "", "Realm to login.")
 	cmd.Flags().String(_clientIDFlag, "", "ClientID to login.")
 
 	cmd.MarkFlagRequired(_authURLFlag)  //nolint:errcheck
-	cmd.MarkFlagRequired(_userFlag)     //nolint:errcheck
-	cmd.MarkFlagRequired(_passwordFlag) //nolint:errcheck
 	cmd.MarkFlagRequired(_realmFlag)    //nolint:errcheck
 	cmd.MarkFlagRequired(_clientIDFlag) //nolint:errcheck
 

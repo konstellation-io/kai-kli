@@ -105,7 +105,7 @@ func (a *AuthenticationService) GetToken(serveName string) (*configuration.Token
 	return server.Token, nil
 }
 
-func (a *AuthenticationService) Login(serverName, authURL, realm, clientID, username, password string) (*configuration.Token, error) {
+func (a *AuthenticationService) Login(serverName, authURL, realm, clientID string) (*configuration.Token, error) {
 	kaiConfig, err := a.configService.GetConfiguration()
 	if err != nil {
 		return nil, err
@@ -120,8 +120,6 @@ func (a *AuthenticationService) Login(serverName, authURL, realm, clientID, user
 	server.AuthURL = authURL
 	server.Realm = realm
 	server.ClientID = clientID
-	server.Username = username
-	server.Password = password
 
 	// If the credentials are empty, return an error
 	if !a.areCredentialsValid(server) {
@@ -176,8 +174,6 @@ func (a *AuthenticationService) Logout(serverName string) error {
 	server.AuthURL = ""
 	server.Realm = ""
 	server.ClientID = ""
-	server.Username = ""
-	server.Password = ""
 	server.Token = nil
 
 	err = kaiConfig.UpdateServer(server)
@@ -297,6 +293,5 @@ func (a *AuthenticationService) refreshTokenRequest(server *configuration.Server
 }
 
 func (a *AuthenticationService) areCredentialsValid(server *configuration.Server) bool {
-	return server.AuthURL != "" && server.Username != "" &&
-		server.Password != "" && server.Realm != "" && server.ClientID != ""
+	return server.AuthURL != "" && server.Realm != "" && server.ClientID != ""
 }

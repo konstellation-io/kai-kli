@@ -85,8 +85,6 @@ func (s *ServerLoginSuite) TestLoginServer_ExpectToken() {
 		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
-		Username:  "david",
-		Password:  "password",
 		IsDefault: true,
 		Token:     &configuration.Token{},
 	}
@@ -106,7 +104,7 @@ func (s *ServerLoginSuite) TestLoginServer_ExpectToken() {
 	}, nil)
 
 	// WHEN
-	token, err := s.manager.Login(srv.Name, srv.AuthURL, srv.Realm, srv.ClientID, srv.Username, srv.Password)
+	token, err := s.manager.Login(srv.Name, srv.AuthURL, srv.Realm, srv.ClientID)
 
 	// THEN
 	s.Require().NotNil(token)
@@ -137,8 +135,6 @@ func (s *ServerLoginSuite) TestLoginServer_ExpectError() {
 		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
-		Username:  "david",
-		Password:  "password",
 		IsDefault: true,
 	}
 
@@ -151,7 +147,7 @@ func (s *ServerLoginSuite) TestLoginServer_ExpectError() {
 	s.authServer.EXPECT().StartServer(gomock.Any()).Return(nil, errors.New("error getting token"))
 
 	// WHEN
-	token, err := s.manager.Login(srv.Name, srv.AuthURL, srv.Realm, srv.ClientID, srv.Username, srv.Password)
+	token, err := s.manager.Login(srv.Name, srv.AuthURL, srv.Realm, srv.ClientID)
 
 	// THEN
 	s.Require().Error(err)

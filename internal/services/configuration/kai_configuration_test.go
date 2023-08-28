@@ -24,8 +24,6 @@ func (ch *KaiConfigurationTest) TestServerIsLoggedIn_ExpectTrue() {
 		URL:      "http://my-server.com",
 		Realm:    "my-realm",
 		ClientID: "my-client-id",
-		Username: "my-username",
-		Password: "my-password",
 		Token: &configuration.Token{
 			Date:             time.Now().UTC(),
 			AccessToken:      "access_token",
@@ -51,8 +49,6 @@ func (ch *KaiConfigurationTest) TestServerIsLoggedIn_NoToken_ExpectFalse() {
 		URL:       "http://my-server.com",
 		Realm:     "my-realm",
 		ClientID:  "my-client-id",
-		Username:  "my-username",
-		Password:  "my-password",
 		Token:     nil,
 		IsDefault: true,
 	}
@@ -71,8 +67,6 @@ func (ch *KaiConfigurationTest) TestServerIsLoggedIn_EmptyToken_ExpectFalse() {
 		URL:      "http://my-server.com",
 		Realm:    "my-realm",
 		ClientID: "my-client-id",
-		Username: "my-username",
-		Password: "my-password",
 		Token: &configuration.Token{
 			Date: time.Now().UTC(),
 		},
