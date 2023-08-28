@@ -118,8 +118,6 @@ func getDefaultConfiguration() configuration.KaiConfiguration {
 				IsDefault: true,
 				Realm:     "existing-realm",
 				ClientID:  "existing-client-id",
-				Username:  "user",
-				Password:  "pass",
 				Token: &configuration.Token{
 					Date:             time.Now().UTC(),
 					AccessToken:      "access-token",
