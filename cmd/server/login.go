@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/spf13/cobra"
 
@@ -31,7 +32,7 @@ func NewLoginCmd(logger logging.Interface) *cobra.Command {
 			serverName := args[0]
 			authURL, err := cmd.Flags().GetString(_authURLFlag)
 
-			if strings.HasPrefix(authURL, "http") | strings.HasPrefix(authURL, "https") {
+			if strings.HasPrefix(authURL, "http") || strings.HasPrefix(authURL, "https") {
 				return fmt.Errorf("invalid authentication URL, the URL must have the protocol (http:// or https://)")
 			}
 
