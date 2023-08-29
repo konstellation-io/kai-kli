@@ -79,6 +79,23 @@ brews:
       name: goreleaserbot
       email: releases@konstellation.io
 
+scoops:
+  - name: kli
+    commit_author:
+      name: goreleaserbot
+      email: releases@konstellation.io
+    commit_msg_template: "Scoop update for {{ .ProjectName }} version {{ .Version }}"
+    homepage: https://konstellation.io
+    description: A CLI to access, query and manage KAI servers.
+    license: MIT
+    repository:
+      owner: konstellation-io
+      name: scoop-bucket
+      branch: main
+      token: "{{ .Env.SCOOP_BUCKET_GITHUB_TOKEN }}"
+      pull_request:
+        enabled: false
+
 # https://goreleaser.com/customization/checksum/
 checksum:
   name_template: "{{ .ProjectName }}_{{ .Version }}_checksums.txt"
