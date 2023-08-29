@@ -41,7 +41,16 @@ Go to [release page](https://github.com/konstellation-io/kai-kli/releases) and d
 ### Homebrew
 
 ```
-brew install konstellation-io/kli
+brew install konstellation-io/tap/kli
+```
+
+### Scoop (Windows)
+
+Scoop installation is made via a Konstellation owned bucket.
+
+```
+scoop bucket add konstellation-io https://github.com/konstellation-io/scoop-bucket.git
+scoop install konstellation-io/kli
 ```
 
 ## Frameworks and libraries
