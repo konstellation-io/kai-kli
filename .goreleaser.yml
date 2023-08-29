@@ -24,8 +24,8 @@ builds:
         - GO111MODULE=on
         - CGO_ENABLED=0
       ldflags:
-        - -s -w -X github.com/konstellation-io/kai-kli/internal/build.Version={{.Version}}
-        - -X github.com/konstellation-io/kai-kli/internal/build.Date={{time "2006-01-02"}}
+        - -s -w -X main.version={{.Version}}
+        - -X main.date={{time "2006-01-02"}}
     id: macos
     goos: [darwin]
     goarch: [amd64, arm64]
