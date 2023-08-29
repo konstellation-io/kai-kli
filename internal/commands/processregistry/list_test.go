@@ -13,9 +13,9 @@ import (
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
 
-	registry "github.com/konstellation-io/kli/api/process-registry"
+	processRegistryAPI "github.com/konstellation-io/kli/api/processregistry"
 	"github.com/konstellation-io/kli/cmd/config"
-	processregistry "github.com/konstellation-io/kli/internal/commands/process-registry"
+	processRegistryCMD "github.com/konstellation-io/kli/internal/commands/processregistry"
 	"github.com/konstellation-io/kli/internal/services/configuration"
 	"github.com/konstellation-io/kli/mocks"
 )
@@ -23,12 +23,12 @@ import (
 type ListProcessSuite struct {
 	suite.Suite
 
-	logger             *mocks.MockLogger
-	renderer           *mocks.MockRenderer
-	processRegistryAPI *mocks.MockProcessRegistryInterface
-	manager            *processregistry.Handler
-	configuration      *configuration.KaiConfigService
-	tmpDir             string
+	logger               *mocks.MockLogger
+	renderer             *mocks.MockRenderer
+	registeredProcessAPI *mocks.MockRegisteredProcessInterface
+	manager              *processRegistryCMD.Handler
+	configuration        *configuration.KaiConfigService
+	tmpDir               string
 }
 
 func TestListProcessSuite(t *testing.T) {
@@ -45,12 +45,12 @@ func (s *ListProcessSuite) SetupSuite() {
 
 	s.renderer = renderer
 
-	s.processRegistryAPI = mocks.NewMockProcessRegistryInterface(ctrl)
+	s.registeredProcessAPI = mocks.NewMockRegisteredProcessInterface(ctrl)
 
-	s.manager = processregistry.NewHandler(
+	s.manager = processRegistryCMD.NewHandler(
 		s.logger,
 		renderer,
-		s.processRegistryAPI,
+		s.registeredProcessAPI,
 	)
 
 	tmpDir, err := os.MkdirTemp("", "TestAddServer_*")
@@ -93,13 +93,13 @@ func (s *ListProcessSuite) BeforeTest(_, _ string) {
 	s.Require().NoError(err)
 }
 
-func (s *ListProcessSuite) TestListProcessRegistries() {
+func (s *ListProcessSuite) TestListRegisteredProcesses() {
 	// GIVEN
 	processType := _processType
 	productID := _productID
 	serverName := _serverName
 
-	testProcessRegistry := registry.ProcessRegistry{
+	testRegisteredProcess := processRegistryAPI.RegisteredProcess{
 		ID:         "test-process-id",
 		Name:       "test-process",
 		Version:    "v1.0.0",
@@ -109,16 +109,16 @@ func (s *ListProcessSuite) TestListProcessRegistries() {
 		Owner:      "test",
 	}
 
-	retrievedProcessRegistries := []registry.ProcessRegistry{testProcessRegistry}
+	retrievedRegisteredProcesses := []processRegistryAPI.RegisteredProcess{testRegisteredProcess}
 
-	s.processRegistryAPI.EXPECT().List(gomock.Any(), productID, processType).Return(
-		retrievedProcessRegistries,
+	s.registeredProcessAPI.EXPECT().List(gomock.Any(), productID, processType).Return(
+		retrievedRegisteredProcesses,
 		nil,
 	)
-	s.renderer.EXPECT().RenderProcessRegistries(retrievedProcessRegistries)
+	s.renderer.EXPECT().RenderRegisteredProcesses(retrievedRegisteredProcesses)
 
 	// WHEN
-	err := s.manager.ListProcesses(&processregistry.ListProcessesOpts{
+	err := s.manager.ListProcesses(&processRegistryCMD.ListProcessesOpts{
 		ServerName:  serverName,
 		ProductID:   productID,
 		ProcessType: krt.ProcessType(processType),
@@ -128,19 +128,19 @@ func (s *ListProcessSuite) TestListProcessRegistries() {
 	s.Require().NoError(err)
 }
 
-func (s *ListProcessSuite) TestListProcessRegistriesAPIError() {
+func (s *ListProcessSuite) TestListRegisteredProcessesAPIError() {
 	// GIVEN
 	processType := _processType
 	productID := _productID
 	serverName := _serverName
 
-	s.processRegistryAPI.EXPECT().List(gomock.Any(), productID, processType).Return(
+	s.registeredProcessAPI.EXPECT().List(gomock.Any(), productID, processType).Return(
 		nil,
 		fmt.Errorf("mock error"),
 	)
 
 	// WHEN
-	err := s.manager.ListProcesses(&processregistry.ListProcessesOpts{
+	err := s.manager.ListProcesses(&processRegistryCMD.ListProcessesOpts{
 		ServerName:  serverName,
 		ProductID:   productID,
 		ProcessType: krt.ProcessType(processType),

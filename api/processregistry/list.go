@@ -1,15 +1,15 @@
-package registry
+package processregistry
 
 import (
 	"github.com/konstellation-io/kli/internal/services/configuration"
 )
 
-func (c *processRegistryClient) List(
+func (c *registeredProcessClient) List(
 	server *configuration.Server, productID, processType string,
-) ([]ProcessRegistry, error) {
+) ([]RegisteredProcess, error) {
 	query := `
-		query ProcessRegistries($productID: ID!, $processType: String) {
-			processRegistries(productID: $productID, processType: $processType) {
+		query RegisteredProcesses($productID: ID!, $processType: String) {
+			registeredProcesses(productID: $productID, processType: $processType) {
 					id
 					name
 					version
@@ -26,10 +26,10 @@ func (c *processRegistryClient) List(
 	}
 
 	var respData struct {
-		ProcessRegistries []ProcessRegistry `json:"processRegistries"`
+		RegisteredProcesses []RegisteredProcess `json:"registeredProcesses"`
 	}
 
 	err := c.client.MakeRequest(server, query, vars, &respData)
 
-	return respData.ProcessRegistries, err
+	return respData.RegisteredProcesses, err
 }

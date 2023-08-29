@@ -27,7 +27,7 @@ func (c *Handler) ListProcesses(opts *ListProcessesOpts) error {
 		return err
 	}
 
-	registeredProcesses, err := c.processRegistryClient.List(
+	registeredProcesses, err := c.registeredProcessClient.List(
 		srv, opts.ProductID, string(opts.ProcessType),
 	)
 	if err != nil {
@@ -35,7 +35,7 @@ func (c *Handler) ListProcesses(opts *ListProcessesOpts) error {
 	}
 
 	c.logger.Info(fmt.Sprintf("Registered processes for %q product:\n", opts.ProductID))
-	c.renderer.RenderProcessRegistries(registeredProcesses)
+	c.renderer.RenderRegisteredProcesses(registeredProcesses)
 
 	return nil
 }

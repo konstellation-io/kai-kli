@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/spf13/viper"
 
@@ -44,7 +45,7 @@ func (g *GqlManager) MakeRequest(server *configuration.Server, query string, var
 		req.Var(k, v)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), viper.GetDuration(config.RequestTimeoutKey))
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute*5)
 	defer cancel()
 
 	err = g.client.Run(ctx, req, respData)

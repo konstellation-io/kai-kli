@@ -5,7 +5,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/konstellation-io/kli/api"
-	processregistry "github.com/konstellation-io/kli/internal/commands/process-registry"
+	"github.com/konstellation-io/kli/internal/commands/processregistry"
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/konstellation-io/kli/internal/render"
 )
@@ -24,7 +24,7 @@ func NewListCmd(logger logging.Interface) *cobra.Command {
 			"authenticated": "true",
 		},
 		Short:   "List all processes for the given product on the given server with optional filters",
-		Example: "$ kli process-registry ls <product_id> [--type <process_type>] [opts...]",
+		Example: "$ kli process-registry ls <product_id> [opts...]",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			productID := args[0]
 
@@ -42,7 +42,7 @@ func NewListCmd(logger logging.Interface) *cobra.Command {
 			err = processregistry.NewHandler(
 				logger,
 				r,
-				api.NewKaiClient().ProcessRegistry(),
+				api.NewKaiClient().RegisteredProcess(),
 			).
 				ListProcesses(&processregistry.ListProcessesOpts{
 					ServerName:  serverName,

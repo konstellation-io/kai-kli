@@ -10,7 +10,7 @@ import (
 	"github.com/konstellation-io/krt/pkg/krt"
 	"github.com/olekukonko/tablewriter"
 
-	registry "github.com/konstellation-io/kli/api/process-registry"
+	"github.com/konstellation-io/kli/api/processregistry"
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/konstellation-io/kli/internal/services/configuration"
 )
@@ -163,8 +163,8 @@ func (r *CliRenderer) RenderConfiguration(scope string, config map[string]string
 	r.tableWriter.Render()
 }
 
-func (r *CliRenderer) RenderProcessRegistries(processRegistries []registry.ProcessRegistry) {
-	if len(processRegistries) < 1 {
+func (r *CliRenderer) RenderRegisteredProcesses(registeredProcesses []processregistry.RegisteredProcess) {
+	if len(registeredProcesses) < 1 {
 		r.logger.Info("No processes found.")
 		return
 	}
@@ -173,7 +173,7 @@ func (r *CliRenderer) RenderProcessRegistries(processRegistries []registry.Proce
 		"Process Name", "Process Version", "Process type", "Image", "Upload Date", "Owner",
 	})
 
-	for _, pr := range processRegistries {
+	for _, pr := range registeredProcesses {
 		r.tableWriter.Append([]string{
 			pr.Name,
 			pr.Version,

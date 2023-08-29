@@ -8,7 +8,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	registry "github.com/konstellation-io/kli/api/process-registry"
+	processregistry "github.com/konstellation-io/kli/api/processregistry"
 )
 
 // MockInterface is a mock of Interface interface.
@@ -34,16 +34,16 @@ func (m *MockInterface) EXPECT() *MockInterfaceMockRecorder {
 	return m.recorder
 }
 
-// ProcessRegistry mocks base method.
-func (m *MockInterface) ProcessRegistry() registry.ProcessRegistryInterface {
+// RegisteredProcess mocks base method.
+func (m *MockInterface) RegisteredProcess() processregistry.RegisteredProcessInterface {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ProcessRegistry")
-	ret0, _ := ret[0].(registry.ProcessRegistryInterface)
+	ret := m.ctrl.Call(m, "RegisteredProcess")
+	ret0, _ := ret[0].(processregistry.RegisteredProcessInterface)
 	return ret0
 }
 
-// ProcessRegistry indicates an expected call of ProcessRegistry.
-func (mr *MockInterfaceMockRecorder) ProcessRegistry() *gomock.Call {
+// RegisteredProcess indicates an expected call of RegisteredProcess.
+func (mr *MockInterfaceMockRecorder) RegisteredProcess() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ProcessRegistry", reflect.TypeOf((*MockInterface)(nil).ProcessRegistry))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisteredProcess", reflect.TypeOf((*MockInterface)(nil).RegisteredProcess))
 }

@@ -60,7 +60,7 @@ func (c *Handler) RegisterProcess(opts *RegisterProcessOpts) error {
 
 	defer tmpZipFile.Close()
 
-	registeredProcess, err := c.processRegistryClient.
+	registeredProcess, err := c.registeredProcessClient.
 		Register(srv, tmpZipFile, opts.ProductID, opts.ProcessID, string(opts.ProcessType), opts.Version)
 	if err != nil {
 		return err

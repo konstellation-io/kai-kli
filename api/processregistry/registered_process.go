@@ -1,4 +1,4 @@
-package registry
+package processregistry
 
 import (
 	"os"
@@ -8,7 +8,7 @@ import (
 	"github.com/konstellation-io/kli/internal/services/configuration"
 )
 
-type ProcessRegistry struct {
+type RegisteredProcess struct {
 	ID         string    `json:"id"`
 	Name       string    `json:"name"`
 	Version    string    `json:"version"`
@@ -20,19 +20,19 @@ type ProcessRegistry struct {
 
 //go:generate mockgen -source=${GOFILE} -destination=../../mocks/registry_client.go -package=mocks
 
-type ProcessRegistryInterface interface {
+type RegisteredProcessInterface interface {
 	Register(server *configuration.Server, processFile *os.File, productID,
 		processID, processType, version string) (string, error)
-	List(server *configuration.Server, productID, processType string) ([]ProcessRegistry, error)
+	List(server *configuration.Server, productID, processType string) ([]RegisteredProcess, error)
 }
 
-type processRegistryClient struct {
+type registeredProcessClient struct {
 	client *graphql.GqlManager
 }
 
 // New creates a new struct to access Versions methods.
-func New(gql *graphql.GqlManager) ProcessRegistryInterface {
-	return &processRegistryClient{
+func New(gql *graphql.GqlManager) RegisteredProcessInterface {
+	return &registeredProcessClient{
 		gql,
 	}
 }

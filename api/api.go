@@ -2,18 +2,18 @@ package api
 
 import (
 	"github.com/konstellation-io/kli/api/graphql"
-	registry "github.com/konstellation-io/kli/api/process-registry"
+	"github.com/konstellation-io/kli/api/processregistry"
 )
 
 // KAI object to implement access to KAI API.
 type KAI struct {
-	gqlManager      *graphql.GqlManager
-	processRegistry registry.ProcessRegistryInterface
+	gqlManager        *graphql.GqlManager
+	registeredProcess processregistry.RegisteredProcessInterface
 }
 
-// ProcessRegistry access to methods to interact with the Process Registry.
-func (a *KAI) ProcessRegistry() registry.ProcessRegistryInterface {
-	return a.processRegistry
+// RegisteredProcess access to methods to interact with the Process Registry.
+func (a *KAI) RegisteredProcess() processregistry.RegisteredProcessInterface {
+	return a.registeredProcess
 }
 
 // NewKaiClient creates an API client instance.
@@ -22,6 +22,6 @@ func NewKaiClient() *KAI {
 
 	return &KAI{
 		g,
-		registry.New(g),
+		processregistry.New(g),
 	}
 }

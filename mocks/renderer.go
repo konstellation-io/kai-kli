@@ -8,7 +8,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	registry "github.com/konstellation-io/kli/api/process-registry"
+	processregistry "github.com/konstellation-io/kli/api/processregistry"
 	configuration "github.com/konstellation-io/kli/internal/services/configuration"
 	krt "github.com/konstellation-io/krt/pkg/krt"
 )
@@ -48,18 +48,6 @@ func (mr *MockRendererMockRecorder) RenderConfiguration(scope, config interface{
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderConfiguration", reflect.TypeOf((*MockRenderer)(nil).RenderConfiguration), scope, config)
 }
 
-// RenderProcessRegistries mocks base method.
-func (m *MockRenderer) RenderProcessRegistries(registries []registry.ProcessRegistry) {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "RenderProcessRegistries", registries)
-}
-
-// RenderProcessRegistries indicates an expected call of RenderProcessRegistries.
-func (mr *MockRendererMockRecorder) RenderProcessRegistries(registries interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderProcessRegistries", reflect.TypeOf((*MockRenderer)(nil).RenderProcessRegistries), registries)
-}
-
 // RenderProcesses mocks base method.
 func (m *MockRenderer) RenderProcesses(processes []krt.Process) {
 	m.ctrl.T.Helper()
@@ -70,6 +58,18 @@ func (m *MockRenderer) RenderProcesses(processes []krt.Process) {
 func (mr *MockRendererMockRecorder) RenderProcesses(processes interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderProcesses", reflect.TypeOf((*MockRenderer)(nil).RenderProcesses), processes)
+}
+
+// RenderRegisteredProcesses mocks base method.
+func (m *MockRenderer) RenderRegisteredProcesses(registries []processregistry.RegisteredProcess) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderRegisteredProcesses", registries)
+}
+
+// RenderRegisteredProcesses indicates an expected call of RenderRegisteredProcesses.
+func (mr *MockRendererMockRecorder) RenderRegisteredProcesses(registries interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderRegisteredProcesses", reflect.TypeOf((*MockRenderer)(nil).RenderRegisteredProcesses), registries)
 }
 
 // RenderServers mocks base method.

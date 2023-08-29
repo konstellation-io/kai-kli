@@ -1,4 +1,4 @@
-package registry
+package processregistry
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ import (
 	"github.com/konstellation-io/kli/internal/services/configuration"
 )
 
-func (c *processRegistryClient) Register(server *configuration.Server, processFile *os.File,
+func (c *registeredProcessClient) Register(server *configuration.Server, processFile *os.File,
 	productID, processID, processType, version string) (string, error) {
 	query := `
 		mutation RegisterProcess($input: RegisterProcessInput!) {

@@ -3,7 +3,7 @@ package render
 import (
 	"github.com/konstellation-io/krt/pkg/krt"
 
-	registry "github.com/konstellation-io/kli/api/process-registry"
+	"github.com/konstellation-io/kli/api/processregistry"
 	"github.com/konstellation-io/kli/internal/services/configuration"
 )
 
@@ -15,5 +15,5 @@ type Renderer interface {
 	RenderWorkflows(workflows []krt.Workflow)
 	RenderProcesses(processes []krt.Process)
 	RenderConfiguration(scope string, config map[string]string)
-	RenderProcessRegistries(registries []registry.ProcessRegistry)
+	RenderRegisteredProcesses(registries []processregistry.RegisteredProcess)
 }
