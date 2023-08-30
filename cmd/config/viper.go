@@ -19,7 +19,7 @@ const (
 
 	_defaultKaiConfigFile  = "kai.conf"
 	_defaultKaiFolder      = ".kai"
-	_defaultRequestTimeout = 5 * time.Minute
+	_defaultRequestTimeout = 2 * time.Minute
 )
 
 func InitConfigWithBuildVersion(buildVersion string) error {
