@@ -24,8 +24,8 @@ builds:
         - GO111MODULE=on
         - CGO_ENABLED=0
       ldflags:
-        - -s -w -X github.com/konstellation-io/kai-kli/internal/build.Version={{.Version}}
-        - -X github.com/konstellation-io/kai-kli/internal/build.Date={{time "2006-01-02"}}
+        - -s -w -X main.version={{.Version}}
+        - -X main.date={{time "2006-01-02"}}
     id: macos
     goos: [darwin]
     goarch: [amd64, arm64]
@@ -61,7 +61,7 @@ nfpms:
     homepage: https://github.com/konstellation-io/kai-kli
     description: CLI tool to manage Konstellation
     file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}-{{ .Arch }}"
-    bindir: /usr/bin
+    bindir: /usr
     formats:
       - deb
       - rpm
@@ -78,6 +78,23 @@ brews:
     commit_author:
       name: goreleaserbot
       email: releases@konstellation.io
+
+scoops:
+  - name: kli
+    commit_author:
+      name: goreleaserbot
+      email: releases@konstellation.io
+    commit_msg_template: "Scoop update for {{ .ProjectName }} version {{ .Version }}"
+    homepage: https://konstellation.io
+    description: A CLI to access, query and manage KAI servers.
+    license: MIT
+    repository:
+      owner: konstellation-io
+      name: scoop-bucket
+      branch: main
+      token: "{{ .Env.SCOOP_BUCKET_GITHUB_TOKEN }}"
+      pull_request:
+        enabled: false
 
 # https://goreleaser.com/customization/checksum/
 checksum:
