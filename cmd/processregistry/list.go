@@ -14,7 +14,7 @@ const (
 	_processTypeFlag = "type"
 )
 
-// NewListCmd creates a new command to list process registries in the given server for a given product.
+// NewListCmd creates a new command to list registered process for a given product.
 func NewListCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "list <product_id> [--type <process_type>] [opts...]",
@@ -23,7 +23,7 @@ func NewListCmd(logger logging.Interface) *cobra.Command {
 		Annotations: map[string]string{
 			"authenticated": "true",
 		},
-		Short:   "List all processes for the given product on the given server with optional filters",
+		Short:   "List all registered processes for a given product with optional filters",
 		Example: "$ kli process-registry ls <product_id> [opts...]",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			productID := args[0]

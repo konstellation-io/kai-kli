@@ -23,12 +23,12 @@ import (
 type ListProcessSuite struct {
 	suite.Suite
 
-	logger               *mocks.MockLogger
-	renderer             *mocks.MockRenderer
-	registeredProcessAPI *mocks.MockRegisteredProcessInterface
-	manager              *processRegistryCMD.Handler
-	configuration        *configuration.KaiConfigService
-	tmpDir               string
+	logger             *mocks.MockLogger
+	renderer           *mocks.MockRenderer
+	processRegistryAPI *mocks.MockProcessRegistryInterface
+	manager            *processRegistryCMD.Handler
+	configuration      *configuration.KaiConfigService
+	tmpDir             string
 }
 
 func TestListProcessSuite(t *testing.T) {
@@ -45,12 +45,12 @@ func (s *ListProcessSuite) SetupSuite() {
 
 	s.renderer = renderer
 
-	s.registeredProcessAPI = mocks.NewMockRegisteredProcessInterface(ctrl)
+	s.processRegistryAPI = mocks.NewMockProcessRegistryInterface(ctrl)
 
 	s.manager = processRegistryCMD.NewHandler(
 		s.logger,
 		renderer,
-		s.registeredProcessAPI,
+		s.processRegistryAPI,
 	)
 
 	tmpDir, err := os.MkdirTemp("", "TestAddServer_*")
@@ -93,7 +93,7 @@ func (s *ListProcessSuite) BeforeTest(_, _ string) {
 	s.Require().NoError(err)
 }
 
-func (s *ListProcessSuite) TestListRegisteredProcesses() {
+func (s *ListProcessSuite) TestList() {
 	// GIVEN
 	processType := _processType
 	productID := _productID
@@ -111,7 +111,7 @@ func (s *ListProcessSuite) TestListRegisteredProcesses() {
 
 	retrievedRegisteredProcesses := []processRegistryAPI.RegisteredProcess{testRegisteredProcess}
 
-	s.registeredProcessAPI.EXPECT().List(gomock.Any(), productID, processType).Return(
+	s.processRegistryAPI.EXPECT().List(gomock.Any(), productID, processType).Return(
 		retrievedRegisteredProcesses,
 		nil,
 	)
@@ -128,13 +128,13 @@ func (s *ListProcessSuite) TestListRegisteredProcesses() {
 	s.Require().NoError(err)
 }
 
-func (s *ListProcessSuite) TestListRegisteredProcessesAPIError() {
+func (s *ListProcessSuite) TestList_APIError() {
 	// GIVEN
 	processType := _processType
 	productID := _productID
 	serverName := _serverName
 
-	s.registeredProcessAPI.EXPECT().List(gomock.Any(), productID, processType).Return(
+	s.processRegistryAPI.EXPECT().List(gomock.Any(), productID, processType).Return(
 		nil,
 		fmt.Errorf("mock error"),
 	)

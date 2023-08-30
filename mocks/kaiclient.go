@@ -34,16 +34,16 @@ func (m *MockInterface) EXPECT() *MockInterfaceMockRecorder {
 	return m.recorder
 }
 
-// RegisteredProcess mocks base method.
-func (m *MockInterface) RegisteredProcess() processregistry.ProcessRegistryInterface {
+// ProcessRegistry mocks base method.
+func (m *MockInterface) ProcessRegistry() processregistry.ProcessRegistryInterface {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RegisteredProcess")
+	ret := m.ctrl.Call(m, "ProcessRegistry")
 	ret0, _ := ret[0].(processregistry.ProcessRegistryInterface)
 	return ret0
 }
 
-// RegisteredProcess indicates an expected call of RegisteredProcess.
-func (mr *MockInterfaceMockRecorder) RegisteredProcess() *gomock.Call {
+// ProcessRegistry indicates an expected call of ProcessRegistry.
+func (mr *MockInterfaceMockRecorder) ProcessRegistry() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisteredProcess", reflect.TypeOf((*MockInterface)(nil).RegisteredProcess))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ProcessRegistry", reflect.TypeOf((*MockInterface)(nil).ProcessRegistry))
 }

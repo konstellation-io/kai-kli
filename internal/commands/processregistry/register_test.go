@@ -28,12 +28,12 @@ const (
 type RegisterProcessSuite struct {
 	suite.Suite
 
-	renderer             *mocks.MockRenderer
-	logger               *mocks.MockLogger
-	manager              *processregistry.Handler
-	registeredProcessAPI *mocks.MockRegisteredProcessInterface
-	configuration        *configuration.KaiConfigService
-	tmpDir               string
+	renderer           *mocks.MockRenderer
+	logger             *mocks.MockLogger
+	manager            *processregistry.Handler
+	processRegistryAPI *mocks.MockProcessRegistryInterface
+	configuration      *configuration.KaiConfigService
+	tmpDir             string
 }
 
 func TestRegisterProcessSuite(t *testing.T) {
@@ -50,12 +50,12 @@ func (s *RegisterProcessSuite) SetupSuite() {
 
 	s.renderer = renderer
 
-	s.registeredProcessAPI = mocks.NewMockRegisteredProcessInterface(ctrl)
+	s.processRegistryAPI = mocks.NewMockProcessRegistryInterface(ctrl)
 
 	s.manager = processregistry.NewHandler(
 		s.logger,
 		renderer,
-		s.registeredProcessAPI,
+		s.processRegistryAPI,
 	)
 
 	tmpDir, err := os.MkdirTemp("", "TestAddServer_*")
@@ -109,7 +109,7 @@ func (s *RegisterProcessSuite) TestRegisterNewServer_ValidPaths_ExpectOk() {
 	dockerfilePath := "../../../testdata/sample-trigger/Dockerfile"
 	productID := _productID
 
-	s.registeredProcessAPI.EXPECT().
+	s.processRegistryAPI.EXPECT().
 		Register(gomock.Any(), gomock.Any(), productID, processID, processType, version).
 		Return(registeredProcessID, nil)
 
