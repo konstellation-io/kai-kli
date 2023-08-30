@@ -8,5 +8,5 @@ import (
 
 // Interface first level methods.
 type Interface interface { //nolint: golint
-	ProcessRegistry() processregistry.ApiClient
+	ProcessRegistry() processregistry.APIClient
 }

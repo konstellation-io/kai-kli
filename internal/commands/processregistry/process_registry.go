@@ -12,13 +12,13 @@ import (
 type Handler struct {
 	logger                logging.Interface
 	renderer              render.Renderer
-	processRegistryClient processregistry.ApiClient
+	processRegistryClient processregistry.APIClient
 	authentication        *auth.AuthenticationService
 	configService         *configuration.KaiConfigService
 }
 
 func NewHandler(logger logging.Interface, renderer render.Renderer,
-	processRegistryCli processregistry.ApiClient) *Handler {
+	processRegistryCli processregistry.APIClient) *Handler {
 	return &Handler{
 		logger:                logger,
 		renderer:              renderer,

@@ -35,10 +35,10 @@ func (m *MockInterface) EXPECT() *MockInterfaceMockRecorder {
 }
 
 // ProcessRegistry mocks base method.
-func (m *MockInterface) ProcessRegistry() processregistry.ApiClient {
+func (m *MockInterface) ProcessRegistry() processregistry.APIClient {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ProcessRegistry")
-	ret0, _ := ret[0].(processregistry.ApiClient)
+	ret0, _ := ret[0].(processregistry.APIClient)
 	return ret0
 }
 

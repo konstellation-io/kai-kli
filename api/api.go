@@ -8,11 +8,11 @@ import (
 // KAI object to implement access to KAI API.
 type KAI struct {
 	gqlManager      *graphql.GqlManager
-	processRegistry processregistry.ApiClient
+	processRegistry processregistry.APIClient
 }
 
 // ProcessRegistry access to methods to interact with the Process Registry.
-func (a *KAI) ProcessRegistry() processregistry.ApiClient {
+func (a *KAI) ProcessRegistry() processregistry.APIClient {
 	return a.processRegistry
 }
 
