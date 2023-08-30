@@ -20,19 +20,19 @@ type RegisteredProcess struct {
 
 //go:generate mockgen -source=${GOFILE} -destination=../../mocks/registry_client.go -package=mocks
 
-type RegisteredProcessInterface interface {
+type ProcessRegistryInterface interface {
 	Register(server *configuration.Server, processFile *os.File, productID,
 		processID, processType, version string) (string, error)
 	List(server *configuration.Server, productID, processType string) ([]RegisteredProcess, error)
 }
 
-type registeredProcessClient struct {
+type processRegistryClient struct {
 	client *graphql.GqlManager
 }
 
 // New creates a new struct to access Versions methods.
-func New(gql *graphql.GqlManager) RegisteredProcessInterface {
-	return &registeredProcessClient{
+func New(gql *graphql.GqlManager) ProcessRegistryInterface {
+	return &processRegistryClient{
 		gql,
 	}
 }

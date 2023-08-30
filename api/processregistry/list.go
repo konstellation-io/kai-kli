@@ -4,7 +4,7 @@ import (
 	"github.com/konstellation-io/kli/internal/services/configuration"
 )
 
-func (c *registeredProcessClient) List(
+func (c *processRegistryClient) List(
 	server *configuration.Server, productID, processType string,
 ) ([]RegisteredProcess, error) {
 	query := `
