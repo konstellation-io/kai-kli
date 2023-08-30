@@ -27,7 +27,7 @@ func (c *Handler) ListProcesses(opts *ListProcessesOpts) error {
 		return err
 	}
 
-	registeredProcesses, err := c.registeredProcessClient.List(
+	registeredProcesses, err := c.processRegistryClient.List(
 		srv, opts.ProductID, string(opts.ProcessType),
 	)
 	if err != nil {

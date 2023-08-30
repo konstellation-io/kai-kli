@@ -21,5 +21,5 @@ func TestNewKaiClient(t *testing.T) {
 
 	k := api.NewKaiClient()
 
-	require.NotEmpty(t, k.RegisteredProcess())
+	require.NotEmpty(t, k.ProcessRegistry())
 }

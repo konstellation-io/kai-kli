@@ -73,7 +73,7 @@ func NewRegisterCmd(logger logging.Interface) *cobra.Command {
 			err = processregistry.NewHandler(
 				logger,
 				r,
-				api.NewKaiClient().RegisteredProcess(),
+				api.NewKaiClient().ProcessRegistry(),
 			).
 				RegisterProcess(&processregistry.RegisterProcessOpts{
 					ServerName:  serverName,

@@ -42,7 +42,7 @@ func NewListCmd(logger logging.Interface) *cobra.Command {
 			err = processregistry.NewHandler(
 				logger,
 				r,
-				api.NewKaiClient().RegisteredProcess(),
+				api.NewKaiClient().ProcessRegistry(),
 			).
 				ListProcesses(&processregistry.ListProcessesOpts{
 					ServerName:  serverName,

@@ -78,7 +78,7 @@ func NewRootCmd(
 	cmd.AddCommand(workflow.NewWorkflowCmd(logger))
 	cmd.AddCommand(process.NewProcessCmd(logger))
 	cmd.AddCommand(configuration2.NewConfigurationCmd(logger))
-	cmd.AddCommand(processregistry.NewRegisteredProcessCmd(logger))
+	cmd.AddCommand(processregistry.NewProcessRegistryCmd(logger))
 
 	return cmd
 }
