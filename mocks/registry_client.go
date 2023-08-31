@@ -13,31 +13,31 @@ import (
 	configuration "github.com/konstellation-io/kli/internal/services/configuration"
 )
 
-// MockProcessRegistryInterface is a mock of ProcessRegistryInterface interface.
-type MockProcessRegistryInterface struct {
+// MockAPIClient is a mock of APIClient interface.
+type MockAPIClient struct {
 	ctrl     *gomock.Controller
-	recorder *MockProcessRegistryInterfaceMockRecorder
+	recorder *MockAPIClientMockRecorder
 }
 
-// MockProcessRegistryInterfaceMockRecorder is the mock recorder for MockProcessRegistryInterface.
-type MockProcessRegistryInterfaceMockRecorder struct {
-	mock *MockProcessRegistryInterface
+// MockAPIClientMockRecorder is the mock recorder for MockAPIClient.
+type MockAPIClientMockRecorder struct {
+	mock *MockAPIClient
 }
 
-// NewMockProcessRegistryInterface creates a new mock instance.
-func NewMockProcessRegistryInterface(ctrl *gomock.Controller) *MockProcessRegistryInterface {
-	mock := &MockProcessRegistryInterface{ctrl: ctrl}
-	mock.recorder = &MockProcessRegistryInterfaceMockRecorder{mock}
+// NewMockAPIClient creates a new mock instance.
+func NewMockAPIClient(ctrl *gomock.Controller) *MockAPIClient {
+	mock := &MockAPIClient{ctrl: ctrl}
+	mock.recorder = &MockAPIClientMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockProcessRegistryInterface) EXPECT() *MockProcessRegistryInterfaceMockRecorder {
+func (m *MockAPIClient) EXPECT() *MockAPIClientMockRecorder {
 	return m.recorder
 }
 
 // List mocks base method.
-func (m *MockProcessRegistryInterface) List(server *configuration.Server, productID, processType string) ([]processregistry.RegisteredProcess, error) {
+func (m *MockAPIClient) List(server *configuration.Server, productID, processType string) ([]processregistry.RegisteredProcess, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List", server, productID, processType)
 	ret0, _ := ret[0].([]processregistry.RegisteredProcess)
@@ -46,22 +46,22 @@ func (m *MockProcessRegistryInterface) List(server *configuration.Server, produc
 }
 
 // List indicates an expected call of List.
-func (mr *MockProcessRegistryInterfaceMockRecorder) List(server, productID, processType interface{}) *gomock.Call {
+func (mr *MockAPIClientMockRecorder) List(server, productID, processType interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockProcessRegistryInterface)(nil).List), server, productID, processType)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockAPIClient)(nil).List), server, productID, processType)
 }
 
 // Register mocks base method.
-func (m *MockProcessRegistryInterface) Register(server *configuration.Server, processFile *os.File, productID, processID, processType, version string) (string, error) {
+func (m *MockAPIClient) Register(server *configuration.Server, processFile *os.File, productID, processID, processType, version string) (*processregistry.RegisteredProcess, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Register", server, processFile, productID, processID, processType, version)
-	ret0, _ := ret[0].(string)
+	ret0, _ := ret[0].(*processregistry.RegisteredProcess)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Register indicates an expected call of Register.
-func (mr *MockProcessRegistryInterfaceMockRecorder) Register(server, processFile, productID, processID, processType, version interface{}) *gomock.Call {
+func (mr *MockAPIClientMockRecorder) Register(server, processFile, productID, processID, processType, version interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Register", reflect.TypeOf((*MockProcessRegistryInterface)(nil).Register), server, processFile, productID, processID, processType, version)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Register", reflect.TypeOf((*MockAPIClient)(nil).Register), server, processFile, productID, processID, processType, version)
 }
