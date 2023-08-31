@@ -17,6 +17,7 @@ func (c *processRegistryClient) List(
 					image
 					uploadDate
 					owner
+					status
 			}
 		}
 		`
