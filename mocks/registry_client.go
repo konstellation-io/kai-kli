@@ -9,6 +9,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
+	processregistry "github.com/konstellation-io/kli/api/processregistry"
 	configuration "github.com/konstellation-io/kli/internal/services/configuration"
 )
 
@@ -33,6 +34,21 @@ func NewMockProcessRegistryInterface(ctrl *gomock.Controller) *MockProcessRegist
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockProcessRegistryInterface) EXPECT() *MockProcessRegistryInterfaceMockRecorder {
 	return m.recorder
+}
+
+// List mocks base method.
+func (m *MockProcessRegistryInterface) List(server *configuration.Server, productID, processType string) ([]processregistry.RegisteredProcess, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "List", server, productID, processType)
+	ret0, _ := ret[0].([]processregistry.RegisteredProcess)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// List indicates an expected call of List.
+func (mr *MockProcessRegistryInterfaceMockRecorder) List(server, productID, processType interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockProcessRegistryInterface)(nil).List), server, productID, processType)
 }
 
 // Register mocks base method.

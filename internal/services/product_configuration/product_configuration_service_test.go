@@ -76,16 +76,17 @@ func (ch *ProductConfigurationServiceTest) TestReadProductConfig_ReadExistingCon
 		ch.True(reflect.DeepEqual(defaultConfig.Workflows[i].Config, wf.Config))
 
 		for j, pr := range wf.Processes { //nolint:gocritic
-			ch.Equal(defaultConfig.Workflows[i].Processes[j].Name, pr.Name)
-			ch.Equal(defaultConfig.Workflows[i].Processes[j].Type, pr.Type)
-			ch.Equal(defaultConfig.Workflows[i].Processes[j].Image, pr.Image)
-			ch.Equal(&defaultConfig.Workflows[i].Processes[j].Replicas, &pr.Replicas) //nolint:gosec
-			ch.Equal(&defaultConfig.Workflows[i].Processes[j].GPU, &pr.GPU)           //nolint:gosec
-			ch.Equal(defaultConfig.Workflows[i].Processes[j].ObjectStore, pr.ObjectStore)
-			ch.Equal(defaultConfig.Workflows[i].Processes[j].Subscriptions, pr.Subscriptions)
+			defaultConfigProcess := defaultConfig.Workflows[i].Processes[j]
+			ch.Equal(defaultConfigProcess.Name, pr.Name)
+			ch.Equal(defaultConfigProcess.Type, pr.Type)
+			ch.Equal(defaultConfigProcess.Image, pr.Image)
+			ch.Equal(*defaultConfigProcess.Replicas, *pr.Replicas)
+			ch.Equal(*defaultConfigProcess.GPU, *pr.GPU)
+			ch.Equal(defaultConfigProcess.ObjectStore, pr.ObjectStore)
+			ch.Equal(defaultConfigProcess.Subscriptions, pr.Subscriptions)
 			ch.Empty(pr.Secrets)
-			ch.True(reflect.DeepEqual(defaultConfig.Workflows[i].Processes[j].Config, pr.Config))
-			ch.Equal(defaultConfig.Workflows[i].Processes[j].Networking, pr.Networking)
+			ch.True(reflect.DeepEqual(defaultConfigProcess.Config, pr.Config))
+			ch.Equal(defaultConfigProcess.Networking, pr.Networking)
 		}
 	}
 }
@@ -122,16 +123,17 @@ func (ch *ProductConfigurationServiceTest) TestWriteProductConfig_WriteValidConf
 		ch.True(reflect.DeepEqual(defaultConfig.Workflows[i].Config, wf.Config))
 
 		for j, pr := range wf.Processes { //nolint:gocritic
-			ch.Equal(defaultConfig.Workflows[i].Processes[j].Name, pr.Name)
-			ch.Equal(defaultConfig.Workflows[i].Processes[j].Type, pr.Type)
-			ch.Equal(defaultConfig.Workflows[i].Processes[j].Image, pr.Image)
-			ch.Equal(&defaultConfig.Workflows[i].Processes[j].Replicas, &pr.Replicas) //nolint:gosec
-			ch.Equal(&defaultConfig.Workflows[i].Processes[j].GPU, &pr.GPU)           //nolint:gosec
-			ch.Equal(defaultConfig.Workflows[i].Processes[j].ObjectStore, pr.ObjectStore)
-			ch.Equal(defaultConfig.Workflows[i].Processes[j].Subscriptions, pr.Subscriptions)
+			defaultConfigProcess := defaultConfig.Workflows[i].Processes[j]
+			ch.Equal(defaultConfigProcess.Name, pr.Name)
+			ch.Equal(defaultConfigProcess.Type, pr.Type)
+			ch.Equal(defaultConfigProcess.Image, pr.Image)
+			ch.Equal(*defaultConfigProcess.Replicas, *pr.Replicas)
+			ch.Equal(*defaultConfigProcess.GPU, *pr.GPU)
+			ch.Equal(defaultConfigProcess.ObjectStore, pr.ObjectStore)
+			ch.Equal(defaultConfigProcess.Subscriptions, pr.Subscriptions)
 			ch.Empty(pr.Secrets)
-			ch.True(reflect.DeepEqual(defaultConfig.Workflows[i].Processes[j].Config, pr.Config))
-			ch.Equal(defaultConfig.Workflows[i].Processes[j].Networking, pr.Networking)
+			ch.True(reflect.DeepEqual(defaultConfigProcess.Config, pr.Config))
+			ch.Equal(defaultConfigProcess.Networking, pr.Networking)
 		}
 	}
 }
