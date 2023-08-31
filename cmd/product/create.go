@@ -1,6 +1,7 @@
 package product
 
 import (
+	"github.com/konstellation-io/kli/api"
 	"github.com/spf13/cobra"
 
 	"github.com/konstellation-io/kli/internal/commands/product"
@@ -38,22 +39,29 @@ func NewCreateCmd(logger logging.Interface) *cobra.Command {
 				return err
 			}
 
-			//nolint:gocritic // Needed for future features
-			/*	initLocal, err := cmd.Flags().GetBool(_initLocalFlag)
-				if err != nil {
-					return err
-				}
+			initLocal, err := cmd.Flags().GetBool(_initLocalFlag)
+			if err != nil {
+				return err
+			}
 
-				localPath, err := cmd.Flags().GetString(_localPathFlag)
-				if err != nil {
-					return err
-				}*/
+			localPath, err := cmd.Flags().GetString(_localPathFlag)
+			if err != nil {
+				return err
+			}
+
+			server, err := cmd.Flags().GetString("server")
+			if err != nil {
+				return err
+			}
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
-			err = product.NewHandler(logger, r).CreateProduct(&product.CreateProductOpts{
+			err = product.NewHandler(logger, r, api.NewKaiClient().ProductClient()).CreateProduct(&product.CreateProductOpts{
 				ProductName: productName,
 				Version:     version,
 				Description: description,
+				InitLocal:   initLocal,
+				LocalPath:   localPath,
+				Server:      server,
 			})
 			if err != nil {
 				return err
@@ -63,8 +71,10 @@ func NewCreateCmd(logger logging.Interface) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().String(_versionFlag, "", "The version of the product.")
+	cmd.Flags().String(_versionFlag, "v0.0.1", "The version of the product.")
 	cmd.Flags().String(_descriptionFlag, "", "The description of the product.")
+	cmd.Flags().Bool(_initLocalFlag, false, "If true, a local product environment is initialized.")
+	cmd.Flags().String(_localPathFlag, "", "The path where the local environment is initialized.")
 
 	return cmd
 }

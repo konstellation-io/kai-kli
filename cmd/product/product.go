@@ -12,12 +12,17 @@ func NewProductCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "product <command>",
 		Short: "Manage products",
+		Annotations: map[string]string{
+			"authenticated": "true",
+		},
 		Example: heredoc.Doc(`
 			$ kli products ls [opts...]
 			$ kli product create <product_name> [opts...]
 			$ kli product bind <product_name> [opts...]
 		`),
 	}
+
+	cmd.PersistentFlags().StringP("server", "s", "", "KAI server to use")
 
 	cmd.AddCommand(
 		NewCreateCmd(logger),

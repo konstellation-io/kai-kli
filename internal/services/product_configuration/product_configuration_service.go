@@ -88,7 +88,11 @@ func GetProductConfigFilePath(product string, productPath ...string) (string, er
 	productConfigPath := currentDir
 
 	if len(productPath) != 0 {
-		productConfigPath = path.Join(productPath...)
+		if path.IsAbs(productPath[0]) {
+			productConfigPath = path.Join(productPath[0])
+		} else {
+			productConfigPath = path.Join(currentDir, productPath[0])
+		}
 	}
 
 	return path.Join(productConfigPath, viper.GetString(config.KaiProductConfigFolder), getProductKrt(product)), nil
