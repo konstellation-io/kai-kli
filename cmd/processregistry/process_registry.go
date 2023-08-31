@@ -19,6 +19,9 @@ func NewProcessRegistryCmd(logger logging.Interface) *cobra.Command {
 		`),
 	}
 
+	cmd.PersistentFlags().StringP(_serverFlag, "s", "", "KAI server to use")
+	cmd.MarkFlagRequired(_serverFlag)
+
 	cmd.AddCommand(
 		NewListCmd(logger),
 		NewRegisterCmd(logger),

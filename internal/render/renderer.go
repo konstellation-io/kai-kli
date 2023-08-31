@@ -170,7 +170,7 @@ func (r *CliRenderer) RenderRegisteredProcesses(registeredProcesses []processreg
 	}
 
 	r.tableWriter.SetHeader([]string{
-		"Process Name", "Process Version", "Process type", "Image", "Upload Date", "Owner",
+		"Name", "Version", "Type", "Image", "Upload Date", "Owner", "Status",
 	})
 
 	for _, pr := range registeredProcesses {
@@ -181,6 +181,7 @@ func (r *CliRenderer) RenderRegisteredProcesses(registeredProcesses []processreg
 			pr.Image,
 			pr.UploadDate.Format(time.RFC3339),
 			pr.Owner,
+			pr.Status,
 		})
 	}
 

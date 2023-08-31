@@ -66,7 +66,7 @@ func (c *Handler) RegisterProcess(opts *RegisterProcessOpts) error {
 		return err
 	}
 
-	c.logger.Success(fmt.Sprintf("Process registered with ID: %s", registeredProcess))
+	c.logger.Success(fmt.Sprintf("Creating image %q", registeredProcess.Image))
 
 	return nil
 }
