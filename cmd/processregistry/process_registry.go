@@ -13,13 +13,14 @@ func NewProcessRegistryCmd(logger logging.Interface) *cobra.Command {
 		Use:   "process-registry <command>",
 		Short: "Manage process-registry",
 		Example: heredoc.Doc(`
-			$ kli process-registry ls [opts...]
+			$ kli process-registry ls <product_id> [opts...]
 			$ kli process-registry register <process_type> <process_id> [opts...]
 			$ kli process-registry unregister <process_id> [opts...]
 		`),
 	}
 
 	cmd.AddCommand(
+		NewListCmd(logger),
 		NewRegisterCmd(logger),
 	)
 

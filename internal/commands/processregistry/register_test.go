@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	"github.com/konstellation-io/kli/cmd/config"
-	processregistry "github.com/konstellation-io/kli/internal/commands/process-registry"
+	"github.com/konstellation-io/kli/internal/commands/processregistry"
 	"github.com/konstellation-io/kli/internal/services/configuration"
 	"github.com/konstellation-io/kli/mocks"
 )
