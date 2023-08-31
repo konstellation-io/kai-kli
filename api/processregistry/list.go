@@ -6,7 +6,7 @@ import (
 
 func (c *processRegistryClient) List(
 	server *configuration.Server, productID, processType string,
-) ([]RegisteredProcess, error) {
+) ([]*RegisteredProcess, error) {
 	query := `
 		query RegisteredProcesses($productID: ID!, $processType: String) {
 			registeredProcesses(productID: $productID, processType: $processType) {
@@ -27,7 +27,7 @@ func (c *processRegistryClient) List(
 	}
 
 	var respData struct {
-		RegisteredProcesses []RegisteredProcess `json:"registeredProcesses"`
+		RegisteredProcesses []*RegisteredProcess `json:"registeredProcesses"`
 	}
 
 	err := c.client.MakeRequest(server, query, vars, &respData)

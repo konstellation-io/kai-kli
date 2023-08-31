@@ -24,7 +24,7 @@ type RegisteredProcess struct {
 type APIClient interface {
 	Register(server *configuration.Server, processFile *os.File, productID,
 		processID, processType, version string) (*RegisteredProcess, error)
-	List(server *configuration.Server, productID, processType string) ([]RegisteredProcess, error)
+	List(server *configuration.Server, productID, processType string) ([]*RegisteredProcess, error)
 }
 
 type processRegistryClient struct {

@@ -163,7 +163,7 @@ func (r *CliRenderer) RenderConfiguration(scope string, config map[string]string
 	r.tableWriter.Render()
 }
 
-func (r *CliRenderer) RenderRegisteredProcesses(registeredProcesses []processregistry.RegisteredProcess) {
+func (r *CliRenderer) RenderRegisteredProcesses(registeredProcesses []*processregistry.RegisteredProcess) {
 	if len(registeredProcesses) < 1 {
 		r.logger.Info("No processes found.")
 		return

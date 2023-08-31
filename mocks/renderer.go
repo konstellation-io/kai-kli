@@ -61,7 +61,7 @@ func (mr *MockRendererMockRecorder) RenderProcesses(processes interface{}) *gomo
 }
 
 // RenderRegisteredProcesses mocks base method.
-func (m *MockRenderer) RenderRegisteredProcesses(registries []processregistry.RegisteredProcess) {
+func (m *MockRenderer) RenderRegisteredProcesses(registries []*processregistry.RegisteredProcess) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "RenderRegisteredProcesses", registries)
 }
