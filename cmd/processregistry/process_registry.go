@@ -20,7 +20,6 @@ func NewProcessRegistryCmd(logger logging.Interface) *cobra.Command {
 	}
 
 	cmd.PersistentFlags().StringP(_serverFlag, "s", "", "KAI server to use")
-	_ = cmd.MarkPersistentFlagRequired(_serverFlag)
 
 	cmd.AddCommand(
 		NewListCmd(logger),
