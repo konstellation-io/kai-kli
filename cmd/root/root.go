@@ -8,7 +8,7 @@ import (
 	"github.com/konstellation-io/kli/cmd/config"
 	configuration2 "github.com/konstellation-io/kli/cmd/configuration"
 	"github.com/konstellation-io/kli/cmd/process"
-	process_registry "github.com/konstellation-io/kli/cmd/process-registry"
+	"github.com/konstellation-io/kli/cmd/processregistry"
 	"github.com/konstellation-io/kli/cmd/product"
 	"github.com/konstellation-io/kli/cmd/server"
 	"github.com/konstellation-io/kli/cmd/workflow"
@@ -78,7 +78,7 @@ func NewRootCmd(
 	cmd.AddCommand(workflow.NewWorkflowCmd(logger))
 	cmd.AddCommand(process.NewProcessCmd(logger))
 	cmd.AddCommand(configuration2.NewConfigurationCmd(logger))
-	cmd.AddCommand(process_registry.NewProcessRegistryCmd(logger))
+	cmd.AddCommand(processregistry.NewProcessRegistryCmd(logger))
 
 	return cmd
 }

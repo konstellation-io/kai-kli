@@ -8,7 +8,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	registry "github.com/konstellation-io/kli/api/process-registry"
+	processregistry "github.com/konstellation-io/kli/api/processregistry"
 )
 
 // MockInterface is a mock of Interface interface.
@@ -35,10 +35,10 @@ func (m *MockInterface) EXPECT() *MockInterfaceMockRecorder {
 }
 
 // ProcessRegistry mocks base method.
-func (m *MockInterface) ProcessRegistry() registry.ProcessRegistryInterface {
+func (m *MockInterface) ProcessRegistry() processregistry.APIClient {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ProcessRegistry")
-	ret0, _ := ret[0].(registry.ProcessRegistryInterface)
+	ret0, _ := ret[0].(processregistry.APIClient)
 	return ret0
 }
 
