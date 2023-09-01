@@ -53,6 +53,22 @@ scoop bucket add konstellation-io https://github.com/konstellation-io/scoop-buck
 scoop install konstellation-io/kli
 ```
 
+### Installation script
+
+Fetch the script and execute it locally.
+
+```
+$ curl -fsSL -o get_kli.sh https://raw.githubusercontent.com/konstellation-io/kai-kli/main/scripts/get-kli.sh
+$ chmod 700 get_kli.sh
+$ ./get_kli.sh
+```
+
+Use it with `--help` flag to get a list of options.
+
+```
+./get_kli.sh --help
+```
+
 ## Frameworks and libraries
 
 - [gomock](https://github.com/golang/mock) a mock library.
