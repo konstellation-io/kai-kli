@@ -25,7 +25,7 @@ type ListProcessSuite struct {
 
 	logger             *mocks.MockLogger
 	renderer           *mocks.MockRenderer
-	processRegistryAPI *mocks.MockProcessRegistryInterface
+	processRegistryAPI *mocks.MockAPIClient
 	manager            *processRegistryCMD.Handler
 	configuration      *configuration.KaiConfigService
 	tmpDir             string
@@ -45,7 +45,7 @@ func (s *ListProcessSuite) SetupSuite() {
 
 	s.renderer = renderer
 
-	s.processRegistryAPI = mocks.NewMockProcessRegistryInterface(ctrl)
+	s.processRegistryAPI = mocks.NewMockAPIClient(ctrl)
 
 	s.manager = processRegistryCMD.NewHandler(
 		s.logger,
