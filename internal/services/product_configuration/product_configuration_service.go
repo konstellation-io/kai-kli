@@ -7,6 +7,7 @@ import (
 	"path"
 	"strings"
 
+	"github.com/konstellation-io/krt/pkg/krt"
 	"github.com/spf13/viper"
 	"gopkg.in/yaml.v3"
 
@@ -37,14 +38,18 @@ func (c *ProductConfigService) GetConfiguration(product string, productPath ...s
 		return nil, ErrProductConfigNotFound
 	}
 
-	var productConfiguration KaiProductConfiguration
+	var productConfiguration krt.Krt
 
 	err = yaml.Unmarshal(configBytes, &productConfiguration)
 	if err != nil {
 		return nil, ErrProductConfigNotFound
 	}
 
-	return &productConfiguration, nil
+	fmt.Println(string(configBytes))
+
+	return &KaiProductConfiguration{
+		Krt: &productConfiguration,
+	}, nil
 }
 
 func (c *ProductConfigService) WriteConfiguration(newConfig *KaiProductConfiguration, product string, productPath ...string) error {
@@ -52,7 +57,7 @@ func (c *ProductConfigService) WriteConfiguration(newConfig *KaiProductConfigura
 		return ErrProductConfigNotFound
 	}
 
-	updatedConfig, err := yaml.Marshal(newConfig)
+	updatedConfig, err := yaml.Marshal(newConfig.Krt)
 	if err != nil {
 		return err
 	}

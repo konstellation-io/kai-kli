@@ -14,11 +14,16 @@ type Handler struct {
 	productClient kai.ProductClient
 }
 
-func NewHandler(logger logging.Interface, renderer render.Renderer, client kai.ProductClient) *Handler {
+func NewHandler(
+	logger logging.Interface,
+	renderer render.Renderer,
+	client kai.ProductClient,
+	configService *productconfiguration.ProductConfigService,
+) *Handler {
 	return &Handler{
 		logger:        logger,
 		renderer:      renderer,
-		configService: productconfiguration.NewProductConfigService(logger),
+		configService: configService,
 		productClient: client,
 	}
 }

@@ -103,9 +103,13 @@ func (kc *KaiConfiguration) GetServer(serverName string) (*Server, error) {
 }
 
 func (kc *KaiConfiguration) GetServerOrDefault(serverName string) (*Server, error) {
+	if serverName == "" {
+		return kc.GetDefaultServer()
+	}
+
 	_, server, err := kc.findServer(serverName)
 	if err != nil {
-		return kc.GetDefaultServer()
+		return nil, err
 	}
 
 	return server, nil

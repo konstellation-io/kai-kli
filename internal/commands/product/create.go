@@ -42,8 +42,7 @@ func (c *Handler) CreateProduct(opts *CreateProductOpts) error {
 
 	if opts.InitLocal {
 		if err := c.createLocalProductConfiguration(opts); err != nil {
-			c.logger.Warn(fmt.Sprintf("Couldn't create local configuration: %s", err.Error()))
-			return nil
+			return fmt.Errorf("creating local product's configuration: %w", err)
 		}
 
 		c.logger.Success(fmt.Sprintf("Product %q local configuration created.", opts.ProductName))
@@ -53,28 +52,20 @@ func (c *Handler) CreateProduct(opts *CreateProductOpts) error {
 }
 
 func (c *Handler) createLocalProductConfiguration(opts *CreateProductOpts) error {
-	//productConfigPath, err := productconfiguration.GetProductConfigFilePath(opts.LocalPath, opts.LocalPath)
-	//if err != nil {
-	//	return err
-	//}
-	//
-	//_, err = os.Stat(productConfigPath)
-	//if !os.IsNotExist(err) {
-	//	return ErrProductConfigurationAlreadyExists
-	//}
+	cfg, err := c.configService.GetConfiguration(opts.ProductName, opts.LocalPath)
+	if err != nil && !errors.Is(err, productconfiguration.ErrProductConfigNotFound) {
+		return err
+	}
 
-	cfg, _ := c.configService.GetConfiguration(opts.ProductName, opts.LocalPath)
 	if cfg != nil {
 		return ErrProductConfigurationAlreadyExists
 	}
 
-	err := c.configService.WriteConfiguration(
+	err = c.configService.WriteConfiguration(
 		&productconfiguration.KaiProductConfiguration{
 			Krt: &krt.Krt{
 				Version:     opts.Version,
 				Description: opts.Description,
-				Config:      map[string]string{},
-				Workflows:   []krt.Workflow{},
 			},
 		}, opts.ProductName, opts.LocalPath)
 	if err != nil {

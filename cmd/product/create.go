@@ -2,6 +2,7 @@ package product
 
 import (
 	"github.com/konstellation-io/kli/api"
+	productconfiguration "github.com/konstellation-io/kli/internal/services/product_configuration"
 	"github.com/spf13/cobra"
 
 	"github.com/konstellation-io/kli/internal/commands/product"
@@ -55,7 +56,10 @@ func NewCreateCmd(logger logging.Interface) *cobra.Command {
 			}
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
-			err = product.NewHandler(logger, r, api.NewKaiClient().ProductClient()).CreateProduct(&product.CreateProductOpts{
+
+			productConfigService := productconfiguration.NewProductConfigService(logger)
+
+			err = product.NewHandler(logger, r, api.NewKaiClient().ProductClient(), productConfigService).CreateProduct(&product.CreateProductOpts{
 				ProductName: productName,
 				Version:     version,
 				Description: description,
