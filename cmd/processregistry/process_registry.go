@@ -19,6 +19,8 @@ func NewProcessRegistryCmd(logger logging.Interface) *cobra.Command {
 		`),
 	}
 
+	cmd.PersistentFlags().String(_serverFlag, "v", "The server where the process will be registered.")
+
 	cmd.AddCommand(
 		NewListCmd(logger),
 		NewRegisterCmd(logger),

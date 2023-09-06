@@ -22,8 +22,11 @@ func NewCreateCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "create <product_name> [opts...]",
 		Aliases: []string{"add"},
-		Args:    cobra.ExactArgs(1),
-		Short:   "Add a new product",
+		Annotations: map[string]string{
+			"authenticated": "true",
+		},
+		Args:  cobra.ExactArgs(1),
+		Short: "Add a new product",
 		Example: `
     $ kli product create <product_name> [opts...]
 		`,
@@ -59,14 +62,15 @@ func NewCreateCmd(logger logging.Interface) *cobra.Command {
 
 			productConfigService := productconfiguration.NewProductConfigService(logger)
 
-			err = product.NewHandler(logger, r, api.NewKaiClient().ProductClient(), productConfigService).CreateProduct(&product.CreateProductOpts{
-				ProductName: productName,
-				Version:     version,
-				Description: description,
-				InitLocal:   initLocal,
-				LocalPath:   localPath,
-				Server:      server,
-			})
+			err = product.NewHandler(logger, r, api.NewKaiClient().ProductClient(), productConfigService).
+				CreateProduct(&product.CreateProductOpts{
+					ProductName: productName,
+					Version:     version,
+					Description: description,
+					InitLocal:   initLocal,
+					LocalPath:   localPath,
+					Server:      server,
+				})
 			if err != nil {
 				return err
 			}

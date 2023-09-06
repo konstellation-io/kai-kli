@@ -26,6 +26,8 @@ func NewProductCmd(logger logging.Interface) *cobra.Command {
 
 	cmd.AddCommand(
 		NewCreateCmd(logger),
+		NewBindCmd(logger),
+		NewListCmd(logger),
 	)
 
 	return cmd

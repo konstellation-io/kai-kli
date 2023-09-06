@@ -20,8 +20,8 @@ type CreateProductOpts struct {
 	LocalPath   string
 }
 
-func (c *Handler) CreateProduct(opts *CreateProductOpts) error {
-	configService := configuration.NewKaiConfigService(c.logger)
+func (h *Handler) CreateProduct(opts *CreateProductOpts) error {
+	configService := configuration.NewKaiConfigService(h.logger)
 
 	conf, err := configService.GetConfiguration()
 	if err != nil {
@@ -33,26 +33,26 @@ func (c *Handler) CreateProduct(opts *CreateProductOpts) error {
 		return err
 	}
 
-	err = c.productClient.CreateProduct(server, opts.ProductName, opts.Description)
+	err = h.productClient.CreateProduct(server, opts.ProductName, opts.Description)
 	if err != nil {
 		return fmt.Errorf("creating remote product: %w", err)
 	}
 
-	c.logger.Success(fmt.Sprintf("Product %s successfully created in the server %s", opts.ProductName, server.Name))
+	h.logger.Success(fmt.Sprintf("Product %s successfully created in the server %s", opts.ProductName, server.Name))
 
 	if opts.InitLocal {
-		if err := c.createLocalProductConfiguration(opts); err != nil {
+		if err := h.createLocalProductConfiguration(opts); err != nil {
 			return fmt.Errorf("creating local product's configuration: %w", err)
 		}
 
-		c.logger.Success(fmt.Sprintf("Product %q local configuration created.", opts.ProductName))
+		h.logger.Success(fmt.Sprintf("Product %q local configuration created.", opts.ProductName))
 	}
 
 	return nil
 }
 
-func (c *Handler) createLocalProductConfiguration(opts *CreateProductOpts) error {
-	cfg, err := c.configService.GetConfiguration(opts.ProductName, opts.LocalPath)
+func (h *Handler) createLocalProductConfiguration(opts *CreateProductOpts) error {
+	cfg, err := h.configService.GetConfiguration(opts.ProductName, opts.LocalPath)
 	if err != nil && !errors.Is(err, productconfiguration.ErrProductConfigNotFound) {
 		return err
 	}
@@ -61,7 +61,7 @@ func (c *Handler) createLocalProductConfiguration(opts *CreateProductOpts) error
 		return ErrProductConfigurationAlreadyExists
 	}
 
-	err = c.configService.WriteConfiguration(
+	err = h.configService.WriteConfiguration(
 		&productconfiguration.KaiProductConfiguration{
 			Krt: &krt.Krt{
 				Version:     opts.Version,

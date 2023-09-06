@@ -3,6 +3,7 @@
 package mocks
 
 import (
+	kai "github.com/konstellation-io/kli/api/kai"
 	configuration "github.com/konstellation-io/kli/internal/services/configuration"
 
 	mock "github.com/stretchr/testify/mock"
@@ -61,6 +62,115 @@ func (_c *MockProductClient_CreateProduct_Call) Return(_a0 error) *MockProductCl
 }
 
 func (_c *MockProductClient_CreateProduct_Call) RunAndReturn(run func(*configuration.Server, string, string) error) *MockProductClient_CreateProduct_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetProduct provides a mock function with given fields: server, id
+func (_m *MockProductClient) GetProduct(server *configuration.Server, id string) (*kai.Product, error) {
+	ret := _m.Called(server, id)
+
+	var r0 *kai.Product
+	var r1 error
+	if rf, ok := ret.Get(0).(func(*configuration.Server, string) (*kai.Product, error)); ok {
+		return rf(server, id)
+	}
+	if rf, ok := ret.Get(0).(func(*configuration.Server, string) *kai.Product); ok {
+		r0 = rf(server, id)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*kai.Product)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(*configuration.Server, string) error); ok {
+		r1 = rf(server, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockProductClient_GetProduct_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetProduct'
+type MockProductClient_GetProduct_Call struct {
+	*mock.Call
+}
+
+// GetProduct is a helper method to define mock.On call
+//   - server *configuration.Server
+//   - id string
+func (_e *MockProductClient_Expecter) GetProduct(server interface{}, id interface{}) *MockProductClient_GetProduct_Call {
+	return &MockProductClient_GetProduct_Call{Call: _e.mock.On("GetProduct", server, id)}
+}
+
+func (_c *MockProductClient_GetProduct_Call) Run(run func(server *configuration.Server, id string)) *MockProductClient_GetProduct_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(*configuration.Server), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockProductClient_GetProduct_Call) Return(_a0 *kai.Product, _a1 error) *MockProductClient_GetProduct_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockProductClient_GetProduct_Call) RunAndReturn(run func(*configuration.Server, string) (*kai.Product, error)) *MockProductClient_GetProduct_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetProducts provides a mock function with given fields: server
+func (_m *MockProductClient) GetProducts(server *configuration.Server) ([]kai.Product, error) {
+	ret := _m.Called(server)
+
+	var r0 []kai.Product
+	var r1 error
+	if rf, ok := ret.Get(0).(func(*configuration.Server) ([]kai.Product, error)); ok {
+		return rf(server)
+	}
+	if rf, ok := ret.Get(0).(func(*configuration.Server) []kai.Product); ok {
+		r0 = rf(server)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]kai.Product)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(*configuration.Server) error); ok {
+		r1 = rf(server)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockProductClient_GetProducts_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetProducts'
+type MockProductClient_GetProducts_Call struct {
+	*mock.Call
+}
+
+// GetProducts is a helper method to define mock.On call
+//   - server *configuration.Server
+func (_e *MockProductClient_Expecter) GetProducts(server interface{}) *MockProductClient_GetProducts_Call {
+	return &MockProductClient_GetProducts_Call{Call: _e.mock.On("GetProducts", server)}
+}
+
+func (_c *MockProductClient_GetProducts_Call) Run(run func(server *configuration.Server)) *MockProductClient_GetProducts_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(*configuration.Server))
+	})
+	return _c
+}
+
+func (_c *MockProductClient_GetProducts_Call) Return(_a0 []kai.Product, _a1 error) *MockProductClient_GetProducts_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockProductClient_GetProducts_Call) RunAndReturn(run func(*configuration.Server) ([]kai.Product, error)) *MockProductClient_GetProducts_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -2,7 +2,6 @@ package product_test
 
 import (
 	"errors"
-	"fmt"
 	"os"
 	"path"
 	"testing"
@@ -48,8 +47,6 @@ func (s *CreateProductSuite) SetupSuite() {
 
 	tmpDir, err := os.MkdirTemp(s.T().TempDir(), "")
 	s.Require().NoError(err)
-
-	fmt.Println(tmpDir)
 
 	kaiConfigPath := path.Join(tmpDir, ".kai", "kai.conf")
 	err = os.Mkdir(path.Dir(kaiConfigPath), os.FileMode(0750))
@@ -204,6 +201,7 @@ func (s *CreateProductSuite) TestCreateProduct_LocalConfigAlreadyExists() {
 
 	tmpProductPath, err := os.MkdirTemp(s.T().TempDir(), "")
 	s.Require().NoError(err)
+
 	defer os.RemoveAll(tmpProductPath)
 
 	err = s.productConfiguration.WriteConfiguration(&productconfiguration.KaiProductConfiguration{

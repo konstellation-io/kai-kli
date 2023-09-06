@@ -45,8 +45,6 @@ func (c *ProductConfigService) GetConfiguration(product string, productPath ...s
 		return nil, ErrProductConfigNotFound
 	}
 
-	fmt.Println(string(configBytes))
-
 	return &KaiProductConfiguration{
 		Krt: &productConfiguration,
 	}, nil
