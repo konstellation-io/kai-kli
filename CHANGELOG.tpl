@@ -1,11 +1,11 @@
 {{#releases}}
-## [{{name}}](https://github.com/alpiquero/nyx-test/tag/{{name}}) ({{date}})
+## [{{name}}](https://github.com/konstellation-io/kai-kli/tag/{{name}}) ({{date}})
 
 {{#sections}}
 ### {{name}}
 
 {{#commits}}
-* [[{{#short5}}{{sha}}{{/short5}}](https://github.com/alpiquero/nyx-test/commit/{{sha}})] {{message.fullMessage}} ({{authorAction.identity.name}}, {{#timestampISO8601}}{{commitAction.timeStamp.timeStamp}}{{/timestampISO8601}})
+* [[{{#short5}}{{sha}}{{/short5}}](https://github.com/konstellation-io/kai-kli/commit/{{sha}})] {{message.fullMessage}} ({{authorAction.identity.name}}, {{#timestampISO8601}}{{commitAction.timeStamp.timeStamp}}{{/timestampISO8601}})
 
 {{/commits}}
 {{^commits}}
