@@ -66,7 +66,7 @@ func (ch *ProductConfigurationServiceTest) TestReadProductConfig_ReadExistingCon
 	// THEN
 	ch.Require().NoError(err)
 	ch.NotNil(currentConfig)
-	ch.Equal(defaultConfig.Version, currentConfig.Version)
+	ch.Equal(defaultConfig.Krt.Version, currentConfig.Krt.Version)
 	ch.Equal(defaultConfig.Description, currentConfig.Description)
 	ch.True(reflect.DeepEqual(defaultConfig.Config, currentConfig.Config))
 
@@ -206,7 +206,7 @@ func (ch *ProductConfigurationServiceTest) createConfigFile(cfg productconfigura
 		return err
 	}
 
-	configBytes, err := yaml.Marshal(cfg)
+	configBytes, err := yaml.Marshal(cfg.Krt)
 	if err != nil {
 		return err
 	}

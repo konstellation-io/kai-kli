@@ -31,7 +31,7 @@ type RegisterProcessSuite struct {
 	renderer           *mocks.MockRenderer
 	logger             *mocks.MockLogger
 	manager            *processregistry.Handler
-	processRegistryAPI *mocks.MockProcessRegistryInterface
+	processRegistryAPI *mocks.MockAPIClient
 	configuration      *configuration.KaiConfigService
 	tmpDir             string
 }
@@ -50,7 +50,7 @@ func (s *RegisterProcessSuite) SetupSuite() {
 
 	s.renderer = renderer
 
-	s.processRegistryAPI = mocks.NewMockProcessRegistryInterface(ctrl)
+	s.processRegistryAPI = mocks.NewMockAPIClient(ctrl)
 
 	s.manager = processregistry.NewHandler(
 		s.logger,
