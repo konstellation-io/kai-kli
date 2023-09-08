@@ -30,8 +30,8 @@ type processRegistryClient struct {
 	client *graphql.GqlManager
 }
 
-// New creates a new struct to access Versions methods.
-func New(gql *graphql.GqlManager) APIClient {
+// NewClient creates a new struct to access Versions methods.
+func NewClient(gql *graphql.GqlManager) APIClient {
 	return &processRegistryClient{
 		gql,
 	}

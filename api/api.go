@@ -30,7 +30,7 @@ func NewKaiClient() *KAI {
 
 	return &KAI{
 		g,
-		processregistry.New(g),
+		processregistry.NewClient(g),
 		product.NewClient(g),
 	}
 }
