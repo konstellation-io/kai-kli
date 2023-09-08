@@ -202,19 +202,11 @@ golangci-lint run
 
 ## Versioning lifecycle
 
-In the development lifecycle of KLI there are three main stages depend if we are going to add a new feature, release a new version with some features or apply a fix to a current release.
+In the development lifecycle of KLI there we use the [Nyx](https://mooltiverse.github.io/nyx/) automatic semantic version tool.
 
-### Alphas
+In order to allow Nyx infer the next version to publish we use the [Angular](https://github.com/angular/angular/blob/main/CONTRIBUTING.md#-commit-message-format) commit convention standard.
 
-In order to add new features just create a feature branch from master, and after merger the Pull Request a workflow will run the tests and if everything pass a new alpha tag will be created (like *v0.0-alpha.0*) and a new release will be generaged with this tag.
-
-### Releases
-
-After some alpha versions we can create what we call a release, and to do that we have to run manual the Release Action. This workflow will create a new release branch and a new tag like *v0.0.0*. With this tag a new release will be generated.
-
-### Fixes
-
-If we find out a bug in a release, we can apply a bugfix just creating a fix branch from the specific release branch, and createing a Pull Request to the same release branc. When the Pull Request is merged, after pass the tests, a new fix tag will be created just increasing the patch number of the version, and a new release will be build and released.
+**WARNING**: If the above standard is not correctly followed Nyx won't be able to infer the next version and a new release won't be published.
 
 ### Release locally for debugging
 
