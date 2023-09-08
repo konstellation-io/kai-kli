@@ -16,7 +16,6 @@ type BindProductOpts struct {
 }
 
 func (h *Handler) Bind(opts *BindProductOpts) error {
-	// Get remote product
 	configService := configuration.NewKaiConfigService(h.logger)
 
 	conf, err := configService.GetConfiguration()
@@ -34,9 +33,6 @@ func (h *Handler) Bind(opts *BindProductOpts) error {
 		return err
 	}
 
-	// Check if local config already exists
-	// - if exists and --force, override
-	// - if not exists, create a new config
 	productConfig, err := h.configService.GetConfiguration(product.ID, opts.LocalPath)
 	if err != nil && !errors.Is(err, productconfiguration.ErrProductConfigNotFound) {
 		return err
@@ -56,7 +52,7 @@ func (h *Handler) Bind(opts *BindProductOpts) error {
 		return err
 	}
 
-	h.logger.Success("Product successfully binded!")
+	h.logger.Success("Product successfully bound!")
 
 	return nil
 }
