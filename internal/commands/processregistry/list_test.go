@@ -99,7 +99,7 @@ func (s *ListProcessSuite) TestList() {
 	productID := _productID
 	serverName := _serverName
 
-	testRegisteredProcess := processRegistryAPI.RegisteredProcess{
+	testRegisteredProcess := &processRegistryAPI.RegisteredProcess{
 		ID:         "test-process-id",
 		Name:       "test-process",
 		Version:    "v1.0.0",
@@ -109,7 +109,7 @@ func (s *ListProcessSuite) TestList() {
 		Owner:      "test",
 	}
 
-	retrievedRegisteredProcesses := []processRegistryAPI.RegisteredProcess{testRegisteredProcess}
+	retrievedRegisteredProcesses := []*processRegistryAPI.RegisteredProcess{testRegisteredProcess}
 
 	s.processRegistryAPI.EXPECT().List(gomock.Any(), productID, processType).Return(
 		retrievedRegisteredProcesses,

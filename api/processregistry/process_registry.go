@@ -16,14 +16,15 @@ type RegisteredProcess struct {
 	Image      string    `json:"image"`
 	UploadDate time.Time `json:"uploadDate"`
 	Owner      string    `json:"owner"`
+	Status     string    `json:"status"`
 }
 
 //go:generate mockgen -source=${GOFILE} -destination=../../mocks/registry_client.go -package=mocks
 
 type APIClient interface {
 	Register(server *configuration.Server, processFile *os.File, productID,
-		processID, processType, version string) (string, error)
-	List(server *configuration.Server, productID, processType string) ([]RegisteredProcess, error)
+		processID, processType, version string) (*RegisteredProcess, error)
+	List(server *configuration.Server, productID, processType string) ([]*RegisteredProcess, error)
 }
 
 type processRegistryClient struct {

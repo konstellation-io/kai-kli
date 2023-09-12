@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
+	api "github.com/konstellation-io/kli/api/processregistry"
 	"github.com/konstellation-io/krt/pkg/krt"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
@@ -100,7 +101,6 @@ func (s *RegisterProcessSuite) BeforeTest(_, _ string) {
 
 func (s *RegisterProcessSuite) TestRegisterNewServer_ValidPaths_ExpectOk() {
 	// GIVEN
-	registeredProcessID := "process_id"
 	serverName := _serverName
 	processType := _processType
 	processID := _processID
@@ -109,9 +109,14 @@ func (s *RegisterProcessSuite) TestRegisterNewServer_ValidPaths_ExpectOk() {
 	dockerfilePath := "../../../testdata/sample-trigger/Dockerfile"
 	productID := _productID
 
+	registeredProcess := &api.RegisteredProcess{
+		ID:    "process_id",
+		Image: "test-image",
+	}
+
 	s.processRegistryAPI.EXPECT().
 		Register(gomock.Any(), gomock.Any(), productID, processID, processType, version).
-		Return(registeredProcessID, nil)
+		Return(registeredProcess, nil)
 
 	// WHEN
 	err := s.manager.RegisterProcess(&processregistry.RegisterProcessOpts{
