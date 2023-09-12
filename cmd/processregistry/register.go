@@ -18,7 +18,6 @@ var (
 )
 
 const (
-	_callbackPath   = "sso-callback"
 	_sourcesFlag    = "src"
 	_dockerfileFlag = "dockerfile"
 	_productIDFlag  = "product"

@@ -3,6 +3,7 @@ package render
 import (
 	"github.com/konstellation-io/krt/pkg/krt"
 
+	"github.com/konstellation-io/kli/api/kai"
 	"github.com/konstellation-io/kli/api/processregistry"
 	"github.com/konstellation-io/kli/internal/services/configuration"
 )
@@ -16,4 +17,5 @@ type Renderer interface {
 	RenderProcesses(processes []krt.Process)
 	RenderConfiguration(scope string, config map[string]string)
 	RenderRegisteredProcesses(registries []*processregistry.RegisteredProcess)
+	RenderProducts(products []kai.Product)
 }

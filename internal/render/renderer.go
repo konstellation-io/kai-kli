@@ -10,6 +10,7 @@ import (
 	"github.com/konstellation-io/krt/pkg/krt"
 	"github.com/olekukonko/tablewriter"
 
+	"github.com/konstellation-io/kli/api/kai"
 	"github.com/konstellation-io/kli/api/processregistry"
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/konstellation-io/kli/internal/services/configuration"
@@ -182,6 +183,27 @@ func (r *CliRenderer) RenderRegisteredProcesses(registeredProcesses []*processre
 			pr.Image,
 			pr.UploadDate.Format(time.RFC3339),
 			pr.Owner,
+		})
+	}
+
+	r.tableWriter.Render()
+}
+
+func (r *CliRenderer) RenderProducts(products []kai.Product) {
+	if len(products) == 0 {
+		r.logger.Info("No products found.")
+		return
+	}
+
+	r.tableWriter.SetHeader([]string{
+		"ID", "Name", "Description",
+	})
+
+	for _, product := range products {
+		r.tableWriter.Append([]string{
+			product.ID,
+			product.Name,
+			product.Description,
 		})
 	}
 

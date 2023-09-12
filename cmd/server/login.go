@@ -13,8 +13,6 @@ import (
 
 const (
 	_authURLFlag  = "auth-url"
-	_userFlag     = "user"
-	_passwordFlag = "password"
 	_realmFlag    = "realm"
 	_clientIDFlag = "client-id"
 )
