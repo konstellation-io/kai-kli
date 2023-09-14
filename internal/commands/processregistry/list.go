@@ -34,7 +34,6 @@ func (c *Handler) ListProcesses(opts *ListProcessesOpts) error {
 		return err
 	}
 
-	c.logger.Info(fmt.Sprintf("Registered processes for %q product:\n", opts.ProductID))
 	c.renderer.RenderRegisteredProcesses(registeredProcesses)
 
 	return nil

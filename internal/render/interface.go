@@ -16,6 +16,6 @@ type Renderer interface {
 	RenderWorkflows(workflows []krt.Workflow)
 	RenderProcesses(processes []krt.Process)
 	RenderConfiguration(scope string, config map[string]string)
-	RenderRegisteredProcesses(registries []processregistry.RegisteredProcess)
+	RenderRegisteredProcesses(registries []*processregistry.RegisteredProcess)
 	RenderProducts(products []kai.Product)
 }

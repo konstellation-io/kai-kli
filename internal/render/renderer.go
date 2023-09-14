@@ -164,20 +164,21 @@ func (r *CliRenderer) RenderConfiguration(scope string, config map[string]string
 	r.tableWriter.Render()
 }
 
-func (r *CliRenderer) RenderRegisteredProcesses(registeredProcesses []processregistry.RegisteredProcess) {
+func (r *CliRenderer) RenderRegisteredProcesses(registeredProcesses []*processregistry.RegisteredProcess) {
 	if len(registeredProcesses) < 1 {
 		r.logger.Info("No processes found.")
 		return
 	}
 
 	r.tableWriter.SetHeader([]string{
-		"Process Name", "Process Version", "Process type", "Image", "Upload Date", "Owner",
+		"Name", "Version", "Status", "Type", "Image", "Upload Date", "Owner",
 	})
 
 	for _, pr := range registeredProcesses {
 		r.tableWriter.Append([]string{
 			pr.Name,
 			pr.Version,
+			pr.Status,
 			pr.Type,
 			pr.Image,
 			pr.UploadDate.Format(time.RFC3339),

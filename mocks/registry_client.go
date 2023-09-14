@@ -37,10 +37,10 @@ func (m *MockAPIClient) EXPECT() *MockAPIClientMockRecorder {
 }
 
 // List mocks base method.
-func (m *MockAPIClient) List(server *configuration.Server, productID, processType string) ([]processregistry.RegisteredProcess, error) {
+func (m *MockAPIClient) List(server *configuration.Server, productID, processType string) ([]*processregistry.RegisteredProcess, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List", server, productID, processType)
-	ret0, _ := ret[0].([]processregistry.RegisteredProcess)
+	ret0, _ := ret[0].([]*processregistry.RegisteredProcess)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -52,10 +52,10 @@ func (mr *MockAPIClientMockRecorder) List(server, productID, processType interfa
 }
 
 // Register mocks base method.
-func (m *MockAPIClient) Register(server *configuration.Server, processFile *os.File, productID, processID, processType, version string) (string, error) {
+func (m *MockAPIClient) Register(server *configuration.Server, processFile *os.File, productID, processID, processType, version string) (*processregistry.RegisteredProcess, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Register", server, processFile, productID, processID, processType, version)
-	ret0, _ := ret[0].(string)
+	ret0, _ := ret[0].(*processregistry.RegisteredProcess)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
