@@ -7,6 +7,7 @@ import (
 
 //go:generate mockery --name Client --output ../../mocks --filename kaiclient.go --structname MockKaiClient
 //go:generate mockery --name ProductClient --output ../../mocks --filename product_client.go --structname MockProductClient
+//go:generate mockery --name VersionClient --output ../../mocks --filename version_client.go --structname MockVersionClient
 
 type Product struct {
 	ID          string
@@ -24,4 +25,8 @@ type ProductClient interface {
 	CreateProduct(server *configuration.Server, name, description string) error
 	GetProduct(server *configuration.Server, id string) (*Product, error)
 	GetProducts(server *configuration.Server) ([]Product, error)
+}
+
+type VersionClient interface {
+	Push(server *configuration.Server, product, krtFilePath string) (string, error)
 }

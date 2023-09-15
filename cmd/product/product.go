@@ -2,6 +2,7 @@ package product
 
 import (
 	"github.com/MakeNowJust/heredoc"
+	"github.com/konstellation-io/kli/cmd/product/version"
 	"github.com/spf13/cobra"
 
 	"github.com/konstellation-io/kli/internal/logging"
@@ -28,6 +29,7 @@ func NewProductCmd(logger logging.Interface) *cobra.Command {
 		NewCreateCmd(logger),
 		NewBindCmd(logger),
 		NewListCmd(logger),
+		version.NewVersionCmd(logger),
 	)
 
 	return cmd
