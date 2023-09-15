@@ -15,7 +15,7 @@ const (
 	_localPathFlag   = "local-path"
 )
 
-// NewPushCmd creates a new command to create a new product.
+// NewPushCmd creates a new command to push a new product's version.
 func NewPushCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
 		Use: "push <krt_file> [opts...]",
