@@ -2,9 +2,6 @@ package version
 
 import (
 	"time"
-
-	"github.com/konstellation-io/kli/api/graphql"
-	"github.com/konstellation-io/kli/internal/services/configuration"
 )
 
 type Version struct {
@@ -88,20 +85,3 @@ const (
 	ProcessStatusStopped  ProcessStatus = "STOPPED"
 	ProcessStatusError    ProcessStatus = "ERROR"
 )
-
-//go:generate mockgen -source=${GOFILE} -destination=../../mocks/version_client.go -package=mocks
-
-type APIClient interface {
-	Start(server *configuration.Server, productID, versionTag, comment string) (*Version, error)
-}
-
-type versionClient struct {
-	client *graphql.GqlManager
-}
-
-// NewClient creates a new struct to access Version methods.
-func NewClient(gql *graphql.GqlManager) APIClient {
-	return &versionClient{
-		gql,
-	}
-}
