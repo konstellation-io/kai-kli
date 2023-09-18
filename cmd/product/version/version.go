@@ -25,8 +25,8 @@ func NewVersionCmd(logger logging.Interface) *cobra.Command {
 	cmd.PersistentFlags().StringP("server", "s", "", "KAI server to use")
 
 	cmd.AddCommand(
-		NewStartCmd(logger),
 		NewPushCmd(logger),
+		NewStartCmd(logger),
 	)
 
 	return cmd
