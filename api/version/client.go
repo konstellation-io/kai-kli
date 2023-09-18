@@ -1,6 +1,8 @@
 package version
 
-import "github.com/konstellation-io/kli/api/graphql"
+import (
+	"github.com/konstellation-io/kli/api/graphql"
+)
 
 type Client struct {
 	gqlClient *graphql.GqlManager

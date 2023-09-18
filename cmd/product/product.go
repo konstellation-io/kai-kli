@@ -2,9 +2,9 @@ package product
 
 import (
 	"github.com/MakeNowJust/heredoc"
-	"github.com/konstellation-io/kli/cmd/product/version"
 	"github.com/spf13/cobra"
 
+	"github.com/konstellation-io/kli/cmd/product/version"
 	"github.com/konstellation-io/kli/internal/logging"
 )
 
