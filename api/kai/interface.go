@@ -30,4 +30,5 @@ type ProductClient interface {
 type VersionClient interface {
 	Push(server *configuration.Server, product, krtFilePath string) (string, error)
 	Start(server *configuration.Server, productID, versionTag, comment string) (string, error)
+	Stop(server *configuration.Server, productID, versionTag, comment string) (string, error)
 }
