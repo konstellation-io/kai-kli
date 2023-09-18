@@ -135,20 +135,18 @@ func (_c *MockVersionClient_Start_Call) RunAndReturn(run func(*configuration.Ser
 }
 
 // Stop provides a mock function with given fields: server, productID, versionTag, comment
-func (_m *MockVersionClient) Stop(server *configuration.Server, productID string, versionTag string, comment string) (*version.Version, error) {
+func (_m *MockVersionClient) Stop(server *configuration.Server, productID string, versionTag string, comment string) (string, error) {
 	ret := _m.Called(server, productID, versionTag, comment)
 
-	var r0 *version.Version
+	var r0 string
 	var r1 error
-	if rf, ok := ret.Get(0).(func(*configuration.Server, string, string, string) (*version.Version, error)); ok {
+	if rf, ok := ret.Get(0).(func(*configuration.Server, string, string, string) (string, error)); ok {
 		return rf(server, productID, versionTag, comment)
 	}
-	if rf, ok := ret.Get(0).(func(*configuration.Server, string, string, string) *version.Version); ok {
+	if rf, ok := ret.Get(0).(func(*configuration.Server, string, string, string) string); ok {
 		r0 = rf(server, productID, versionTag, comment)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*version.Version)
-		}
+		r0 = ret.Get(0).(string)
 	}
 
 	if rf, ok := ret.Get(1).(func(*configuration.Server, string, string, string) error); ok {
@@ -181,12 +179,12 @@ func (_c *MockVersionClient_Stop_Call) Run(run func(server *configuration.Server
 	return _c
 }
 
-func (_c *MockVersionClient_Stop_Call) Return(_a0 *version.Version, _a1 error) *MockVersionClient_Stop_Call {
+func (_c *MockVersionClient_Stop_Call) Return(_a0 string, _a1 error) *MockVersionClient_Stop_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockVersionClient_Stop_Call) RunAndReturn(run func(*configuration.Server, string, string, string) (*version.Version, error)) *MockVersionClient_Stop_Call {
+func (_c *MockVersionClient_Stop_Call) RunAndReturn(run func(*configuration.Server, string, string, string) (string, error)) *MockVersionClient_Stop_Call {
 	_c.Call.Return(run)
 	return _c
 }
