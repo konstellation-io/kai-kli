@@ -65,8 +65,8 @@ func (_c *MockVersionClient_Push_Call) Run(run func(server *configuration.Server
 	return _c
 }
 
-func (_c *MockVersionClient_Push_Call) Return(startedVersionTag string, err error) *MockVersionClient_Push_Call {
-	_c.Call.Return(startedVersionTag, err)
+func (_c *MockVersionClient_Push_Call) Return(_a0 string, _a1 error) *MockVersionClient_Push_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
