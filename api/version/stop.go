@@ -21,10 +21,10 @@ func (c *Client) Stop(server *configuration.Server, productID, versionTag, comme
 	}
 
 	var respData struct {
-		VersionTag string `json:"versionTag"`
+		Tag string `json:"tag"`
 	}
 
 	err := c.gqlClient.MakeRequest(server, query, vars, &respData)
 
-	return respData.VersionTag, err
+	return respData.Tag, err
 }
