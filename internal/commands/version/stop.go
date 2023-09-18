@@ -20,7 +20,7 @@ func (h *Handler) Stop(opts *StopOpts) error {
 		return err
 	}
 
-	stoppedVersion, err := h.versionClient.Stop(
+	versionTag, err := h.versionClient.Stop(
 		srv, opts.ProductID, opts.VersionTag, opts.Comment,
 	)
 	if err != nil {
@@ -28,7 +28,7 @@ func (h *Handler) Stop(opts *StopOpts) error {
 	}
 
 	h.logger.Success(
-		fmt.Sprintf("Success, product version %q status is: %q.", stoppedVersion.Tag, stoppedVersion.Status),
+		fmt.Sprintf("Success, product version %q status is: %q.", versionTag, "STOPPED"),
 	)
 
 	return nil
