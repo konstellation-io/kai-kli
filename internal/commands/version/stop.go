@@ -28,7 +28,7 @@ func (h *Handler) Stop(opts *StopOpts) error {
 	}
 
 	h.logger.Success(
-		fmt.Sprintf("Success, product version %q stopping", tag),
+		fmt.Sprintf("Version %q is stopping", tag),
 	)
 
 	return nil

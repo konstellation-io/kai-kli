@@ -2,13 +2,11 @@ package version
 
 import "github.com/konstellation-io/kli/internal/services/configuration"
 
-func (c *Client) Start(server *configuration.Server, productID, versionTag, comment string) (*Version, error) {
+func (c *Client) Start(server *configuration.Server, productID, versionTag, comment string) (string, error) {
 	query := `
 		mutation StartVersion($input: StartVersionInput!) {
 			startVersion(input: $input) {
-				id
 				tag
-				status
 			}
 		}
 		`
@@ -21,10 +19,12 @@ func (c *Client) Start(server *configuration.Server, productID, versionTag, comm
 	}
 
 	var respData struct {
-		StartVersion Version `json:"startVersion"`
+		StartVersion struct {
+			Tag string `json:"tag"`
+		} `json:"startVersion"`
 	}
 
 	err := c.gqlClient.MakeRequest(server, query, vars, &respData)
 
-	return &respData.StartVersion, err
+	return respData.StartVersion.Tag, err
 }
