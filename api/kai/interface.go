@@ -30,4 +30,5 @@ type ProductClient interface {
 
 type VersionClient interface {
 	Start(server *configuration.Server, productID, versionTag, comment string) (*version.Version, error)
+	Stop(server *configuration.Server, productID, versionTag, comment string) (*version.Version, error)
 }

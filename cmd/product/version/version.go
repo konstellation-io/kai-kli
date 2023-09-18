@@ -26,6 +26,7 @@ func NewVersionCmd(logger logging.Interface) *cobra.Command {
 
 	cmd.AddCommand(
 		NewStartCmd(logger),
+		NewStopCmd(logger),
 	)
 
 	return cmd
