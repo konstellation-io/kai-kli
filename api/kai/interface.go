@@ -29,7 +29,7 @@ type ProductClient interface {
 }
 
 type VersionClient interface {
-	Push(server *configuration.Server, product, krtFilePath string) (string, error)
 	Start(server *configuration.Server, productID, versionTag, comment string) (*version.Version, error)
 	Stop(server *configuration.Server, productID, versionTag, comment string) (*version.Version, error)
+	Push(server *configuration.Server, product, krtFilePath string) (string, error)
 }

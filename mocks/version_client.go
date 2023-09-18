@@ -134,6 +134,63 @@ func (_c *MockVersionClient_Start_Call) RunAndReturn(run func(*configuration.Ser
 	return _c
 }
 
+// Stop provides a mock function with given fields: server, productID, versionTag, comment
+func (_m *MockVersionClient) Stop(server *configuration.Server, productID string, versionTag string, comment string) (*version.Version, error) {
+	ret := _m.Called(server, productID, versionTag, comment)
+
+	var r0 *version.Version
+	var r1 error
+	if rf, ok := ret.Get(0).(func(*configuration.Server, string, string, string) (*version.Version, error)); ok {
+		return rf(server, productID, versionTag, comment)
+	}
+	if rf, ok := ret.Get(0).(func(*configuration.Server, string, string, string) *version.Version); ok {
+		r0 = rf(server, productID, versionTag, comment)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*version.Version)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(*configuration.Server, string, string, string) error); ok {
+		r1 = rf(server, productID, versionTag, comment)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockVersionClient_Stop_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Stop'
+type MockVersionClient_Stop_Call struct {
+	*mock.Call
+}
+
+// Stop is a helper method to define mock.On call
+//   - server *configuration.Server
+//   - productID string
+//   - versionTag string
+//   - comment string
+func (_e *MockVersionClient_Expecter) Stop(server interface{}, productID interface{}, versionTag interface{}, comment interface{}) *MockVersionClient_Stop_Call {
+	return &MockVersionClient_Stop_Call{Call: _e.mock.On("Stop", server, productID, versionTag, comment)}
+}
+
+func (_c *MockVersionClient_Stop_Call) Run(run func(server *configuration.Server, productID string, versionTag string, comment string)) *MockVersionClient_Stop_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(*configuration.Server), args[1].(string), args[2].(string), args[3].(string))
+	})
+	return _c
+}
+
+func (_c *MockVersionClient_Stop_Call) Return(_a0 *version.Version, _a1 error) *MockVersionClient_Stop_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockVersionClient_Stop_Call) RunAndReturn(run func(*configuration.Server, string, string, string) (*version.Version, error)) *MockVersionClient_Stop_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // NewMockVersionClient creates a new instance of MockVersionClient. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewMockVersionClient(t interface {

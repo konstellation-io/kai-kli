@@ -8,14 +8,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// NewStopCmd creates a new command to stop an existing product.
+// NewStopCmd creates a new command to stop an existing version.
 func NewStopCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
 		Use: "stop <product_id> <version_tag> <comment> [opts...]",
 		Annotations: map[string]string{
 			"authenticated": "true",
 		},
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(3),
 		Short: "Stop an existing version",
 		Example: `
     	$ kli product version stop <product_id> <version_tag> <comment> [opts...]
