@@ -20,7 +20,7 @@ func (h *Handler) Start(opts *StartOpts) error {
 		return err
 	}
 
-	tag, status, err := h.versionClient.Start(
+	tag, err := h.versionClient.Start(
 		srv, opts.ProductID, opts.VersionTag, opts.Comment,
 	)
 	if err != nil {
@@ -28,7 +28,7 @@ func (h *Handler) Start(opts *StartOpts) error {
 	}
 
 	h.logger.Success(
-		fmt.Sprintf("Product version %q status is: %q.", tag, status),
+		fmt.Sprintf("Version %q is starting.", tag),
 	)
 
 	return nil

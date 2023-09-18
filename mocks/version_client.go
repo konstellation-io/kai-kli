@@ -76,13 +76,12 @@ func (_c *MockVersionClient_Push_Call) RunAndReturn(run func(*configuration.Serv
 }
 
 // Start provides a mock function with given fields: server, productID, versionTag, comment
-func (_m *MockVersionClient) Start(server *configuration.Server, productID string, versionTag string, comment string) (string, string, error) {
+func (_m *MockVersionClient) Start(server *configuration.Server, productID string, versionTag string, comment string) (string, error) {
 	ret := _m.Called(server, productID, versionTag, comment)
 
 	var r0 string
-	var r1 string
-	var r2 error
-	if rf, ok := ret.Get(0).(func(*configuration.Server, string, string, string) (string, string, error)); ok {
+	var r1 error
+	if rf, ok := ret.Get(0).(func(*configuration.Server, string, string, string) (string, error)); ok {
 		return rf(server, productID, versionTag, comment)
 	}
 	if rf, ok := ret.Get(0).(func(*configuration.Server, string, string, string) string); ok {
@@ -91,19 +90,13 @@ func (_m *MockVersionClient) Start(server *configuration.Server, productID strin
 		r0 = ret.Get(0).(string)
 	}
 
-	if rf, ok := ret.Get(1).(func(*configuration.Server, string, string, string) string); ok {
+	if rf, ok := ret.Get(1).(func(*configuration.Server, string, string, string) error); ok {
 		r1 = rf(server, productID, versionTag, comment)
 	} else {
-		r1 = ret.Get(1).(string)
+		r1 = ret.Error(1)
 	}
 
-	if rf, ok := ret.Get(2).(func(*configuration.Server, string, string, string) error); ok {
-		r2 = rf(server, productID, versionTag, comment)
-	} else {
-		r2 = ret.Error(2)
-	}
-
-	return r0, r1, r2
+	return r0, r1
 }
 
 // MockVersionClient_Start_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Start'
@@ -127,12 +120,12 @@ func (_c *MockVersionClient_Start_Call) Run(run func(server *configuration.Serve
 	return _c
 }
 
-func (_c *MockVersionClient_Start_Call) Return(tag string, status string, err error) *MockVersionClient_Start_Call {
-	_c.Call.Return(tag, status, err)
+func (_c *MockVersionClient_Start_Call) Return(_a0 string, _a1 error) *MockVersionClient_Start_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockVersionClient_Start_Call) RunAndReturn(run func(*configuration.Server, string, string, string) (string, string, error)) *MockVersionClient_Start_Call {
+func (_c *MockVersionClient_Start_Call) RunAndReturn(run func(*configuration.Server, string, string, string) (string, error)) *MockVersionClient_Start_Call {
 	_c.Call.Return(run)
 	return _c
 }
