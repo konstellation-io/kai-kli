@@ -15,7 +15,7 @@ func NewStartCmd(logger logging.Interface) *cobra.Command {
 		Annotations: map[string]string{
 			"authenticated": "true",
 		},
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(3),
 		Short: "Start an existing version",
 		Example: `
     	$ kli product version start <product_id> <version_tag> <comment> [opts...]
