@@ -10,12 +10,13 @@ import (
 
 // NewStartCmd creates a new command to start a new product.
 func NewStartCmd(logger logging.Interface) *cobra.Command {
+	nArgs := 3
 	cmd := &cobra.Command{
 		Use: "start <product_id> <version_tag> <comment> [opts...]",
 		Annotations: map[string]string{
 			"authenticated": "true",
 		},
-		Args:  cobra.ExactArgs(3),
+		Args:  cobra.ExactArgs(nArgs),
 		Short: "Start an existing version",
 		Example: `
     	$ kli product version start <product_id> <version_tag> <comment> [opts...]

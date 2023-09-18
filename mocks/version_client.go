@@ -65,8 +65,8 @@ func (_c *MockVersionClient_Push_Call) Run(run func(server *configuration.Server
 	return _c
 }
 
-func (_c *MockVersionClient_Push_Call) Return(_a0 string, _a1 error) *MockVersionClient_Push_Call {
-	_c.Call.Return(_a0, _a1)
+func (_c *MockVersionClient_Push_Call) Return(startedVersionTag string, err error) *MockVersionClient_Push_Call {
+	_c.Call.Return(startedVersionTag, err)
 	return _c
 }
 
@@ -127,8 +127,8 @@ func (_c *MockVersionClient_Start_Call) Run(run func(server *configuration.Serve
 	return _c
 }
 
-func (_c *MockVersionClient_Start_Call) Return(_a0 string, _a1 string, _a2 error) *MockVersionClient_Start_Call {
-	_c.Call.Return(_a0, _a1, _a2)
+func (_c *MockVersionClient_Start_Call) Return(tag string, status string, err error) *MockVersionClient_Start_Call {
+	_c.Call.Return(tag, status, err)
 	return _c
 }
 
