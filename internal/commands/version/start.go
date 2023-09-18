@@ -28,7 +28,7 @@ func (h *Handler) Start(opts *StartOpts) error {
 	}
 
 	h.logger.Success(
-		fmt.Sprintf("Success, product version %q status is: %q.", tag, status),
+		fmt.Sprintf("Product version %q status is: %q.", tag, status),
 	)
 
 	return nil
