@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// NewVersionCmd creates a new command to handle 'product' subcommands.
+// NewVersionCmd creates a new command to handle 'version' subcommands.
 func NewVersionCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "version <command>",
@@ -26,6 +26,7 @@ func NewVersionCmd(logger logging.Interface) *cobra.Command {
 
 	cmd.AddCommand(
 		NewStartCmd(logger),
+		NewPushCmd(logger),
 	)
 
 	return cmd

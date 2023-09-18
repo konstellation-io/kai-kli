@@ -21,7 +21,7 @@ func (a *KAI) ProcessRegistry() processregistry.APIClient {
 	return a.processRegistry
 }
 
-// ProductClient access to methods to interact with the Process Registry.
+// ProductClient access to methods to interact with the product's API.
 func (a *KAI) ProductClient() kai.ProductClient {
 	return a.productClient
 }
