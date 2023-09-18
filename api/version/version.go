@@ -17,8 +17,8 @@ type Version struct {
 	PublicationDate   *time.Time `json:"publicationDate"`
 	PublicationAuthor *string    `json:"publicationAuthor"`
 
-	Status VersionStatus `json:"status"`
-	Error  string        `json:"error"`
+	Status Status `json:"status"`
+	Error  string `json:"error"`
 }
 
 type ConfigurationVariable struct {
@@ -26,17 +26,17 @@ type ConfigurationVariable struct {
 	Value string `json:"value"`
 }
 
-type VersionStatus string
+type Status string
 
 const (
-	VersionStatusCreating  VersionStatus = "CREATING"
-	VersionStatusCreated   VersionStatus = "CREATED"
-	VersionStatusStarting  VersionStatus = "STARTING"
-	VersionStatusStarted   VersionStatus = "STARTED"
-	VersionStatusPublished VersionStatus = "PUBLISHED"
-	VersionStatusStopping  VersionStatus = "STOPPING"
-	VersionStatusStopped   VersionStatus = "STOPPED"
-	VersionStatusError     VersionStatus = "ERROR"
+	VersionStatusCreating  Status = "CREATING"
+	VersionStatusCreated   Status = "CREATED"
+	VersionStatusStarting  Status = "STARTING"
+	VersionStatusStarted   Status = "STARTED"
+	VersionStatusPublished Status = "PUBLISHED"
+	VersionStatusStopping  Status = "STOPPING"
+	VersionStatusStopped   Status = "STOPPED"
+	VersionStatusError     Status = "ERROR"
 )
 
 type Workflow struct {
