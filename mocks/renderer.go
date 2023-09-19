@@ -10,6 +10,7 @@ import (
 	gomock "github.com/golang/mock/gomock"
 	kai "github.com/konstellation-io/kli/api/kai"
 	processregistry "github.com/konstellation-io/kli/api/processregistry"
+	version "github.com/konstellation-io/kli/api/version"
 	configuration "github.com/konstellation-io/kli/internal/services/configuration"
 	krt "github.com/konstellation-io/krt/pkg/krt"
 )
@@ -95,6 +96,18 @@ func (m *MockRenderer) RenderServers(servers []configuration.Server) {
 func (mr *MockRendererMockRecorder) RenderServers(servers interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderServers", reflect.TypeOf((*MockRenderer)(nil).RenderServers), servers)
+}
+
+// RenderVersions mocks base method.
+func (m *MockRenderer) RenderVersions(versions []*version.Version) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderVersions", versions)
+}
+
+// RenderVersions indicates an expected call of RenderVersions.
+func (mr *MockRendererMockRecorder) RenderVersions(versions interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderVersions", reflect.TypeOf((*MockRenderer)(nil).RenderVersions), versions)
 }
 
 // RenderWorkflows mocks base method.

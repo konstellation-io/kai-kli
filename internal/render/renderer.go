@@ -12,6 +12,7 @@ import (
 
 	"github.com/konstellation-io/kli/api/kai"
 	"github.com/konstellation-io/kli/api/processregistry"
+	"github.com/konstellation-io/kli/api/version"
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/konstellation-io/kli/internal/services/configuration"
 )
@@ -204,6 +205,27 @@ func (r *CliRenderer) RenderProducts(products []kai.Product) {
 			product.ID,
 			product.Name,
 			product.Description,
+		})
+	}
+
+	r.tableWriter.Render()
+}
+
+func (r *CliRenderer) RenderVersions(versions []*version.Version) {
+	if len(versions) < 1 {
+		r.logger.Info("No versions found.")
+		return
+	}
+
+	r.tableWriter.SetHeader([]string{
+		"Tag", "Status", "Creation Date",
+	})
+
+	for _, v := range versions {
+		r.tableWriter.Append([]string{
+			v.Tag,
+			v.Status,
+			v.CreationDate.Format(time.RFC3339),
 		})
 	}
 

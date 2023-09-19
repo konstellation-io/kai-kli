@@ -2,6 +2,7 @@ package kai
 
 import (
 	"github.com/konstellation-io/kli/api/processregistry"
+	"github.com/konstellation-io/kli/api/version"
 	"github.com/konstellation-io/kli/internal/services/configuration"
 )
 
@@ -31,4 +32,5 @@ type VersionClient interface {
 	Push(server *configuration.Server, product, krtFilePath string) (string, error)
 	Start(server *configuration.Server, productID, versionTag, comment string) (string, error)
 	Stop(server *configuration.Server, productID, versionTag, comment string) (string, error)
+	List(server *configuration.Server, productID string) ([]*version.Version, error)
 }
