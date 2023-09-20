@@ -4,8 +4,8 @@ import "github.com/konstellation-io/kli/internal/services/configuration"
 
 func (c *Client) Get(server *configuration.Server, productID, versionTag string) (*Version, error) {
 	query := `
-		query Version($productID: ID!) {
-			version(productID: $productID) {
+		query Version($productID: ID!, $tag: String!) {
+			version(productID: $productID, tag: $tag) {
 					tag
 					creationDate
 					status
@@ -14,7 +14,7 @@ func (c *Client) Get(server *configuration.Server, productID, versionTag string)
 		`
 	vars := map[string]interface{}{
 		"productID":  productID,
-		"versionTag": versionTag,
+		"tag": versionTag,
 	}
 
 	var respData struct {
