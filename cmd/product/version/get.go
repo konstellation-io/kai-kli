@@ -10,13 +10,14 @@ import (
 
 // NewGetCmd creates a new command to get a version of a product given its tag.
 func NewGetCmd(logger logging.Interface) *cobra.Command {
+	nArgs := 2
 	cmd := &cobra.Command{
 		Use:     "list <product_id> [opts...]",
 		Aliases: []string{"ls"},
 		Annotations: map[string]string{
 			"authenticated": "true",
 		},
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(nArgs),
 		Short: "List all versions of a product",
 		Example: `
     	$ kli product version ls <product_id> <version_tag> [opts...]
