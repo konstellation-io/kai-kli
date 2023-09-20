@@ -231,3 +231,7 @@ func (r *CliRenderer) RenderVersions(versions []*version.Version) {
 
 	r.tableWriter.Render()
 }
+
+func (r *CliRenderer) RenderVersion(productID string, v *version.Version) {
+	r.logger.Info(fmt.Sprintf("%s - %s status is: %s", productID, v.Tag, v.Status))
+}

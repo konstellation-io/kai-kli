@@ -1,7 +1,5 @@
 package version
 
-import "github.com/konstellation-io/kli/api/version"
-
 type GetVersionOpts struct {
 	ServerName string
 	ProductID  string
@@ -24,7 +22,7 @@ func (h *Handler) GetVersion(opts *GetVersionOpts) error {
 		return err
 	}
 
-	h.renderer.RenderVersions([]*version.Version{registeredProcess})
+	h.renderer.RenderVersion(opts.ProductID, registeredProcess)
 
 	return nil
 }

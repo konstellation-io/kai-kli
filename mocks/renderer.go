@@ -98,6 +98,18 @@ func (mr *MockRendererMockRecorder) RenderServers(servers interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderServers", reflect.TypeOf((*MockRenderer)(nil).RenderServers), servers)
 }
 
+// RenderVersion mocks base method.
+func (m *MockRenderer) RenderVersion(productID string, v *version.Version) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderVersion", productID, v)
+}
+
+// RenderVersion indicates an expected call of RenderVersion.
+func (mr *MockRendererMockRecorder) RenderVersion(productID, v interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderVersion", reflect.TypeOf((*MockRenderer)(nil).RenderVersion), productID, v)
+}
+
 // RenderVersions mocks base method.
 func (m *MockRenderer) RenderVersions(versions []*version.Version) {
 	m.ctrl.T.Helper()

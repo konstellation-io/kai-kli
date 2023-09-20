@@ -21,7 +21,7 @@ func (s *VersionSuite) TestGetVersion() {
 	}
 
 	s.versionClient.EXPECT().Get(s.server, productName, versionTag).Return(oneVersion, nil).Once()
-	s.renderer.EXPECT().RenderVersions([]*apiVersion.Version{oneVersion})
+	s.renderer.EXPECT().RenderVersion(productName, oneVersion)
 
 	err := s.handler.GetVersion(&version.GetVersionOpts{
 		ServerName: s.server.Name,
