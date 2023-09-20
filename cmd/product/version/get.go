@@ -12,15 +12,14 @@ import (
 func NewGetCmd(logger logging.Interface) *cobra.Command {
 	nArgs := 2
 	cmd := &cobra.Command{
-		Use:     "list <product_id> [opts...]",
-		Aliases: []string{"ls"},
+		Use:     "get <product_id> <version_tag>  [opts...]",
 		Annotations: map[string]string{
 			"authenticated": "true",
 		},
 		Args:  cobra.ExactArgs(nArgs),
-		Short: "List all versions of a product",
+		Short: "List version of a product given a tag",
 		Example: `
-    	$ kli product version ls <product_id> <version_tag> [opts...]
+    	$ kli product version get <product_id> <version_tag> [opts...]
 		`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			productID := args[0]
