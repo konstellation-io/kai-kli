@@ -111,15 +111,15 @@ func (mr *MockRendererMockRecorder) RenderVersion(productID, v interface{}) *gom
 }
 
 // RenderVersions mocks base method.
-func (m *MockRenderer) RenderVersions(versions []*version.Version) {
+func (m *MockRenderer) RenderVersions(productID string, versions []*version.Version) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "RenderVersions", versions)
+	m.ctrl.Call(m, "RenderVersions", productID, versions)
 }
 
 // RenderVersions indicates an expected call of RenderVersions.
-func (mr *MockRendererMockRecorder) RenderVersions(versions interface{}) *gomock.Call {
+func (mr *MockRendererMockRecorder) RenderVersions(productID, versions interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderVersions", reflect.TypeOf((*MockRenderer)(nil).RenderVersions), versions)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderVersions", reflect.TypeOf((*MockRenderer)(nil).RenderVersions), productID, versions)
 }
 
 // RenderWorkflows mocks base method.

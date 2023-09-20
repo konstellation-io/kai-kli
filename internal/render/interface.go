@@ -20,5 +20,5 @@ type Renderer interface {
 	RenderRegisteredProcesses(registries []*processregistry.RegisteredProcess)
 	RenderProducts(products []kai.Product)
 	RenderVersion(productID string, v *version.Version)
-	RenderVersions(versions []*version.Version)
+	RenderVersions(productID string, versions []*version.Version)
 }
