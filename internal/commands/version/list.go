@@ -5,8 +5,8 @@ type ListVersionsOpts struct {
 	ProductID  string
 }
 
-func (c *Handler) ListVersions(opts *ListVersionsOpts) error {
-	kaiConfig, err := c.configService.GetConfiguration()
+func (h *Handler) ListVersions(opts *ListVersionsOpts) error {
+	kaiConfig, err := h.configService.GetConfiguration()
 	if err != nil {
 		return err
 	}
@@ -16,12 +16,12 @@ func (c *Handler) ListVersions(opts *ListVersionsOpts) error {
 		return err
 	}
 
-	registeredProcesses, err := c.versionClient.List(srv, opts.ProductID)
+	registeredProcesses, err := h.versionClient.List(srv, opts.ProductID)
 	if err != nil {
 		return err
 	}
 
-	c.renderer.RenderVersions(registeredProcesses)
+	h.renderer.RenderVersions(registeredProcesses)
 
 	return nil
 }
