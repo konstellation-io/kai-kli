@@ -8,12 +8,12 @@ import (
 	"github.com/konstellation-io/kli/internal/commands/version"
 )
 
-func (s *VersionSuite) TestGetVersion() {
-	const (
-		productName = "test-product"
-		versionTag  = "v.1.0.1-test"
-	)
+const (
+	productName = "test-product"
+	versionTag  = "v.1.0.1-test"
+)
 
+func (s *VersionSuite) TestGetVersion() {
 	oneVersion := &apiVersion.Version{
 		Tag:          versionTag,
 		CreationDate: time.Now(),
@@ -32,8 +32,6 @@ func (s *VersionSuite) TestGetVersion() {
 }
 
 func (s *VersionSuite) TestGetVersion_ErrorIfClientFails() {
-	productName := "test-product"
-	versionTag := "v.1.0.1-test"
 	expectedError := errors.New("client error")
 
 	s.versionClient.EXPECT().Get(s.server, productName, versionTag).Return(nil, expectedError).Once()
@@ -44,4 +42,23 @@ func (s *VersionSuite) TestGetVersion_ErrorIfClientFails() {
 		VersionTag: versionTag,
 	})
 	s.Assert().EqualError(err, expectedError.Error())
+}
+
+func (s *VersionSuite) TestGetVersion_ContainsError() {
+	oneVersion := &apiVersion.Version{
+		Tag:          versionTag,
+		CreationDate: time.Now(),
+		Status:       "CREATED",
+		Error:        "error",
+	}
+
+	s.versionClient.EXPECT().Get(s.server, productName, versionTag).Return(oneVersion, nil).Once()
+	s.renderer.EXPECT().RenderVersion(productName, oneVersion)
+
+	err := s.handler.GetVersion(&version.GetVersionOpts{
+		ServerName: s.server.Name,
+		ProductID:  productName,
+		VersionTag: versionTag,
+	})
+	s.Assert().NoError(err)
 }

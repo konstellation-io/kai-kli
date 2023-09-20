@@ -233,5 +233,10 @@ func (r *CliRenderer) RenderVersions(versions []*version.Version) {
 }
 
 func (r *CliRenderer) RenderVersion(productID string, v *version.Version) {
+	if v.Error != "" {
+		r.logger.Error(fmt.Sprintf("%s - %s status is: %s and has an error: %s", productID, v.Tag, v.Status, v.Error))
+		return
+	}
+
 	r.logger.Info(fmt.Sprintf("%s - %s status is: %s", productID, v.Tag, v.Status))
 }

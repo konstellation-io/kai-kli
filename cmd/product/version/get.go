@@ -12,7 +12,7 @@ import (
 func NewGetCmd(logger logging.Interface) *cobra.Command {
 	nArgs := 2
 	cmd := &cobra.Command{
-		Use:     "get <product_id> <version_tag>  [opts...]",
+		Use: "get <product_id> <version_tag>  [opts...]",
 		Annotations: map[string]string{
 			"authenticated": "true",
 		},
