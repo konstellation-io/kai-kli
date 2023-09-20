@@ -5,6 +5,7 @@ import (
 
 	"github.com/konstellation-io/kli/api/kai"
 	"github.com/konstellation-io/kli/api/processregistry"
+	"github.com/konstellation-io/kli/api/version"
 	"github.com/konstellation-io/kli/internal/services/configuration"
 )
 
@@ -18,4 +19,5 @@ type Renderer interface {
 	RenderConfiguration(scope string, config map[string]string)
 	RenderRegisteredProcesses(registries []*processregistry.RegisteredProcess)
 	RenderProducts(products []kai.Product)
+	RenderVersions(productID string, versions []*version.Version)
 }
