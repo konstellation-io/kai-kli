@@ -9,6 +9,7 @@ func (c *Client) Get(server *configuration.Server, productID, versionTag string)
 					tag
 					creationDate
 					status
+					error
 			}
 		}
 		`
