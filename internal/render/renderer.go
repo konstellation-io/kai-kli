@@ -211,18 +211,19 @@ func (r *CliRenderer) RenderProducts(products []kai.Product) {
 	r.tableWriter.Render()
 }
 
-func (r *CliRenderer) RenderVersions(versions []*version.Version) {
+func (r *CliRenderer) RenderVersions(productID string, versions []*version.Version) {
 	if len(versions) < 1 {
 		r.logger.Info("No versions found.")
 		return
 	}
 
 	r.tableWriter.SetHeader([]string{
-		"Tag", "Status", "Creation Date",
+		"Product", "Tag", "Status", "Creation Date",
 	})
 
 	for _, v := range versions {
 		r.tableWriter.Append([]string{
+			productID,
 			v.Tag,
 			v.Status,
 			v.CreationDate.Format(time.RFC3339),

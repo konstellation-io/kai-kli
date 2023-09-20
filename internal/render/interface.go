@@ -19,5 +19,5 @@ type Renderer interface {
 	RenderConfiguration(scope string, config map[string]string)
 	RenderRegisteredProcesses(registries []*processregistry.RegisteredProcess)
 	RenderProducts(products []kai.Product)
-	RenderVersions(versions []*version.Version)
+	RenderVersions(productID string, versions []*version.Version)
 }

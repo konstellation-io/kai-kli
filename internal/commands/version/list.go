@@ -21,7 +21,7 @@ func (h *Handler) ListVersions(opts *ListVersionsOpts) error {
 		return err
 	}
 
-	h.renderer.RenderVersions(registeredProcesses)
+	h.renderer.RenderVersions(opts.ProductID, registeredProcesses)
 
 	return nil
 }

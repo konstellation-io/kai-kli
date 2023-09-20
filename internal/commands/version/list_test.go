@@ -90,7 +90,7 @@ func (s *ListVersionSuite) TestListVersion() {
 	}
 
 	s.versionClient.EXPECT().List(s.server, productName).Return(versions, nil).Once()
-	s.renderer.EXPECT().RenderVersions(versions)
+	s.renderer.EXPECT().RenderVersions(productName, versions)
 
 	err := s.handler.ListVersions(&version.ListVersionsOpts{
 		ServerName: s.server.Name,
