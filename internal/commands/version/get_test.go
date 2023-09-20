@@ -8,20 +8,20 @@ import (
 	"github.com/konstellation-io/kli/internal/commands/version"
 )
 
-func (s *ListVersionSuite) TestGetVersion() {
+func (s *VersionSuite) TestGetVersion() {
 	const (
 		productName = "test-product"
 		versionTag  = "v.1.0.1-test"
 	)
 
-	version_ := &apiVersion.Version{
+	oneVersion := &apiVersion.Version{
 		Tag:          versionTag,
 		CreationDate: time.Now(),
 		Status:       "CREATED",
 	}
 
-	s.versionClient.EXPECT().Get(s.server, productName, versionTag).Return(version_, nil).Once()
-	s.renderer.EXPECT().RenderVersions([]*apiVersion.Version{version_})
+	s.versionClient.EXPECT().Get(s.server, productName, versionTag).Return(oneVersion, nil).Once()
+	s.renderer.EXPECT().RenderVersions([]*apiVersion.Version{oneVersion})
 
 	err := s.handler.GetVersion(&version.GetVersionOpts{
 		ServerName: s.server.Name,
@@ -31,7 +31,7 @@ func (s *ListVersionSuite) TestGetVersion() {
 	s.Assert().NoError(err)
 }
 
-func (s *ListVersionSuite) TestGetVersion_ErrorIfClientFails() {
+func (s *VersionSuite) TestGetVersion_ErrorIfClientFails() {
 	productName := "test-product"
 	versionTag := "v.1.0.1-test"
 	expectedError := errors.New("client error")
