@@ -13,7 +13,7 @@ func (c *Client) Get(server *configuration.Server, productID, versionTag string)
 		}
 		`
 	vars := map[string]interface{}{
-		"productID": productID,
+		"productID":  productID,
 		"versionTag": versionTag,
 	}
 
