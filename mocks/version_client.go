@@ -23,6 +23,62 @@ func (_m *MockVersionClient) EXPECT() *MockVersionClient_Expecter {
 	return &MockVersionClient_Expecter{mock: &_m.Mock}
 }
 
+// Get provides a mock function with given fields: server, productID, versionTag
+func (_m *MockVersionClient) Get(server *configuration.Server, productID string, versionTag string) (*version.Version, error) {
+	ret := _m.Called(server, productID, versionTag)
+
+	var r0 *version.Version
+	var r1 error
+	if rf, ok := ret.Get(0).(func(*configuration.Server, string, string) (*version.Version, error)); ok {
+		return rf(server, productID, versionTag)
+	}
+	if rf, ok := ret.Get(0).(func(*configuration.Server, string, string) *version.Version); ok {
+		r0 = rf(server, productID, versionTag)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*version.Version)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(*configuration.Server, string, string) error); ok {
+		r1 = rf(server, productID, versionTag)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockVersionClient_Get_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Get'
+type MockVersionClient_Get_Call struct {
+	*mock.Call
+}
+
+// Get is a helper method to define mock.On call
+//   - server *configuration.Server
+//   - productID string
+//   - versionTag string
+func (_e *MockVersionClient_Expecter) Get(server interface{}, productID interface{}, versionTag interface{}) *MockVersionClient_Get_Call {
+	return &MockVersionClient_Get_Call{Call: _e.mock.On("Get", server, productID, versionTag)}
+}
+
+func (_c *MockVersionClient_Get_Call) Run(run func(server *configuration.Server, productID string, versionTag string)) *MockVersionClient_Get_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(*configuration.Server), args[1].(string), args[2].(string))
+	})
+	return _c
+}
+
+func (_c *MockVersionClient_Get_Call) Return(_a0 *version.Version, _a1 error) *MockVersionClient_Get_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockVersionClient_Get_Call) RunAndReturn(run func(*configuration.Server, string, string) (*version.Version, error)) *MockVersionClient_Get_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // List provides a mock function with given fields: server, productID
 func (_m *MockVersionClient) List(server *configuration.Server, productID string) ([]*version.Version, error) {
 	ret := _m.Called(server, productID)
