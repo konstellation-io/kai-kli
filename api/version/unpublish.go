@@ -2,10 +2,10 @@ package version
 
 import "github.com/konstellation-io/kli/internal/services/configuration"
 
-func (c *Client) Stop(server *configuration.Server, productID, versionTag, comment string) (string, error) {
+func (c *Client) Unpublish(server *configuration.Server, productID, versionTag, comment string) (string, error) {
 	query := `
-		mutation StopVersion($input: StopVersionInput!) {
-			stopVersion(input: $input) {
+		mutation UnpublishVersion($input: UnpublishVersionInput!) {
+			unpublishVersion(input: $input) {
 				tag
 			}
 		}
@@ -19,12 +19,12 @@ func (c *Client) Stop(server *configuration.Server, productID, versionTag, comme
 	}
 
 	var respData struct {
-		StopVersion struct {
+		UnpublishVersion struct {
 			Tag string `json:"tag"`
-		} `json:"stopVersion"`
+		} `json:"unpublishVersion"`
 	}
 
 	err := c.gqlClient.MakeRequest(server, query, vars, &respData)
 
-	return respData.StopVersion.Tag, err
+	return respData.UnpublishVersion.Tag, err
 }

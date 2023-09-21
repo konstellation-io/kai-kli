@@ -34,4 +34,5 @@ type VersionClient interface {
 	Stop(server *configuration.Server, productID, versionTag, comment string) (string, error)
 	Get(server *configuration.Server, productID, versionTag string) (*version.Version, error)
 	List(server *configuration.Server, productID string) ([]*version.Version, error)
+	Unpublish(server *configuration.Server, productID, versionTag, comment string) (string, error)
 }

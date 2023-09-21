@@ -298,6 +298,61 @@ func (_c *MockVersionClient_Stop_Call) RunAndReturn(run func(*configuration.Serv
 	return _c
 }
 
+// Unpublish provides a mock function with given fields: server, productID, versionTag, comment
+func (_m *MockVersionClient) Unpublish(server *configuration.Server, productID string, versionTag string, comment string) (string, error) {
+	ret := _m.Called(server, productID, versionTag, comment)
+
+	var r0 string
+	var r1 error
+	if rf, ok := ret.Get(0).(func(*configuration.Server, string, string, string) (string, error)); ok {
+		return rf(server, productID, versionTag, comment)
+	}
+	if rf, ok := ret.Get(0).(func(*configuration.Server, string, string, string) string); ok {
+		r0 = rf(server, productID, versionTag, comment)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	if rf, ok := ret.Get(1).(func(*configuration.Server, string, string, string) error); ok {
+		r1 = rf(server, productID, versionTag, comment)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockVersionClient_Unpublish_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Unpublish'
+type MockVersionClient_Unpublish_Call struct {
+	*mock.Call
+}
+
+// Unpublish is a helper method to define mock.On call
+//   - server *configuration.Server
+//   - productID string
+//   - versionTag string
+//   - comment string
+func (_e *MockVersionClient_Expecter) Unpublish(server interface{}, productID interface{}, versionTag interface{}, comment interface{}) *MockVersionClient_Unpublish_Call {
+	return &MockVersionClient_Unpublish_Call{Call: _e.mock.On("Unpublish", server, productID, versionTag, comment)}
+}
+
+func (_c *MockVersionClient_Unpublish_Call) Run(run func(server *configuration.Server, productID string, versionTag string, comment string)) *MockVersionClient_Unpublish_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(*configuration.Server), args[1].(string), args[2].(string), args[3].(string))
+	})
+	return _c
+}
+
+func (_c *MockVersionClient_Unpublish_Call) Return(_a0 string, _a1 error) *MockVersionClient_Unpublish_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockVersionClient_Unpublish_Call) RunAndReturn(run func(*configuration.Server, string, string, string) (string, error)) *MockVersionClient_Unpublish_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // NewMockVersionClient creates a new instance of MockVersionClient. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewMockVersionClient(t interface {
