@@ -2,12 +2,12 @@ package product
 
 import (
 	"github.com/konstellation-io/kli/api"
+	"github.com/konstellation-io/kli/internal/render"
 	productconfiguration "github.com/konstellation-io/kli/internal/services/product_configuration"
 	"github.com/spf13/cobra"
 
 	"github.com/konstellation-io/kli/internal/commands/product"
 	"github.com/konstellation-io/kli/internal/logging"
-	"github.com/konstellation-io/kli/internal/render"
 )
 
 const (

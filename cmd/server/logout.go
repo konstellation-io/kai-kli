@@ -4,11 +4,11 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/konstellation-io/kli/internal/render"
 	"github.com/spf13/cobra"
 
 	"github.com/konstellation-io/kli/internal/commands/server"
 	"github.com/konstellation-io/kli/internal/logging"
-	"github.com/konstellation-io/kli/internal/render"
 	"github.com/konstellation-io/kli/internal/services/configuration"
 )
 

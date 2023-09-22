@@ -6,9 +6,7 @@ func (c *Client) Stop(server *configuration.Server, productID, versionTag, comme
 	query := `
 		mutation StopVersion($input: StopVersionInput!) {
 			stopVersion(input: $input) {
-				id
 				tag
-				status
 			}
 		}
 		`

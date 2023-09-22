@@ -5,12 +5,13 @@ import (
 	"os"
 
 	"github.com/konstellation-io/graphql"
+	"github.com/konstellation-io/kli/internal/entity"
 
 	"github.com/konstellation-io/kli/internal/services/configuration"
 )
 
 func (c *processRegistryClient) Register(server *configuration.Server, processFile *os.File,
-	productID, processID, processType, version string) (*RegisteredProcess, error) {
+	productID, processID, processType, version string) (*entity.RegisteredProcess, error) {
 	query := `
 		mutation RegisterProcess($input: RegisterProcessInput!) {
 			registerProcess(input: $input) {
@@ -30,7 +31,7 @@ func (c *processRegistryClient) Register(server *configuration.Server, processFi
 	}
 
 	var respData struct {
-		RegisteredProcess RegisteredProcess `json:"registerProcess"`
+		RegisteredProcess entity.RegisteredProcess `json:"registerProcess"`
 	}
 
 	processFileOpen, err := os.Open(processFile.Name())

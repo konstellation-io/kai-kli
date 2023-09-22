@@ -7,15 +7,14 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	api "github.com/konstellation-io/kli/api/processregistry"
+	"github.com/konstellation-io/kli/cmd/config"
+	"github.com/konstellation-io/kli/internal/commands/processregistry"
+	"github.com/konstellation-io/kli/internal/entity"
+	"github.com/konstellation-io/kli/internal/services/configuration"
+	"github.com/konstellation-io/kli/mocks"
 	"github.com/konstellation-io/krt/pkg/krt"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
-
-	"github.com/konstellation-io/kli/cmd/config"
-	"github.com/konstellation-io/kli/internal/commands/processregistry"
-	"github.com/konstellation-io/kli/internal/services/configuration"
-	"github.com/konstellation-io/kli/mocks"
 )
 
 const (
@@ -109,7 +108,7 @@ func (s *RegisterProcessSuite) TestRegisterNewServer_ValidPaths_ExpectOk() {
 	dockerfilePath := "../../../testdata/sample-trigger/Dockerfile"
 	productID := _productID
 
-	registeredProcess := &api.RegisteredProcess{
+	registeredProcess := &entity.RegisteredProcess{
 		ID:    "process_id",
 		Image: "test-image",
 	}
