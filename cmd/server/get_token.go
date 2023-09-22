@@ -3,11 +3,11 @@ package server
 import (
 	"fmt"
 
+	"github.com/konstellation-io/kli/internal/render"
 	"github.com/spf13/cobra"
 
 	"github.com/konstellation-io/kli/internal/commands/server"
 	"github.com/konstellation-io/kli/internal/logging"
-	"github.com/konstellation-io/kli/internal/render"
 )
 
 // NewGetTokenCmd creates a new command to retrieve server session token.

@@ -4,12 +4,17 @@ import (
 	"errors"
 	"time"
 
-	apiVersion "github.com/konstellation-io/kli/api/version"
 	"github.com/konstellation-io/kli/internal/commands/version"
+	"github.com/konstellation-io/kli/internal/entity"
 )
 
 func (s *VersionSuite) TestListVersion() {
-	versions := []*apiVersion.Version{
+	const (
+		productName = "test-product"
+		versionTag  = "v.1.0.1-test"
+	)
+
+	versions := []*entity.Version{
 		{
 			Tag:          versionTag,
 			CreationDate: time.Now(),

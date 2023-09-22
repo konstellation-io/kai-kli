@@ -9,11 +9,11 @@ import (
 	"time"
 
 	"github.com/golang/mock/gomock"
+	"github.com/konstellation-io/kli/internal/entity"
 	"github.com/konstellation-io/krt/pkg/krt"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
 
-	processRegistryAPI "github.com/konstellation-io/kli/api/processregistry"
 	"github.com/konstellation-io/kli/cmd/config"
 	processRegistryCMD "github.com/konstellation-io/kli/internal/commands/processregistry"
 	"github.com/konstellation-io/kli/internal/services/configuration"
@@ -99,7 +99,7 @@ func (s *ListProcessSuite) TestList() {
 	productID := _productID
 	serverName := _serverName
 
-	testRegisteredProcess := &processRegistryAPI.RegisteredProcess{
+	testRegisteredProcess := &entity.RegisteredProcess{
 		ID:         "test-process-id",
 		Name:       "test-process",
 		Version:    "v1.0.0",
@@ -109,7 +109,7 @@ func (s *ListProcessSuite) TestList() {
 		Owner:      "test",
 	}
 
-	retrievedRegisteredProcesses := []*processRegistryAPI.RegisteredProcess{testRegisteredProcess}
+	retrievedRegisteredProcesses := []*entity.RegisteredProcess{testRegisteredProcess}
 
 	s.processRegistryAPI.EXPECT().List(gomock.Any(), productID, processType).Return(
 		retrievedRegisteredProcesses,

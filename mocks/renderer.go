@@ -9,8 +9,7 @@ import (
 
 	gomock "github.com/golang/mock/gomock"
 	kai "github.com/konstellation-io/kli/api/kai"
-	processregistry "github.com/konstellation-io/kli/api/processregistry"
-	version "github.com/konstellation-io/kli/api/version"
+	entity "github.com/konstellation-io/kli/internal/entity"
 	configuration "github.com/konstellation-io/kli/internal/services/configuration"
 	krt "github.com/konstellation-io/krt/pkg/krt"
 )
@@ -75,7 +74,7 @@ func (mr *MockRendererMockRecorder) RenderProducts(products interface{}) *gomock
 }
 
 // RenderRegisteredProcesses mocks base method.
-func (m *MockRenderer) RenderRegisteredProcesses(registries []*processregistry.RegisteredProcess) {
+func (m *MockRenderer) RenderRegisteredProcesses(registries []*entity.RegisteredProcess) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "RenderRegisteredProcesses", registries)
 }
@@ -98,8 +97,20 @@ func (mr *MockRendererMockRecorder) RenderServers(servers interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderServers", reflect.TypeOf((*MockRenderer)(nil).RenderServers), servers)
 }
 
+// RenderTriggers mocks base method.
+func (m *MockRenderer) RenderTriggers(triggers []entity.TriggerEndpoint) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderTriggers", triggers)
+}
+
+// RenderTriggers indicates an expected call of RenderTriggers.
+func (mr *MockRendererMockRecorder) RenderTriggers(triggers interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderTriggers", reflect.TypeOf((*MockRenderer)(nil).RenderTriggers), triggers)
+}
+
 // RenderVersion mocks base method.
-func (m *MockRenderer) RenderVersion(productID string, v *version.Version) {
+func (m *MockRenderer) RenderVersion(productID string, v *entity.Version) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "RenderVersion", productID, v)
 }
@@ -111,7 +122,7 @@ func (mr *MockRendererMockRecorder) RenderVersion(productID, v interface{}) *gom
 }
 
 // RenderVersions mocks base method.
-func (m *MockRenderer) RenderVersions(productID string, versions []*version.Version) {
+func (m *MockRenderer) RenderVersions(productID string, versions []*entity.Version) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "RenderVersions", productID, versions)
 }
