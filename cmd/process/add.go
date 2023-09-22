@@ -1,12 +1,12 @@
 package process
 
 import (
+	"github.com/konstellation-io/kli/internal/render"
 	"github.com/konstellation-io/krt/pkg/krt"
 	"github.com/spf13/cobra"
 
 	"github.com/konstellation-io/kli/internal/commands/process"
 	"github.com/konstellation-io/kli/internal/logging"
-	"github.com/konstellation-io/kli/internal/render"
 )
 
 // NewAddCmd creates a new command to add a process to the given product workflow.

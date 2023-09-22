@@ -1,10 +1,10 @@
 package process
 
 import (
+	"github.com/konstellation-io/kli/internal/render"
 	"github.com/konstellation-io/krt/pkg/krt"
 
 	"github.com/konstellation-io/kli/internal/logging"
-	"github.com/konstellation-io/kli/internal/render"
 	productconfiguration "github.com/konstellation-io/kli/internal/services/product_configuration"
 )
 

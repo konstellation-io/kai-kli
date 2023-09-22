@@ -1,11 +1,11 @@
 package workflow
 
 import (
+	"github.com/konstellation-io/kli/internal/render"
 	"github.com/spf13/cobra"
 
 	"github.com/konstellation-io/kli/internal/commands/workflow"
 	"github.com/konstellation-io/kli/internal/logging"
-	"github.com/konstellation-io/kli/internal/render"
 )
 
 // NewRemoveCmd creates a new command to delete a workflow to the given product.

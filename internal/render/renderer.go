@@ -7,14 +7,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/konstellation-io/krt/pkg/krt"
-	"github.com/olekukonko/tablewriter"
-
 	"github.com/konstellation-io/kli/api/kai"
-	"github.com/konstellation-io/kli/api/processregistry"
-	"github.com/konstellation-io/kli/api/version"
+	"github.com/konstellation-io/kli/internal/entity"
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/konstellation-io/kli/internal/services/configuration"
+	"github.com/konstellation-io/krt/pkg/krt"
+	"github.com/olekukonko/tablewriter"
 )
 
 type CliRenderer struct {
@@ -165,7 +163,7 @@ func (r *CliRenderer) RenderConfiguration(scope string, config map[string]string
 	r.tableWriter.Render()
 }
 
-func (r *CliRenderer) RenderRegisteredProcesses(registeredProcesses []*processregistry.RegisteredProcess) {
+func (r *CliRenderer) RenderRegisteredProcesses(registeredProcesses []*entity.RegisteredProcess) {
 	if len(registeredProcesses) < 1 {
 		r.logger.Info("No processes found.")
 		return
@@ -211,7 +209,7 @@ func (r *CliRenderer) RenderProducts(products []kai.Product) {
 	r.tableWriter.Render()
 }
 
-func (r *CliRenderer) RenderVersions(productID string, versions []*version.Version) {
+func (r *CliRenderer) RenderVersions(productID string, versions []*entity.Version) {
 	if len(versions) < 1 {
 		r.logger.Info("No versions found.")
 		return
@@ -233,11 +231,33 @@ func (r *CliRenderer) RenderVersions(productID string, versions []*version.Versi
 	r.tableWriter.Render()
 }
 
-func (r *CliRenderer) RenderVersion(productID string, v *version.Version) {
+func (r *CliRenderer) RenderVersion(productID string, v *entity.Version) {
 	if v.Error != "" {
 		r.logger.Info(fmt.Sprintf("%s - %s status is: %s and has an error: %s", productID, v.Tag, v.Status, v.Error))
 		return
 	}
 
 	r.logger.Info(fmt.Sprintf("%s - %s status is: %s", productID, v.Tag, v.Status))
+}
+
+func (r *CliRenderer) RenderTriggers(triggers []entity.Trigger) {
+	if len(triggers) == 0 {
+		return
+	}
+
+	r.tableWriter.SetHeader([]string{
+		"Name",
+		"Status",
+		"Link",
+	})
+
+	for _, trigger := range triggers {
+		r.tableWriter.Append([]string{
+			trigger.Name,
+			"UP",
+			trigger.URL,
+		})
+	}
+
+	r.tableWriter.Render()
 }

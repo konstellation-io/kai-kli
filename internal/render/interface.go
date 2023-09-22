@@ -1,12 +1,10 @@
 package render
 
 import (
-	"github.com/konstellation-io/krt/pkg/krt"
-
 	"github.com/konstellation-io/kli/api/kai"
-	"github.com/konstellation-io/kli/api/processregistry"
-	"github.com/konstellation-io/kli/api/version"
+	"github.com/konstellation-io/kli/internal/entity"
 	"github.com/konstellation-io/kli/internal/services/configuration"
+	"github.com/konstellation-io/krt/pkg/krt"
 )
 
 //go:generate mockgen -source=${GOFILE} -destination=../../mocks/renderer.go -package=mocks
@@ -17,8 +15,9 @@ type Renderer interface {
 	RenderWorkflows(workflows []krt.Workflow)
 	RenderProcesses(processes []krt.Process)
 	RenderConfiguration(scope string, config map[string]string)
-	RenderRegisteredProcesses(registries []*processregistry.RegisteredProcess)
+	RenderRegisteredProcesses(registries []*entity.RegisteredProcess)
 	RenderProducts(products []kai.Product)
-	RenderVersion(productID string, v *version.Version)
-	RenderVersions(productID string, versions []*version.Version)
+	RenderVersion(productID string, v *entity.Version)
+	RenderVersions(productID string, versions []*entity.Version)
+	RenderTriggers(triggers []entity.Trigger)
 }
