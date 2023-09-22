@@ -9,7 +9,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	processregistry "github.com/konstellation-io/kli/api/processregistry"
+	entity "github.com/konstellation-io/kli/internal/entity"
 	configuration "github.com/konstellation-io/kli/internal/services/configuration"
 )
 
@@ -37,10 +37,10 @@ func (m *MockAPIClient) EXPECT() *MockAPIClientMockRecorder {
 }
 
 // List mocks base method.
-func (m *MockAPIClient) List(server *configuration.Server, productID, processType string) ([]*processregistry.RegisteredProcess, error) {
+func (m *MockAPIClient) List(server *configuration.Server, productID, processType string) ([]*entity.RegisteredProcess, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List", server, productID, processType)
-	ret0, _ := ret[0].([]*processregistry.RegisteredProcess)
+	ret0, _ := ret[0].([]*entity.RegisteredProcess)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -52,10 +52,10 @@ func (mr *MockAPIClientMockRecorder) List(server, productID, processType interfa
 }
 
 // Register mocks base method.
-func (m *MockAPIClient) Register(server *configuration.Server, processFile *os.File, productID, processID, processType, version string) (*processregistry.RegisteredProcess, error) {
+func (m *MockAPIClient) Register(server *configuration.Server, processFile *os.File, productID, processID, processType, version string) (*entity.RegisteredProcess, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Register", server, processFile, productID, processID, processType, version)
-	ret0, _ := ret[0].(*processregistry.RegisteredProcess)
+	ret0, _ := ret[0].(*entity.RegisteredProcess)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

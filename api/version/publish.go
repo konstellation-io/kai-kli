@@ -5,7 +5,7 @@ import (
 	"github.com/konstellation-io/kli/internal/services/configuration"
 )
 
-func (c *Client) Publish(server *configuration.Server, productID, versionTag, comment string) ([]entity.Trigger, error) {
+func (c *Client) Publish(server *configuration.Server, productID, versionTag, comment string) ([]entity.TriggerEndpoint, error) {
 	query := `
 		mutation PublishVersion($input: PublishVersionInput!) {
 			publishVersion(input: $input) {
@@ -24,7 +24,7 @@ func (c *Client) Publish(server *configuration.Server, productID, versionTag, co
 	}
 
 	var respData struct {
-		PublishedTriggers []entity.Trigger `json:"publishVersion"`
+		PublishedTriggers []entity.TriggerEndpoint `json:"publishVersion"`
 	}
 
 	err := c.gqlClient.MakeRequest(server, query, vars, &respData)

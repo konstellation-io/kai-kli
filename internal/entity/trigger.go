@@ -1,6 +1,6 @@
 package entity
 
-type Trigger struct {
-	Name string `json:"trigger"`
-	URL  string `json:"url"`
+type TriggerEndpoint struct {
+	Trigger string `json:"trigger"`
+	URL     string `json:"url"`
 }

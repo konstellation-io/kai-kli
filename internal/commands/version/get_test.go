@@ -4,8 +4,8 @@ import (
 	"errors"
 	"time"
 
-	apiVersion "github.com/konstellation-io/kli/api/version"
 	"github.com/konstellation-io/kli/internal/commands/version"
+	"github.com/konstellation-io/kli/internal/entity"
 )
 
 const (
@@ -14,7 +14,7 @@ const (
 )
 
 func (s *VersionSuite) TestGetVersion() {
-	oneVersion := &apiVersion.Version{
+	oneVersion := &entity.Version{
 		Tag:          versionTag,
 		CreationDate: time.Now(),
 		Status:       "CREATED",
@@ -45,7 +45,7 @@ func (s *VersionSuite) TestGetVersion_ErrorIfClientFails() {
 }
 
 func (s *VersionSuite) TestGetVersion_ContainsError() {
-	oneVersion := &apiVersion.Version{
+	oneVersion := &entity.Version{
 		Tag:          versionTag,
 		CreationDate: time.Now(),
 		Status:       "CREATED",

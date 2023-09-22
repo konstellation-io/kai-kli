@@ -19,5 +19,5 @@ type Renderer interface {
 	RenderProducts(products []kai.Product)
 	RenderVersion(productID string, v *entity.Version)
 	RenderVersions(productID string, versions []*entity.Version)
-	RenderTriggers(triggers []entity.Trigger)
+	RenderTriggers(triggers []entity.TriggerEndpoint)
 }

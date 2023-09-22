@@ -240,7 +240,7 @@ func (r *CliRenderer) RenderVersion(productID string, v *entity.Version) {
 	r.logger.Info(fmt.Sprintf("%s - %s status is: %s", productID, v.Tag, v.Status))
 }
 
-func (r *CliRenderer) RenderTriggers(triggers []entity.Trigger) {
+func (r *CliRenderer) RenderTriggers(triggers []entity.TriggerEndpoint) {
 	if len(triggers) == 0 {
 		return
 	}
@@ -253,7 +253,7 @@ func (r *CliRenderer) RenderTriggers(triggers []entity.Trigger) {
 
 	for _, trigger := range triggers {
 		r.tableWriter.Append([]string{
-			trigger.Name,
+			trigger.Trigger,
 			"UP",
 			trigger.URL,
 		})
