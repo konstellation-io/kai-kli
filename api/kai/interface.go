@@ -1,7 +1,6 @@
 package kai
 
 import (
-	"github.com/docker/distribution/version"
 	"github.com/konstellation-io/kli/api/processregistry"
 	"github.com/konstellation-io/kli/internal/entity"
 	"github.com/konstellation-io/kli/internal/services/configuration"
@@ -33,8 +32,8 @@ type VersionClient interface {
 	Push(server *configuration.Server, product, krtFilePath string) (string, error)
 	Start(server *configuration.Server, productID, versionTag, comment string) (string, error)
 	Stop(server *configuration.Server, productID, versionTag, comment string) (string, error)
-	Get(server *configuration.Server, productID, versionTag string) (*version.Version, error)
-	List(server *configuration.Server, productID string) ([]*version.Version, error)
+	Get(server *configuration.Server, productID, versionTag string) (*entity.Version, error)
+	List(server *configuration.Server, productID string) ([]*entity.Version, error)
 	Publish(server *configuration.Server, productID, versionTag, comment string) ([]entity.TriggerEndpoint, error)
 	Unpublish(server *configuration.Server, productID, versionTag, comment string) (string, error)
 }
