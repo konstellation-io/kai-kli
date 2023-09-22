@@ -33,7 +33,6 @@ func (s *VersionSuite) TestListVersion() {
 }
 
 func (s *VersionSuite) TestListVersion_ErrorIfClientFails() {
-	productName := "test-product"
 	expectedError := errors.New("client error")
 
 	s.versionClient.EXPECT().List(s.server, productName).Return(nil, expectedError).Once()

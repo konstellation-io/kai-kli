@@ -8,11 +8,6 @@ import (
 )
 
 func (s *VersionSuite) TestCreateProduct() {
-	const (
-		productName = "test-product"
-		versionTag  = "v.1.0.1-test"
-	)
-
 	krtFilePath := path.Join("testdata", productName+".yaml")
 
 	s.versionClient.EXPECT().Push(s.server, productName, krtFilePath).Return(versionTag, nil).Once()
@@ -25,7 +20,6 @@ func (s *VersionSuite) TestCreateProduct() {
 }
 
 func (s *VersionSuite) TestCreateProduct_ErrorIfClientFails() {
-	productName := "test-product"
 	krtFilePath := path.Join("testdata", productName+".yaml")
 	expectedError := errors.New("client error")
 

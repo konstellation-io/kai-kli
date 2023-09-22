@@ -16,9 +16,8 @@ func NewVersionCmd(logger logging.Interface) *cobra.Command {
 			"authenticated": "true",
 		},
 		Example: heredoc.Doc(`
-			$ kli version ls [opts...]
-			$ kli version create <product_name> [opts...]
-			$ kli version bind <product_name> [opts...]
+			$ kli product versions ls <product_name> [opts...]
+			$ kli product version get <product_name> <version_tag> [opts...]
 		`),
 	}
 
@@ -31,6 +30,7 @@ func NewVersionCmd(logger logging.Interface) *cobra.Command {
 		NewPublishCmd(logger),
 		NewGetCmd(logger),
 		NewListCmd(logger),
+		NewUnpublishCmd(logger),
 	)
 
 	return cmd

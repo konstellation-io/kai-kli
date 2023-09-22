@@ -8,20 +8,15 @@ import (
 	"github.com/konstellation-io/kli/internal/entity"
 )
 
-const (
-	productName = "test-product"
-	versionTag  = "v.1.0.1-test"
-)
-
 func (s *VersionSuite) TestGetVersion() {
-	oneVersion := &entity.Version{
+	testVersion := &entity.Version{
 		Tag:          versionTag,
 		CreationDate: time.Now(),
 		Status:       "CREATED",
 	}
 
-	s.versionClient.EXPECT().Get(s.server, productName, versionTag).Return(oneVersion, nil).Once()
-	s.renderer.EXPECT().RenderVersion(productName, oneVersion)
+	s.versionClient.EXPECT().Get(s.server, productName, versionTag).Return(testVersion, nil).Once()
+	s.renderer.EXPECT().RenderVersion(productName, testVersion)
 
 	err := s.handler.GetVersion(&version.GetVersionOpts{
 		ServerName: s.server.Name,

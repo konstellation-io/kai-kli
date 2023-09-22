@@ -14,6 +14,12 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
+const (
+	productName = "test-product"
+	versionTag  = "v.1.0.1-test"
+	comment     = "comment"
+)
+
 type VersionSuite struct {
 	suite.Suite
 
