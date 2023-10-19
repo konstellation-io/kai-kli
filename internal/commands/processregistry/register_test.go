@@ -7,14 +7,14 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
+	"github.com/konstellation-io/kli/cmd/config"
+	"github.com/konstellation-io/kli/internal/commands/processregistry"
+	"github.com/konstellation-io/kli/internal/entity"
+	"github.com/konstellation-io/kli/internal/services/configuration"
+	"github.com/konstellation-io/kli/mocks"
 	"github.com/konstellation-io/krt/pkg/krt"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
-
-	"github.com/konstellation-io/kli/cmd/config"
-	"github.com/konstellation-io/kli/internal/commands/processregistry"
-	"github.com/konstellation-io/kli/internal/services/configuration"
-	"github.com/konstellation-io/kli/mocks"
 )
 
 const (
@@ -31,7 +31,7 @@ type RegisterProcessSuite struct {
 	renderer           *mocks.MockRenderer
 	logger             *mocks.MockLogger
 	manager            *processregistry.Handler
-	processRegistryAPI *mocks.MockProcessRegistryInterface
+	processRegistryAPI *mocks.MockAPIClient
 	configuration      *configuration.KaiConfigService
 	tmpDir             string
 }
@@ -50,7 +50,7 @@ func (s *RegisterProcessSuite) SetupSuite() {
 
 	s.renderer = renderer
 
-	s.processRegistryAPI = mocks.NewMockProcessRegistryInterface(ctrl)
+	s.processRegistryAPI = mocks.NewMockAPIClient(ctrl)
 
 	s.manager = processregistry.NewHandler(
 		s.logger,
@@ -100,7 +100,6 @@ func (s *RegisterProcessSuite) BeforeTest(_, _ string) {
 
 func (s *RegisterProcessSuite) TestRegisterNewServer_ValidPaths_ExpectOk() {
 	// GIVEN
-	registeredProcessID := "process_id"
 	serverName := _serverName
 	processType := _processType
 	processID := _processID
@@ -109,9 +108,14 @@ func (s *RegisterProcessSuite) TestRegisterNewServer_ValidPaths_ExpectOk() {
 	dockerfilePath := "../../../testdata/sample-trigger/Dockerfile"
 	productID := _productID
 
+	registeredProcess := &entity.RegisteredProcess{
+		ID:    "process_id",
+		Image: "test-image",
+	}
+
 	s.processRegistryAPI.EXPECT().
 		Register(gomock.Any(), gomock.Any(), productID, processID, processType, version).
-		Return(registeredProcessID, nil)
+		Return(registeredProcess, nil)
 
 	// WHEN
 	err := s.manager.RegisterProcess(&processregistry.RegisterProcessOpts{

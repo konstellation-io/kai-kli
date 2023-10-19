@@ -8,7 +8,8 @@ release:
   github:
     owner: konstellation-io
     name: kai-kli
-
+  # Append to the release published by Nyx.
+  mode: append
 # https://goreleaser.com/customization/hooks/
 before:
   hooks:
@@ -85,7 +86,7 @@ scoops:
       name: goreleaserbot
       email: releases@konstellation.io
     commit_msg_template: "Scoop update for {{ .ProjectName }} version {{ .Version }}"
-    homepage: https://konstellation.io
+    homepage: https://github.com/konstellation-io/kai-kli
     description: A CLI to access, query and manage KAI servers.
     license: MIT
     repository:
@@ -102,13 +103,4 @@ checksum:
 
 # https://goreleaser.com/customization/changelog/
 changelog:
-  sort: desc
-  filters:
-    exclude:
-      - '^docs:'
-      - '^test:'
-      - '^tests:'
-      - '^Scoop update'
-      - '^ci:'
-      - Merge pull request
-      - Merge branch
+  skip: true # This part will be handled by Nyx

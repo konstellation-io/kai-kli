@@ -1,12 +1,13 @@
 package processregistry
 
 import (
+	"github.com/konstellation-io/kli/internal/entity"
 	"github.com/konstellation-io/kli/internal/services/configuration"
 )
 
 func (c *processRegistryClient) List(
 	server *configuration.Server, productID, processType string,
-) ([]RegisteredProcess, error) {
+) ([]*entity.RegisteredProcess, error) {
 	query := `
 		query RegisteredProcesses($productID: ID!, $processType: String) {
 			registeredProcesses(productID: $productID, processType: $processType) {
@@ -17,6 +18,7 @@ func (c *processRegistryClient) List(
 					image
 					uploadDate
 					owner
+					status
 			}
 		}
 		`
@@ -26,7 +28,7 @@ func (c *processRegistryClient) List(
 	}
 
 	var respData struct {
-		RegisteredProcesses []RegisteredProcess `json:"registeredProcesses"`
+		RegisteredProcesses []*entity.RegisteredProcess `json:"registeredProcesses"`
 	}
 
 	err := c.client.MakeRequest(server, query, vars, &respData)

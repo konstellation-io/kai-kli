@@ -5,16 +5,18 @@ import (
 	"os"
 
 	"github.com/konstellation-io/graphql"
+	"github.com/konstellation-io/kli/internal/entity"
 
 	"github.com/konstellation-io/kli/internal/services/configuration"
 )
 
 func (c *processRegistryClient) Register(server *configuration.Server, processFile *os.File,
-	productID, processID, processType, version string) (string, error) {
+	productID, processID, processType, version string) (*entity.RegisteredProcess, error) {
 	query := `
 		mutation RegisterProcess($input: RegisterProcessInput!) {
 			registerProcess(input: $input) {
-				processedImageID
+				id
+				image
 			}
 		}
 		`
@@ -29,14 +31,12 @@ func (c *processRegistryClient) Register(server *configuration.Server, processFi
 	}
 
 	var respData struct {
-		RegisteredProcess struct {
-			ProcessedImageID string `json:"processedImageID"`
-		} `json:"registerProcess"`
+		RegisteredProcess entity.RegisteredProcess `json:"registerProcess"`
 	}
 
 	processFileOpen, err := os.Open(processFile.Name())
 	if err != nil {
-		return "", fmt.Errorf("reading file content: %w", err)
+		return nil, fmt.Errorf("reading file content: %w", err)
 	}
 
 	defer processFileOpen.Close()
@@ -48,7 +48,6 @@ func (c *processRegistryClient) Register(server *configuration.Server, processFi
 	}
 
 	err = c.client.UploadFile(server, file, query, vars, &respData)
-	registeredProcessID := respData.RegisteredProcess.ProcessedImageID
 
-	return registeredProcessID, err
+	return &respData.RegisteredProcess, err
 }

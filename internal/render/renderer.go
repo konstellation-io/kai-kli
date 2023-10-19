@@ -7,12 +7,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/konstellation-io/krt/pkg/krt"
-	"github.com/olekukonko/tablewriter"
-
-	"github.com/konstellation-io/kli/api/processregistry"
+	"github.com/konstellation-io/kli/api/kai"
+	"github.com/konstellation-io/kli/internal/entity"
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/konstellation-io/kli/internal/services/configuration"
+	"github.com/konstellation-io/krt/pkg/krt"
+	"github.com/olekukonko/tablewriter"
 )
 
 type CliRenderer struct {
@@ -163,24 +163,99 @@ func (r *CliRenderer) RenderConfiguration(scope string, config map[string]string
 	r.tableWriter.Render()
 }
 
-func (r *CliRenderer) RenderRegisteredProcesses(registeredProcesses []processregistry.RegisteredProcess) {
+func (r *CliRenderer) RenderRegisteredProcesses(registeredProcesses []*entity.RegisteredProcess) {
 	if len(registeredProcesses) < 1 {
 		r.logger.Info("No processes found.")
 		return
 	}
 
 	r.tableWriter.SetHeader([]string{
-		"Process Name", "Process Version", "Process type", "Image", "Upload Date", "Owner",
+		"Name", "Version", "Status", "Type", "Image", "Upload Date", "Owner",
 	})
 
 	for _, pr := range registeredProcesses {
 		r.tableWriter.Append([]string{
 			pr.Name,
 			pr.Version,
+			pr.Status,
 			pr.Type,
 			pr.Image,
 			pr.UploadDate.Format(time.RFC3339),
 			pr.Owner,
+		})
+	}
+
+	r.tableWriter.Render()
+}
+
+func (r *CliRenderer) RenderProducts(products []kai.Product) {
+	if len(products) == 0 {
+		r.logger.Info("No products found.")
+		return
+	}
+
+	r.tableWriter.SetHeader([]string{
+		"ID", "Name", "Description",
+	})
+
+	for _, product := range products {
+		r.tableWriter.Append([]string{
+			product.ID,
+			product.Name,
+			product.Description,
+		})
+	}
+
+	r.tableWriter.Render()
+}
+
+func (r *CliRenderer) RenderVersions(productID string, versions []*entity.Version) {
+	if len(versions) < 1 {
+		r.logger.Info("No versions found.")
+		return
+	}
+
+	r.tableWriter.SetHeader([]string{
+		"Product", "Tag", "Status", "Creation Date",
+	})
+
+	for _, v := range versions {
+		r.tableWriter.Append([]string{
+			productID,
+			v.Tag,
+			v.Status,
+			v.CreationDate.Format(time.RFC3339),
+		})
+	}
+
+	r.tableWriter.Render()
+}
+
+func (r *CliRenderer) RenderVersion(productID string, v *entity.Version) {
+	if v.Error != "" {
+		r.logger.Info(fmt.Sprintf("%s - %s status is: %s and has an error: %s.", productID, v.Tag, v.Status, v.Error))
+		return
+	}
+
+	r.logger.Info(fmt.Sprintf("%s - %s status is: %s.", productID, v.Tag, v.Status))
+}
+
+func (r *CliRenderer) RenderTriggers(triggers []entity.TriggerEndpoint) {
+	if len(triggers) == 0 {
+		return
+	}
+
+	r.tableWriter.SetHeader([]string{
+		"Name",
+		"Status",
+		"Link",
+	})
+
+	for _, trigger := range triggers {
+		r.tableWriter.Append([]string{
+			trigger.Trigger,
+			"UP",
+			trigger.URL,
 		})
 	}
 

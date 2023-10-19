@@ -8,7 +8,8 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	processregistry "github.com/konstellation-io/kli/api/processregistry"
+	kai "github.com/konstellation-io/kli/api/kai"
+	entity "github.com/konstellation-io/kli/internal/entity"
 	configuration "github.com/konstellation-io/kli/internal/services/configuration"
 	krt "github.com/konstellation-io/krt/pkg/krt"
 )
@@ -60,8 +61,20 @@ func (mr *MockRendererMockRecorder) RenderProcesses(processes interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderProcesses", reflect.TypeOf((*MockRenderer)(nil).RenderProcesses), processes)
 }
 
+// RenderProducts mocks base method.
+func (m *MockRenderer) RenderProducts(products []kai.Product) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderProducts", products)
+}
+
+// RenderProducts indicates an expected call of RenderProducts.
+func (mr *MockRendererMockRecorder) RenderProducts(products interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderProducts", reflect.TypeOf((*MockRenderer)(nil).RenderProducts), products)
+}
+
 // RenderRegisteredProcesses mocks base method.
-func (m *MockRenderer) RenderRegisteredProcesses(registries []processregistry.RegisteredProcess) {
+func (m *MockRenderer) RenderRegisteredProcesses(registries []*entity.RegisteredProcess) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "RenderRegisteredProcesses", registries)
 }
@@ -82,6 +95,42 @@ func (m *MockRenderer) RenderServers(servers []configuration.Server) {
 func (mr *MockRendererMockRecorder) RenderServers(servers interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderServers", reflect.TypeOf((*MockRenderer)(nil).RenderServers), servers)
+}
+
+// RenderTriggers mocks base method.
+func (m *MockRenderer) RenderTriggers(triggers []entity.TriggerEndpoint) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderTriggers", triggers)
+}
+
+// RenderTriggers indicates an expected call of RenderTriggers.
+func (mr *MockRendererMockRecorder) RenderTriggers(triggers interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderTriggers", reflect.TypeOf((*MockRenderer)(nil).RenderTriggers), triggers)
+}
+
+// RenderVersion mocks base method.
+func (m *MockRenderer) RenderVersion(productID string, v *entity.Version) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderVersion", productID, v)
+}
+
+// RenderVersion indicates an expected call of RenderVersion.
+func (mr *MockRendererMockRecorder) RenderVersion(productID, v interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderVersion", reflect.TypeOf((*MockRenderer)(nil).RenderVersion), productID, v)
+}
+
+// RenderVersions mocks base method.
+func (m *MockRenderer) RenderVersions(productID string, versions []*entity.Version) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderVersions", productID, versions)
+}
+
+// RenderVersions indicates an expected call of RenderVersions.
+func (mr *MockRendererMockRecorder) RenderVersions(productID, versions interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderVersions", reflect.TypeOf((*MockRenderer)(nil).RenderVersions), productID, versions)
 }
 
 // RenderWorkflows mocks base method.

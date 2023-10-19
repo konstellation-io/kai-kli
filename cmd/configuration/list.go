@@ -1,11 +1,11 @@
 package configuration
 
 import (
+	"github.com/konstellation-io/kli/internal/render"
 	"github.com/spf13/cobra"
 
 	processconfiguration "github.com/konstellation-io/kli/internal/commands/configuration"
 	"github.com/konstellation-io/kli/internal/logging"
-	"github.com/konstellation-io/kli/internal/render"
 )
 
 // NewListCmd creates a new command to list existing configuration from the given scope.
