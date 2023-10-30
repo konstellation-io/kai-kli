@@ -154,7 +154,8 @@ func (as *AuthServer) StartServer(config KeycloakConfig) (*AuthResponse, error) 
 
 	err := as.openBrowser(as.buildAuthorizationRequest(config))
 	if err != nil {
-		return nil, fmt.Errorf("could not open the browser for url %v", as.buildAuthorizationRequest(config))
+		as.logger.Warn(fmt.Sprintf("Unable to open browser, open the following URL: %v",
+			as.buildAuthorizationRequest(config)))
 	}
 
 	as.closeApp.Wait()
