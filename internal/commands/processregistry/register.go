@@ -105,7 +105,7 @@ func (c *Handler) createTempTarGzFile(patternsToIgnore ignore.IgnoreParser, path
 func (c *Handler) addToTarGz(tw *tar.Writer, sourcePath string, patternsToIgnore ignore.IgnoreParser) error {
 	return filepath.Walk(sourcePath, func(dirPath string, info os.FileInfo, err error) error {
 		if patternsToIgnore.MatchesPath(path.Base(dirPath)) {
-			c.logger.Info(fmt.Sprintf("Skipped file: %s", dirPath))
+			c.logger.Debug(fmt.Sprintf("Skipping file %q", dirPath))
 			return nil
 		}
 
