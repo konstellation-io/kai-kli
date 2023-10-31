@@ -147,8 +147,8 @@ func (c *Handler) addToTarGz(tw *tar.Writer, sourcePath string, patternsToIgnore
 	})
 }
 
-func (c *Handler) pathExists(path string) bool {
-	if _, err := os.Stat(path); os.IsNotExist(err) {
+func (c *Handler) pathExists(pathToCheck string) bool {
+	if _, err := os.Stat(pathToCheck); os.IsNotExist(err) {
 		return false
 	}
 
