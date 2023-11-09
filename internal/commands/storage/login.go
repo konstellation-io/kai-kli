@@ -2,34 +2,30 @@ package storage
 
 import (
 	"fmt"
-	"os/exec"
-	"runtime"
+
+	"github.com/konstellation-io/kli/internal/services/configuration"
+	"github.com/konstellation-io/kli/pkg/osutil"
 )
 
-func (h *Handler) Login(storageURL string) error {
-	if err := openBrowser(storageURL); err != nil {
+func (h *Handler) Login(serverName string) error {
+	configService := configuration.NewKaiConfigService(h.logger)
+
+	conf, err := configService.GetConfiguration()
+	if err != nil {
+		return err
+	}
+
+	server, err := conf.GetServerOrDefault(serverName)
+	if err != nil {
+		return err
+	}
+
+	if err := osutil.OpenBrowser(server.StorageURL); err != nil {
 		h.logger.Warn(fmt.Sprintf("Unable to open browser, open the following URL: %v",
-			storageURL))
+			server.StorageURL))
+		return nil
 	}
 
+	h.logger.Success("Storage login page's opening in the browser!")
 	return nil
-}
-
-func openBrowser(url string) error {
-	var browserCommand *exec.Cmd
-
-	switch runtime.GOOS {
-	case "linux":
-		browserCommand = exec.Command("xdg-open", url)
-	case "windows":
-		browserCommand = exec.Command("rundll32", "url.dll,FileProtocolHandler", url)
-	case "darwin":
-		browserCommand = exec.Command("open", url)
-	default:
-		return fmt.Errorf("unsupported operating system: %v", runtime.GOOS)
-	}
-
-	err := browserCommand.Run()
-
-	return err
 }

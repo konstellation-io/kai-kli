@@ -6,12 +6,11 @@ import (
 	"fmt"
 	"mime"
 	"net/http"
-	"os/exec"
-	"runtime"
 	"sync"
 	"time"
 
 	"github.com/konstellation-io/kli/internal/logging"
+	"github.com/konstellation-io/kli/pkg/osutil"
 	"github.com/phayes/freeport"
 )
 
@@ -80,25 +79,6 @@ type AuthResponse struct {
 	TokenType        string `json:"token_type"`
 }
 
-func (as *AuthServer) openBrowser(url string) error {
-	var browserCommand *exec.Cmd
-
-	switch runtime.GOOS {
-	case "linux":
-		browserCommand = exec.Command("xdg-open", url)
-	case "windows":
-		browserCommand = exec.Command("rundll32", "url.dll,FileProtocolHandler", url)
-	case "darwin":
-		browserCommand = exec.Command("open", url)
-	default:
-		return fmt.Errorf("unsupported operating system: %v", runtime.GOOS)
-	}
-
-	err := browserCommand.Run()
-
-	return err
-}
-
 func (as *AuthServer) getCallbackURL() string {
 	return fmt.Sprintf("http://localhost:%v/%v",
 		as.config.Port,
@@ -152,7 +132,7 @@ func (as *AuthServer) StartServer(config KeycloakConfig) (*AuthResponse, error) 
 		}
 	}()
 
-	err := as.openBrowser(as.buildAuthorizationRequest(config))
+	err := osutil.OpenBrowser(as.buildAuthorizationRequest(config))
 	if err != nil {
 		as.logger.Warn(fmt.Sprintf("Unable to open browser, open the following URL: %v",
 			as.buildAuthorizationRequest(config)))

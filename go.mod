@@ -3,6 +3,7 @@ module github.com/konstellation-io/kli
 go 1.20
 
 require (
+	bou.ke/monkey v1.0.2
 	github.com/MakeNowJust/heredoc v1.0.0
 	github.com/briandowns/spinner v1.23.0
 	github.com/golang/mock v1.6.0

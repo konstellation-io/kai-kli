@@ -7,6 +7,10 @@ import (
 	"github.com/konstellation-io/kli/internal/logging"
 )
 
+const (
+	_serverFlag = "server"
+)
+
 // NewStorageCmd creates a new command to handle 'storage' subcommands.
 func NewStorageCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
@@ -16,6 +20,8 @@ func NewStorageCmd(logger logging.Interface) *cobra.Command {
 			$ kli server login <server_name> <username> <password>
 		`),
 	}
+
+	cmd.PersistentFlags().StringP(_serverFlag, "s", "", "KAI server to use")
 
 	cmd.AddCommand(
 		NewLoginCmd(logger),
