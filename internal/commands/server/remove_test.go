@@ -79,12 +79,12 @@ func (s *RemoveServerSuite) TestRemoveServer_RemoveExistingServer() {
 		Servers: []configuration.Server{
 			{
 				Name:      "server1",
-				URL:       "http://server1.com",
+				Host:      "http://server1.com",
 				IsDefault: true,
 			},
 			{
 				Name:      "server2",
-				URL:       "http://server2.com",
+				Host:      "http://server2.com",
 				IsDefault: false,
 			},
 		},
@@ -96,7 +96,7 @@ func (s *RemoveServerSuite) TestRemoveServer_RemoveExistingServer() {
 		Servers: []configuration.Server{
 			{
 				Name:      "server1",
-				URL:       "http://server1.com",
+				Host:      "http://server1.com",
 				IsDefault: true,
 			},
 		},
@@ -119,12 +119,12 @@ func (s *RemoveServerSuite) TestRemoveServer_RemoveNonExistingServer() {
 		Servers: []configuration.Server{
 			{
 				Name:      "server1",
-				URL:       "http://server1.com",
+				Host:      "http://server1.com",
 				IsDefault: true,
 			},
 			{
 				Name:      "server2",
-				URL:       "http://server2.com",
+				Host:      "http://server2.com",
 				IsDefault: false,
 			},
 		},
@@ -148,12 +148,12 @@ func (s *RemoveServerSuite) TestRemoveServer_RemoveDefaultServer() {
 		Servers: []configuration.Server{
 			{
 				Name:      "server1",
-				URL:       "http://server1.com",
+				Host:      "http://server1.com",
 				IsDefault: true,
 			},
 			{
 				Name:      "server2",
-				URL:       "http://server2.com",
+				Host:      "http://server2.com",
 				IsDefault: false,
 			},
 		},
@@ -165,7 +165,7 @@ func (s *RemoveServerSuite) TestRemoveServer_RemoveDefaultServer() {
 		Servers: []configuration.Server{
 			{
 				Name:      "server2",
-				URL:       "http://server2.com",
+				Host:      "http://server2.com",
 				IsDefault: true,
 			},
 		},

@@ -114,7 +114,7 @@ func getDefaultConfiguration() configuration.KaiConfiguration {
 		Servers: []configuration.Server{
 			{
 				Name:      "existing-server",
-				URL:       "existing-server.com",
+				Host:      "existing-server.com",
 				IsDefault: true,
 				Realm:     "existing-realm",
 				ClientID:  "existing-client-id",

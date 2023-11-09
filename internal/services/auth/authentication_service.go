@@ -105,7 +105,7 @@ func (a *AuthenticationService) GetToken(serveName string) (*configuration.Token
 	return server.Token, nil
 }
 
-func (a *AuthenticationService) Login(serverName, authURL, realm, clientID string) (*configuration.Token, error) {
+func (a *AuthenticationService) Login(serverName, realm, clientID string) (*configuration.Token, error) {
 	kaiConfig, err := a.configService.GetConfiguration()
 	if err != nil {
 		return nil, err
@@ -117,7 +117,6 @@ func (a *AuthenticationService) Login(serverName, authURL, realm, clientID strin
 	}
 
 	// Add credentials to the server
-	server.AuthURL = authURL
 	server.Realm = realm
 	server.ClientID = clientID
 

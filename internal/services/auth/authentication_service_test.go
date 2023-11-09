@@ -82,7 +82,7 @@ func (s *AuthenticationSuite) TestLogin_ExpectToken() {
 
 	srv := &configuration.Server{
 		Name:      "my-server",
-		URL:       "kai-dev.konstellation.io",
+		Host:      "kai-dev.konstellation.io",
 		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
@@ -105,7 +105,7 @@ func (s *AuthenticationSuite) TestLogin_ExpectToken() {
 	}, nil)
 
 	// WHEN
-	token, err := s.authentication.Login(srv.Name, srv.AuthURL, srv.Realm, srv.ClientID)
+	token, err := s.authentication.Login(srv.Name, srv.Realm, srv.ClientID)
 
 	// THEN
 	s.Require().NoError(err)
@@ -133,7 +133,7 @@ func (s *AuthenticationSuite) TestLogin_ExpectError() {
 
 	srv := &configuration.Server{
 		Name:      "my-server",
-		URL:       "kai-dev.konstellation.io",
+		Host:      "kai-dev.konstellation.io",
 		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
@@ -149,7 +149,7 @@ func (s *AuthenticationSuite) TestLogin_ExpectError() {
 	s.authServer.EXPECT().StartServer(gomock.Any()).Return(nil, errors.New("error getting token"))
 
 	// WHEN
-	token, err := s.authentication.Login(srv.Name, srv.AuthURL, srv.Realm, srv.ClientID)
+	token, err := s.authentication.Login(srv.Name, srv.Realm, srv.ClientID)
 
 	// THEN
 	s.Require().Error(err)
@@ -171,7 +171,7 @@ func (s *AuthenticationSuite) TestLogout_ExpectOk() {
 
 	srv := &configuration.Server{
 		Name:      "my-server",
-		URL:       "kai-dev.konstellation.io",
+		Host:      "kai-dev.konstellation.io",
 		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
@@ -234,7 +234,7 @@ func (s *AuthenticationSuite) TestLogout_ExpectError() {
 
 	srv := &configuration.Server{
 		Name:     "my-server",
-		URL:      "kai-dev.konstellation.io",
+		Host:     "kai-dev.konstellation.io",
 		AuthURL:  "auth.kai-dev.konstellation.io",
 		Realm:    "konstellation",
 		ClientID: "admin-cli",
@@ -285,7 +285,7 @@ func (s *AuthenticationSuite) TestGetToken_NoRefreshToken_ExpectError() {
 
 	srv := &configuration.Server{
 		Name:      "my-server",
-		URL:       "kai-dev.konstellation.io",
+		Host:      "kai-dev.konstellation.io",
 		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
@@ -334,7 +334,7 @@ func (s *AuthenticationSuite) TestGetToken_GetStoredToken_ExpectToken() {
 
 	srv := &configuration.Server{
 		Name:      "my-server",
-		URL:       "kai-dev.konstellation.io",
+		Host:      "kai-dev.konstellation.io",
 		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
@@ -384,7 +384,7 @@ func (s *AuthenticationSuite) TestGetToken_GetRenewedToken_ExpectToken() {
 
 	srv := &configuration.Server{
 		Name:      "my-server",
-		URL:       "kai-dev.konstellation.io",
+		Host:      "kai-dev.konstellation.io",
 		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
@@ -449,7 +449,7 @@ func (s *AuthenticationSuite) TestGetToken_ExpectError() {
 
 	srv := &configuration.Server{
 		Name:      "my-server",
-		URL:       "kai-dev.konstellation.io",
+		Host:      "kai-dev.konstellation.io",
 		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",

@@ -21,7 +21,7 @@ func (ch *KaiConfigurationTest) TestServerIsLoggedIn_ExpectTrue() {
 	// GIVEN
 	server := configuration.Server{
 		Name:     "my-server",
-		URL:      "http://my-server.com",
+		Host:     "http://my-server.com",
 		Realm:    "my-realm",
 		ClientID: "my-client-id",
 		Token: &configuration.Token{
@@ -46,7 +46,7 @@ func (ch *KaiConfigurationTest) TestServerIsLoggedIn_NoToken_ExpectFalse() {
 	// GIVEN
 	server := configuration.Server{
 		Name:      "my-server",
-		URL:       "http://my-server.com",
+		Host:      "http://my-server.com",
 		Realm:     "my-realm",
 		ClientID:  "my-client-id",
 		Token:     nil,
@@ -64,7 +64,7 @@ func (ch *KaiConfigurationTest) TestServerIsLoggedIn_EmptyToken_ExpectFalse() {
 	// GIVEN
 	server := configuration.Server{
 		Name:     "my-server",
-		URL:      "http://my-server.com",
+		Host:     "http://my-server.com",
 		Realm:    "my-realm",
 		ClientID: "my-client-id",
 		Token: &configuration.Token{
@@ -121,7 +121,7 @@ func (ch *KaiConfigurationTest) TestAddServer_AddFirstServer_ExpectOK() {
 	defaultConfig := configuration.KaiConfiguration{}
 	server := configuration.Server{
 		Name:      "test",
-		URL:       "http://test.com",
+		Host:      "http://test.com",
 		IsDefault: false,
 	}
 
@@ -131,19 +131,19 @@ func (ch *KaiConfigurationTest) TestAddServer_AddFirstServer_ExpectOK() {
 	// THEN
 	ch.Require().NoError(err)
 	ch.Equal(1, len(defaultConfig.Servers))
-	ch.Equal(configuration.Server{Name: "test", URL: "http://test.com", IsDefault: true}, defaultConfig.Servers[0])
+	ch.Equal(configuration.Server{Name: "test", Host: "http://test.com", IsDefault: true}, defaultConfig.Servers[0])
 }
 
 func (ch *KaiConfigurationTest) TestAddServer_AddNewServerToExistingList_ExpectOK() {
 	// GIVEN
 	defaultConfig := configuration.KaiConfiguration{
 		Servers: []configuration.Server{
-			{Name: "test1", URL: "http://test1.com", IsDefault: true},
+			{Name: "test1", Host: "http://test1.com", IsDefault: true},
 		},
 	}
 	server := configuration.Server{
 		Name:      "test2",
-		URL:       "http://test2.com",
+		Host:      "http://test2.com",
 		IsDefault: false,
 	}
 
@@ -153,20 +153,20 @@ func (ch *KaiConfigurationTest) TestAddServer_AddNewServerToExistingList_ExpectO
 	// THEN
 	ch.Require().NoError(err)
 	ch.Equal(2, len(defaultConfig.Servers))
-	ch.Equal(configuration.Server{Name: "test1", URL: "http://test1.com", IsDefault: true}, defaultConfig.Servers[0])
-	ch.Equal(configuration.Server{Name: "test2", URL: "http://test2.com", IsDefault: false}, defaultConfig.Servers[1])
+	ch.Equal(configuration.Server{Name: "test1", Host: "http://test1.com", IsDefault: true}, defaultConfig.Servers[0])
+	ch.Equal(configuration.Server{Name: "test2", Host: "http://test2.com", IsDefault: false}, defaultConfig.Servers[1])
 }
 
 func (ch *KaiConfigurationTest) TestAddServer_AddNewDefaultServerToExistingList_ExpectOK() {
 	// GIVEN
 	defaultConfig := configuration.KaiConfiguration{
 		Servers: []configuration.Server{
-			{Name: "test1", URL: "http://test1.com", IsDefault: true},
+			{Name: "test1", Host: "http://test1.com", IsDefault: true},
 		},
 	}
 	server := configuration.Server{
 		Name:      "test2",
-		URL:       "http://test2.com",
+		Host:      "http://test2.com",
 		IsDefault: true,
 	}
 
@@ -176,20 +176,20 @@ func (ch *KaiConfigurationTest) TestAddServer_AddNewDefaultServerToExistingList_
 	// THEN
 	ch.Require().NoError(err)
 	ch.Equal(2, len(defaultConfig.Servers))
-	ch.Equal(configuration.Server{Name: "test1", URL: "http://test1.com", IsDefault: false}, defaultConfig.Servers[0])
-	ch.Equal(configuration.Server{Name: "test2", URL: "http://test2.com", IsDefault: true}, defaultConfig.Servers[1])
+	ch.Equal(configuration.Server{Name: "test1", Host: "http://test1.com", IsDefault: false}, defaultConfig.Servers[0])
+	ch.Equal(configuration.Server{Name: "test2", Host: "http://test2.com", IsDefault: true}, defaultConfig.Servers[1])
 }
 
 func (ch *KaiConfigurationTest) TestAddServer_AddDuplicatedServerName_ExpectError() {
 	// GIVEN
 	defaultConfig := configuration.KaiConfiguration{
 		Servers: []configuration.Server{
-			{Name: "test1", URL: "http://test1.com", IsDefault: true},
+			{Name: "test1", Host: "http://test1.com", IsDefault: true},
 		},
 	}
 	server := configuration.Server{
 		Name:      "test1",
-		URL:       "http://test2.com",
+		Host:      "http://test2.com",
 		IsDefault: true,
 	}
 
@@ -206,12 +206,12 @@ func (ch *KaiConfigurationTest) TestAddServer_AddDuplicatedServerUrl_ExpectError
 	// GIVEN
 	defaultConfig := configuration.KaiConfiguration{
 		Servers: []configuration.Server{
-			{Name: "test1", URL: "http://test1.com", IsDefault: true},
+			{Name: "test1", Host: "http://test1.com", IsDefault: true},
 		},
 	}
 	server := configuration.Server{
 		Name:      "test2",
-		URL:       "http://test1.com",
+		Host:      "http://test1.com",
 		IsDefault: true,
 	}
 
@@ -220,7 +220,7 @@ func (ch *KaiConfigurationTest) TestAddServer_AddDuplicatedServerUrl_ExpectError
 
 	// THEN
 	ch.Require().Error(err)
-	ch.Require().ErrorIs(err, configuration.ErrDuplicatedServerURL)
+	ch.Require().ErrorIs(err, configuration.ErrDuplicatedServerHost)
 	ch.Equal(1, len(defaultConfig.Servers))
 }
 
@@ -228,8 +228,8 @@ func (ch *KaiConfigurationTest) TestSetDefaultServer_ChangeDefaultServerToExisti
 	// GIVEN
 	defaultConfig := configuration.KaiConfiguration{
 		Servers: []configuration.Server{
-			{Name: "test1", URL: "http://test1.com", IsDefault: true},
-			{Name: "test2", URL: "http://test2.com", IsDefault: false},
+			{Name: "test1", Host: "http://test1.com", IsDefault: true},
+			{Name: "test2", Host: "http://test2.com", IsDefault: false},
 		},
 	}
 
@@ -238,16 +238,16 @@ func (ch *KaiConfigurationTest) TestSetDefaultServer_ChangeDefaultServerToExisti
 
 	// THEN
 	ch.Require().NoError(err)
-	ch.Equal(configuration.Server{Name: "test1", URL: "http://test1.com", IsDefault: false}, defaultConfig.Servers[0])
-	ch.Equal(configuration.Server{Name: "test2", URL: "http://test2.com", IsDefault: true}, defaultConfig.Servers[1])
+	ch.Equal(configuration.Server{Name: "test1", Host: "http://test1.com", IsDefault: false}, defaultConfig.Servers[0])
+	ch.Equal(configuration.Server{Name: "test2", Host: "http://test2.com", IsDefault: true}, defaultConfig.Servers[1])
 }
 
 func (ch *KaiConfigurationTest) TestSetDefaultServer_ChangeDefaultServerToNonExistingServer_ExpectError() {
 	// GIVEN
 	defaultConfig := configuration.KaiConfiguration{
 		Servers: []configuration.Server{
-			{Name: "test1", URL: "http://test1.com", IsDefault: true},
-			{Name: "test2", URL: "http://test2.com", IsDefault: false},
+			{Name: "test1", Host: "http://test1.com", IsDefault: true},
+			{Name: "test2", Host: "http://test2.com", IsDefault: false},
 		},
 	}
 
@@ -263,8 +263,8 @@ func (ch *KaiConfigurationTest) TestGetDefaultServer_GetDefaultServer_ExpectOk()
 	// GIVEN
 	defaultConfig := configuration.KaiConfiguration{
 		Servers: []configuration.Server{
-			{Name: "test1", URL: "http://test1.com", IsDefault: true},
-			{Name: "test2", URL: "http://test2.com", IsDefault: false},
+			{Name: "test1", Host: "http://test1.com", IsDefault: true},
+			{Name: "test2", Host: "http://test2.com", IsDefault: false},
 		},
 	}
 
@@ -295,12 +295,12 @@ func (ch *KaiConfigurationTest) TestUpdateServer_UpdateExistingServer_ExpectOK()
 	// GIVEN
 	defaultConfig := configuration.KaiConfiguration{
 		Servers: []configuration.Server{
-			{Name: "test1", URL: "http://test1.com", IsDefault: true, Realm: "realm1"},
+			{Name: "test1", Host: "http://test1.com", IsDefault: true, Realm: "realm1"},
 		},
 	}
 	server := configuration.Server{
 		Name:      "test1",
-		URL:       "http://test1.com",
+		Host:      "http://test1.com",
 		IsDefault: false,
 		Realm:     "realm2",
 	}
@@ -311,7 +311,7 @@ func (ch *KaiConfigurationTest) TestUpdateServer_UpdateExistingServer_ExpectOK()
 	// THEN
 	ch.Require().NoError(err)
 	ch.Equal(1, len(defaultConfig.Servers))
-	ch.Equal(configuration.Server{Name: "test1", URL: "http://test1.com", IsDefault: true, Realm: "realm2"},
+	ch.Equal(configuration.Server{Name: "test1", Host: "http://test1.com", IsDefault: true, Realm: "realm2"},
 		defaultConfig.Servers[0])
 }
 
@@ -319,13 +319,13 @@ func (ch *KaiConfigurationTest) TestUpdateServer_UpdateExistingServer_WithDefaul
 	// GIVEN
 	defaultConfig := configuration.KaiConfiguration{
 		Servers: []configuration.Server{
-			{Name: "test1", URL: "http://test1.com", IsDefault: false, Realm: "realm1"},
-			{Name: "test2", URL: "http://test2.com", IsDefault: true, Realm: "realm2"},
+			{Name: "test1", Host: "http://test1.com", IsDefault: false, Realm: "realm1"},
+			{Name: "test2", Host: "http://test2.com", IsDefault: true, Realm: "realm2"},
 		},
 	}
 	server := configuration.Server{
 		Name:      "test1",
-		URL:       "http://test1.com",
+		Host:      "http://test1.com",
 		IsDefault: true,
 		Realm:     "realm2",
 	}
@@ -336,9 +336,9 @@ func (ch *KaiConfigurationTest) TestUpdateServer_UpdateExistingServer_WithDefaul
 	// THEN
 	ch.Require().NoError(err)
 	ch.Equal(2, len(defaultConfig.Servers))
-	ch.Equal(configuration.Server{Name: "test1", URL: "http://test1.com", IsDefault: true, Realm: "realm2"},
+	ch.Equal(configuration.Server{Name: "test1", Host: "http://test1.com", IsDefault: true, Realm: "realm2"},
 		defaultConfig.Servers[0])
-	ch.Equal(configuration.Server{Name: "test2", URL: "http://test2.com", IsDefault: false, Realm: "realm2"},
+	ch.Equal(configuration.Server{Name: "test2", Host: "http://test2.com", IsDefault: false, Realm: "realm2"},
 		defaultConfig.Servers[1])
 }
 
@@ -346,12 +346,12 @@ func (ch *KaiConfigurationTest) TestUpdateServer_UpdateNonExistingServer_ExpectE
 	// GIVEN
 	defaultConfig := configuration.KaiConfiguration{
 		Servers: []configuration.Server{
-			{Name: "test1", URL: "http://test1.com", IsDefault: true, Realm: "realm1"},
+			{Name: "test1", Host: "http://test1.com", IsDefault: true, Realm: "realm1"},
 		},
 	}
 	server := configuration.Server{
 		Name:      "test2",
-		URL:       "http://test1.com",
+		Host:      "http://test1.com",
 		IsDefault: false,
 		Realm:     "realm2",
 	}
@@ -368,8 +368,8 @@ func (ch *KaiConfigurationTest) TestDeleteServer_DeleteExistingServer_ExpectOK()
 	// GIVEN
 	defaultConfig := configuration.KaiConfiguration{
 		Servers: []configuration.Server{
-			{Name: "test1", URL: "http://test1.com", IsDefault: true, Realm: "realm1"},
-			{Name: "test2", URL: "http://test2.com", IsDefault: false, Realm: "realm2"},
+			{Name: "test1", Host: "http://test1.com", IsDefault: true, Realm: "realm1"},
+			{Name: "test2", Host: "http://test2.com", IsDefault: false, Realm: "realm2"},
 		},
 	}
 
@@ -379,7 +379,7 @@ func (ch *KaiConfigurationTest) TestDeleteServer_DeleteExistingServer_ExpectOK()
 	// THEN
 	ch.Require().NoError(err)
 	ch.Equal(1, len(defaultConfig.Servers))
-	ch.Equal(configuration.Server{Name: "test2", URL: "http://test2.com", IsDefault: true, Realm: "realm2"},
+	ch.Equal(configuration.Server{Name: "test2", Host: "http://test2.com", IsDefault: true, Realm: "realm2"},
 		defaultConfig.Servers[0])
 }
 
@@ -387,8 +387,8 @@ func (ch *KaiConfigurationTest) TestDeleteServer_DeleteNonExistingServer_ExpectE
 	// GIVEN
 	defaultConfig := configuration.KaiConfiguration{
 		Servers: []configuration.Server{
-			{Name: "test1", URL: "http://test1.com", IsDefault: true, Realm: "realm1"},
-			{Name: "test2", URL: "http://test2.com", IsDefault: false, Realm: "realm2"},
+			{Name: "test1", Host: "http://test1.com", IsDefault: true, Realm: "realm1"},
+			{Name: "test2", Host: "http://test2.com", IsDefault: false, Realm: "realm2"},
 		},
 	}
 
@@ -404,8 +404,8 @@ func (ch *KaiConfigurationTest) TestGetServer_GetExistingServer_ExpectOK() {
 	// GIVEN
 	defaultConfig := configuration.KaiConfiguration{
 		Servers: []configuration.Server{
-			{Name: "test1", URL: "http://test1.com", IsDefault: true, Realm: "realm1"},
-			{Name: "test2", URL: "http://test2.com", IsDefault: false, Realm: "realm2"},
+			{Name: "test1", Host: "http://test1.com", IsDefault: true, Realm: "realm1"},
+			{Name: "test2", Host: "http://test2.com", IsDefault: false, Realm: "realm2"},
 		},
 	}
 
@@ -422,8 +422,8 @@ func (ch *KaiConfigurationTest) TestGetServer_GetNonExistingServer_ExpectError()
 	// GIVEN
 	defaultConfig := configuration.KaiConfiguration{
 		Servers: []configuration.Server{
-			{Name: "test1", URL: "http://test1.com", IsDefault: true, Realm: "realm1"},
-			{Name: "test2", URL: "http://test2.com", IsDefault: false, Realm: "realm2"},
+			{Name: "test1", Host: "http://test1.com", IsDefault: true, Realm: "realm1"},
+			{Name: "test2", Host: "http://test2.com", IsDefault: false, Realm: "realm2"},
 		},
 	}
 
@@ -440,8 +440,8 @@ func (ch *KaiConfigurationTest) TestGetServerOrDefault_GetExistingServer_ExpectO
 	// GIVEN
 	defaultConfig := configuration.KaiConfiguration{
 		Servers: []configuration.Server{
-			{Name: "test1", URL: "http://test1.com", IsDefault: true, Realm: "realm1"},
-			{Name: "test2", URL: "http://test2.com", IsDefault: false, Realm: "realm2"},
+			{Name: "test1", Host: "http://test1.com", IsDefault: true, Realm: "realm1"},
+			{Name: "test2", Host: "http://test2.com", IsDefault: false, Realm: "realm2"},
 		},
 	}
 
@@ -458,8 +458,8 @@ func (ch *KaiConfigurationTest) TestGetServerOrDefault_GetDefaultServer_ExpectOK
 	// GIVEN
 	defaultConfig := configuration.KaiConfiguration{
 		Servers: []configuration.Server{
-			{Name: "test1", URL: "http://test1.com", IsDefault: false, Realm: "realm1"},
-			{Name: "test2", URL: "http://test2.com", IsDefault: true, Realm: "realm2"},
+			{Name: "test1", Host: "http://test1.com", IsDefault: false, Realm: "realm1"},
+			{Name: "test2", Host: "http://test2.com", IsDefault: true, Realm: "realm2"},
 		},
 	}
 
@@ -476,8 +476,8 @@ func (ch *KaiConfigurationTest) TestGetServerOrDefault_ServerNotFound_ExpectErro
 	// GIVEN
 	defaultConfig := configuration.KaiConfiguration{
 		Servers: []configuration.Server{
-			{Name: "test1", URL: "http://test1.com", IsDefault: false, Realm: "realm1"},
-			{Name: "test2", URL: "http://test2.com", IsDefault: true, Realm: "realm2"},
+			{Name: "test1", Host: "http://test1.com", IsDefault: false, Realm: "realm1"},
+			{Name: "test2", Host: "http://test2.com", IsDefault: true, Realm: "realm2"},
 		},
 	}
 

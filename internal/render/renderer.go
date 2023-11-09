@@ -67,7 +67,7 @@ func (r *CliRenderer) RenderServers(servers []configuration.Server) {
 
 		r.tableWriter.Append([]string{
 			fmt.Sprintf("%s%s", s.Name, defaultMark),
-			s.URL,
+			s.Host,
 			fmt.Sprintf("%t", s.IsLoggedIn()),
 		})
 	}

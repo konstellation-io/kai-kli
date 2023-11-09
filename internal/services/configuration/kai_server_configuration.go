@@ -6,7 +6,7 @@ import (
 
 var (
 	ErrDuplicatedServerName = errors.New("duplicated server name")
-	ErrDuplicatedServerURL  = errors.New("duplicated server URL")
+	ErrDuplicatedServerHost = errors.New("duplicated server host")
 	ErrServerNotFound       = errors.New("server not found")
 	ErrNoServersFound       = errors.New("there are no servers configured")
 )
@@ -131,8 +131,8 @@ func (kc *KaiConfiguration) checkServerDuplication(server *Server) error {
 			return ErrDuplicatedServerName
 		}
 
-		if s.URL == server.URL {
-			return ErrDuplicatedServerURL
+		if s.Host == server.Host {
+			return ErrDuplicatedServerHost
 		}
 	}
 

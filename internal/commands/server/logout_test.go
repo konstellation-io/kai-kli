@@ -80,7 +80,7 @@ func (s *ServerLogoutSuite) TestLogoutServer_ExpectOk() {
 
 	srv := &configuration.Server{
 		Name:      "my-server",
-		URL:       "https://kai-dev.konstellation.io",
+		Host:      "https://kai-dev.konstellation.io",
 		AuthURL:   "https://auth.kai-dev.konstellation.io",
 		Realm:     "konstellation",
 		ClientID:  "admin-cli",
@@ -132,7 +132,7 @@ func (s *ServerLogoutSuite) TestLogoutServer_NotLoggedInServer_ExpectOk() {
 
 	srv := &configuration.Server{
 		Name:      "my-server",
-		URL:       "https://kai-dev.konstellation.io",
+		Host:      "https://kai-dev.konstellation.io",
 		IsDefault: true,
 	}
 

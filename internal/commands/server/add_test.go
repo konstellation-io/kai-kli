@@ -67,18 +67,28 @@ func (s *AddServerSuite) TestAddServer_ValidServerInExistingConfig() {
 	s.Require().NoError(err)
 
 	var (
-		newServer = configuration.Server{
-			Name:      "valid-server",
-			URL:       "http://valid-kai-server",
-			IsDefault: false,
+		newServer = server.Server{
+			Name:     "valid-server",
+			Host:     "valid-kai-server",
+			Protocol: server.ProtocolHTTPS,
+		}
+
+		expectedConfigServer = configuration.Server{
+			Name:       newServer.Name,
+			Host:       newServer.Host,
+			Protocol:   newServer.Protocol,
+			APIURL:     "https://api.valid-kai-server",
+			AuthURL:    "https://auth.valid-kai-server",
+			StorageURL: "https://storage-console.valid-kai-server",
+			IsDefault:  false,
 		}
 
 		expectedKaiConfig = configuration.KaiConfiguration{
-			Servers: append(existingConfig.Servers, newServer),
+			Servers: append(existingConfig.Servers, expectedConfigServer),
 		}
 	)
 
-	err = s.manager.AddNewServer(server.Server{Name: newServer.Name, URL: newServer.URL}, false)
+	err = s.manager.AddNewServer(newServer, false)
 	s.Assert().NoError(err)
 
 	configBytes, err := os.ReadFile(viper.GetString(config.KaiConfigPath))
@@ -103,18 +113,28 @@ func (s *AddServerSuite) TestAddServer_DefaultServer() {
 	}
 
 	var (
-		newServer = configuration.Server{
-			Name:      "valid-server",
-			URL:       "http://valid-kai-server",
-			IsDefault: true,
+		newServer = server.Server{
+			Name:     "valid-server",
+			Host:     "valid-kai-server",
+			Protocol: server.ProtocolHTTPS,
+		}
+
+		expectedConfigServer = configuration.Server{
+			Name:       newServer.Name,
+			Host:       newServer.Host,
+			Protocol:   server.ProtocolHTTPS,
+			APIURL:     "https://api.valid-kai-server",
+			AuthURL:    "https://auth.valid-kai-server",
+			StorageURL: "https://storage-console.valid-kai-server",
+			IsDefault:  true,
 		}
 
 		expectedKaiConfig = configuration.KaiConfiguration{
-			Servers: append(existingConfig.Servers, newServer),
+			Servers: append(existingConfig.Servers, expectedConfigServer),
 		}
 	)
 
-	err = s.manager.AddNewServer(server.Server{Name: newServer.Name, URL: newServer.URL}, true)
+	err = s.manager.AddNewServer(newServer, true)
 	s.Assert().NoError(err)
 
 	configBytes, err := os.ReadFile(viper.GetString(config.KaiConfigPath))
@@ -134,7 +154,7 @@ func (s *AddServerSuite) TestAddServer_DuplicatedServerName() {
 
 	newServer := server.Server{
 		Name: existingConfig.Servers[0].Name,
-		URL:  "new-server.com",
+		Host: "new-server.com",
 	}
 
 	err = s.manager.AddNewServer(newServer, false)
@@ -147,11 +167,21 @@ func (s *AddServerSuite) TestAddServer_DuplicatedServerURL() {
 
 	newServer := server.Server{
 		Name: "new-server",
-		URL:  existingConfig.Servers[0].URL,
+		Host: existingConfig.Servers[0].Host,
 	}
 
 	err = s.manager.AddNewServer(newServer, false)
-	s.Assert().ErrorIs(err, configuration.ErrDuplicatedServerURL)
+	s.Assert().ErrorIs(err, configuration.ErrDuplicatedServerHost)
+}
+
+func (s *AddServerSuite) TestAddServer_InvalidHost() {
+	newServer := server.Server{
+		Name: "new-server",
+		Host: "http://invalid-host.com",
+	}
+
+	err := s.manager.AddNewServer(newServer, false)
+	s.Assert().ErrorIs(err, server.ErrInvalidServerHost)
 }
 
 func createDefaultConfiguration() (*configuration.KaiConfiguration, error) {
@@ -159,7 +189,7 @@ func createDefaultConfiguration() (*configuration.KaiConfiguration, error) {
 		Servers: []configuration.Server{
 			{
 				Name:      "existing-server",
-				URL:       "existing-server.com",
+				Host:      "existing-server.com",
 				IsDefault: true,
 			},
 		},
