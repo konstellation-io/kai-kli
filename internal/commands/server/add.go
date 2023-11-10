@@ -23,7 +23,7 @@ var (
 	ErrInvalidServerHost = errors.New("invalid server host, make sure you are NOT including protocol scheme")
 )
 
-func (c *Handler) AddNewServer(server Server, isDefault bool) error {
+func (c *Handler) AddNewServer(server *Server, isDefault bool) error {
 	err := c.validateServer(server)
 	if err != nil {
 		return fmt.Errorf("validate server: %w", err)
@@ -45,7 +45,7 @@ func (c *Handler) AddNewServer(server Server, isDefault bool) error {
 	return nil
 }
 
-func (c *Handler) validateServer(server Server) error {
+func (c *Handler) validateServer(server *Server) error {
 	if err := c.validateServerName(server); err != nil {
 		return err
 	}
@@ -53,7 +53,7 @@ func (c *Handler) validateServer(server Server) error {
 	return c.validateServerHost(server)
 }
 
-func (c *Handler) validateServerName(server Server) error {
+func (c *Handler) validateServerName(server *Server) error {
 	if !_validServerName.MatchString(server.Name) {
 		return ErrInvalidServerName
 	}
@@ -61,7 +61,7 @@ func (c *Handler) validateServerName(server Server) error {
 	return nil
 }
 
-func (c *Handler) validateServerHost(server Server) error {
+func (c *Handler) validateServerHost(server *Server) error {
 	if !_validHostName.MatchString(server.Host) {
 		return ErrInvalidServerHost
 	}
@@ -69,7 +69,7 @@ func (c *Handler) validateServerHost(server Server) error {
 	return nil
 }
 
-func (c *Handler) addServerToConfiguration(server Server, isDefault bool) error {
+func (c *Handler) addServerToConfiguration(server *Server, isDefault bool) error {
 	userConfig, err := c.configService.GetConfiguration()
 	if err != nil {
 		return fmt.Errorf("get user configuration: %w", err)

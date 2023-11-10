@@ -16,7 +16,7 @@ func (kc *KaiConfiguration) AddServer(server *Server) error {
 		return err
 	}
 
-	kc.Servers = append(kc.Servers, *server)
+	kc.Servers = append(kc.Servers, server)
 
 	// If there is just one server, set the first one as default.
 	if len(kc.Servers) == 1 || server.IsDefault {
@@ -34,7 +34,7 @@ func (kc *KaiConfiguration) UpdateServer(server *Server) error {
 		return ErrServerNotFound
 	}
 
-	kc.Servers[index] = *server
+	kc.Servers[index] = server
 
 	// If the server to be updated is set as default, set the other servers to false.
 	if server.IsDefault || len(kc.Servers) == 1 {
@@ -81,7 +81,7 @@ func (kc *KaiConfiguration) GetDefaultServer() (*Server, error) {
 
 	for _, s := range kc.Servers {
 		if s.IsDefault {
-			return &s, nil
+			return s, nil
 		}
 	}
 
@@ -118,7 +118,7 @@ func (kc *KaiConfiguration) GetServerOrDefault(serverName string) (*Server, erro
 func (kc *KaiConfiguration) findServer(server string) (int, *Server, error) {
 	for i, s := range kc.Servers {
 		if server == s.Name {
-			return i, &s, nil
+			return i, s, nil
 		}
 	}
 

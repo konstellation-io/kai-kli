@@ -111,7 +111,7 @@ func (ch *ConfigurationServiceTest) TestWriteConfig_WriteInvalidConfiguration_Ex
 
 func getDefaultConfiguration() configuration.KaiConfiguration {
 	return configuration.KaiConfiguration{
-		Servers: []configuration.Server{
+		Servers: []*configuration.Server{
 			{
 				Name:      "existing-server",
 				Host:      "existing-server.com",

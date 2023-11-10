@@ -5,7 +5,7 @@ import (
 )
 
 type KaiConfiguration struct {
-	Servers []Server `yaml:"servers"`
+	Servers []*Server `yaml:"servers"`
 }
 
 type Server struct {

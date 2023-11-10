@@ -76,7 +76,7 @@ func (s *RemoveServerSuite) TestRemoveServer_RemoveExistingServer() {
 	s.renderer.EXPECT().RenderServers(gomock.Any()).Times(1)
 	currentConfig := configuration.NewKaiConfigService(s.logger)
 	givenConfig := configuration.KaiConfiguration{
-		Servers: []configuration.Server{
+		Servers: []*configuration.Server{
 			{
 				Name:      "server1",
 				Host:      "http://server1.com",
@@ -93,7 +93,7 @@ func (s *RemoveServerSuite) TestRemoveServer_RemoveExistingServer() {
 	s.Require().NoError(err)
 
 	expectedConfig := &configuration.KaiConfiguration{
-		Servers: []configuration.Server{
+		Servers: []*configuration.Server{
 			{
 				Name:      "server1",
 				Host:      "http://server1.com",
@@ -116,7 +116,7 @@ func (s *RemoveServerSuite) TestRemoveServer_RemoveNonExistingServer() {
 	// GIVEN
 	currentConfig := configuration.NewKaiConfigService(s.logger)
 	givenConfig := configuration.KaiConfiguration{
-		Servers: []configuration.Server{
+		Servers: []*configuration.Server{
 			{
 				Name:      "server1",
 				Host:      "http://server1.com",
@@ -145,7 +145,7 @@ func (s *RemoveServerSuite) TestRemoveServer_RemoveDefaultServer() {
 	s.renderer.EXPECT().RenderServers(gomock.Any()).Times(1)
 	currentConfig := configuration.NewKaiConfigService(s.logger)
 	givenConfig := configuration.KaiConfiguration{
-		Servers: []configuration.Server{
+		Servers: []*configuration.Server{
 			{
 				Name:      "server1",
 				Host:      "http://server1.com",
@@ -162,7 +162,7 @@ func (s *RemoveServerSuite) TestRemoveServer_RemoveDefaultServer() {
 	s.Require().NoError(err)
 
 	expectedConfig := &configuration.KaiConfiguration{
-		Servers: []configuration.Server{
+		Servers: []*configuration.Server{
 			{
 				Name:      "server2",
 				Host:      "http://server2.com",

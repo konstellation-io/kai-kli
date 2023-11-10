@@ -67,13 +67,13 @@ func (s *AddServerSuite) TestAddServer_ValidServerInExistingConfig() {
 	s.Require().NoError(err)
 
 	var (
-		newServer = server.Server{
+		newServer = &server.Server{
 			Name:     "valid-server",
 			Host:     "valid-kai-server",
 			Protocol: server.ProtocolHTTPS,
 		}
 
-		expectedConfigServer = configuration.Server{
+		expectedConfigServer = &configuration.Server{
 			Name:       newServer.Name,
 			Host:       newServer.Host,
 			Protocol:   newServer.Protocol,
@@ -113,13 +113,13 @@ func (s *AddServerSuite) TestAddServer_DefaultServer() {
 	}
 
 	var (
-		newServer = server.Server{
+		newServer = &server.Server{
 			Name:     "valid-server",
 			Host:     "valid-kai-server",
 			Protocol: server.ProtocolHTTPS,
 		}
 
-		expectedConfigServer = configuration.Server{
+		expectedConfigServer = &configuration.Server{
 			Name:       newServer.Name,
 			Host:       newServer.Host,
 			Protocol:   server.ProtocolHTTPS,
@@ -152,7 +152,7 @@ func (s *AddServerSuite) TestAddServer_DuplicatedServerName() {
 	existingConfig, err := createDefaultConfiguration()
 	s.Require().NoError(err)
 
-	newServer := server.Server{
+	newServer := &server.Server{
 		Name: existingConfig.Servers[0].Name,
 		Host: "new-server.com",
 	}
@@ -165,7 +165,7 @@ func (s *AddServerSuite) TestAddServer_DuplicatedServerURL() {
 	existingConfig, err := createDefaultConfiguration()
 	s.Require().NoError(err)
 
-	newServer := server.Server{
+	newServer := &server.Server{
 		Name: "new-server",
 		Host: existingConfig.Servers[0].Host,
 	}
@@ -175,7 +175,7 @@ func (s *AddServerSuite) TestAddServer_DuplicatedServerURL() {
 }
 
 func (s *AddServerSuite) TestAddServer_InvalidHost() {
-	newServer := server.Server{
+	newServer := &server.Server{
 		Name: "new-server",
 		Host: "http://invalid-host.com",
 	}
@@ -186,7 +186,7 @@ func (s *AddServerSuite) TestAddServer_InvalidHost() {
 
 func createDefaultConfiguration() (*configuration.KaiConfiguration, error) {
 	defaultConfiguration := configuration.KaiConfiguration{
-		Servers: []configuration.Server{
+		Servers: []*configuration.Server{
 			{
 				Name:      "existing-server",
 				Host:      "existing-server.com",

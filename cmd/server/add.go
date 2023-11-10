@@ -34,7 +34,7 @@ func NewAddCmd(logger logging.Interface) *cobra.Command {
 				return err
 			}
 
-			newServer := server.Server{
+			newServer := &server.Server{
 				Name:     args[0],
 				Host:     args[1],
 				Protocol: getServerProtocol(isInsecure),
