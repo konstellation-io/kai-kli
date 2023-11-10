@@ -27,5 +27,6 @@ func (h *Handler) Login(serverName string) error {
 	}
 
 	h.logger.Success("Storage login page's opening in the browser!")
+
 	return nil
 }
