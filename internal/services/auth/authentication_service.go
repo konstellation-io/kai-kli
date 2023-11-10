@@ -278,7 +278,7 @@ func (a *AuthenticationService) refreshTokenRequest(server *configuration.Server
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("error requesting token: %s", resp.Status)
+		return nil, fmt.Errorf("refreshing token: %s", resp.Status)
 	}
 
 	var tokenResponse TokenResponse
