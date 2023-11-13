@@ -132,10 +132,11 @@ func (as *AuthServer) StartServer(config KeycloakConfig) (*AuthResponse, error) 
 		}
 	}()
 
+	as.logger.Info(fmt.Sprintf("Opening URL in browser: %v", as.buildAuthorizationRequest(config)))
+
 	err := osutil.OpenBrowser(as.buildAuthorizationRequest(config))
 	if err != nil {
-		as.logger.Warn(fmt.Sprintf("Unable to open browser, open the following URL: %v",
-			as.buildAuthorizationRequest(config)))
+		as.logger.Warn("Unable to open browser automatically, please open the URL in your browser")
 	}
 
 	as.closeApp.Wait()
