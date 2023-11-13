@@ -79,13 +79,13 @@ func (s *ServerLoginSuite) TestLoginServer_ExpectToken() {
 	s.Require().NoError(err)
 
 	srv := &configuration.Server{
-		Name:      "my-server",
-		Host:      "https://kai-dev.konstellation.io",
-		AuthURL:   "https://auth.kai-dev.konstellation.io",
-		Realm:     "konstellation",
-		ClientID:  "admin-cli",
-		IsDefault: true,
-		Token:     &configuration.Token{},
+		Name:         "my-server",
+		Host:         "https://kai-dev.konstellation.io",
+		AuthEndpoint: "https://auth.kai-dev.konstellation.io",
+		Realm:        "konstellation",
+		ClientID:     "admin-cli",
+		IsDefault:    true,
+		Token:        &configuration.Token{},
 	}
 
 	err = kaiConf.AddServer(srv)
@@ -129,12 +129,12 @@ func (s *ServerLoginSuite) TestLoginServer_ExpectError() {
 	s.Require().NoError(err)
 
 	srv := &configuration.Server{
-		Name:      "my-server",
-		Host:      "https://kai-dev.konstellation.io",
-		AuthURL:   "https://auth.kai-dev.konstellation.io",
-		Realm:     "konstellation",
-		ClientID:  "admin-cli",
-		IsDefault: true,
+		Name:         "my-server",
+		Host:         "https://kai-dev.konstellation.io",
+		AuthEndpoint: "https://auth.kai-dev.konstellation.io",
+		Realm:        "konstellation",
+		ClientID:     "admin-cli",
+		IsDefault:    true,
 	}
 
 	err = kaiConf.AddServer(srv)

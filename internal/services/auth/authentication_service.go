@@ -170,7 +170,7 @@ func (a *AuthenticationService) Logout(serverName string) error {
 		}
 	}
 
-	server.AuthURL = ""
+	server.AuthEndpoint = ""
 	server.Realm = ""
 	server.ClientID = ""
 	server.Token = nil
@@ -188,7 +188,7 @@ func (a *AuthenticationService) loginRequest(server *configuration.Server) (*Tok
 
 	authResponse, err := a.authServer.StartServer(
 		authserver.KeycloakConfig{
-			KeycloakURL: server.AuthURL,
+			KeycloakURL: server.AuthEndpoint,
 			Realm:       server.Realm,
 			ClientID:    server.ClientID,
 		},
@@ -211,7 +211,7 @@ func (a *AuthenticationService) loginRequest(server *configuration.Server) (*Tok
 func (a *AuthenticationService) logoutRequest(server *configuration.Server) error {
 	a.logger.Info("Logging out...")
 
-	u, err := url.Parse(fmt.Sprintf(_logoutRequestTemplate, server.AuthURL, server.Realm))
+	u, err := url.Parse(fmt.Sprintf(_logoutRequestTemplate, server.AuthEndpoint, server.Realm))
 	if err != nil {
 		return err
 	}
@@ -249,7 +249,7 @@ func (a *AuthenticationService) logoutRequest(server *configuration.Server) erro
 func (a *AuthenticationService) refreshTokenRequest(server *configuration.Server) (*TokenResponse, error) {
 	a.logger.Info("Refreshing token...")
 
-	u, err := url.Parse(fmt.Sprintf(_refreshTokenRequestTemplate, server.AuthURL, server.Realm))
+	u, err := url.Parse(fmt.Sprintf(_refreshTokenRequestTemplate, server.AuthEndpoint, server.Realm))
 	if err != nil {
 		return nil, err
 	}
@@ -292,5 +292,5 @@ func (a *AuthenticationService) refreshTokenRequest(server *configuration.Server
 }
 
 func (a *AuthenticationService) areCredentialsValid(server *configuration.Server) bool {
-	return server.AuthURL != "" && server.Realm != "" && server.ClientID != ""
+	return server.AuthEndpoint != "" && server.Realm != "" && server.ClientID != ""
 }

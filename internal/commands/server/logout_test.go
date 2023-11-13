@@ -79,13 +79,13 @@ func (s *ServerLogoutSuite) TestLogoutServer_ExpectOk() {
 	s.Require().NoError(err)
 
 	srv := &configuration.Server{
-		Name:      "my-server",
-		Host:      "https://kai-dev.konstellation.io",
-		AuthURL:   "https://auth.kai-dev.konstellation.io",
-		Realm:     "konstellation",
-		ClientID:  "admin-cli",
-		IsDefault: true,
-		Token:     &configuration.Token{},
+		Name:         "my-server",
+		Host:         "https://kai-dev.konstellation.io",
+		AuthEndpoint: "https://auth.kai-dev.konstellation.io",
+		Realm:        "konstellation",
+		ClientID:     "admin-cli",
+		IsDefault:    true,
+		Token:        &configuration.Token{},
 	}
 
 	err = kaiConf.AddServer(srv)
@@ -99,7 +99,7 @@ func (s *ServerLogoutSuite) TestLogoutServer_ExpectOk() {
 
 	// Exact URL match
 	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/realms/%s/protocol/openid-connect/logout",
-		srv.AuthURL, srv.Realm),
+		srv.AuthEndpoint, srv.Realm),
 		httpmock.NewStringResponder(http.StatusNoContent, `{}`))
 
 	// WHEN
@@ -111,7 +111,7 @@ func (s *ServerLogoutSuite) TestLogoutServer_ExpectOk() {
 	s.Require().NoError(err)
 	updatedSrv, err := kaiConf.GetServer(srv.Name)
 	s.Require().NoError(err)
-	s.Require().Empty(updatedSrv.AuthURL)
+	s.Require().Empty(updatedSrv.AuthEndpoint)
 	s.Require().Empty(updatedSrv.Realm)
 	s.Require().Empty(updatedSrv.ClientID)
 	s.Require().Nil(updatedSrv.Token)
@@ -147,7 +147,7 @@ func (s *ServerLogoutSuite) TestLogoutServer_NotLoggedInServer_ExpectOk() {
 
 	// Exact URL match
 	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/realms/%s/protocol/openid-connect/logout",
-		srv.AuthURL, srv.Realm),
+		srv.AuthEndpoint, srv.Realm),
 		httpmock.NewStringResponder(http.StatusUnauthorized, `{}`))
 
 	// WHEN
@@ -159,7 +159,7 @@ func (s *ServerLogoutSuite) TestLogoutServer_NotLoggedInServer_ExpectOk() {
 	s.Require().NoError(err)
 	updatedSrv, err := kaiConf.GetServer(srv.Name)
 	s.Require().NoError(err)
-	s.Require().Empty(updatedSrv.AuthURL)
+	s.Require().Empty(updatedSrv.AuthEndpoint)
 	s.Require().Empty(updatedSrv.Realm)
 	s.Require().Empty(updatedSrv.ClientID)
 	s.Require().Nil(updatedSrv.Token)

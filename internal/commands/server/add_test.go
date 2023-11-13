@@ -74,13 +74,13 @@ func (s *AddServerSuite) TestAddServer_ValidServerInExistingConfig() {
 		}
 
 		expectedConfigServer = &configuration.Server{
-			Name:       newServer.Name,
-			Host:       newServer.Host,
-			Protocol:   newServer.Protocol,
-			APIURL:     "https://api.valid-kai-server",
-			AuthURL:    "https://auth.valid-kai-server",
-			StorageURL: "https://storage-console.valid-kai-server",
-			IsDefault:  false,
+			Name:            newServer.Name,
+			Host:            newServer.Host,
+			Protocol:        newServer.Protocol,
+			APIEndpoint:     "https://api.valid-kai-server",
+			AuthEndpoint:    "https://auth.valid-kai-server",
+			StorageEndpoint: "https://storage-console.valid-kai-server",
+			IsDefault:       false,
 		}
 
 		expectedKaiConfig = configuration.KaiConfiguration{
@@ -120,13 +120,13 @@ func (s *AddServerSuite) TestAddServer_DefaultServer() {
 		}
 
 		expectedConfigServer = &configuration.Server{
-			Name:       newServer.Name,
-			Host:       newServer.Host,
-			Protocol:   server.ProtocolHTTPS,
-			APIURL:     "https://api.valid-kai-server",
-			AuthURL:    "https://auth.valid-kai-server",
-			StorageURL: "https://storage-console.valid-kai-server",
-			IsDefault:  true,
+			Name:            newServer.Name,
+			Host:            newServer.Host,
+			Protocol:        server.ProtocolHTTPS,
+			APIEndpoint:     "https://api.valid-kai-server",
+			AuthEndpoint:    "https://auth.valid-kai-server",
+			StorageEndpoint: "https://storage-console.valid-kai-server",
+			IsDefault:       true,
 		}
 
 		expectedKaiConfig = configuration.KaiConfiguration{

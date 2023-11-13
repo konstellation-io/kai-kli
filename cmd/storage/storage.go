@@ -24,7 +24,7 @@ func NewStorageCmd(logger logging.Interface) *cobra.Command {
 	cmd.PersistentFlags().StringP(_serverFlag, "s", "", "KAI server to use")
 
 	cmd.AddCommand(
-		NewLoginCmd(logger),
+		NewOpenCmd(logger),
 	)
 
 	return cmd

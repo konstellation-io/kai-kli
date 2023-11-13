@@ -7,7 +7,7 @@ import (
 	"github.com/konstellation-io/kli/pkg/osutil"
 )
 
-func (h *Handler) Login(serverName string) error {
+func (h *Handler) OpenConsole(serverName string) error {
 	configService := configuration.NewKaiConfigService(h.logger)
 
 	conf, err := configService.GetConfiguration()
@@ -20,13 +20,13 @@ func (h *Handler) Login(serverName string) error {
 		return err
 	}
 
-	if err := osutil.OpenBrowser(server.StorageURL); err != nil {
+	if err := osutil.OpenBrowser(server.StorageEndpoint); err != nil {
 		h.logger.Warn(fmt.Sprintf("Unable to open browser, open the following URL: %v",
-			server.StorageURL))
+			server.StorageEndpoint))
 		return nil
 	}
 
-	h.logger.Success("Storage login page's opening in the browser!")
+	h.logger.Success("Storage console page's opening in the browser!")
 
 	return nil
 }

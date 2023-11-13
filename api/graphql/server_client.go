@@ -103,7 +103,7 @@ func (g *GqlManager) setupClient(server *configuration.Server, args ...graphql.C
 	opts := []graphql.ClientOption{graphql.WithHTTPClient(c)}
 	opts = append(opts, args...)
 
-	g.client = graphql.NewClient(fmt.Sprintf("%s/graphql", server.APIURL), opts...)
+	g.client = graphql.NewClient(fmt.Sprintf("%s/graphql", server.APIEndpoint), opts...)
 	g.httpClient = c
 
 	if viper.GetBool(config.DebugKey) {

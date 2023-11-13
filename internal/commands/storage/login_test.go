@@ -48,11 +48,11 @@ func (s *StorageLoginSuite) TearDownSuite(_, _ string) {
 
 func (s *StorageLoginSuite) TestStorageLogin() {
 	patch := monkey.Patch(osutil.OpenBrowser, func(url string) error {
-		s.Assert().Equal(s.testServer.StorageURL, url)
+		s.Assert().Equal(s.testServer.StorageEndpoint, url)
 		return nil
 	})
 	defer patch.Unpatch()
 
-	err := s.handler.Login(s.testServer.Name)
+	err := s.handler.OpenConsole(s.testServer.Name)
 	s.Require().NoError(err)
 }

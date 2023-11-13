@@ -81,13 +81,13 @@ func (s *AuthenticationSuite) TestLogin_ExpectToken() {
 	s.Require().NoError(err)
 
 	srv := &configuration.Server{
-		Name:      "my-server",
-		Host:      "kai-dev.konstellation.io",
-		AuthURL:   "https://auth.kai-dev.konstellation.io",
-		Realm:     "konstellation",
-		ClientID:  "admin-cli",
-		IsDefault: true,
-		Token:     &configuration.Token{},
+		Name:         "my-server",
+		Host:         "kai-dev.konstellation.io",
+		AuthEndpoint: "https://auth.kai-dev.konstellation.io",
+		Realm:        "konstellation",
+		ClientID:     "admin-cli",
+		IsDefault:    true,
+		Token:        &configuration.Token{},
 	}
 
 	err = kaiConf.AddServer(srv)
@@ -132,12 +132,12 @@ func (s *AuthenticationSuite) TestLogin_ExpectError() {
 	s.Require().NoError(err)
 
 	srv := &configuration.Server{
-		Name:      "my-server",
-		Host:      "kai-dev.konstellation.io",
-		AuthURL:   "https://auth.kai-dev.konstellation.io",
-		Realm:     "konstellation",
-		ClientID:  "admin-cli",
-		IsDefault: true,
+		Name:         "my-server",
+		Host:         "kai-dev.konstellation.io",
+		AuthEndpoint: "https://auth.kai-dev.konstellation.io",
+		Realm:        "konstellation",
+		ClientID:     "admin-cli",
+		IsDefault:    true,
 	}
 
 	err = kaiConf.AddServer(srv)
@@ -170,12 +170,12 @@ func (s *AuthenticationSuite) TestLogout_ExpectOk() {
 	s.Require().NoError(err)
 
 	srv := &configuration.Server{
-		Name:      "my-server",
-		Host:      "kai-dev.konstellation.io",
-		AuthURL:   "https://auth.kai-dev.konstellation.io",
-		Realm:     "konstellation",
-		ClientID:  "admin-cli",
-		IsDefault: true,
+		Name:         "my-server",
+		Host:         "kai-dev.konstellation.io",
+		AuthEndpoint: "https://auth.kai-dev.konstellation.io",
+		Realm:        "konstellation",
+		ClientID:     "admin-cli",
+		IsDefault:    true,
 		Token: &configuration.Token{
 			Date:             time.Now().UTC(),
 			AccessToken:      "access token",
@@ -198,7 +198,7 @@ func (s *AuthenticationSuite) TestLogout_ExpectOk() {
 	// Exact URL match
 	httpmock.RegisterMatcherResponder("POST",
 		fmt.Sprintf("%s/realms/%s/protocol/openid-connect/logout",
-			srv.AuthURL, srv.Realm),
+			srv.AuthEndpoint, srv.Realm),
 		httpmock.HeaderExists("Content-Type").
 			And(httpmock.HeaderContains("Content-Type", "application/x-www-form-urlencoded")),
 		httpmock.NewStringResponder(http.StatusNoContent, `{}`))
@@ -213,7 +213,7 @@ func (s *AuthenticationSuite) TestLogout_ExpectOk() {
 	s.Require().NoError(err)
 	updatedSrv, err := kaiConf.GetServer(srv.Name)
 	s.Require().NoError(err)
-	s.Require().Empty(updatedSrv.AuthURL)
+	s.Require().Empty(updatedSrv.AuthEndpoint)
 	s.Require().Empty(updatedSrv.Realm)
 	s.Require().Empty(updatedSrv.ClientID)
 	s.Require().Nil(updatedSrv.Token)
@@ -233,11 +233,11 @@ func (s *AuthenticationSuite) TestLogout_ExpectError() {
 	s.Require().NoError(err)
 
 	srv := &configuration.Server{
-		Name:     "my-server",
-		Host:     "kai-dev.konstellation.io",
-		AuthURL:  "auth.kai-dev.konstellation.io",
-		Realm:    "konstellation",
-		ClientID: "admin-cli",
+		Name:         "my-server",
+		Host:         "kai-dev.konstellation.io",
+		AuthEndpoint: "auth.kai-dev.konstellation.io",
+		Realm:        "konstellation",
+		ClientID:     "admin-cli",
 		Token: &configuration.Token{
 			Date:             time.Now().UTC(),
 			AccessToken:      "access token",
@@ -260,7 +260,7 @@ func (s *AuthenticationSuite) TestLogout_ExpectError() {
 
 	// Exact URL match
 	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/realms/%s/protocol/openid-connect/logout",
-		srv.AuthURL, srv.Realm),
+		srv.AuthEndpoint, srv.Realm),
 		httpmock.NewErrorResponder(errors.New("error getting token")))
 
 	// WHEN
@@ -284,13 +284,13 @@ func (s *AuthenticationSuite) TestGetToken_NoRefreshToken_ExpectError() {
 	s.Require().NoError(err)
 
 	srv := &configuration.Server{
-		Name:      "my-server",
-		Host:      "kai-dev.konstellation.io",
-		AuthURL:   "https://auth.kai-dev.konstellation.io",
-		Realm:     "konstellation",
-		ClientID:  "admin-cli",
-		IsDefault: true,
-		Token:     &configuration.Token{},
+		Name:         "my-server",
+		Host:         "kai-dev.konstellation.io",
+		AuthEndpoint: "https://auth.kai-dev.konstellation.io",
+		Realm:        "konstellation",
+		ClientID:     "admin-cli",
+		IsDefault:    true,
+		Token:        &configuration.Token{},
 	}
 
 	err = kaiConf.AddServer(srv)
@@ -306,7 +306,7 @@ func (s *AuthenticationSuite) TestGetToken_NoRefreshToken_ExpectError() {
 	// Exact URL match
 	httpmock.RegisterMatcherResponder("POST",
 		fmt.Sprintf("%s/realms/%s/protocol/openid-connect/token",
-			srv.AuthURL, srv.Realm),
+			srv.AuthEndpoint, srv.Realm),
 		httpmock.HeaderExists("Content-Type").
 			And(httpmock.HeaderContains("Content-Type", "application/x-www-form-urlencoded")),
 		httpmock.NewStringResponder(http.StatusNoContent, `{}`))
@@ -333,12 +333,12 @@ func (s *AuthenticationSuite) TestGetToken_GetStoredToken_ExpectToken() {
 	s.Require().NoError(err)
 
 	srv := &configuration.Server{
-		Name:      "my-server",
-		Host:      "kai-dev.konstellation.io",
-		AuthURL:   "https://auth.kai-dev.konstellation.io",
-		Realm:     "konstellation",
-		ClientID:  "admin-cli",
-		IsDefault: true,
+		Name:         "my-server",
+		Host:         "kai-dev.konstellation.io",
+		AuthEndpoint: "https://auth.kai-dev.konstellation.io",
+		Realm:        "konstellation",
+		ClientID:     "admin-cli",
+		IsDefault:    true,
 		Token: &configuration.Token{
 			Date:             time.Now().UTC(),
 			AccessToken:      "stored token",
@@ -383,12 +383,12 @@ func (s *AuthenticationSuite) TestGetToken_GetRenewedToken_ExpectToken() {
 	s.Require().NoError(err)
 
 	srv := &configuration.Server{
-		Name:      "my-server",
-		Host:      "kai-dev.konstellation.io",
-		AuthURL:   "https://auth.kai-dev.konstellation.io",
-		Realm:     "konstellation",
-		ClientID:  "admin-cli",
-		IsDefault: true,
+		Name:         "my-server",
+		Host:         "kai-dev.konstellation.io",
+		AuthEndpoint: "https://auth.kai-dev.konstellation.io",
+		Realm:        "konstellation",
+		ClientID:     "admin-cli",
+		IsDefault:    true,
 		Token: &configuration.Token{
 			Date:             time.Now().AddDate(0, 0, -1).UTC(),
 			AccessToken:      "stored token",
@@ -410,7 +410,7 @@ func (s *AuthenticationSuite) TestGetToken_GetRenewedToken_ExpectToken() {
 
 	// Exact URL match
 	httpmock.RegisterMatcherResponder("POST", fmt.Sprintf("%s/realms/%s/protocol/openid-connect/token",
-		srv.AuthURL, srv.Realm),
+		srv.AuthEndpoint, srv.Realm),
 		httpmock.HeaderExists("Content-Type").
 			And(httpmock.HeaderContains("Content-Type", "application/x-www-form-urlencoded")),
 		httpmock.NewStringResponder(http.StatusOK, `{
@@ -448,12 +448,12 @@ func (s *AuthenticationSuite) TestGetToken_ExpectError() {
 	s.Require().NoError(err)
 
 	srv := &configuration.Server{
-		Name:      "my-server",
-		Host:      "kai-dev.konstellation.io",
-		AuthURL:   "https://auth.kai-dev.konstellation.io",
-		Realm:     "konstellation",
-		ClientID:  "admin-cli",
-		IsDefault: true,
+		Name:         "my-server",
+		Host:         "kai-dev.konstellation.io",
+		AuthEndpoint: "https://auth.kai-dev.konstellation.io",
+		Realm:        "konstellation",
+		ClientID:     "admin-cli",
+		IsDefault:    true,
 	}
 
 	err = kaiConf.AddServer(srv)
@@ -467,7 +467,7 @@ func (s *AuthenticationSuite) TestGetToken_ExpectError() {
 
 	// Exact URL match
 	httpmock.RegisterResponder("POST", fmt.Sprintf("%s/realms/%s/protocol/openid-connect/token",
-		srv.AuthURL, srv.Realm),
+		srv.AuthEndpoint, srv.Realm),
 		httpmock.NewErrorResponder(errors.New("error getting token")))
 
 	// WHEN

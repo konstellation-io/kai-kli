@@ -76,13 +76,13 @@ func (c *Handler) addServerToConfiguration(server *Server, isDefault bool) error
 	}
 
 	if err := userConfig.AddServer(&configuration.Server{
-		Name:       server.Name,
-		Host:       server.Host,
-		Protocol:   server.Protocol,
-		APIURL:     c.getAPIURL(server.Protocol, server.Host),
-		AuthURL:    c.getAuthURL(server.Protocol, server.Host),
-		StorageURL: c.getStorageURL(server.Protocol, server.Host),
-		IsDefault:  isDefault,
+		Name:            server.Name,
+		Host:            server.Host,
+		Protocol:        server.Protocol,
+		APIEndpoint:     c.getAPIEndpoint(server.Protocol, server.Host),
+		AuthEndpoint:    c.getAuthEndpoint(server.Protocol, server.Host),
+		StorageEndpoint: c.getStorageEndpoint(server.Protocol, server.Host),
+		IsDefault:       isDefault,
 	}); err != nil {
 		return err
 	}
@@ -95,14 +95,14 @@ func (c *Handler) addServerToConfiguration(server *Server, isDefault bool) error
 	return nil
 }
 
-func (c *Handler) getAPIURL(protocol, host string) string {
+func (c *Handler) getAPIEndpoint(protocol, host string) string {
 	return fmt.Sprintf("%s://%s.%s", protocol, _apiSubdomain, host)
 }
 
-func (c *Handler) getAuthURL(protocol, host string) string {
+func (c *Handler) getAuthEndpoint(protocol, host string) string {
 	return fmt.Sprintf("%s://%s.%s", protocol, _authSubdomain, host)
 }
 
-func (c *Handler) getStorageURL(protocol, host string) string {
+func (c *Handler) getStorageEndpoint(protocol, host string) string {
 	return fmt.Sprintf("%s://%s.%s", protocol, _storageSubdomain, host)
 }

@@ -9,16 +9,16 @@ type KaiConfiguration struct {
 }
 
 type Server struct {
-	Name       string `yaml:"name"`
-	Host       string `yaml:"host"`
-	Protocol   string `yaml:"protocol"`
-	APIURL     string `yaml:"apiUrl"`
-	AuthURL    string `yaml:"authUrl"`
-	StorageURL string `yaml:"storageUrl"`
-	Realm      string `yaml:"realm"`
-	ClientID   string `yaml:"clientId"`
-	Token      *Token `yaml:"token"`
-	IsDefault  bool   `yaml:"default"`
+	Name            string `yaml:"name"`
+	Host            string `yaml:"host"`
+	Protocol        string `yaml:"protocol"`
+	APIEndpoint     string `yaml:"apiEndpoint"`
+	AuthEndpoint    string `yaml:"authEndpoint"`
+	StorageEndpoint string `yaml:"storageEndpoint"`
+	Realm           string `yaml:"realm"`
+	ClientID        string `yaml:"clientId"`
+	Token           *Token `yaml:"token"`
+	IsDefault       bool   `yaml:"default"`
 }
 
 func (s *Server) IsLoggedIn() bool {
