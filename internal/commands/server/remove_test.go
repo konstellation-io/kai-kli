@@ -76,15 +76,15 @@ func (s *RemoveServerSuite) TestRemoveServer_RemoveExistingServer() {
 	s.renderer.EXPECT().RenderServers(gomock.Any()).Times(1)
 	currentConfig := configuration.NewKaiConfigService(s.logger)
 	givenConfig := configuration.KaiConfiguration{
-		Servers: []configuration.Server{
+		Servers: []*configuration.Server{
 			{
 				Name:      "server1",
-				URL:       "http://server1.com",
+				Host:      "http://server1.com",
 				IsDefault: true,
 			},
 			{
 				Name:      "server2",
-				URL:       "http://server2.com",
+				Host:      "http://server2.com",
 				IsDefault: false,
 			},
 		},
@@ -93,10 +93,10 @@ func (s *RemoveServerSuite) TestRemoveServer_RemoveExistingServer() {
 	s.Require().NoError(err)
 
 	expectedConfig := &configuration.KaiConfiguration{
-		Servers: []configuration.Server{
+		Servers: []*configuration.Server{
 			{
 				Name:      "server1",
-				URL:       "http://server1.com",
+				Host:      "http://server1.com",
 				IsDefault: true,
 			},
 		},
@@ -116,15 +116,15 @@ func (s *RemoveServerSuite) TestRemoveServer_RemoveNonExistingServer() {
 	// GIVEN
 	currentConfig := configuration.NewKaiConfigService(s.logger)
 	givenConfig := configuration.KaiConfiguration{
-		Servers: []configuration.Server{
+		Servers: []*configuration.Server{
 			{
 				Name:      "server1",
-				URL:       "http://server1.com",
+				Host:      "http://server1.com",
 				IsDefault: true,
 			},
 			{
 				Name:      "server2",
-				URL:       "http://server2.com",
+				Host:      "http://server2.com",
 				IsDefault: false,
 			},
 		},
@@ -145,15 +145,15 @@ func (s *RemoveServerSuite) TestRemoveServer_RemoveDefaultServer() {
 	s.renderer.EXPECT().RenderServers(gomock.Any()).Times(1)
 	currentConfig := configuration.NewKaiConfigService(s.logger)
 	givenConfig := configuration.KaiConfiguration{
-		Servers: []configuration.Server{
+		Servers: []*configuration.Server{
 			{
 				Name:      "server1",
-				URL:       "http://server1.com",
+				Host:      "http://server1.com",
 				IsDefault: true,
 			},
 			{
 				Name:      "server2",
-				URL:       "http://server2.com",
+				Host:      "http://server2.com",
 				IsDefault: false,
 			},
 		},
@@ -162,10 +162,10 @@ func (s *RemoveServerSuite) TestRemoveServer_RemoveDefaultServer() {
 	s.Require().NoError(err)
 
 	expectedConfig := &configuration.KaiConfiguration{
-		Servers: []configuration.Server{
+		Servers: []*configuration.Server{
 			{
 				Name:      "server2",
-				URL:       "http://server2.com",
+				Host:      "http://server2.com",
 				IsDefault: true,
 			},
 		},
