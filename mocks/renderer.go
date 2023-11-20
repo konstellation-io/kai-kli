@@ -86,7 +86,7 @@ func (mr *MockRendererMockRecorder) RenderRegisteredProcesses(registries interfa
 }
 
 // RenderServers mocks base method.
-func (m *MockRenderer) RenderServers(servers []configuration.Server) {
+func (m *MockRenderer) RenderServers(servers []*configuration.Server) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "RenderServers", servers)
 }
