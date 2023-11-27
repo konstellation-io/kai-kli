@@ -70,7 +70,7 @@ func NewLogsCmd(logger logging.Interface) *cobra.Command {
 			err = version.NewHandler(logger, r, api.NewKaiClient().VersionClient()).
 				GetLogs(&version.GetLogsOpts{
 					ServerName:    serverName,
-					LogFilters:    lf,
+					LogFilters:    &lf,
 					OutFormat:     entity.LogOutFormat(out),
 					ShowAllLabels: allLabels,
 				})
@@ -96,11 +96,12 @@ func NewLogsCmd(logger logging.Interface) *cobra.Command {
 	return cmd
 }
 
-func formLogFilters(logger logging.Interface, productID string, versionTag string, cmd *cobra.Command) (entity.LogFilters, error) {
+func formLogFilters(logger logging.Interface, productID, versionTag string, cmd *cobra.Command) (entity.LogFilters, error) {
 	from, err := cmd.Flags().GetString(_fromFlag)
 	if err != nil {
 		return entity.LogFilters{}, err
 	}
+
 	parsedFrom, err := time.Parse(time.RFC3339, from)
 	if err != nil {
 		return entity.LogFilters{}, err
@@ -110,6 +111,7 @@ func formLogFilters(logger logging.Interface, productID string, versionTag strin
 	if err != nil {
 		return entity.LogFilters{}, err
 	}
+
 	parsedTo, err := time.Parse(time.RFC3339, to)
 	if err != nil {
 		return entity.LogFilters{}, err
@@ -143,6 +145,7 @@ func formLogFilters(logger logging.Interface, productID string, versionTag strin
 	limit, err := cmd.Flags().GetInt(_limitFlag)
 	if err != nil || limit == 0 {
 		logger.Info("INFO: no limit detected, using default value (100)")
+
 		limit = 100
 	}
 

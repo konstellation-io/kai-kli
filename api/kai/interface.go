@@ -36,5 +36,5 @@ type VersionClient interface {
 	List(server *configuration.Server, productID string) ([]*entity.Version, error)
 	Publish(server *configuration.Server, productID, versionTag, comment string) ([]entity.TriggerEndpoint, error)
 	Unpublish(server *configuration.Server, productID, versionTag, comment string) (string, error)
-	Logs(server *configuration.Server, filters entity.LogFilters) ([]entity.Log, error)
+	Logs(server *configuration.Server, filters *entity.LogFilters) ([]entity.Log, error)
 }

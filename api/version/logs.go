@@ -5,7 +5,7 @@ import (
 	"github.com/konstellation-io/kli/internal/services/configuration"
 )
 
-func (c *Client) Logs(server *configuration.Server, filters entity.LogFilters) ([]entity.Log, error) {
+func (c *Client) Logs(server *configuration.Server, filters *entity.LogFilters) ([]entity.Log, error) {
 	query := `
 		query Logs($filters: LogFilters!) {
 			logs(filters: $filters) {

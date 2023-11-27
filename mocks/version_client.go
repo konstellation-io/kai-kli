@@ -134,15 +134,15 @@ func (_c *MockVersionClient_List_Call) RunAndReturn(run func(*configuration.Serv
 }
 
 // Logs provides a mock function with given fields: server, filters
-func (_m *MockVersionClient) Logs(server *configuration.Server, filters entity.LogFilters) ([]entity.Log, error) {
+func (_m *MockVersionClient) Logs(server *configuration.Server, filters *entity.LogFilters) ([]entity.Log, error) {
 	ret := _m.Called(server, filters)
 
 	var r0 []entity.Log
 	var r1 error
-	if rf, ok := ret.Get(0).(func(*configuration.Server, entity.LogFilters) ([]entity.Log, error)); ok {
+	if rf, ok := ret.Get(0).(func(*configuration.Server, *entity.LogFilters) ([]entity.Log, error)); ok {
 		return rf(server, filters)
 	}
-	if rf, ok := ret.Get(0).(func(*configuration.Server, entity.LogFilters) []entity.Log); ok {
+	if rf, ok := ret.Get(0).(func(*configuration.Server, *entity.LogFilters) []entity.Log); ok {
 		r0 = rf(server, filters)
 	} else {
 		if ret.Get(0) != nil {
@@ -150,7 +150,7 @@ func (_m *MockVersionClient) Logs(server *configuration.Server, filters entity.L
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(*configuration.Server, entity.LogFilters) error); ok {
+	if rf, ok := ret.Get(1).(func(*configuration.Server, *entity.LogFilters) error); ok {
 		r1 = rf(server, filters)
 	} else {
 		r1 = ret.Error(1)
@@ -166,14 +166,14 @@ type MockVersionClient_Logs_Call struct {
 
 // Logs is a helper method to define mock.On call
 //   - server *configuration.Server
-//   - filters entity.LogFilters
+//   - filters *entity.LogFilters
 func (_e *MockVersionClient_Expecter) Logs(server interface{}, filters interface{}) *MockVersionClient_Logs_Call {
 	return &MockVersionClient_Logs_Call{Call: _e.mock.On("Logs", server, filters)}
 }
 
-func (_c *MockVersionClient_Logs_Call) Run(run func(server *configuration.Server, filters entity.LogFilters)) *MockVersionClient_Logs_Call {
+func (_c *MockVersionClient_Logs_Call) Run(run func(server *configuration.Server, filters *entity.LogFilters)) *MockVersionClient_Logs_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(*configuration.Server), args[1].(entity.LogFilters))
+		run(args[0].(*configuration.Server), args[1].(*entity.LogFilters))
 	})
 	return _c
 }
@@ -183,7 +183,7 @@ func (_c *MockVersionClient_Logs_Call) Return(_a0 []entity.Log, _a1 error) *Mock
 	return _c
 }
 
-func (_c *MockVersionClient_Logs_Call) RunAndReturn(run func(*configuration.Server, entity.LogFilters) ([]entity.Log, error)) *MockVersionClient_Logs_Call {
+func (_c *MockVersionClient_Logs_Call) RunAndReturn(run func(*configuration.Server, *entity.LogFilters) ([]entity.Log, error)) *MockVersionClient_Logs_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -296,14 +296,16 @@ func (r *CliRenderer) renderLogsFile(logs []entity.Log, showAllLabels bool) {
 
 	for _, log := range logs {
 		var fullLog string
+
 		if !showAllLabels {
 			fullLog = (log.FormatedLog)
 		} else {
 			fullLog = (fmt.Sprintf("%s - %s", log.FormatedLog, log.Labels))
 		}
+
 		_, err := fmt.Fprintln(file, fullLog)
 		if err != nil {
-			r.logger.Error("Error writting in logs.txt file: " + err.Error())
+			r.logger.Error("Error writing in logs.txt file: " + err.Error())
 			return
 		}
 	}

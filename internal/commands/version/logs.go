@@ -4,7 +4,7 @@ import "github.com/konstellation-io/kli/internal/entity"
 
 type GetLogsOpts struct {
 	ServerName    string
-	LogFilters    entity.LogFilters
+	LogFilters    *entity.LogFilters
 	OutFormat     entity.LogOutFormat
 	ShowAllLabels bool
 }
