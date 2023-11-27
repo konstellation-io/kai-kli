@@ -3,6 +3,7 @@ package render
 import (
 	"fmt"
 	"io"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -260,4 +261,50 @@ func (r *CliRenderer) RenderTriggers(triggers []entity.TriggerEndpoint) {
 	}
 
 	r.tableWriter.Render()
+}
+
+func (r *CliRenderer) RenderLogs(logs []entity.Log, outFormat entity.LogOutFormat, showAllLabels bool) {
+	if len(logs) == 0 {
+		return
+	}
+
+	if outFormat == entity.OutFormatConsole {
+		r.renderLogsConsole(logs, showAllLabels)
+	} else {
+		r.renderLogsFile(logs, showAllLabels)
+	}
+}
+
+func (r *CliRenderer) renderLogsConsole(logs []entity.Log, showAllLabels bool) {
+	for _, log := range logs {
+		if !showAllLabels {
+			r.logger.Info(log.FormatedLog)
+		} else {
+			r.logger.Info(fmt.Sprintf("%s - %s", log.FormatedLog, log.Labels))
+		}
+	}
+}
+
+func (r *CliRenderer) renderLogsFile(logs []entity.Log, showAllLabels bool) {
+	// Abrir o crear el archivo logs.txt
+	file, err := os.Create("logs.txt")
+	if err != nil {
+		r.logger.Error("Error creating logs.txt file: " + err.Error())
+		return
+	}
+	defer file.Close()
+
+	for _, log := range logs {
+		var fullLog string
+		if !showAllLabels {
+			fullLog = (log.FormatedLog)
+		} else {
+			fullLog = (fmt.Sprintf("%s - %s", log.FormatedLog, log.Labels))
+		}
+		_, err := fmt.Fprintln(file, fullLog)
+		if err != nil {
+			r.logger.Error("Error writting in logs.txt file: " + err.Error())
+			return
+		}
+	}
 }
