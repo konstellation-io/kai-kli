@@ -105,7 +105,7 @@ func (a *AuthenticationService) GetToken(serveName string) (*configuration.Token
 	return server.Token, nil
 }
 
-func (a *AuthenticationService) Login(serverName, authURL, realm, clientID string) (*configuration.Token, error) {
+func (a *AuthenticationService) Login(serverName, realm, clientID string) (*configuration.Token, error) {
 	kaiConfig, err := a.configService.GetConfiguration()
 	if err != nil {
 		return nil, err
@@ -117,7 +117,6 @@ func (a *AuthenticationService) Login(serverName, authURL, realm, clientID strin
 	}
 
 	// Add credentials to the server
-	server.AuthURL = authURL
 	server.Realm = realm
 	server.ClientID = clientID
 
@@ -171,7 +170,7 @@ func (a *AuthenticationService) Logout(serverName string) error {
 		}
 	}
 
-	server.AuthURL = ""
+	server.AuthEndpoint = ""
 	server.Realm = ""
 	server.ClientID = ""
 	server.Token = nil
@@ -189,7 +188,7 @@ func (a *AuthenticationService) loginRequest(server *configuration.Server) (*Tok
 
 	authResponse, err := a.authServer.StartServer(
 		authserver.KeycloakConfig{
-			KeycloakURL: server.AuthURL,
+			KeycloakURL: server.AuthEndpoint,
 			Realm:       server.Realm,
 			ClientID:    server.ClientID,
 		},
@@ -212,7 +211,7 @@ func (a *AuthenticationService) loginRequest(server *configuration.Server) (*Tok
 func (a *AuthenticationService) logoutRequest(server *configuration.Server) error {
 	a.logger.Info("Logging out...")
 
-	u, err := url.Parse(fmt.Sprintf(_logoutRequestTemplate, server.AuthURL, server.Realm))
+	u, err := url.Parse(fmt.Sprintf(_logoutRequestTemplate, server.AuthEndpoint, server.Realm))
 	if err != nil {
 		return err
 	}
@@ -250,7 +249,7 @@ func (a *AuthenticationService) logoutRequest(server *configuration.Server) erro
 func (a *AuthenticationService) refreshTokenRequest(server *configuration.Server) (*TokenResponse, error) {
 	a.logger.Info("Refreshing token...")
 
-	u, err := url.Parse(fmt.Sprintf(_refreshTokenRequestTemplate, server.AuthURL, server.Realm))
+	u, err := url.Parse(fmt.Sprintf(_refreshTokenRequestTemplate, server.AuthEndpoint, server.Realm))
 	if err != nil {
 		return nil, err
 	}
@@ -279,7 +278,7 @@ func (a *AuthenticationService) refreshTokenRequest(server *configuration.Server
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("error requesting token: %s", resp.Status)
+		return nil, fmt.Errorf("refreshing token: %s", resp.Status)
 	}
 
 	var tokenResponse TokenResponse
@@ -293,5 +292,5 @@ func (a *AuthenticationService) refreshTokenRequest(server *configuration.Server
 }
 
 func (a *AuthenticationService) areCredentialsValid(server *configuration.Server) bool {
-	return server.AuthURL != "" && server.Realm != "" && server.ClientID != ""
+	return server.AuthEndpoint != "" && server.Realm != "" && server.ClientID != ""
 }

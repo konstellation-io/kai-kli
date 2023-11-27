@@ -6,12 +6,11 @@ import (
 	"path"
 	"testing"
 
-	"github.com/konstellation-io/kli/authserver"
-
 	"github.com/golang/mock/gomock"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
 
+	"github.com/konstellation-io/kli/authserver"
 	"github.com/konstellation-io/kli/cmd/config"
 	"github.com/konstellation-io/kli/internal/commands/server"
 	"github.com/konstellation-io/kli/internal/logging"
@@ -80,13 +79,13 @@ func (s *ServerLoginSuite) TestLoginServer_ExpectToken() {
 	s.Require().NoError(err)
 
 	srv := &configuration.Server{
-		Name:      "my-server",
-		URL:       "https://kai-dev.konstellation.io",
-		AuthURL:   "https://auth.kai-dev.konstellation.io",
-		Realm:     "konstellation",
-		ClientID:  "admin-cli",
-		IsDefault: true,
-		Token:     &configuration.Token{},
+		Name:         "my-server",
+		Host:         "https://kai-dev.konstellation.io",
+		AuthEndpoint: "https://auth.kai-dev.konstellation.io",
+		Realm:        "konstellation",
+		ClientID:     "admin-cli",
+		IsDefault:    true,
+		Token:        &configuration.Token{},
 	}
 
 	err = kaiConf.AddServer(srv)
@@ -104,7 +103,7 @@ func (s *ServerLoginSuite) TestLoginServer_ExpectToken() {
 	}, nil)
 
 	// WHEN
-	token, err := s.manager.Login(srv.Name, srv.AuthURL, srv.Realm, srv.ClientID)
+	token, err := s.manager.Login(srv.Name, srv.Realm, srv.ClientID)
 
 	// THEN
 	s.Require().NotNil(token)
@@ -130,12 +129,12 @@ func (s *ServerLoginSuite) TestLoginServer_ExpectError() {
 	s.Require().NoError(err)
 
 	srv := &configuration.Server{
-		Name:      "my-server",
-		URL:       "https://kai-dev.konstellation.io",
-		AuthURL:   "https://auth.kai-dev.konstellation.io",
-		Realm:     "konstellation",
-		ClientID:  "admin-cli",
-		IsDefault: true,
+		Name:         "my-server",
+		Host:         "https://kai-dev.konstellation.io",
+		AuthEndpoint: "https://auth.kai-dev.konstellation.io",
+		Realm:        "konstellation",
+		ClientID:     "admin-cli",
+		IsDefault:    true,
 	}
 
 	err = kaiConf.AddServer(srv)
@@ -147,7 +146,7 @@ func (s *ServerLoginSuite) TestLoginServer_ExpectError() {
 	s.authServer.EXPECT().StartServer(gomock.Any()).Return(nil, errors.New("error getting token"))
 
 	// WHEN
-	token, err := s.manager.Login(srv.Name, srv.AuthURL, srv.Realm, srv.ClientID)
+	token, err := s.manager.Login(srv.Name, srv.Realm, srv.ClientID)
 
 	// THEN
 	s.Require().Error(err)

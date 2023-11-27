@@ -8,6 +8,11 @@ import (
 	"github.com/konstellation-io/kli/internal/services/configuration"
 )
 
+const (
+	ProtocolHTTP  = "http"
+	ProtocolHTTPS = "https"
+)
+
 type Handler struct {
 	logger         logging.Interface
 	renderer       render.Renderer
@@ -25,8 +30,9 @@ func NewHandler(logger logging.Interface, renderer render.Renderer) *Handler {
 }
 
 type Server struct {
-	Name string
-	URL  string
+	Name     string
+	Host     string
+	Protocol string
 }
 
 type RemoteServerInfo struct {

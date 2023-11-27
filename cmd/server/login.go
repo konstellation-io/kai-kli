@@ -2,17 +2,14 @@ package server
 
 import (
 	"fmt"
-	"strings"
-
-	"github.com/konstellation-io/kli/internal/render"
-	"github.com/spf13/cobra"
 
 	"github.com/konstellation-io/kli/internal/commands/server"
 	"github.com/konstellation-io/kli/internal/logging"
+	"github.com/konstellation-io/kli/internal/render"
+	"github.com/spf13/cobra"
 )
 
 const (
-	_authURLFlag  = "auth-url"
 	_realmFlag    = "realm"
 	_clientIDFlag = "client-id"
 )
@@ -29,15 +26,6 @@ func NewLoginCmd(logger logging.Interface) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			serverName := args[0]
 
-			authURL, err := cmd.Flags().GetString(_authURLFlag)
-			if err != nil {
-				return err
-			}
-
-			if !strings.HasPrefix(authURL, "http://") && !strings.HasPrefix(authURL, "https://") {
-				return fmt.Errorf("invalid authentication URL, the URL must have the protocol (http:// or https://)")
-			}
-
 			realm, err := cmd.Flags().GetString(_realmFlag)
 			if err != nil {
 				return err
@@ -49,7 +37,7 @@ func NewLoginCmd(logger logging.Interface) *cobra.Command {
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
 
-			_, err = server.NewHandler(logger, r).Login(serverName, authURL, realm, clientID)
+			_, err = server.NewHandler(logger, r).Login(serverName, realm, clientID)
 			if err != nil {
 				return err
 			}
@@ -60,11 +48,9 @@ func NewLoginCmd(logger logging.Interface) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().String(_authURLFlag, "", "URL to login.")
 	cmd.Flags().String(_realmFlag, "", "Realm to login.")
 	cmd.Flags().String(_clientIDFlag, "", "ClientID to login.")
 
-	cmd.MarkFlagRequired(_authURLFlag)  //nolint:errcheck
 	cmd.MarkFlagRequired(_realmFlag)    //nolint:errcheck
 	cmd.MarkFlagRequired(_clientIDFlag) //nolint:errcheck
 

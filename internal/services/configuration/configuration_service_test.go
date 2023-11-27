@@ -111,10 +111,10 @@ func (ch *ConfigurationServiceTest) TestWriteConfig_WriteInvalidConfiguration_Ex
 
 func getDefaultConfiguration() configuration.KaiConfiguration {
 	return configuration.KaiConfiguration{
-		Servers: []configuration.Server{
+		Servers: []*configuration.Server{
 			{
 				Name:      "existing-server",
-				URL:       "existing-server.com",
+				Host:      "existing-server.com",
 				IsDefault: true,
 				Realm:     "existing-realm",
 				ClientID:  "existing-client-id",

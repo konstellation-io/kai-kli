@@ -59,7 +59,7 @@ func (s *VersionSuite) SetupSuite() {
 
 	viper.Set(config.KaiConfigPath, kaiConfigPath)
 
-	s.server = &configuration.Server{Name: "test", URL: "http://test.com", IsDefault: true}
+	s.server = &configuration.Server{Name: "test", Host: "http://test.com", IsDefault: true}
 
 	kaiConf, err := s.kaiConfiguration.GetConfiguration()
 	s.Require().NoError(err)

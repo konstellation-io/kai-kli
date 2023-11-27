@@ -2,6 +2,7 @@ package root
 
 import (
 	"github.com/konstellation-io/kli/authserver"
+	"github.com/konstellation-io/kli/cmd/storage"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -79,6 +80,7 @@ func NewRootCmd(
 	cmd.AddCommand(process.NewProcessCmd(logger))
 	cmd.AddCommand(configuration2.NewConfigurationCmd(logger))
 	cmd.AddCommand(processregistry.NewProcessRegistryCmd(logger))
+	cmd.AddCommand(storage.NewStorageCmd(logger))
 
 	return cmd
 }
