@@ -34,7 +34,7 @@ func NewLogsCmd(logger logging.Interface) *cobra.Command {
 			"authenticated": "true",
 		},
 		Args:  cobra.ExactArgs(nArgs),
-		Short: "Get version of a product given a tag",
+		Short: "Get logs from a version of a product.",
 		Example: `
     	$ kli product version logs <product_id> <version_tag> --from <from_timestamp> --to <to_timestamp> [opts...]
 		`,
