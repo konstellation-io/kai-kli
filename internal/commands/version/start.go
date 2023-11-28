@@ -26,6 +26,7 @@ func (h *Handler) Start(opts *StartOpts) error {
 	}
 
 	if vers.Status == "CRITICAL" {
+		fmt.Println(vers)
 		h.logger.Warn("WARNING: Version is in CRITICAL state, start under your own discretion.")
 	}
 
