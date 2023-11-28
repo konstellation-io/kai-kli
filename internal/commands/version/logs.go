@@ -25,7 +25,7 @@ func (h *Handler) GetLogs(opts *GetLogsOpts) error {
 		return err
 	}
 
-	h.renderer.RenderLogs(versionLogs, opts.OutFormat, opts.ShowAllLabels)
+	h.renderer.RenderLogs(opts.LogFilters.ProductID, versionLogs, opts.OutFormat, opts.ShowAllLabels)
 
 	return nil
 }

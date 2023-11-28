@@ -20,5 +20,5 @@ type Renderer interface {
 	RenderVersion(productID string, v *entity.Version)
 	RenderVersions(productID string, versions []*entity.Version)
 	RenderTriggers(triggers []entity.TriggerEndpoint)
-	RenderLogs(logs []entity.Log, outFormat entity.LogOutFormat, showAllLabels bool)
+	RenderLogs(productID string, logs []entity.Log, outFormat entity.LogOutFormat, showAllLabels bool)
 }

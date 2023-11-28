@@ -263,7 +263,7 @@ func (r *CliRenderer) RenderTriggers(triggers []entity.TriggerEndpoint) {
 	r.tableWriter.Render()
 }
 
-func (r *CliRenderer) RenderLogs(logs []entity.Log, outFormat entity.LogOutFormat, showAllLabels bool) {
+func (r *CliRenderer) RenderLogs(productID string, logs []entity.Log, outFormat entity.LogOutFormat, showAllLabels bool) {
 	if len(logs) == 0 {
 		return
 	}
@@ -271,23 +271,24 @@ func (r *CliRenderer) RenderLogs(logs []entity.Log, outFormat entity.LogOutForma
 	if outFormat == entity.OutFormatConsole {
 		r.renderLogsConsole(logs, showAllLabels)
 	} else {
-		r.renderLogsFile(logs, showAllLabels)
+		r.renderLogsFile(productID, logs, showAllLabels)
 	}
 }
 
 func (r *CliRenderer) renderLogsConsole(logs []entity.Log, showAllLabels bool) {
 	for _, log := range logs {
 		if !showAllLabels {
-			r.logger.Info(log.FormatedLog)
+			fmt.Println(log.FormatedLog)
 		} else {
-			r.logger.Info(fmt.Sprintf("%s - %s", log.FormatedLog, log.Labels))
+			fmt.Printf("%s - %s\n", log.FormatedLog, log.Labels)
 		}
 	}
 }
 
-func (r *CliRenderer) renderLogsFile(logs []entity.Log, showAllLabels bool) {
-	// Abrir o crear el archivo logs.txt
-	file, err := os.Create("logs.txt")
+func (r *CliRenderer) renderLogsFile(productID string, logs []entity.Log, showAllLabels bool) {
+	fileName := fmt.Sprintf("%s-logs-%s.txt", productID, time.Now().Format("2006-01-02T15:04:05"))
+
+	file, err := os.Create(fileName)
 	if err != nil {
 		r.logger.Error("Error creating logs.txt file: " + err.Error())
 		return
