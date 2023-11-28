@@ -20,6 +20,15 @@ func (h *Handler) Start(opts *StartOpts) error {
 		return err
 	}
 
+	vers, err := h.versionClient.Get(srv, opts.ProductID, opts.VersionTag)
+	if err != nil {
+		return err
+	}
+
+	if vers.Status == "CRITICAL" {
+		h.logger.Warn("WARNING: Version is in CRITICAL state, start under your own discretion.")
+	}
+
 	tag, err := h.versionClient.Start(
 		srv, opts.ProductID, opts.VersionTag, opts.Comment,
 	)
@@ -27,9 +36,7 @@ func (h *Handler) Start(opts *StartOpts) error {
 		return err
 	}
 
-	h.logger.Success(
-		fmt.Sprintf("Version %q is starting.", tag),
-	)
+	h.logger.Success(fmt.Sprintf("Version %q is starting.", tag))
 
 	return nil
 }
