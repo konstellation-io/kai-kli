@@ -49,6 +49,18 @@ func (mr *MockRendererMockRecorder) RenderConfiguration(scope, config interface{
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderConfiguration", reflect.TypeOf((*MockRenderer)(nil).RenderConfiguration), scope, config)
 }
 
+// RenderLogs mocks base method.
+func (m *MockRenderer) RenderLogs(productID string, logs []entity.Log, outFormat entity.LogOutFormat, showAllLabels bool) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderLogs", productID, logs, outFormat, showAllLabels)
+}
+
+// RenderLogs indicates an expected call of RenderLogs.
+func (mr *MockRendererMockRecorder) RenderLogs(productID, logs, outFormat, showAllLabels interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderLogs", reflect.TypeOf((*MockRenderer)(nil).RenderLogs), productID, logs, outFormat, showAllLabels)
+}
+
 // RenderProcesses mocks base method.
 func (m *MockRenderer) RenderProcesses(processes []krt.Process) {
 	m.ctrl.T.Helper()
