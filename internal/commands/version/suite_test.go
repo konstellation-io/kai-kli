@@ -5,6 +5,8 @@ import (
 	"path"
 	"testing"
 
+	productconfiguration "github.com/konstellation-io/kli/internal/services/product_configuration"
+
 	"github.com/golang/mock/gomock"
 	"github.com/konstellation-io/kli/cmd/config"
 	"github.com/konstellation-io/kli/internal/commands/version"
@@ -28,8 +30,10 @@ type VersionSuite struct {
 	versionClient    *mocks.MockVersionClient
 	handler          *version.Handler
 	kaiConfiguration *configuration.KaiConfigService
+	productConfig    *productconfiguration.ProductConfigService
 	server           *configuration.Server
 	tmpDir           string
+	krtFilePath      string
 }
 
 func TestVersionSuite(t *testing.T) {
@@ -71,6 +75,9 @@ func (s *VersionSuite) SetupSuite() {
 	s.Require().NoError(err)
 
 	s.handler = version.NewHandler(s.logger, s.renderer, s.versionClient)
+	s.krtFilePath = path.Join("testdata", productName+".yaml")
+
+	s.productConfig = productconfiguration.NewProductConfigService(s.logger)
 }
 
 func (s *VersionSuite) TearDownSuite(_, _ string) {
