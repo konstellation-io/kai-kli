@@ -2,6 +2,7 @@ package version_test
 
 import (
 	"errors"
+
 	"github.com/konstellation-io/kli/internal/commands/version"
 )
 

@@ -1,10 +1,11 @@
 package version_test
 
 import (
-	productconfiguration "github.com/konstellation-io/kli/internal/services/product_configuration"
 	"os"
 	"path"
 	"testing"
+
+	productconfiguration "github.com/konstellation-io/kli/internal/services/product_configuration"
 
 	"github.com/golang/mock/gomock"
 	"github.com/konstellation-io/kli/cmd/config"

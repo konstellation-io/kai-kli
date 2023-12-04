@@ -106,9 +106,7 @@ func GetProductConfigFilePath(product string, productPath ...string) (string, er
 }
 
 func getProductKrt(product string) string {
-	if strings.HasSuffix(product, ".yaml") {
-		product = strings.TrimSuffix(product, ".yaml")
-	}
+	product = strings.TrimSuffix(product, ".yaml")
 
 	return fmt.Sprintf("%s.yaml",
 		strings.ReplaceAll(strings.ReplaceAll(product, " ", "_"), ".", "_"))

@@ -2,6 +2,7 @@ package productconfiguration
 
 import (
 	"errors"
+
 	"golang.org/x/mod/semver"
 )
 

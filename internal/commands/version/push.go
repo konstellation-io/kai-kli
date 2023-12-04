@@ -2,9 +2,10 @@ package version
 
 import (
 	"fmt"
-	"github.com/konstellation-io/kli/internal/services/configuration"
 	"path/filepath"
 	"strings"
+
+	"github.com/konstellation-io/kli/internal/services/configuration"
 )
 
 type PushVersionOpts struct {
@@ -44,7 +45,7 @@ func (h *Handler) PushVersion(opts *PushVersionOpts) error {
 	return nil
 }
 
-func (h *Handler) splitFilePath(krtFilePath string) (string, string) {
+func (h *Handler) splitFilePath(krtFilePath string) (dir, filename string) {
 	dir, product := filepath.Split(krtFilePath)
 
 	return dir, strings.Split(product, ".")[0]
