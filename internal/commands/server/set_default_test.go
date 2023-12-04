@@ -68,24 +68,24 @@ func (s *SetDefaultServerSuite) BeforeTest(_, _ string) {
 	s.Require().NoError(err)
 
 	err = kaiConf.AddServer(&configuration.Server{
-		Name:      "my-server1",
-		URL:       "https://kai-dev.konstellation.io",
-		AuthURL:   "https://auth.kai-dev.konstellation1.io",
-		Realm:     "konstellation",
-		ClientID:  "admin-cli",
-		IsDefault: false,
-		Token:     &configuration.Token{},
+		Name:         "my-server1",
+		Host:         "https://kai-dev.konstellation.io",
+		AuthEndpoint: "https://auth.kai-dev.konstellation1.io",
+		Realm:        "konstellation",
+		ClientID:     "admin-cli",
+		IsDefault:    false,
+		Token:        &configuration.Token{},
 	})
 	s.Require().NoError(err)
 
 	err = kaiConf.AddServer(&configuration.Server{
-		Name:      "my-server2",
-		URL:       "https://kai-dev.konstellation2.io",
-		AuthURL:   "https://auth.kai-dev.konstellation.io",
-		Realm:     "konstellation",
-		ClientID:  "admin-cli",
-		IsDefault: true,
-		Token:     &configuration.Token{},
+		Name:         "my-server2",
+		Host:         "https://kai-dev.konstellation2.io",
+		AuthEndpoint: "https://auth.kai-dev.konstellation.io",
+		Realm:        "konstellation",
+		ClientID:     "admin-cli",
+		IsDefault:    true,
+		Token:        &configuration.Token{},
 	})
 	s.Require().NoError(err)
 

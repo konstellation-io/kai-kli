@@ -86,7 +86,7 @@ func (s *ListProcessSuite) BeforeTest(_, _ string) {
 	kaiConf, err := s.configuration.GetConfiguration()
 	s.Require().NoError(err)
 
-	err = kaiConf.AddServer(&configuration.Server{Name: "test", URL: "http://test.com", IsDefault: true})
+	err = kaiConf.AddServer(&configuration.Server{Name: "test", Host: "http://test.com", IsDefault: true})
 	s.Require().NoError(err)
 
 	err = s.configuration.WriteConfiguration(kaiConf)

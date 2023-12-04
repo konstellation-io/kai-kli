@@ -20,14 +20,6 @@ type KaiProductConfiguration struct {
 	*krt.Krt
 }
 
-func (c *KaiProductConfiguration) GetProductVersion() string {
-	return c.Version
-}
-
-func (c *KaiProductConfiguration) GetProductDescription() string {
-	return c.Description
-}
-
 func (c *KaiProductConfiguration) GetVersionConfiguration() map[string]string {
 	return c.Config
 }

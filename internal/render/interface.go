@@ -11,7 +11,7 @@ import (
 
 // Renderer interface that can be used to render in different formats.
 type Renderer interface {
-	RenderServers(servers []configuration.Server)
+	RenderServers(servers []*configuration.Server)
 	RenderWorkflows(workflows []krt.Workflow)
 	RenderProcesses(processes []krt.Process)
 	RenderConfiguration(scope string, config map[string]string)
@@ -20,4 +20,5 @@ type Renderer interface {
 	RenderVersion(productID string, v *entity.Version)
 	RenderVersions(productID string, versions []*entity.Version)
 	RenderTriggers(triggers []entity.TriggerEndpoint)
+	RenderLogs(productID string, logs []entity.Log, outFormat entity.LogOutFormat, showAllLabels bool)
 }

@@ -92,16 +92,22 @@ func GetProductConfigFilePath(product string, productPath ...string) (string, er
 
 	if len(productPath) != 0 {
 		if path.IsAbs(productPath[0]) {
-			productConfigPath = path.Join(productPath[0])
+			productConfigPath = productPath[0]
 		} else {
 			productConfigPath = path.Join(currentDir, productPath[0])
 		}
+	}
+
+	if strings.HasSuffix(productConfigPath, viper.GetString(config.KaiProductConfigFolder)) {
+		return path.Join(productConfigPath, getProductKrt(product)), nil
 	}
 
 	return path.Join(productConfigPath, viper.GetString(config.KaiProductConfigFolder), getProductKrt(product)), nil
 }
 
 func getProductKrt(product string) string {
+	product = strings.TrimSuffix(product, ".yaml")
+
 	return fmt.Sprintf("%s.yaml",
 		strings.ReplaceAll(strings.ReplaceAll(product, " ", "_"), ".", "_"))
 }

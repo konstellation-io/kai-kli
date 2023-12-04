@@ -8,12 +8,22 @@ import (
 	"github.com/konstellation-io/kli/internal/services/configuration"
 )
 
-var (
-	_validServerName     = regexp.MustCompile(`^[A-Za-z0-9\-_]+$`)
-	ErrInvalidServerName = errors.New("invalid server name, only alphanumeric and hyphens are supported")
+const (
+	_apiSubdomain     = "api"
+	_authSubdomain    = "auth"
+	_storageSubdomain = "storage-console"
 )
 
-func (c *Handler) AddNewServer(server Server, isDefault bool) error {
+var (
+	_validServerName = regexp.MustCompile(`^[A-Za-z0-9\-_]+$`)
+	_validHostName   = regexp.MustCompile(
+		`^([a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62}){1}(\.[a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62})*[\._]?$`)
+
+	ErrInvalidServerName = errors.New("invalid server name, only alphanumeric and hyphens are supported")
+	ErrInvalidServerHost = errors.New("invalid server host, make sure you are NOT including protocol scheme")
+)
+
+func (c *Handler) AddNewServer(server *Server, isDefault bool) error {
 	err := c.validateServer(server)
 	if err != nil {
 		return fmt.Errorf("validate server: %w", err)
@@ -35,11 +45,15 @@ func (c *Handler) AddNewServer(server Server, isDefault bool) error {
 	return nil
 }
 
-func (c *Handler) validateServer(server Server) error {
-	return c.validateServerName(server)
+func (c *Handler) validateServer(server *Server) error {
+	if err := c.validateServerName(server); err != nil {
+		return err
+	}
+
+	return c.validateServerHost(server)
 }
 
-func (c *Handler) validateServerName(server Server) error {
+func (c *Handler) validateServerName(server *Server) error {
 	if !_validServerName.MatchString(server.Name) {
 		return ErrInvalidServerName
 	}
@@ -47,16 +61,28 @@ func (c *Handler) validateServerName(server Server) error {
 	return nil
 }
 
-func (c *Handler) addServerToConfiguration(server Server, isDefault bool) error {
+func (c *Handler) validateServerHost(server *Server) error {
+	if !_validHostName.MatchString(server.Host) {
+		return ErrInvalidServerHost
+	}
+
+	return nil
+}
+
+func (c *Handler) addServerToConfiguration(server *Server, isDefault bool) error {
 	userConfig, err := c.configService.GetConfiguration()
 	if err != nil {
 		return fmt.Errorf("get user configuration: %w", err)
 	}
 
 	if err := userConfig.AddServer(&configuration.Server{
-		Name:      server.Name,
-		URL:       server.URL,
-		IsDefault: isDefault,
+		Name:            server.Name,
+		Host:            server.Host,
+		Protocol:        server.Protocol,
+		APIEndpoint:     c.getAPIEndpoint(server.Protocol, server.Host),
+		AuthEndpoint:    c.getAuthEndpoint(server.Protocol, server.Host),
+		StorageEndpoint: c.getStorageEndpoint(server.Protocol, server.Host),
+		IsDefault:       isDefault,
 	}); err != nil {
 		return err
 	}
@@ -67,4 +93,16 @@ func (c *Handler) addServerToConfiguration(server Server, isDefault bool) error 
 	}
 
 	return nil
+}
+
+func (c *Handler) getAPIEndpoint(protocol, host string) string {
+	return fmt.Sprintf("%s://%s.%s", protocol, _apiSubdomain, host)
+}
+
+func (c *Handler) getAuthEndpoint(protocol, host string) string {
+	return fmt.Sprintf("%s://%s.%s", protocol, _authSubdomain, host)
+}
+
+func (c *Handler) getStorageEndpoint(protocol, host string) string {
+	return fmt.Sprintf("%s://%s.%s", protocol, _storageSubdomain, host)
 }

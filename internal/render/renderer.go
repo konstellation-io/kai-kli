@@ -3,6 +3,7 @@ package render
 import (
 	"fmt"
 	"io"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -50,7 +51,7 @@ func NewDefaultCliRenderer(logger logging.Interface, writer io.Writer) *CliRende
 	return NewCliRenderer(logger, writer, DefaultTableWriter(writer))
 }
 
-func (r *CliRenderer) RenderServers(servers []configuration.Server) {
+func (r *CliRenderer) RenderServers(servers []*configuration.Server) {
 	if len(servers) < 1 {
 		r.logger.Info("No servers configured.")
 		return
@@ -67,7 +68,7 @@ func (r *CliRenderer) RenderServers(servers []configuration.Server) {
 
 		r.tableWriter.Append([]string{
 			fmt.Sprintf("%s%s", s.Name, defaultMark),
-			s.URL,
+			s.Host,
 			fmt.Sprintf("%t", s.IsLoggedIn()),
 		})
 	}
@@ -260,4 +261,53 @@ func (r *CliRenderer) RenderTriggers(triggers []entity.TriggerEndpoint) {
 	}
 
 	r.tableWriter.Render()
+}
+
+func (r *CliRenderer) RenderLogs(productID string, logs []entity.Log, outFormat entity.LogOutFormat, showAllLabels bool) {
+	if len(logs) == 0 {
+		return
+	}
+
+	if outFormat == entity.OutFormatConsole {
+		r.renderLogsConsole(logs, showAllLabels)
+	} else {
+		r.renderLogsFile(productID, logs, showAllLabels)
+	}
+}
+
+func (r *CliRenderer) renderLogsConsole(logs []entity.Log, showAllLabels bool) {
+	for _, log := range logs {
+		if !showAllLabels {
+			fmt.Println(log.FormatedLog)
+		} else {
+			fmt.Printf("%s - %s\n", log.FormatedLog, log.Labels)
+		}
+	}
+}
+
+func (r *CliRenderer) renderLogsFile(productID string, logs []entity.Log, showAllLabels bool) {
+	fileName := fmt.Sprintf("%s-logs-%s.txt", productID, time.Now().Format("2006-01-02T15:04:05"))
+
+	file, err := os.Create(fileName)
+	if err != nil {
+		r.logger.Error("Error creating logs.txt file: " + err.Error())
+		return
+	}
+	defer file.Close()
+
+	for _, log := range logs {
+		var fullLog string
+
+		if !showAllLabels {
+			fullLog = (log.FormatedLog)
+		} else {
+			fullLog = (fmt.Sprintf("%s - %s", log.FormatedLog, log.Labels))
+		}
+
+		_, err := fmt.Fprintln(file, fullLog)
+		if err != nil {
+			r.logger.Error("Error writing in logs.txt file: " + err.Error())
+			return
+		}
+	}
 }

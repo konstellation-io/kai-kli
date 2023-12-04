@@ -2,7 +2,6 @@ package server
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/konstellation-io/kli/internal/render"
 	"github.com/spf13/cobra"
@@ -12,16 +11,17 @@ import (
 )
 
 const _defaultFlag = "default"
+const _insecureFlag = "insecure"
 
 // NewAddCmd creates a new command to add a new server to config file.
 func NewAddCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "add <server_name> <server_url> [--default]",
+		Use:     "add <server_name> <server_host> [--default]",
 		Aliases: []string{"set"},
 		Args:    cobra.ExactArgs(2), //nolint:gomnd
 		Short:   "Add a new server in config file",
 		Example: `
-    $ kli server add my-server http://api.local.kai
+    $ kli server add my-server local.kai
 		`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			setDefault, err := cmd.Flags().GetBool(_defaultFlag)
@@ -29,13 +29,15 @@ func NewAddCmd(logger logging.Interface) *cobra.Command {
 				return err
 			}
 
-			newServer := server.Server{
-				Name: args[0],
-				URL:  args[1],
+			isInsecure, err := cmd.Flags().GetBool(_insecureFlag)
+			if err != nil {
+				return err
 			}
 
-			if !strings.HasPrefix(newServer.URL, "http://") && !strings.HasPrefix(newServer.URL, "https://") {
-				return fmt.Errorf("invalid server URL, the URL must have the protocol (http:// or https://)")
+			newServer := &server.Server{
+				Name:     args[0],
+				Host:     args[1],
+				Protocol: getServerProtocol(isInsecure),
 			}
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
@@ -51,6 +53,15 @@ func NewAddCmd(logger logging.Interface) *cobra.Command {
 	}
 
 	cmd.Flags().BoolP(_defaultFlag, "d", false, "Set the current server as the default server.")
+	cmd.Flags().Bool(_insecureFlag, false, "Set server's protocol to http.")
 
 	return cmd
+}
+
+func getServerProtocol(isInsecure bool) string {
+	if isInsecure {
+		return server.ProtocolHTTP
+	}
+
+	return server.ProtocolHTTPS
 }
