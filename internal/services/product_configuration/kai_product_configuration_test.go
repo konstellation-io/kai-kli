@@ -36,28 +36,6 @@ func TestKaiProductConfigurationSuite(t *testing.T) {
 	suite.Run(t, new(KaiProductConfigurationTest))
 }
 
-func (ch *KaiProductConfigurationTest) TestGetProductVersion_ExpectOk() {
-	// GIVEN
-	kaiProductConfig := ch.getDefaultConfiguration()
-
-	// WHEN
-	productVersion := kaiProductConfig.GetProductVersion()
-
-	// THEN
-	ch.Require().Equal(_defaultProductVersion, productVersion)
-}
-
-func (ch *KaiProductConfigurationTest) TestGetProductDescription_ExpectOk() {
-	// GIVEN
-	kaiProductConfig := ch.getDefaultConfiguration()
-
-	// WHEN
-	productDescription := kaiProductConfig.GetProductDescription()
-
-	// THEN
-	ch.Require().Equal(_defaultProductDescription, productDescription)
-}
-
 func (ch *KaiProductConfigurationTest) TestGetVersionConfiguration_ExpectOk() {
 	// GIVEN
 	kaiProductConfig := ch.getDefaultConfiguration()

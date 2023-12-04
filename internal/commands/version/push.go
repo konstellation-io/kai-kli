@@ -2,15 +2,16 @@ package version
 
 import (
 	"fmt"
-	"path"
-	"strings"
-
 	"github.com/konstellation-io/kli/internal/services/configuration"
+	"path/filepath"
+	"strings"
 )
 
 type PushVersionOpts struct {
 	Server      string
 	KrtFilePath string
+	Version     string
+	Description string
 }
 
 func (h *Handler) PushVersion(opts *PushVersionOpts) error {
@@ -26,7 +27,12 @@ func (h *Handler) PushVersion(opts *PushVersionOpts) error {
 		return err
 	}
 
-	product := h.getProductFromFilePath(opts.KrtFilePath)
+	_, product := h.splitFilePath(opts.KrtFilePath)
+
+	err = h.updateProductVersion(opts)
+	if err != nil {
+		return err
+	}
 
 	versionTag, err := h.versionClient.Push(server, product, opts.KrtFilePath)
 	if err != nil {
@@ -38,6 +44,33 @@ func (h *Handler) PushVersion(opts *PushVersionOpts) error {
 	return nil
 }
 
-func (h *Handler) getProductFromFilePath(krtFilePath string) string {
-	return strings.Split(path.Base(krtFilePath), ".")[0]
+func (h *Handler) splitFilePath(krtFilePath string) (string, string) {
+	dir, product := filepath.Split(krtFilePath)
+
+	return dir, strings.Split(product, ".")[0]
+}
+
+func (h *Handler) updateProductVersion(opts *PushVersionOpts) error {
+	if opts.Version == "" {
+		return nil
+	}
+
+	dir, product := h.splitFilePath(opts.KrtFilePath)
+
+	productConfig, err := h.productService.GetConfiguration(product, dir)
+	if err != nil {
+		return err
+	}
+
+	err = productConfig.UpdateProductVersion(opts.Version, opts.Description)
+	if err != nil {
+		return err
+	}
+
+	err = h.productService.WriteConfiguration(productConfig, product, dir)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -11,8 +11,6 @@ import (
 const (
 	_versionFlag     = "version"
 	_descriptionFlag = "description"
-	_initLocalFlag   = "init-local"
-	_localPathFlag   = "local-path"
 )
 
 // NewPushCmd creates a new command to push a new product's version.
@@ -35,12 +33,24 @@ func NewPushCmd(logger logging.Interface) *cobra.Command {
 				return err
 			}
 
+			versionNum, err := cmd.Flags().GetString(_versionFlag)
+			if err != nil {
+				return err
+			}
+
+			description, err := cmd.Flags().GetString(_descriptionFlag)
+			if err != nil {
+				return err
+			}
+
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
 
 			err = version.NewHandler(logger, r, api.NewKaiClient().VersionClient()).
 				PushVersion(&version.PushVersionOpts{
 					Server:      server,
 					KrtFilePath: krtFilePath,
+					Version:     versionNum,
+					Description: description,
 				})
 			if err != nil {
 				return err
@@ -50,10 +60,8 @@ func NewPushCmd(logger logging.Interface) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().String(_versionFlag, "v0.0.1", "The version of the product.")
+	cmd.Flags().String(_versionFlag, "", "The version of the product.")
 	cmd.Flags().String(_descriptionFlag, "", "The description of the product.")
-	cmd.Flags().Bool(_initLocalFlag, false, "If true, a local product environment is initialized.")
-	cmd.Flags().String(_localPathFlag, "", "The path where the local environment is initialized.")
 
 	return cmd
 }
