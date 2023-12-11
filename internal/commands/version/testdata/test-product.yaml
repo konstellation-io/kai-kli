@@ -21,7 +21,7 @@ workflows:
           networking:
             targetPort: 9000
             destinationPort: 9000
-            protocol: TCP
+            protocol: HTTP
           resourceLimits:
             CPU:
                 request: 100m
