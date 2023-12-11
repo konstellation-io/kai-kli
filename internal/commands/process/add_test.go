@@ -140,7 +140,7 @@ func (s *AddProcessSuite) TestAddProcess_NonExistingProduct_ExpectError() {
 		Networking: &krt.ProcessNetworking{
 			TargetPort:      20000,
 			DestinationPort: 30000,
-			Protocol:        krt.NetworkingProtocolTCP,
+			Protocol:        krt.NetworkingProtocolHTTP,
 		},
 	}
 

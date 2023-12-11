@@ -403,7 +403,7 @@ func (ch *KaiProductConfigurationTest) getDefaultConfiguration() productconfigur
 							Networking: &krt.ProcessNetworking{
 								TargetPort:      10000,
 								DestinationPort: 15000,
-								Protocol:        krt.NetworkingProtocolTCP,
+								Protocol:        krt.NetworkingProtocolHTTP,
 							},
 						},
 						{
