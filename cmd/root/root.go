@@ -76,7 +76,7 @@ func NewRootCmd(
 		Hidden: true,
 	})
 
-	cmd.PersistentFlags().BoolP(_debugFlag, "d", false, "Set debug mode")
+	cmd.PersistentFlags().Bool(_debugFlag, false, "Set debug mode")
 	cmd.PersistentFlags().StringP(_outputFormatFlag, "o", "text", "Output format. One of: json|text")
 
 	// Child commands
