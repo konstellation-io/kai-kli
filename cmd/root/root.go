@@ -25,6 +25,7 @@ const (
 	_debugFlag                      = "debug"
 	_authenticatedAnnotation        = "authenticated"
 	_productConfigurationAnnotation = "needs-product-config"
+	_outFlag                        = "out"
 )
 
 // NewRootCmd creates the base command where all subcommands are added.
@@ -70,7 +71,8 @@ func NewRootCmd(
 		Hidden: true,
 	})
 
-	cmd.PersistentFlags().Bool(_debugFlag, false, "Set debug mode")
+	cmd.PersistentFlags().BoolP(_debugFlag, "d", false, "Set debug mode")
+	cmd.PersistentFlags().StringP(_outFlag, "o", "text", "Output format. One of: json|text")
 
 	// Child commands
 	cmd.AddCommand(newVersionCmd(version, buildDate))
