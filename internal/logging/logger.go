@@ -23,36 +23,44 @@ const DefaultLogLevel = LevelInfo
 var lineBreakRE = regexp.MustCompile(`\r?\n`)
 
 type CliLogger struct {
-	level  LogLevel
-	writer io.Writer
+	level        LogLevel
+	writer       io.Writer
+	outputFormat string
 }
 
 // New creates a new Interface instance.
 func New(level LogLevel) *CliLogger {
 	return &CliLogger{
-		level:  level,
-		writer: os.Stdout,
+		level:        level,
+		writer:       os.Stdout,
+		outputFormat: "text",
 	}
 }
 
 // New creates a new Interface instance.
 func NewWithWriter(writer io.Writer) *CliLogger {
 	return &CliLogger{
-		level:  DefaultLogLevel,
-		writer: writer,
+		level:        DefaultLogLevel,
+		writer:       writer,
+		outputFormat: "text",
 	}
 }
 
 // NewDefaultLogger creates a new Interface instance.
 func NewDefaultLogger() *CliLogger {
 	return &CliLogger{
-		level:  DefaultLogLevel,
-		writer: os.Stdout,
+		level:        DefaultLogLevel,
+		writer:       os.Stdout,
+		outputFormat: "text",
 	}
 }
 
 func (l *CliLogger) printLog(level LogLevel, msg, icon string) {
 	if level > l.level {
+		return
+	}
+
+	if l.outputFormat == "json" {
 		return
 	}
 
@@ -86,4 +94,8 @@ func (l *CliLogger) Debug(msg string) {
 
 func (l *CliLogger) SetDebugLevel() {
 	l.level = LevelDebug
+}
+
+func (l *CliLogger) SetOutputFormat(of string) {
+	l.outputFormat = of
 }
