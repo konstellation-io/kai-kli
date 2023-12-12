@@ -171,7 +171,7 @@ func (r *CliRenderer) RenderRegisteredProcesses(registeredProcesses []*entity.Re
 	}
 
 	r.tableWriter.SetHeader([]string{
-		"Name", "Version", "Status", "Type", "Image", "Upload Date", "Owner",
+		"Name", "Version", "Status", "Type", "Image", "Upload Date", "Owner", "isPublic",
 	})
 
 	for _, pr := range registeredProcesses {
@@ -183,6 +183,7 @@ func (r *CliRenderer) RenderRegisteredProcesses(registeredProcesses []*entity.Re
 			pr.Image,
 			pr.UploadDate.Format(time.RFC3339),
 			pr.Owner,
+			strconv.FormatBool(pr.IsPublic),
 		})
 	}
 
@@ -299,9 +300,9 @@ func (r *CliRenderer) renderLogsFile(productID string, logs []entity.Log, showAl
 		var fullLog string
 
 		if !showAllLabels {
-			fullLog = (log.FormatedLog)
+			fullLog = log.FormatedLog
 		} else {
-			fullLog = (fmt.Sprintf("%s - %s", log.FormatedLog, log.Labels))
+			fullLog = fmt.Sprintf("%s - %s", log.FormatedLog, log.Labels)
 		}
 
 		_, err := fmt.Fprintln(file, fullLog)
