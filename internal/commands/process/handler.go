@@ -54,7 +54,7 @@ func (w *Handler) getNetwork(opts *ProcessOpts) *krt.ProcessNetworking {
 		net := &krt.ProcessNetworking{}
 		net.TargetPort = *opts.NetworkSourcePort
 		net.DestinationPort = *opts.NetworkTargetPort
-		net.Protocol = krt.NetworkingProtocolTCP
+		net.Protocol = krt.NetworkingProtocolHTTP
 
 		if opts.NetworkProtocol != "" {
 			net.Protocol = opts.NetworkProtocol

@@ -9,7 +9,7 @@ require (
 	github.com/golang/mock v1.6.0
 	github.com/jarcoal/httpmock v1.3.0
 	github.com/konstellation-io/graphql v0.3.1
-	github.com/konstellation-io/krt v0.1.5
+	github.com/konstellation-io/krt v0.1.8
 	github.com/mattn/go-colorable v0.1.13
 	github.com/mattn/go-isatty v0.0.19
 	github.com/olekukonko/tablewriter v0.0.5
