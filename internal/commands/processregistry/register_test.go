@@ -98,7 +98,7 @@ func (s *RegisterProcessSuite) BeforeTest(_, _ string) {
 	s.Require().NoError(err)
 }
 
-func (s *RegisterProcessSuite) TestRegisterNewServer_ValidPaths_ExpectOk() {
+func (s *RegisterProcessSuite) TestRegisterNewProcess_ValidPaths_ExpectOk() {
 	// GIVEN
 	serverName := _serverName
 	processType := _processType
@@ -132,7 +132,7 @@ func (s *RegisterProcessSuite) TestRegisterNewServer_ValidPaths_ExpectOk() {
 	s.Require().NoError(err)
 }
 
-func (s *RegisterProcessSuite) TestRegisterNewServer_InvalidSourcePath_ExpectError() {
+func (s *RegisterProcessSuite) TestRegisterNewProcess_InvalidSourcePath_ExpectError() {
 	// GIVEN
 	serverName := _serverName
 	processType := _processType
@@ -158,7 +158,7 @@ func (s *RegisterProcessSuite) TestRegisterNewServer_InvalidSourcePath_ExpectErr
 	s.Require().ErrorIs(err, processregistry.ErrPathDoesNotExist)
 }
 
-func (s *RegisterProcessSuite) TestRegisterNewServer_InvalidDockerfilePath_ExpectError() {
+func (s *RegisterProcessSuite) TestRegisterNewProcess_InvalidDockerfilePath_ExpectError() {
 	// GIVEN
 	serverName := _serverName
 	processType := _processType
@@ -182,4 +182,37 @@ func (s *RegisterProcessSuite) TestRegisterNewServer_InvalidDockerfilePath_Expec
 	// THEN
 	s.Require().Error(err)
 	s.Require().ErrorIs(err, processregistry.ErrPathDoesNotExist)
+}
+
+func (s *RegisterProcessSuite) TestRegisterNewProcess_Public_ExpectOK() {
+	// GIVEN
+	serverName := _serverName
+	processType := _processType
+	processID := _processID
+	version := _version
+	processPath := "../../../testdata/sample-trigger"
+	dockerfilePath := "../../../testdata/sample-trigger/Dockerfile"
+
+	registeredProcess := &entity.RegisteredProcess{
+		ID:    "process_id",
+		Image: "test-image",
+	}
+
+	s.processRegistryAPI.EXPECT().
+		RegisterPublic(gomock.Any(), gomock.Any(), processID, processType, version).
+		Return(registeredProcess, nil)
+
+	// WHEN
+	err := s.manager.RegisterProcess(&processregistry.RegisterProcessOpts{
+		ServerName:  serverName,
+		ProcessType: krt.ProcessType(processType),
+		ProcessID:   processID,
+		SourcesPath: processPath,
+		Dockerfile:  dockerfilePath,
+		Version:     version,
+		IsPublic:    true,
+	})
+
+	// THEN
+	s.Require().NoError(err)
 }
