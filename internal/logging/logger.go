@@ -66,7 +66,7 @@ func (l *CliLogger) printLog(level LogLevel, msg, icon string) {
 	}
 
 	if l.outputFormat == OutputFormatJSON {
-		_, _ = fmt.Fprintf(l.writer, "{\"level\":\"%s\",\"message\":\"%s\"}\n", icon, msg)
+		_, _ = fmt.Fprintf(l.writer, "{\"status\":\"%s\",\"message\":\"%s\"}\n", icon, msg)
 		return
 	}
 
