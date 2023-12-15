@@ -176,7 +176,7 @@ func (ch *ProductConfigurationServiceTest) getDefaultConfiguration() productconf
 							Networking: &krt.ProcessNetworking{
 								TargetPort:      10000,
 								DestinationPort: 15000,
-								Protocol:        krt.NetworkingProtocolTCP,
+								Protocol:        krt.NetworkingProtocolHTTP,
 							},
 						},
 					},

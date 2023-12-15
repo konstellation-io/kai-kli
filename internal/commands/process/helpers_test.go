@@ -90,7 +90,7 @@ func _getDefaultProcess() krt.Process {
 		Networking: &krt.ProcessNetworking{
 			TargetPort:      20000,
 			DestinationPort: 21000,
-			Protocol:        krt.NetworkingProtocolTCP,
+			Protocol:        krt.NetworkingProtocolHTTP,
 		},
 	}
 }
