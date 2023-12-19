@@ -11,6 +11,7 @@ import (
 
 const (
 	DebugKey               = "debug"
+	OutputFormatKey        = "output_format"
 	RequestTimeoutKey      = "request_timeout"
 	BuildVersionKey        = "build_version"
 	KaiConfigPath          = "kai_path"
@@ -34,6 +35,7 @@ func InitConfigWithBuildVersion(buildVersion string) error {
 	viper.Set(BuildVersionKey, buildVersion)
 	viper.Set(RequestTimeoutKey, _defaultRequestTimeout)
 	viper.Set(DebugKey, false)
+	viper.Set(OutputFormatKey, "text")
 
 	return nil
 }

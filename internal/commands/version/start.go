@@ -26,7 +26,7 @@ func (h *Handler) Start(opts *StartOpts) error {
 	}
 
 	if vers.Status == "CRITICAL" {
-		fmt.Println(vers)
+		h.logger.Info(fmt.Sprintf("%s - %s status is: %s and has an error: %s.", opts.ProductID, vers.Tag, vers.Status, vers.Error))
 		h.logger.Warn("WARNING: Version is in CRITICAL state, start under your own discretion.")
 	}
 
