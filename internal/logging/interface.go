@@ -9,4 +9,5 @@ type Interface interface {
 	Info(msg string)
 	Debug(msg string)
 	SetDebugLevel()
+	SetOutputFormat(of string)
 }
