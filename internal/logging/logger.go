@@ -66,7 +66,6 @@ func (l *CliLogger) printLog(level LogLevel, msg, icon string) {
 	}
 
 	if l.outputFormat == OutputFormatJSON {
-		_, _ = fmt.Fprintf(l.writer, "{\"status\":\"%s\",\"message\":\"%s\"}\n", icon, msg)
 		return
 	}
 
@@ -76,19 +75,11 @@ func (l *CliLogger) printLog(level LogLevel, msg, icon string) {
 func (l *CliLogger) Success(msg string) {
 	icon := color.Success.Render("✔")
 
-	if l.outputFormat == OutputFormatJSON {
-		icon = "success"
-	}
-
 	l.printLog(LevelInfo, msg, icon)
 }
 
 func (l *CliLogger) Info(msg string) {
 	icon := color.Info.Render("ℹ")
-
-	if l.outputFormat == OutputFormatJSON {
-		icon = "info"
-	}
 
 	l.printLog(LevelInfo, msg, icon)
 }
@@ -96,29 +87,17 @@ func (l *CliLogger) Info(msg string) {
 func (l *CliLogger) Warn(msg string) {
 	icon := color.Warn.Render("⚠")
 
-	if l.outputFormat == OutputFormatJSON {
-		icon = "warn"
-	}
-
 	l.printLog(LevelWarn, msg, icon)
 }
 
 func (l *CliLogger) Error(msg string) {
 	icon := color.Danger.Render("✖")
 
-	if l.outputFormat == OutputFormatJSON {
-		icon = "error"
-	}
-
 	l.printLog(LevelError, msg, icon)
 }
 
 func (l *CliLogger) Debug(msg string) {
 	icon := color.Info.Render("✎")
-
-	if l.outputFormat == OutputFormatJSON {
-		icon = "debug"
-	}
 
 	l.printLog(LevelDebug, msg, icon)
 }

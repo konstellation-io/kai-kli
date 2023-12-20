@@ -1,6 +1,8 @@
 package root
 
 import (
+	"fmt"
+
 	"github.com/konstellation-io/kli/authserver"
 	"github.com/konstellation-io/kli/cmd/storage"
 	"github.com/spf13/cobra"
@@ -138,8 +140,12 @@ func setOutputFormat(cmd *cobra.Command, logger logging.Interface) error {
 		return err
 	}
 
-	viper.Set(config.OutputFormatKey, of)
-	logger.SetOutputFormat(of)
+	if of != "json" && of != "text" {
+		return fmt.Errorf("invalid output format: %s", of)
+	} else {
+		viper.Set(config.OutputFormatKey, of)
+		logger.SetOutputFormat(of)
+	}
 
-	return err
+	return nil
 }

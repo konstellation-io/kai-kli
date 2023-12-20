@@ -8,6 +8,7 @@ require (
 	github.com/briandowns/spinner v1.23.0
 	github.com/golang/mock v1.6.0
 	github.com/jarcoal/httpmock v1.3.0
+	github.com/karlseguin/jsonwriter v1.0.3
 	github.com/konstellation-io/graphql v0.3.1
 	github.com/konstellation-io/krt v0.1.8
 	github.com/mattn/go-colorable v0.1.13
@@ -30,6 +31,7 @@ require (
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
+	github.com/karlseguin/expect v1.0.8 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mattn/go-runewidth v0.0.14 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect

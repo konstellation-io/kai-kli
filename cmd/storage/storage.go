@@ -17,7 +17,7 @@ func NewStorageCmd(logger logging.Interface) *cobra.Command {
 		Use:   "storage <command> [opts...]",
 		Short: "Manage storage for kli",
 		Example: heredoc.Doc(`
-			$ kli server login <server_name> <username> <password>
+			$ kli storage open
 		`),
 	}
 
