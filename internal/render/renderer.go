@@ -14,8 +14,10 @@ type CliRenderer struct {
 
 func NewDefaultCliRenderer(logger logging.Interface, w io.Writer) *CliRenderer {
 	if viper.GetString(config.OutputFormatKey) == "json" {
-		return &CliRenderer{NewJsonRenderer(logger, w, DefaultJsonWriter(w))}
+		return &CliRenderer{NewJSONRenderer(logger, w, DefaultJSONWriter(w))}
 	} else if viper.GetString("output") == "text" {
 		return &CliRenderer{NewTextRenderer(logger, w, DefaultTableWriter(w))}
 	}
+
+	return nil
 }
