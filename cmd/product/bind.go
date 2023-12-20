@@ -44,16 +44,27 @@ func NewBindCmd(logger logging.Interface) *cobra.Command {
 				return err
 			}
 
+			var version *string
+			versionValue, err := cmd.Flags().GetString(_versionFlag)
+			if err != nil {
+				return err
+			}
+			if versionValue != "" {
+				version = &versionValue
+			}
+
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
 
 			productConfigService := productconfiguration.NewProductConfigService(logger)
+			kaiClient := api.NewKaiClient()
 
-			err = product.NewHandler(logger, r, api.NewKaiClient().ProductClient(), productConfigService).
+			err = product.NewHandler(logger, r, kaiClient.ProductClient(), kaiClient.VersionClient(), productConfigService).
 				Bind(&product.BindProductOpts{
-					ProductID: productID,
-					LocalPath: localPath,
-					Server:    server,
-					Force:     force,
+					ProductID:  productID,
+					LocalPath:  localPath,
+					VersionTag: version,
+					Server:     server,
+					Force:      force,
 				})
 			if err != nil {
 				return err
@@ -65,6 +76,7 @@ func NewBindCmd(logger logging.Interface) *cobra.Command {
 
 	cmd.Flags().String(_localPathFlag, "", "The path where the local environment is initialized.")
 	cmd.Flags().BoolP(_forceBindFlag, "f", false, "If true, overrides local product configuration if exists.")
+	cmd.Flags().String(_versionFlag, "", "The version tag to bind. If not provided, the latest version is used.")
 
 	return cmd
 }

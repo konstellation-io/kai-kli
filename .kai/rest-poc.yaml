@@ -1,0 +1,56 @@
+version: v3.0.2
+description: POC for REST workflows
+config:
+    test1: test1
+    test2: test2
+workflows:
+    - name: rest-workflow
+      type: feedback
+      config:
+        test3: test3
+        test4: test4
+      processes:
+        - name: rest-trigger
+          type: trigger
+          image: registry.kai-dev.konstellation.io/rest-poc_rest-trigger:latest
+          replicas: 3
+          gpu: true
+          config:
+            test5: test5
+            test6: test6
+          objectStore:
+            name: test-object-store
+            scope: workflow
+          secrets:
+            secret: value
+          subscriptions:
+            - rest-echo
+          networking:
+            targetPort: 8080
+            destinationPort: 8080
+            protocol: GRPC
+          resourceLimits:
+            CPU:
+                request: 100m
+                limit: 200m
+            memory:
+                request: 100M
+                limit: 200M
+        - name: rest-echo
+          type: exit
+          image: registry.kai-dev.konstellation.io/rest-poc_rest-echo:latest
+          replicas: 1
+          gpu: false
+          config: {}
+          objectStore: null
+          secrets: {}
+          subscriptions:
+            - rest-trigger
+          networking: null
+          resourceLimits:
+            CPU:
+                request: 500m
+                limit: 600m
+            memory:
+                request: 500M
+                limit: 600M
