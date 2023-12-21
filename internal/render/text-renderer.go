@@ -313,3 +313,13 @@ func (r *CliTextRenderer) RenderCallout(v *entity.Version) {
 	fmt.Println(v)
 	r.logger.Warn("WARNING: Version is in CRITICAL state, start under your own discretion.")
 }
+
+func (r *CliTextRenderer) RenderKliVersion(version, buildDate string) {
+	version = strings.TrimPrefix(version, "v")
+
+	if buildDate != "" {
+		version = fmt.Sprintf("%s (%s)", version, buildDate)
+	}
+
+	fmt.Printf("kli version %s\n", version)
+}

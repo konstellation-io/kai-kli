@@ -83,7 +83,7 @@ func NewRootCmd(
 	cmd.PersistentFlags().StringP(_outputFormatFlag, "o", "text", "Output format. One of: json|text")
 
 	// Child commands
-	cmd.AddCommand(newVersionCmd(version, buildDate))
+	cmd.AddCommand(newVersionCmd(logger, version, buildDate))
 	cmd.AddCommand(server.NewServerCmd(logger))
 	cmd.AddCommand(product.NewProductCmd(logger))
 	cmd.AddCommand(workflow.NewWorkflowCmd(logger))

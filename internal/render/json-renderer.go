@@ -201,5 +201,13 @@ func (r *CliJSONRenderer) RenderLogs(productID string, logs []entity.Log, _ enti
 }
 
 func (r *CliJSONRenderer) RenderCallout(v *entity.Version) {
-	return
+}
+
+func (r *CliJSONRenderer) RenderKliVersion(version, buildDate string) {
+	r.jsonWriter.RootObject(func() {
+		r.jsonWriter.Object("Kli", func() {
+			r.jsonWriter.KeyValue("Version", version)
+			r.jsonWriter.KeyValue("Build Date", buildDate)
+		})
+	})
 }
