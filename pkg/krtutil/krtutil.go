@@ -42,22 +42,22 @@ func mapWorkflowsToKrt(workflows []entity.Workflow) []krt.Workflow {
 func mapProcessesToKrt(processes []entity.Process) []krt.Process {
 	krtProcesses := []krt.Process{}
 
-	for _, p := range processes {
-		replicaCopy := p.Replicas
-		gpuCopy := p.GPU
+	for idx := range processes {
+		replicaCopy := processes[idx].Replicas
+		gpuCopy := processes[idx].GPU
 
 		krtProcesses = append(krtProcesses, krt.Process{
-			Name:           p.Name,
-			Type:           krt.ProcessType(p.Type),
-			Image:          p.Image,
+			Name:           processes[idx].Name,
+			Type:           krt.ProcessType(processes[idx].Type),
+			Image:          processes[idx].Image,
 			Replicas:       &replicaCopy,
 			GPU:            &gpuCopy,
-			Config:         mapConfigToKrt(p.Config),
-			ObjectStore:    mapObjectStoreToKrt(p.ObjectStore),
-			Secrets:        mapConfigToKrt(p.Secrets),
-			Subscriptions:  p.Subscriptions,
-			Networking:     mapNetworkingToKrt(p.Networking),
-			ResourceLimits: mapResourceLimitsToKrt(p.ResourceLimits),
+			Config:         mapConfigToKrt(processes[idx].Config),
+			ObjectStore:    mapObjectStoreToKrt(processes[idx].ObjectStore),
+			Secrets:        mapConfigToKrt(processes[idx].Secrets),
+			Subscriptions:  processes[idx].Subscriptions,
+			Networking:     mapNetworkingToKrt(processes[idx].Networking),
+			ResourceLimits: mapResourceLimitsToKrt(processes[idx].ResourceLimits),
 		})
 	}
 

@@ -7,13 +7,16 @@ import (
 	"github.com/konstellation-io/kli/internal/entity"
 )
 
-const _productName = "test-product"
-
-var _testVersion = &entity.Version{
-	Tag: "v.1.0.0",
-}
+const (
+	_productName = "test-product"
+	_versionTag  = "v.1.0.0"
+)
 
 func (s *ProductSuite) TestBindProduct() {
+	testVersion := &entity.Version{
+		Tag: _versionTag,
+	}
+
 	bindOpts := &product.BindProductOpts{
 		Server:     s.server.Name,
 		ProductID:  _productName,
@@ -22,7 +25,7 @@ func (s *ProductSuite) TestBindProduct() {
 		Force:      false,
 	}
 
-	s.versionClient.EXPECT().Get(s.server, _productName, bindOpts.VersionTag).Return(_testVersion, nil).Once()
+	s.versionClient.EXPECT().Get(s.server, _productName, bindOpts.VersionTag).Return(testVersion, nil).Once()
 
 	err := s.handler.Bind(bindOpts)
 	s.Require().NoError(err)
@@ -38,6 +41,10 @@ func (s *ProductSuite) TestBindProduct() {
 }
 
 func (s *ProductSuite) TestBindProductAlreadyExists() {
+	testVersion := &entity.Version{
+		Tag: _versionTag,
+	}
+
 	bindOpts := &product.BindProductOpts{
 		Server:     s.server.Name,
 		ProductID:  _productName,
@@ -46,7 +53,7 @@ func (s *ProductSuite) TestBindProductAlreadyExists() {
 		Force:      false,
 	}
 
-	s.versionClient.EXPECT().Get(s.server, _productName, bindOpts.VersionTag).Return(_testVersion, nil)
+	s.versionClient.EXPECT().Get(s.server, _productName, bindOpts.VersionTag).Return(testVersion, nil)
 
 	err := s.handler.Bind(bindOpts)
 	s.Require().NoError(err)
@@ -65,6 +72,10 @@ func (s *ProductSuite) TestBindProductAlreadyExists() {
 }
 
 func (s *ProductSuite) TestBindForce() {
+	testVersion := &entity.Version{
+		Tag: _versionTag,
+	}
+
 	bindOpts := &product.BindProductOpts{
 		Server:     s.server.Name,
 		ProductID:  _productName,
@@ -73,7 +84,7 @@ func (s *ProductSuite) TestBindForce() {
 		Force:      true,
 	}
 
-	s.versionClient.EXPECT().Get(s.server, _productName, bindOpts.VersionTag).Return(_testVersion, nil)
+	s.versionClient.EXPECT().Get(s.server, _productName, bindOpts.VersionTag).Return(testVersion, nil)
 
 	err := s.handler.Bind(bindOpts)
 	s.Require().NoError(err)

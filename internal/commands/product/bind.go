@@ -31,6 +31,7 @@ func (h *Handler) Bind(opts *BindProductOpts) error {
 	}
 
 	var version *entity.Version
+
 	version, err = h.versionClient.Get(server, opts.ProductID, opts.VersionTag)
 	if err != nil {
 		return err
