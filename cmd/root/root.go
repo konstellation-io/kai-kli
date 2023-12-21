@@ -2,6 +2,7 @@ package root
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/konstellation-io/kli/authserver"
 	"github.com/konstellation-io/kli/cmd/storage"
@@ -139,6 +140,8 @@ func setOutputFormat(cmd *cobra.Command, logger logging.Interface) error {
 	if err != nil {
 		return err
 	}
+
+	of = strings.ToLower(of)
 
 	if of != "json" && of != "text" {
 		return fmt.Errorf("invalid output format: %s", of)
