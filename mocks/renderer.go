@@ -37,6 +37,18 @@ func (m *MockRenderer) EXPECT() *MockRendererMockRecorder {
 	return m.recorder
 }
 
+// RenderCallout mocks base method.
+func (m *MockRenderer) RenderCallout(v *entity.Version) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderCallout", v)
+}
+
+// RenderCallout indicates an expected call of RenderCallout.
+func (mr *MockRendererMockRecorder) RenderCallout(v interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderCallout", reflect.TypeOf((*MockRenderer)(nil).RenderCallout), v)
+}
+
 // RenderConfiguration mocks base method.
 func (m *MockRenderer) RenderConfiguration(scope string, config map[string]string) {
 	m.ctrl.T.Helper()
@@ -47,6 +59,18 @@ func (m *MockRenderer) RenderConfiguration(scope string, config map[string]strin
 func (mr *MockRendererMockRecorder) RenderConfiguration(scope, config interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderConfiguration", reflect.TypeOf((*MockRenderer)(nil).RenderConfiguration), scope, config)
+}
+
+// RenderKliVersion mocks base method.
+func (m *MockRenderer) RenderKliVersion(version, buildDate string) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderKliVersion", version, buildDate)
+}
+
+// RenderKliVersion indicates an expected call of RenderKliVersion.
+func (mr *MockRendererMockRecorder) RenderKliVersion(version, buildDate interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderKliVersion", reflect.TypeOf((*MockRenderer)(nil).RenderKliVersion), version, buildDate)
 }
 
 // RenderLogs mocks base method.

@@ -16,6 +16,6 @@ func NewDefaultCliRenderer(logger logging.Interface, w io.Writer) *CliRenderer {
 	if viper.GetString(config.OutputFormatKey) == "json" {
 		return &CliRenderer{NewJSONRenderer(w, DefaultJSONWriter(w))}
 	}
-		
+
 	return &CliRenderer{NewTextRenderer(logger, w, DefaultTableWriter(w))}
 }

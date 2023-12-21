@@ -3,7 +3,6 @@ package render
 import (
 	"fmt"
 	"io"
-	"strconv"
 	"strings"
 	"time"
 
@@ -200,7 +199,8 @@ func (r *CliJSONRenderer) RenderLogs(productID string, logs []entity.Log, _ enti
 	})
 }
 
-func (r *CliJSONRenderer) RenderCallout(v *entity.Version) {
+func (r *CliJSONRenderer) RenderCallout(_ *entity.Version) {
+	// We do not need to render anything in JSON format.
 }
 
 func (r *CliJSONRenderer) RenderKliVersion(version, buildDate string) {
