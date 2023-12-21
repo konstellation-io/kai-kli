@@ -20,7 +20,7 @@ func NewListCmd(logger logging.Interface) *cobra.Command {
 			"authenticated": "true",
 		},
 		Example: `
-    $ kli product list [opts...]
+    $ kli product ls [opts...]
 		`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			server, err := cmd.Flags().GetString("server")
