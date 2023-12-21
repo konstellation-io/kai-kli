@@ -275,9 +275,9 @@ func (r *CliTextRenderer) RenderLogs(productID string, logs []entity.Log, outFor
 func (r *CliTextRenderer) renderLogsConsole(logs []entity.Log, showAllLabels bool) {
 	for _, log := range logs {
 		if !showAllLabels {
-			r.logger.Info(log.FormatedLog)
+			fmt.Println(log.FormatedLog)
 		} else {
-			r.logger.Info(fmt.Sprintf("%s - %s\n", log.FormatedLog, log.Labels))
+			fmt.Printf("%s - %s\n", log.FormatedLog, log.Labels)
 		}
 	}
 }
