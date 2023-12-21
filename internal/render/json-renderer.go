@@ -91,7 +91,7 @@ func (r *CliJSONRenderer) RenderProcesses(processes []krt.Process) {
 				r.jsonWriter.KeyValue("Name", pr.Name)
 				r.jsonWriter.KeyValue("Type", string(pr.Type))
 				r.jsonWriter.KeyValue("Image", pr.Image)
-				r.jsonWriter.KeyValue("Replicas", strconv.Itoa(*pr.Replicas))
+				r.jsonWriter.KeyValue("Replicas", *pr.Replicas)
 				r.jsonWriter.KeyValue("GPU", gpu)
 				r.jsonWriter.KeyValue("Subscriptions", strings.Join(pr.Subscriptions, "\n"))
 				r.jsonWriter.KeyValue("Object store", obj)
