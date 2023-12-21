@@ -9,7 +9,7 @@ import (
 
 const (
 	_productName = "test-product"
-	_versionTag  = "v.1.0.0"
+	_versionTag  = "v1.0.0"
 )
 
 func (s *ProductSuite) TestBindProduct() {
@@ -53,7 +53,7 @@ func (s *ProductSuite) TestBindProductAlreadyExists() {
 		Force:      false,
 	}
 
-	s.versionClient.EXPECT().Get(s.server, _productName, bindOpts.VersionTag).Return(testVersion, nil)
+	s.versionClient.EXPECT().Get(s.server, _productName, bindOpts.VersionTag).Return(testVersion, nil).Times(2)
 
 	err := s.handler.Bind(bindOpts)
 	s.Require().NoError(err)
@@ -84,7 +84,7 @@ func (s *ProductSuite) TestBindForce() {
 		Force:      true,
 	}
 
-	s.versionClient.EXPECT().Get(s.server, _productName, bindOpts.VersionTag).Return(testVersion, nil)
+	s.versionClient.EXPECT().Get(s.server, _productName, bindOpts.VersionTag).Return(testVersion, nil).Times(2)
 
 	err := s.handler.Bind(bindOpts)
 	s.Require().NoError(err)
