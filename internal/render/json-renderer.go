@@ -10,7 +10,6 @@ import (
 	"github.com/karlseguin/jsonwriter"
 	"github.com/konstellation-io/kli/api/kai"
 	"github.com/konstellation-io/kli/internal/entity"
-	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/konstellation-io/kli/internal/services/configuration"
 	"github.com/konstellation-io/krt/pkg/krt"
 )
@@ -21,7 +20,6 @@ const (
 )
 
 type CliJSONRenderer struct {
-	logger     logging.Interface
 	jsonWriter *jsonwriter.Writer
 	ioWriter   io.Writer
 }
@@ -30,20 +28,14 @@ func DefaultJSONWriter(w io.Writer) *jsonwriter.Writer {
 	return jsonwriter.New(w)
 }
 
-func NewJSONRenderer(logger logging.Interface, ioWriter io.Writer, jsonWriter *jsonwriter.Writer) *CliJSONRenderer {
+func NewJSONRenderer(ioWriter io.Writer, jsonWriter *jsonwriter.Writer) *CliJSONRenderer {
 	return &CliJSONRenderer{
-		logger:     logger,
 		jsonWriter: jsonWriter,
 		ioWriter:   ioWriter,
 	}
 }
 
 func (r *CliJSONRenderer) RenderServers(servers []*configuration.Server) {
-	if len(servers) < 1 {
-		r.logger.Info("No servers configured.")
-		return
-	}
-
 	r.jsonWriter.RootObject(func() {
 		for k, s := range servers {
 			r.jsonWriter.Object(fmt.Sprintf("Server%d", k), func() {
@@ -61,11 +53,6 @@ func (r *CliJSONRenderer) RenderServers(servers []*configuration.Server) {
 }
 
 func (r *CliJSONRenderer) RenderWorkflows(workflows []krt.Workflow) {
-	if len(workflows) < 1 {
-		r.logger.Info("No workflows found.")
-		return
-	}
-
 	r.jsonWriter.RootObject(func() {
 		for k, wf := range workflows {
 			r.jsonWriter.Object(fmt.Sprintf("Workflow%d", k), func() {
@@ -79,11 +66,6 @@ func (r *CliJSONRenderer) RenderWorkflows(workflows []krt.Workflow) {
 }
 
 func (r *CliJSONRenderer) RenderProcesses(processes []krt.Process) {
-	if len(processes) < 1 {
-		r.logger.Info("No processes found.")
-		return
-	}
-
 	r.jsonWriter.RootObject(func() {
 		for k, pr := range processes { //nolint:gocritic
 			r.jsonWriter.Object(fmt.Sprintf("Process%d", k), func() {
@@ -124,11 +106,6 @@ func (r *CliJSONRenderer) RenderProcesses(processes []krt.Process) {
 }
 
 func (r *CliJSONRenderer) RenderConfiguration(scope string, config map[string]string) {
-	if len(config) < 1 {
-		r.logger.Info("No configuration found.")
-		return
-	}
-
 	r.jsonWriter.RootObject(func() {
 		r.jsonWriter.Object(scope, func() {
 			for k, v := range config {
@@ -139,11 +116,6 @@ func (r *CliJSONRenderer) RenderConfiguration(scope string, config map[string]st
 }
 
 func (r *CliJSONRenderer) RenderRegisteredProcesses(registeredProcesses []*entity.RegisteredProcess) {
-	if len(registeredProcesses) < 1 {
-		r.logger.Info("No registered processes found.")
-		return
-	}
-
 	r.jsonWriter.RootObject(func() {
 		for k, pr := range registeredProcesses {
 			r.jsonWriter.Object(fmt.Sprintf("RegisteredProcess%d", k), func() {
@@ -160,11 +132,6 @@ func (r *CliJSONRenderer) RenderRegisteredProcesses(registeredProcesses []*entit
 }
 
 func (r *CliJSONRenderer) RenderProducts(products []kai.Product) {
-	if len(products) < 1 {
-		r.logger.Info("No products found.")
-		return
-	}
-
 	r.jsonWriter.RootObject(func() {
 		for k, p := range products {
 			r.jsonWriter.Object(fmt.Sprintf("Product%d", k), func() {
@@ -189,11 +156,6 @@ func (r *CliJSONRenderer) RenderVersion(productID string, v *entity.Version) {
 }
 
 func (r *CliJSONRenderer) RenderVersions(productID string, versions []*entity.Version) {
-	if len(versions) < 1 {
-		r.logger.Info("No versions found.")
-		return
-	}
-
 	r.jsonWriter.RootObject(func() {
 		for k, v := range versions {
 			r.jsonWriter.Object(fmt.Sprintf("Version%d", k), func() {
@@ -207,11 +169,6 @@ func (r *CliJSONRenderer) RenderVersions(productID string, versions []*entity.Ve
 }
 
 func (r *CliJSONRenderer) RenderTriggers(triggers []entity.TriggerEndpoint) {
-	if len(triggers) < 1 {
-		r.logger.Info("No triggers found.")
-		return
-	}
-
 	r.jsonWriter.RootObject(func() {
 		for k, t := range triggers {
 			r.jsonWriter.Object(fmt.Sprintf("Trigger%d", k), func() {
@@ -241,4 +198,8 @@ func (r *CliJSONRenderer) RenderLogs(productID string, logs []entity.Log, _ enti
 			})
 		}
 	})
+}
+
+func (r *CliJSONRenderer) RenderCallout(v *entity.Version) {
+	return
 }

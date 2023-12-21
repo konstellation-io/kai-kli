@@ -308,3 +308,8 @@ func (r *CliTextRenderer) renderLogsFile(productID string, logs []entity.Log, sh
 		}
 	}
 }
+
+func (r *CliTextRenderer) RenderCallout(v *entity.Version) {
+	fmt.Println(v)
+	r.logger.Warn("WARNING: Version is in CRITICAL state, start under your own discretion.")
+}
