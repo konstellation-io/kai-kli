@@ -35,14 +35,14 @@ func NewJSONRenderer(ioWriter io.Writer, jsonWriter *jsonwriter.Writer) *CliJSON
 }
 
 func (r *CliJSONRenderer) RenderServers(servers []*configuration.Server) {
-	r.jsonWriter.RootObject(func() {
-		for k, s := range servers {
-			r.jsonWriter.Object(fmt.Sprintf("Server%d", k), func() {
-				defaultMark := ""
-				if s.IsDefault {
-					defaultMark = "*"
-				}
+	r.jsonWriter.RootArray(func() {
+		for _, s := range servers {
+			defaultMark := ""
+			if s.IsDefault {
+				defaultMark = "*"
+			}
 
+			r.jsonWriter.ArrayObject(func() {
 				r.jsonWriter.KeyValue("Name", fmt.Sprintf("%s%s", s.Name, defaultMark))
 				r.jsonWriter.KeyValue("URL", s.Host)
 				r.jsonWriter.KeyValue("Authenticated", s.IsLoggedIn())
@@ -53,9 +53,9 @@ func (r *CliJSONRenderer) RenderServers(servers []*configuration.Server) {
 }
 
 func (r *CliJSONRenderer) RenderWorkflows(workflows []krt.Workflow) {
-	r.jsonWriter.RootObject(func() {
-		for k, wf := range workflows {
-			r.jsonWriter.Object(fmt.Sprintf("Workflow%d", k), func() {
+	r.jsonWriter.RootArray(func() {
+		for _, wf := range workflows {
+			r.jsonWriter.ArrayObject(func() {
 				r.jsonWriter.KeyValue("Name", wf.Name)
 				r.jsonWriter.KeyValue("Type", string(wf.Type))
 				r.jsonWriter.KeyValue("Configured properties", len(wf.Config))
@@ -67,28 +67,28 @@ func (r *CliJSONRenderer) RenderWorkflows(workflows []krt.Workflow) {
 }
 
 func (r *CliJSONRenderer) RenderProcesses(processes []krt.Process) {
-	r.jsonWriter.RootObject(func() {
-		for k, pr := range processes { //nolint:gocritic
-			r.jsonWriter.Object(fmt.Sprintf("Process%d", k), func() {
-				gpu := _no
+	r.jsonWriter.RootArray(func() {
+		for _, pr := range processes { //nolint:gocritic
+			gpu := _no
 
-				if *pr.GPU {
-					gpu = _yes
-				}
+			if *pr.GPU {
+				gpu = _yes
+			}
 
-				obj := "-"
+			obj := "-"
 
-				if pr.ObjectStore != nil {
-					obj = fmt.Sprintf("ObjectStore: %s\nScope: %s", pr.ObjectStore.Name, pr.ObjectStore.Scope)
-				}
+			if pr.ObjectStore != nil {
+				obj = fmt.Sprintf("ObjectStore: %s\nScope: %s", pr.ObjectStore.Name, pr.ObjectStore.Scope)
+			}
 
-				net := "-"
+			net := "-"
 
-				if pr.Networking != nil {
-					net = fmt.Sprintf("Source Port: %d\nExposed Port: %d\nProtocol: %s",
-						pr.Networking.TargetPort, pr.Networking.DestinationPort, pr.Networking.Protocol)
-				}
+			if pr.Networking != nil {
+				net = fmt.Sprintf("Source Port: %d\nExposed Port: %d\nProtocol: %s",
+					pr.Networking.TargetPort, pr.Networking.DestinationPort, pr.Networking.Protocol)
+			}
 
+			r.jsonWriter.ArrayObject(func() {
 				r.jsonWriter.KeyValue("Name", pr.Name)
 				r.jsonWriter.KeyValue("Type", string(pr.Type))
 				r.jsonWriter.KeyValue("Image", pr.Image)
@@ -109,19 +109,17 @@ func (r *CliJSONRenderer) RenderProcesses(processes []krt.Process) {
 
 func (r *CliJSONRenderer) RenderConfiguration(scope string, config map[string]string) {
 	r.jsonWriter.RootObject(func() {
-		r.jsonWriter.Object(scope, func() {
-			for k, v := range config {
-				r.jsonWriter.KeyValue(k, v)
-			}
-		})
+		for k, v := range config {
+			r.jsonWriter.KeyValue(k, v)
+		}
 	})
 	r.ioWriter.Write([]byte("\n"))
 }
 
 func (r *CliJSONRenderer) RenderRegisteredProcesses(registeredProcesses []*entity.RegisteredProcess) {
-	r.jsonWriter.RootObject(func() {
-		for k, pr := range registeredProcesses {
-			r.jsonWriter.Object(fmt.Sprintf("RegisteredProcess%d", k), func() {
+	r.jsonWriter.RootArray(func() {
+		for _, pr := range registeredProcesses {
+			r.jsonWriter.ArrayObject(func() {
 				r.jsonWriter.KeyValue("Name", pr.Name)
 				r.jsonWriter.KeyValue("Version", pr.Version)
 				r.jsonWriter.KeyValue("Status", pr.Status)
@@ -136,9 +134,9 @@ func (r *CliJSONRenderer) RenderRegisteredProcesses(registeredProcesses []*entit
 }
 
 func (r *CliJSONRenderer) RenderProducts(products []kai.Product) {
-	r.jsonWriter.RootObject(func() {
-		for k, p := range products {
-			r.jsonWriter.Object(fmt.Sprintf("Product%d", k), func() {
+	r.jsonWriter.RootArray(func() {
+		for _, p := range products {
+			r.jsonWriter.ArrayObject(func() {
 				r.jsonWriter.KeyValue("ID", p.ID)
 				r.jsonWriter.KeyValue("Name", p.Name)
 				r.jsonWriter.KeyValue("Description", p.Description)
@@ -150,21 +148,21 @@ func (r *CliJSONRenderer) RenderProducts(products []kai.Product) {
 
 func (r *CliJSONRenderer) RenderVersion(productID string, v *entity.Version) {
 	r.jsonWriter.RootObject(func() {
-		r.jsonWriter.Object("Version", func() {
-			if v.Error != "" {
-				r.jsonWriter.KeyValue("Message", fmt.Sprintf("%s - %s status is: %s and has an error: %s.", productID, v.Tag, v.Status, v.Error))
-			} else {
-				r.jsonWriter.KeyValue("Message", fmt.Sprintf("%s - %s status is: %s.", productID, v.Tag, v.Status))
-			}
-		})
+		r.jsonWriter.KeyValue("Product", productID)
+		r.jsonWriter.KeyValue("Tag", v.Tag)
+		r.jsonWriter.KeyValue("Status", v.Status)
+		r.jsonWriter.KeyValue("Creation Date", v.CreationDate.Format(time.RFC3339))
+		if v.Error != "" {
+			r.jsonWriter.KeyValue("Error", v.Error)
+		}
 	})
 	r.ioWriter.Write([]byte("\n"))
 }
 
 func (r *CliJSONRenderer) RenderVersions(productID string, versions []*entity.Version) {
-	r.jsonWriter.RootObject(func() {
-		for k, v := range versions {
-			r.jsonWriter.Object(fmt.Sprintf("Version%d", k), func() {
+	r.jsonWriter.RootArray(func() {
+		for _, v := range versions {
+			r.jsonWriter.ArrayObject(func() {
 				r.jsonWriter.KeyValue("Product", productID)
 				r.jsonWriter.KeyValue("Tag", v.Tag)
 				r.jsonWriter.KeyValue("Status", v.Status)
@@ -176,9 +174,9 @@ func (r *CliJSONRenderer) RenderVersions(productID string, versions []*entity.Ve
 }
 
 func (r *CliJSONRenderer) RenderTriggers(triggers []entity.TriggerEndpoint) {
-	r.jsonWriter.RootObject(func() {
-		for k, t := range triggers {
-			r.jsonWriter.Object(fmt.Sprintf("Trigger%d", k), func() {
+	r.jsonWriter.RootArray(func() {
+		for _, t := range triggers {
+			r.jsonWriter.ArrayObject(func() {
 				r.jsonWriter.KeyValue("Name", t.Trigger)
 				r.jsonWriter.KeyValue("Status", "UP")
 				r.jsonWriter.KeyValue("Link", t.URL)
@@ -189,9 +187,7 @@ func (r *CliJSONRenderer) RenderTriggers(triggers []entity.TriggerEndpoint) {
 }
 
 func (r *CliJSONRenderer) RenderLogs(productID string, logs []entity.Log, _ entity.LogOutFormat, showAllLabels bool) {
-	logName := fmt.Sprintf("%s-logs-%s", productID, time.Now().Format("2006-01-02T15:04:05"))
-
-	r.jsonWriter.RootObject(func() {
+	r.jsonWriter.RootArray(func() {
 		for _, log := range logs {
 			var fullLog string
 
@@ -201,9 +197,7 @@ func (r *CliJSONRenderer) RenderLogs(productID string, logs []entity.Log, _ enti
 				fullLog = (fmt.Sprintf("%s - %s", log.FormatedLog, log.Labels))
 			}
 
-			r.jsonWriter.Object(logName, func() {
-				r.jsonWriter.KeyValue("Log", fullLog)
-			})
+			r.jsonWriter.Value(fullLog)
 		}
 	})
 	r.ioWriter.Write([]byte("\n"))
@@ -215,10 +209,8 @@ func (r *CliJSONRenderer) RenderCallout(_ *entity.Version) {
 
 func (r *CliJSONRenderer) RenderKliVersion(version, buildDate string) {
 	r.jsonWriter.RootObject(func() {
-		r.jsonWriter.Object("Kli", func() {
-			r.jsonWriter.KeyValue("Version", version)
-			r.jsonWriter.KeyValue("Build Date", buildDate)
-		})
+		r.jsonWriter.KeyValue("Version", version)
+		r.jsonWriter.KeyValue("Build Date", buildDate)
 	})
 	r.ioWriter.Write([]byte("\n"))
 }
