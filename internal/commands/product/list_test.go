@@ -21,7 +21,6 @@ import (
 const (
 	_productID          = "productID"
 	_serverName         = "serverName"
-	_productName        = "productName"
 	_productDescription = "productDescription"
 	_errTest            = "error test"
 )
@@ -32,6 +31,7 @@ type ListProductSuite struct {
 	logger               *mocks.MockLogger
 	renderer             *mocks.MockRenderer
 	productClient        *mocks.MockProductClient
+	versionClient        *mocks.MockVersionClient
 	handler              *product.Handler
 	productConfiguration *productconfiguration.ProductConfigService
 	kaiConfiguration     *configuration.KaiConfigService
@@ -49,6 +49,7 @@ func (s *ListProductSuite) SetupSuite() {
 	s.logger = mocks.NewMockLogger(ctrl)
 	s.renderer = mocks.NewMockRenderer(ctrl)
 	s.productClient = mocks.NewMockProductClient(s.T())
+	s.versionClient = mocks.NewMockVersionClient(s.T())
 	s.productConfiguration = productconfiguration.NewProductConfigService(s.logger)
 	s.kaiConfiguration = configuration.NewKaiConfigService(s.logger)
 
@@ -82,6 +83,7 @@ func (s *ListProductSuite) SetupSuite() {
 		s.logger,
 		s.renderer,
 		s.productClient,
+		s.versionClient,
 		s.productConfiguration,
 	)
 }
