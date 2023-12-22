@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/konstellation-io/krt/pkg/krt"
+	"github.com/konstellation-io/krt/pkg/parse"
 	"github.com/spf13/viper"
 	"gopkg.in/yaml.v3"
 
@@ -55,7 +56,7 @@ func (c *ProductConfigService) WriteConfiguration(newConfig *KaiProductConfigura
 		return ErrProductConfigNotFound
 	}
 
-	updatedConfig, err := yaml.Marshal(newConfig.Krt)
+	updatedConfig, err := parse.ParseKrtToYaml(newConfig.Krt)
 	if err != nil {
 		return err
 	}

@@ -20,7 +20,7 @@ func (h *Handler) Start(opts *StartOpts) error {
 		return err
 	}
 
-	vers, err := h.versionClient.Get(srv, opts.ProductID, opts.VersionTag)
+	vers, err := h.versionClient.Get(srv, opts.ProductID, &opts.VersionTag)
 	if err != nil {
 		return err
 	}
