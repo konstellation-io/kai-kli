@@ -49,7 +49,8 @@ func (r *CliJSONRenderer) RenderServers(servers []*configuration.Server) {
 			})
 		}
 	})
-	r.ioWriter.Write([]byte("\n"))
+
+	_, _ = r.ioWriter.Write([]byte("\n"))
 }
 
 func (r *CliJSONRenderer) RenderWorkflows(workflows []krt.Workflow) {
@@ -63,7 +64,8 @@ func (r *CliJSONRenderer) RenderWorkflows(workflows []krt.Workflow) {
 			})
 		}
 	})
-	r.ioWriter.Write([]byte("\n"))
+
+	_, _ = r.ioWriter.Write([]byte("\n"))
 }
 
 func (r *CliJSONRenderer) RenderProcesses(processes []krt.Process) {
@@ -104,16 +106,18 @@ func (r *CliJSONRenderer) RenderProcesses(processes []krt.Process) {
 			})
 		}
 	})
-	r.ioWriter.Write([]byte("\n"))
+
+	_, _ = r.ioWriter.Write([]byte("\n"))
 }
 
-func (r *CliJSONRenderer) RenderConfiguration(scope string, config map[string]string) {
+func (r *CliJSONRenderer) RenderConfiguration(_ string, config map[string]string) {
 	r.jsonWriter.RootObject(func() {
 		for k, v := range config {
 			r.jsonWriter.KeyValue(k, v)
 		}
 	})
-	r.ioWriter.Write([]byte("\n"))
+
+	_, _ = r.ioWriter.Write([]byte("\n"))
 }
 
 func (r *CliJSONRenderer) RenderRegisteredProcesses(registeredProcesses []*entity.RegisteredProcess) {
@@ -130,7 +134,8 @@ func (r *CliJSONRenderer) RenderRegisteredProcesses(registeredProcesses []*entit
 			})
 		}
 	})
-	r.ioWriter.Write([]byte("\n"))
+
+	_, _ = r.ioWriter.Write([]byte("\n"))
 }
 
 func (r *CliJSONRenderer) RenderProducts(products []kai.Product) {
@@ -143,7 +148,8 @@ func (r *CliJSONRenderer) RenderProducts(products []kai.Product) {
 			})
 		}
 	})
-	r.ioWriter.Write([]byte("\n"))
+
+	_, _ = r.ioWriter.Write([]byte("\n"))
 }
 
 func (r *CliJSONRenderer) RenderVersion(productID string, v *entity.Version) {
@@ -156,7 +162,8 @@ func (r *CliJSONRenderer) RenderVersion(productID string, v *entity.Version) {
 			r.jsonWriter.KeyValue("Error", v.Error)
 		}
 	})
-	r.ioWriter.Write([]byte("\n"))
+
+	_, _ = r.ioWriter.Write([]byte("\n"))
 }
 
 func (r *CliJSONRenderer) RenderVersions(productID string, versions []*entity.Version) {
@@ -170,7 +177,8 @@ func (r *CliJSONRenderer) RenderVersions(productID string, versions []*entity.Ve
 			})
 		}
 	})
-	r.ioWriter.Write([]byte("\n"))
+
+	_, _ = r.ioWriter.Write([]byte("\n"))
 }
 
 func (r *CliJSONRenderer) RenderTriggers(triggers []entity.TriggerEndpoint) {
@@ -183,10 +191,11 @@ func (r *CliJSONRenderer) RenderTriggers(triggers []entity.TriggerEndpoint) {
 			})
 		}
 	})
-	r.ioWriter.Write([]byte("\n"))
+
+	_, _ = r.ioWriter.Write([]byte("\n"))
 }
 
-func (r *CliJSONRenderer) RenderLogs(productID string, logs []entity.Log, _ entity.LogOutFormat, showAllLabels bool) {
+func (r *CliJSONRenderer) RenderLogs(_ string, logs []entity.Log, _ entity.LogOutFormat, showAllLabels bool) {
 	r.jsonWriter.RootArray(func() {
 		for _, log := range logs {
 			var fullLog string
@@ -200,7 +209,8 @@ func (r *CliJSONRenderer) RenderLogs(productID string, logs []entity.Log, _ enti
 			r.jsonWriter.Value(fullLog)
 		}
 	})
-	r.ioWriter.Write([]byte("\n"))
+
+	_, _ = r.ioWriter.Write([]byte("\n"))
 }
 
 func (r *CliJSONRenderer) RenderCallout(_ *entity.Version) {
@@ -212,5 +222,6 @@ func (r *CliJSONRenderer) RenderKliVersion(version, buildDate string) {
 		r.jsonWriter.KeyValue("Version", version)
 		r.jsonWriter.KeyValue("Build Date", buildDate)
 	})
-	r.ioWriter.Write([]byte("\n"))
+
+	_, _ = r.ioWriter.Write([]byte("\n"))
 }
