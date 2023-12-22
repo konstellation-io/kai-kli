@@ -98,6 +98,7 @@ func (s *CreateProductSuite) TestCreateProduct() {
 	)
 
 	s.productClient.EXPECT().CreateProduct(s.server, productName, description).Return(nil).Once()
+	s.logger.EXPECT().IsJSONOutputFormat().Return(false)
 
 	err := s.handler.CreateProduct(&product.CreateProductOpts{
 		Server:      s.server.Name,
@@ -168,6 +169,7 @@ func (s *CreateProductSuite) TestCreateProduct_InitLocalDefaultPath() {
 	defer os.RemoveAll(tmpProductPath)
 
 	s.productClient.EXPECT().CreateProduct(s.server, productName, description).Return(nil).Once()
+	s.logger.EXPECT().IsJSONOutputFormat().Return(false)
 
 	err = s.handler.CreateProduct(&product.CreateProductOpts{
 		Server:      s.server.Name,
@@ -212,6 +214,7 @@ func (s *CreateProductSuite) TestCreateProduct_LocalConfigAlreadyExists() {
 	s.Require().NoError(err)
 
 	s.productClient.EXPECT().CreateProduct(s.server, productName, description).Return(nil).Once()
+	s.logger.EXPECT().IsJSONOutputFormat().Return(false)
 
 	err = s.handler.CreateProduct(&product.CreateProductOpts{
 		Server:      s.server.Name,

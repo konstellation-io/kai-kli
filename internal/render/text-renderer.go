@@ -323,3 +323,15 @@ func (r *CliTextRenderer) RenderKliVersion(version, buildDate string) {
 
 	fmt.Printf("kli version %s\n", version)
 }
+
+func (r *CliTextRenderer) RenderProcessRegistered(process *entity.RegisteredProcess) {
+	r.logger.Success(fmt.Sprintf("Creating process with id %q", process.ID))
+}
+
+func (r *CliTextRenderer) RenderProductCreated(_ string, _ *configuration.Server, _ bool) {
+	// We do not need to render anything in text format.
+}
+
+func (r *CliTextRenderer) RenderProductBinded(_ *kai.Product) {
+	r.logger.Success("Product successfully bound!")
+}

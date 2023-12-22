@@ -117,6 +117,8 @@ func (s *RegisterProcessSuite) TestRegisterNewServer_ValidPaths_ExpectOk() {
 		Register(gomock.Any(), gomock.Any(), productID, processID, processType, version).
 		Return(registeredProcess, nil)
 
+	s.renderer.EXPECT().RenderProcessRegistered(registeredProcess)
+
 	// WHEN
 	err := s.manager.RegisterProcess(&processregistry.RegisterProcessOpts{
 		ServerName:  serverName,

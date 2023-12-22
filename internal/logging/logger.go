@@ -67,10 +67,13 @@ func (l *CliLogger) printLog(level LogLevel, msg, icon string) {
 	}
 
 	if l.outputFormat == OutputFormatJSON {
+		escaped := strings.ReplaceAll(msg, `"`, `'`)
 		if level == LevelError {
-			escaped := strings.ReplaceAll(msg, `"`, `'`)
 			_, _ = fmt.Fprintf(l.writer, "{\"Status\":\"KO\",\"Message\":\"%s\",\"Data\":{}}\n", escaped)
+		} else {
+			_, _ = fmt.Fprintf(l.writer, "{\"Status\":\"OK\",\"Message\":\"%s\",\"Data\":{}}\n", escaped)
 		}
+
 		return
 	}
 
@@ -113,4 +116,8 @@ func (l *CliLogger) SetDebugLevel() {
 
 func (l *CliLogger) SetOutputFormat(of string) {
 	l.outputFormat = of
+}
+
+func (l *CliLogger) IsJSONOutputFormat() bool {
+	return l.outputFormat == "json"
 }

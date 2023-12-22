@@ -65,7 +65,7 @@ func (r *CliJSONRenderer) RenderWorkflows(workflows []krt.Workflow) {
 	_, _ = r.ioWriter.Write([]byte("\n"))
 }
 
-func (r *CliJSONRenderer) RenderProcesses(processes []krt.Process) { //NOSONAR
+func (r *CliJSONRenderer) RenderProcesses(processes []krt.Process) { // NOSONAR
 	r.jsonWriter.RootObject(func() {
 		r.jsonWriter.KeyValue("Status", "OK")
 		r.jsonWriter.KeyValue("Message", "")
@@ -266,6 +266,52 @@ func (r *CliJSONRenderer) RenderKliVersion(version, buildDate string) {
 	r.jsonWriter.RootObject(func() {
 		r.jsonWriter.KeyValue("Version", version)
 		r.jsonWriter.KeyValue("BuildDate", buildDate)
+	})
+
+	_, _ = r.ioWriter.Write([]byte("\n"))
+}
+
+func (r *CliJSONRenderer) RenderProcessRegistered(process *entity.RegisteredProcess) {
+	r.jsonWriter.RootObject(func() {
+		r.jsonWriter.KeyValue("Status", "OK")
+		r.jsonWriter.KeyValue("Message", "")
+		r.jsonWriter.Object("Data", func() {
+			r.jsonWriter.KeyValue("Name", process.Name)
+			r.jsonWriter.KeyValue("Version", process.Version)
+			r.jsonWriter.KeyValue("Status", process.Status)
+			r.jsonWriter.KeyValue("Type", process.Type)
+			r.jsonWriter.KeyValue("Image", process.Image)
+			r.jsonWriter.KeyValue("UploadDate", process.UploadDate.Format(time.RFC3339))
+			r.jsonWriter.KeyValue("Owner", process.Owner)
+		})
+	})
+
+	_, _ = r.ioWriter.Write([]byte("\n"))
+}
+
+func (r *CliJSONRenderer) RenderProductCreated(product string, server *configuration.Server, initLocal bool) {
+	r.jsonWriter.RootObject(func() {
+		r.jsonWriter.KeyValue("Status", "OK")
+		r.jsonWriter.KeyValue("Message", "")
+		r.jsonWriter.Object("Data", func() {
+			r.jsonWriter.KeyValue("Product", product)
+			r.jsonWriter.KeyValue("Server", server.Name)
+			r.jsonWriter.KeyValue("InitLocal", initLocal)
+		})
+	})
+
+	_, _ = r.ioWriter.Write([]byte("\n"))
+}
+
+func (r *CliJSONRenderer) RenderProductBinded(product *kai.Product) {
+	r.jsonWriter.RootObject(func() {
+		r.jsonWriter.KeyValue("Status", "OK")
+		r.jsonWriter.KeyValue("Message", "")
+		r.jsonWriter.Object("Data", func() {
+			r.jsonWriter.KeyValue("ID", product.ID)
+			r.jsonWriter.KeyValue("Name", product.Name)
+			r.jsonWriter.KeyValue("Description", product.Description)
+		})
 	})
 
 	_, _ = r.ioWriter.Write([]byte("\n"))

@@ -23,4 +23,7 @@ type Renderer interface {
 	RenderLogs(productID string, logs []entity.Log, outFormat entity.LogOutFormat, showAllLabels bool)
 	RenderCallout(v *entity.Version)
 	RenderKliVersion(version, buildDate string)
+	RenderProcessRegistered(process *entity.RegisteredProcess)
+	RenderProductCreated(product string, server *configuration.Server, initLocal bool)
+	RenderProductBinded(product *kai.Product)
 }

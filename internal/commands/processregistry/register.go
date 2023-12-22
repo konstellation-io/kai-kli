@@ -74,7 +74,7 @@ func (c *Handler) RegisterProcess(opts *RegisterProcessOpts) error {
 		return err
 	}
 
-	c.logger.Success(fmt.Sprintf("Creating process with id %q", registeredProcess.ID))
+	c.renderer.RenderProcessRegistered(registeredProcess)
 
 	return nil
 }
