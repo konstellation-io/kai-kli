@@ -20,7 +20,7 @@ const (
 	_requestIDFlag    = "request-id"
 	_loglevelFlag     = "log-level"
 	_loggerFlag       = "logger"
-	_outFlag          = "out"
+	_outFlag          = "sink"
 	_limitFlag        = "limit"
 	_allLabelsFlag    = "all-labels"
 )

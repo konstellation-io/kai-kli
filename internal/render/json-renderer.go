@@ -1,17 +1,21 @@
 package render
 
 import (
+	"fmt"
 	"io"
+	"os"
 	"time"
 
 	"github.com/karlseguin/jsonwriter"
 	"github.com/konstellation-io/kli/api/kai"
 	"github.com/konstellation-io/kli/internal/entity"
+	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/konstellation-io/kli/internal/services/configuration"
 	"github.com/konstellation-io/krt/pkg/krt"
 )
 
 type CliJSONRenderer struct {
+	logger     logging.Interface
 	jsonWriter *jsonwriter.Writer
 	ioWriter   io.Writer
 }
@@ -20,8 +24,9 @@ func DefaultJSONWriter(w io.Writer) *jsonwriter.Writer {
 	return jsonwriter.New(w)
 }
 
-func NewJSONRenderer(ioWriter io.Writer, jsonWriter *jsonwriter.Writer) *CliJSONRenderer {
+func NewJSONRenderer(logger logging.Interface, ioWriter io.Writer, jsonWriter *jsonwriter.Writer) *CliJSONRenderer {
 	return &CliJSONRenderer{
+		logger:     logger,
 		jsonWriter: jsonWriter,
 		ioWriter:   ioWriter,
 	}
@@ -235,7 +240,19 @@ func (r *CliJSONRenderer) RenderTriggers(triggers []entity.TriggerEndpoint) {
 	_, _ = r.ioWriter.Write([]byte("\n"))
 }
 
-func (r *CliJSONRenderer) RenderLogs(_ string, logs []entity.Log, _ entity.LogOutFormat, showAllLabels bool) {
+func (r *CliJSONRenderer) RenderLogs(productID string, logs []entity.Log, outFormat entity.LogOutFormat, showAllLabels bool) {
+	if len(logs) == 0 {
+		return
+	}
+
+	if outFormat == entity.OutFormatConsole {
+		r.renderLogsConsole(logs, showAllLabels)
+	} else {
+		r.renderLogsFile(productID, logs, showAllLabels)
+	}
+}
+
+func (r *CliJSONRenderer) renderLogsConsole(logs []entity.Log, showAllLabels bool) {
 	r.jsonWriter.RootObject(func() {
 		r.jsonWriter.KeyValue("Status", "OK")
 		r.jsonWriter.KeyValue("Message", "")
@@ -256,6 +273,39 @@ func (r *CliJSONRenderer) RenderLogs(_ string, logs []entity.Log, _ entity.LogOu
 	})
 
 	_, _ = r.ioWriter.Write([]byte("\n"))
+}
+
+func (r *CliJSONRenderer) renderLogsFile(productID string, logs []entity.Log, showAllLabels bool) { // NOSONAR
+	fileName := fmt.Sprintf("%s-logs-%s.txt", productID, time.Now().Format("2006-01-02T15:04:05"))
+
+	file, err := os.Create(fileName)
+	if err != nil {
+		r.logger.Error("Error creating logs.txt file: " + err.Error())
+		return
+	}
+
+	defer file.Close()
+
+	filewriter := jsonwriter.New(file)
+
+	filewriter.RootObject(func() {
+		filewriter.KeyValue("Status", "OK")
+		filewriter.KeyValue("Message", "")
+		filewriter.Array("Data", func() {
+			for _, log := range logs {
+				filewriter.ArrayObject(func() {
+					filewriter.KeyValue("Message", log.FormatedLog)
+					if showAllLabels {
+						filewriter.Object("Labels", func() {
+							for _, v := range log.Labels {
+								filewriter.KeyValue(v.Key, v.Value)
+							}
+						})
+					}
+				})
+			}
+		})
+	})
 }
 
 func (r *CliJSONRenderer) RenderCallout(_ *entity.Version) {
