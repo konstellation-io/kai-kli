@@ -13,10 +13,6 @@ import (
 	"github.com/konstellation-io/krt/pkg/krt"
 )
 
-const (
-	_no  = "No"
-	_yes = "Yes"
-)
 
 type CliJSONRenderer struct {
 	jsonWriter *jsonwriter.Writer
@@ -59,7 +55,7 @@ func (r *CliJSONRenderer) RenderWorkflows(workflows []krt.Workflow) {
 			r.jsonWriter.ArrayObject(func() {
 				r.jsonWriter.KeyValue("Name", wf.Name)
 				r.jsonWriter.KeyValue("Type", string(wf.Type))
-				r.jsonWriter.KeyValue("Configured properties", len(wf.Config))
+				r.jsonWriter.KeyValue("ConfiguredProperties", len(wf.Config))
 				r.jsonWriter.KeyValue("Processes", len(wf.Processes))
 			})
 		}
@@ -71,22 +67,16 @@ func (r *CliJSONRenderer) RenderWorkflows(workflows []krt.Workflow) {
 func (r *CliJSONRenderer) RenderProcesses(processes []krt.Process) {
 	r.jsonWriter.RootArray(func() {
 		for _, pr := range processes { //nolint:gocritic
-			gpu := _no
-
-			if *pr.GPU {
-				gpu = _yes
-			}
-
-			obj := "-"
+			obj := ""
 
 			if pr.ObjectStore != nil {
 				obj = fmt.Sprintf("ObjectStore: %s\nScope: %s", pr.ObjectStore.Name, pr.ObjectStore.Scope)
 			}
 
-			net := "-"
+			net := ""
 
 			if pr.Networking != nil {
-				net = fmt.Sprintf("Source Port: %d\nExposed Port: %d\nProtocol: %s",
+				net = fmt.Sprintf("SourcePort: %d\nExposedPort: %d\nProtocol: %s",
 					pr.Networking.TargetPort, pr.Networking.DestinationPort, pr.Networking.Protocol)
 			}
 
@@ -95,14 +85,14 @@ func (r *CliJSONRenderer) RenderProcesses(processes []krt.Process) {
 				r.jsonWriter.KeyValue("Type", string(pr.Type))
 				r.jsonWriter.KeyValue("Image", pr.Image)
 				r.jsonWriter.KeyValue("Replicas", *pr.Replicas)
-				r.jsonWriter.KeyValue("GPU", gpu)
+				r.jsonWriter.KeyValue("GPU", *pr.GPU)
 				r.jsonWriter.KeyValue("Subscriptions", strings.Join(pr.Subscriptions, "\n"))
-				r.jsonWriter.KeyValue("Object store", obj)
-				r.jsonWriter.KeyValue("CPU limits", fmt.Sprintf("Request: %s\nLimit: %s", pr.ResourceLimits.CPU.Request, pr.ResourceLimits.CPU.Limit))
-				r.jsonWriter.KeyValue("Memory limits", fmt.Sprintf("Request: %s\nLimit: %s", pr.ResourceLimits.Memory.Request, pr.ResourceLimits.Memory.Limit)) //nolint:lll
+				r.jsonWriter.KeyValue("ObjectStore", obj)
+				r.jsonWriter.KeyValue("CPULimits", fmt.Sprintf("Request: %s\nLimit: %s", pr.ResourceLimits.CPU.Request, pr.ResourceLimits.CPU.Limit))
+				r.jsonWriter.KeyValue("MemoryLimits", fmt.Sprintf("Request: %s\nLimit: %s", pr.ResourceLimits.Memory.Request, pr.ResourceLimits.Memory.Limit)) //nolint:lll
 				r.jsonWriter.KeyValue("Networking", net)
-				r.jsonWriter.KeyValue("Configured properties", len(pr.Config))
-				r.jsonWriter.KeyValue("Configured secrets", len(pr.Secrets))
+				r.jsonWriter.KeyValue("ConfiguredProperties", len(pr.Config))
+				r.jsonWriter.KeyValue("ConfiguredSecrets", len(pr.Secrets))
 			})
 		}
 	})
@@ -129,7 +119,7 @@ func (r *CliJSONRenderer) RenderRegisteredProcesses(registeredProcesses []*entit
 				r.jsonWriter.KeyValue("Status", pr.Status)
 				r.jsonWriter.KeyValue("Type", pr.Type)
 				r.jsonWriter.KeyValue("Image", pr.Image)
-				r.jsonWriter.KeyValue("Upload Date", pr.UploadDate.Format(time.RFC3339))
+				r.jsonWriter.KeyValue("UploadDate", pr.UploadDate.Format(time.RFC3339))
 				r.jsonWriter.KeyValue("Owner", pr.Owner)
 			})
 		}
@@ -157,7 +147,7 @@ func (r *CliJSONRenderer) RenderVersion(productID string, v *entity.Version) {
 		r.jsonWriter.KeyValue("Product", productID)
 		r.jsonWriter.KeyValue("Tag", v.Tag)
 		r.jsonWriter.KeyValue("Status", v.Status)
-		r.jsonWriter.KeyValue("Creation Date", v.CreationDate.Format(time.RFC3339))
+		r.jsonWriter.KeyValue("CreationDate", v.CreationDate.Format(time.RFC3339))
 		if v.Error != "" {
 			r.jsonWriter.KeyValue("Error", v.Error)
 		}
@@ -173,7 +163,7 @@ func (r *CliJSONRenderer) RenderVersions(productID string, versions []*entity.Ve
 				r.jsonWriter.KeyValue("Product", productID)
 				r.jsonWriter.KeyValue("Tag", v.Tag)
 				r.jsonWriter.KeyValue("Status", v.Status)
-				r.jsonWriter.KeyValue("Creation Date", v.CreationDate.Format(time.RFC3339))
+				r.jsonWriter.KeyValue("CreationDate", v.CreationDate.Format(time.RFC3339))
 			})
 		}
 	})
@@ -220,7 +210,7 @@ func (r *CliJSONRenderer) RenderCallout(_ *entity.Version) {
 func (r *CliJSONRenderer) RenderKliVersion(version, buildDate string) {
 	r.jsonWriter.RootObject(func() {
 		r.jsonWriter.KeyValue("Version", version)
-		r.jsonWriter.KeyValue("Build Date", buildDate)
+		r.jsonWriter.KeyValue("BuildDate", buildDate)
 	})
 
 	_, _ = r.ioWriter.Write([]byte("\n"))
