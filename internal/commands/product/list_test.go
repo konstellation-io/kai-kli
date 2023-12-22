@@ -116,8 +116,8 @@ func (s *ListProductSuite) TestListProducts() {
 			Description: _productDescription,
 		},
 	}
-	s.productClient.EXPECT().GetProducts(s.server).Return(products, nil)
-	s.renderer.EXPECT().RenderProducts(products)
+	s.productClient.EXPECT().GetProducts(s.server).Return(products, nil).Times(1)
+	s.renderer.EXPECT().RenderProducts(products).Times(1)
 
 	// WHEN
 	err := s.handler.ListProducts(_serverName)
@@ -129,7 +129,7 @@ func (s *ListProductSuite) TestListProducts() {
 func (s *ListProductSuite) TestListProducts_Error() {
 	// GIVEN
 	errTest := configuration.ErrServerNotFound
-	s.productClient.EXPECT().GetProducts(s.server).Return(nil, errTest)
+	s.productClient.EXPECT().GetProducts(s.server).Return(nil, errTest).Times(1)
 
 	// WHEN
 	err := s.handler.ListProducts(_serverName)
