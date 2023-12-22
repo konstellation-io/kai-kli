@@ -1,9 +1,7 @@
 package render
 
 import (
-	"fmt"
 	"io"
-	"strings"
 	"time"
 
 	"github.com/karlseguin/jsonwriter"
@@ -12,7 +10,6 @@ import (
 	"github.com/konstellation-io/kli/internal/services/configuration"
 	"github.com/konstellation-io/krt/pkg/krt"
 )
-
 
 type CliJSONRenderer struct {
 	jsonWriter *jsonwriter.Writer
@@ -33,15 +30,11 @@ func NewJSONRenderer(ioWriter io.Writer, jsonWriter *jsonwriter.Writer) *CliJSON
 func (r *CliJSONRenderer) RenderServers(servers []*configuration.Server) {
 	r.jsonWriter.RootArray(func() {
 		for _, s := range servers {
-			defaultMark := ""
-			if s.IsDefault {
-				defaultMark = "*"
-			}
-
 			r.jsonWriter.ArrayObject(func() {
-				r.jsonWriter.KeyValue("Name", fmt.Sprintf("%s%s", s.Name, defaultMark))
+				r.jsonWriter.KeyValue("Name", s.Name)
 				r.jsonWriter.KeyValue("URL", s.Host)
 				r.jsonWriter.KeyValue("Authenticated", s.IsLoggedIn())
+				r.jsonWriter.KeyValue("Default", s.IsDefault)
 			})
 		}
 	})
@@ -64,33 +57,58 @@ func (r *CliJSONRenderer) RenderWorkflows(workflows []krt.Workflow) {
 	_, _ = r.ioWriter.Write([]byte("\n"))
 }
 
-func (r *CliJSONRenderer) RenderProcesses(processes []krt.Process) {
+func (r *CliJSONRenderer) RenderProcesses(processes []krt.Process) { //NOSONAR
 	r.jsonWriter.RootArray(func() {
 		for _, pr := range processes { //nolint:gocritic
-			obj := ""
-
-			if pr.ObjectStore != nil {
-				obj = fmt.Sprintf("ObjectStore: %s\nScope: %s", pr.ObjectStore.Name, pr.ObjectStore.Scope)
-			}
-
-			net := ""
-
-			if pr.Networking != nil {
-				net = fmt.Sprintf("SourcePort: %d\nExposedPort: %d\nProtocol: %s",
-					pr.Networking.TargetPort, pr.Networking.DestinationPort, pr.Networking.Protocol)
-			}
-
 			r.jsonWriter.ArrayObject(func() {
 				r.jsonWriter.KeyValue("Name", pr.Name)
 				r.jsonWriter.KeyValue("Type", string(pr.Type))
 				r.jsonWriter.KeyValue("Image", pr.Image)
 				r.jsonWriter.KeyValue("Replicas", *pr.Replicas)
 				r.jsonWriter.KeyValue("GPU", *pr.GPU)
-				r.jsonWriter.KeyValue("Subscriptions", strings.Join(pr.Subscriptions, "\n"))
-				r.jsonWriter.KeyValue("ObjectStore", obj)
-				r.jsonWriter.KeyValue("CPULimits", fmt.Sprintf("Request: %s\nLimit: %s", pr.ResourceLimits.CPU.Request, pr.ResourceLimits.CPU.Limit))
-				r.jsonWriter.KeyValue("MemoryLimits", fmt.Sprintf("Request: %s\nLimit: %s", pr.ResourceLimits.Memory.Request, pr.ResourceLimits.Memory.Limit)) //nolint:lll
-				r.jsonWriter.KeyValue("Networking", net)
+				r.jsonWriter.Array("Subscriptions", func() {
+					for _, s := range pr.Subscriptions {
+						r.jsonWriter.Value(s)
+					}
+				})
+				r.jsonWriter.Object("ObjectStore", func() {
+					if pr.ObjectStore == nil {
+						r.jsonWriter.KeyValue("Name", "")
+						r.jsonWriter.KeyValue("Scope", "")
+					} else {
+						r.jsonWriter.KeyValue("Name", pr.ObjectStore.Name)
+						r.jsonWriter.KeyValue("Scope", pr.ObjectStore.Scope)
+					}
+				})
+				r.jsonWriter.Object("CPULimits", func() {
+					if pr.ResourceLimits.CPU == nil {
+						r.jsonWriter.KeyValue("Request", "")
+						r.jsonWriter.KeyValue("Limit", "")
+					} else {
+						r.jsonWriter.KeyValue("Request", pr.ResourceLimits.CPU.Request)
+						r.jsonWriter.KeyValue("Limit", pr.ResourceLimits.CPU.Limit)
+					}
+				})
+				r.jsonWriter.Object("MemoryLimits", func() {
+					if pr.ResourceLimits.Memory == nil {
+						r.jsonWriter.KeyValue("Request", "")
+						r.jsonWriter.KeyValue("Limit", "")
+					} else {
+						r.jsonWriter.KeyValue("Request", pr.ResourceLimits.Memory.Request)
+						r.jsonWriter.KeyValue("Limit", pr.ResourceLimits.Memory.Limit)
+					}
+				})
+				r.jsonWriter.Object("Networking", func() {
+					if pr.Networking == nil {
+						r.jsonWriter.KeyValue("SourcePort", "")
+						r.jsonWriter.KeyValue("ExposedPort", "")
+						r.jsonWriter.KeyValue("Protocol", "")
+					} else {
+						r.jsonWriter.KeyValue("SourcePort", pr.Networking.TargetPort)
+						r.jsonWriter.KeyValue("ExposedPort", pr.Networking.DestinationPort)
+						r.jsonWriter.KeyValue("Protocol", string(pr.Networking.Protocol))
+					}
+				})
 				r.jsonWriter.KeyValue("ConfiguredProperties", len(pr.Config))
 				r.jsonWriter.KeyValue("ConfiguredSecrets", len(pr.Secrets))
 			})
@@ -188,15 +206,16 @@ func (r *CliJSONRenderer) RenderTriggers(triggers []entity.TriggerEndpoint) {
 func (r *CliJSONRenderer) RenderLogs(_ string, logs []entity.Log, _ entity.LogOutFormat, showAllLabels bool) {
 	r.jsonWriter.RootArray(func() {
 		for _, log := range logs {
-			var fullLog string
-
-			if !showAllLabels {
-				fullLog = (log.FormatedLog)
-			} else {
-				fullLog = (fmt.Sprintf("%s - %s", log.FormatedLog, log.Labels))
-			}
-
-			r.jsonWriter.Value(fullLog)
+			r.jsonWriter.ArrayObject(func() {
+				r.jsonWriter.KeyValue("Message", log.FormatedLog)
+				if showAllLabels {
+					r.jsonWriter.Object("Labels", func() {
+						for _, v := range log.Labels {
+							r.jsonWriter.KeyValue(v.Key, v.Value)
+						}
+					})
+				}
+			})
 		}
 	})
 
