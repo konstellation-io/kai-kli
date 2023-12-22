@@ -100,7 +100,6 @@ func (s *ListProductSuite) AfterTest(_, _ string) {
 			s.T().Fatalf("error cleaning tmp path: %s", err)
 		}
 	}
-	s.productClient.ExpectedCalls = nil
 }
 
 func (s *ListProductSuite) TestListProducts() {
