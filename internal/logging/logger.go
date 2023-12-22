@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"regexp"
+	"strings"
 
 	"gopkg.in/gookit/color.v1"
 )
@@ -66,6 +67,10 @@ func (l *CliLogger) printLog(level LogLevel, msg, icon string) {
 	}
 
 	if l.outputFormat == OutputFormatJSON {
+		if level == LevelError {
+			escaped := strings.ReplaceAll(msg, `"`, `'`)
+			_, _ = fmt.Fprintf(l.writer, "{\"Status\":\"KO\",\"Message\":\"%s\",\"Data\":{}}\n", escaped)
+		}
 		return
 	}
 
