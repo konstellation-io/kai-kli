@@ -23,15 +23,15 @@ func (_m *MockVersionClient) EXPECT() *MockVersionClient_Expecter {
 }
 
 // Get provides a mock function with given fields: server, productID, versionTag
-func (_m *MockVersionClient) Get(server *configuration.Server, productID string, versionTag string) (*entity.Version, error) {
+func (_m *MockVersionClient) Get(server *configuration.Server, productID string, versionTag *string) (*entity.Version, error) {
 	ret := _m.Called(server, productID, versionTag)
 
 	var r0 *entity.Version
 	var r1 error
-	if rf, ok := ret.Get(0).(func(*configuration.Server, string, string) (*entity.Version, error)); ok {
+	if rf, ok := ret.Get(0).(func(*configuration.Server, string, *string) (*entity.Version, error)); ok {
 		return rf(server, productID, versionTag)
 	}
-	if rf, ok := ret.Get(0).(func(*configuration.Server, string, string) *entity.Version); ok {
+	if rf, ok := ret.Get(0).(func(*configuration.Server, string, *string) *entity.Version); ok {
 		r0 = rf(server, productID, versionTag)
 	} else {
 		if ret.Get(0) != nil {
@@ -39,7 +39,7 @@ func (_m *MockVersionClient) Get(server *configuration.Server, productID string,
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(*configuration.Server, string, string) error); ok {
+	if rf, ok := ret.Get(1).(func(*configuration.Server, string, *string) error); ok {
 		r1 = rf(server, productID, versionTag)
 	} else {
 		r1 = ret.Error(1)
@@ -56,14 +56,14 @@ type MockVersionClient_Get_Call struct {
 // Get is a helper method to define mock.On call
 //   - server *configuration.Server
 //   - productID string
-//   - versionTag string
+//   - versionTag *string
 func (_e *MockVersionClient_Expecter) Get(server interface{}, productID interface{}, versionTag interface{}) *MockVersionClient_Get_Call {
 	return &MockVersionClient_Get_Call{Call: _e.mock.On("Get", server, productID, versionTag)}
 }
 
-func (_c *MockVersionClient_Get_Call) Run(run func(server *configuration.Server, productID string, versionTag string)) *MockVersionClient_Get_Call {
+func (_c *MockVersionClient_Get_Call) Run(run func(server *configuration.Server, productID string, versionTag *string)) *MockVersionClient_Get_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(*configuration.Server), args[1].(string), args[2].(string))
+		run(args[0].(*configuration.Server), args[1].(string), args[2].(*string))
 	})
 	return _c
 }
@@ -73,7 +73,7 @@ func (_c *MockVersionClient_Get_Call) Return(_a0 *entity.Version, _a1 error) *Mo
 	return _c
 }
 
-func (_c *MockVersionClient_Get_Call) RunAndReturn(run func(*configuration.Server, string, string) (*entity.Version, error)) *MockVersionClient_Get_Call {
+func (_c *MockVersionClient_Get_Call) RunAndReturn(run func(*configuration.Server, string, *string) (*entity.Version, error)) *MockVersionClient_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }
