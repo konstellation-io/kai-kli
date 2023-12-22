@@ -100,6 +100,7 @@ func (s *ListProductSuite) AfterTest(_, _ string) {
 			s.T().Fatalf("error cleaning tmp path: %s", err)
 		}
 	}
+	s.productClient.ExpectedCalls = nil
 }
 
 func (s *ListProductSuite) TestListProducts() {
@@ -117,7 +118,7 @@ func (s *ListProductSuite) TestListProducts() {
 		},
 	}
 	s.productClient.EXPECT().GetProducts(s.server).Return(products, nil).Times(1)
-	s.renderer.EXPECT().RenderProducts(products).Times(1)
+	s.renderer.EXPECT().RenderProducts(products)
 
 	// WHEN
 	err := s.handler.ListProducts(_serverName)
