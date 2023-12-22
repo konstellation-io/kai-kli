@@ -81,6 +81,18 @@ func (mr *MockLoggerMockRecorder) SetDebugLevel() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetDebugLevel", reflect.TypeOf((*MockLogger)(nil).SetDebugLevel))
 }
 
+// SetOutputFormat mocks base method.
+func (m *MockLogger) SetOutputFormat(of string) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "SetOutputFormat", of)
+}
+
+// SetOutputFormat indicates an expected call of SetOutputFormat.
+func (mr *MockLoggerMockRecorder) SetOutputFormat(of interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetOutputFormat", reflect.TypeOf((*MockLogger)(nil).SetOutputFormat), of)
+}
+
 // Success mocks base method.
 func (m *MockLogger) Success(msg string) {
 	m.ctrl.T.Helper()
