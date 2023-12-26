@@ -20,10 +20,9 @@ import (
 type AddServerSuite struct {
 	suite.Suite
 
-	renderer      *mocks.MockRenderer
-	authenticator *mocks.MockRenderer
-	manager       *server.Handler
-	tmpDir        string
+	renderer *mocks.MockRenderer
+	manager  *server.Handler
+	tmpDir   string
 }
 
 func TestAddServerSuite(t *testing.T) {
