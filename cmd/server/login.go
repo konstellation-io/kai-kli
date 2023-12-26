@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 
+	"github.com/konstellation-io/kli/authserver"
 	"github.com/konstellation-io/kli/internal/commands/server"
 	"github.com/konstellation-io/kli/internal/logging"
 	"github.com/konstellation-io/kli/internal/render"
@@ -17,11 +18,11 @@ const (
 // NewLoginCmd creates a new command to log in to an existing server.
 func NewLoginCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "login <server_name> --auth-url <auth_url> --realm <realm> --client-id <client-id>",
+		Use:   "login <server_name> --realm <realm> --client-id <client-id>",
 		Args:  cobra.ExactArgs(1),
 		Short: "login to an existing server",
 		Example: `
-    $ kli server login my-server --user my-user --password my-password
+    $ kli server login my-server --realm <realm> --client-id <client-id>
 		`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			serverName := args[0]
@@ -37,7 +38,7 @@ func NewLoginCmd(logger logging.Interface) *cobra.Command {
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
 
-			_, err = server.NewHandler(logger, r).Login(serverName, realm, clientID)
+			_, err = server.NewHandler(logger, r, authserver.NewDefaultAuthServer(logger)).Login(serverName, realm, clientID)
 			if err != nil {
 				return err
 			}

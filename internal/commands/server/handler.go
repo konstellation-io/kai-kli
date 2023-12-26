@@ -20,11 +20,11 @@ type Handler struct {
 	configService  *configuration.KaiConfigService
 }
 
-func NewHandler(logger logging.Interface, renderer render.Renderer) *Handler {
+func NewHandler(logger logging.Interface, renderer render.Renderer, authenticator authserver.Authenticator) *Handler {
 	return &Handler{
 		logger:         logger,
 		renderer:       renderer,
-		authentication: auth.NewAuthentication(logger, authserver.NewDefaultAuthServer(logger)),
+		authentication: auth.NewAuthentication(logger, authenticator),
 		configService:  configuration.NewKaiConfigService(logger),
 	}
 }

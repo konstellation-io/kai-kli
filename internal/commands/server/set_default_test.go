@@ -35,11 +35,12 @@ func (s *SetDefaultServerSuite) SetupSuite() {
 	ctrl := gomock.NewController(s.T())
 	logger := mocks.NewMockLogger(ctrl)
 	renderer := mocks.NewMockRenderer(ctrl)
+	authenticator := mocks.NewMockAuthenticator(ctrl)
 	mocks.AddLoggerExpects(logger)
 
 	s.logger = logger
 	s.renderer = renderer
-	s.manager = server.NewHandler(logger, renderer)
+	s.manager = server.NewHandler(logger, renderer, authenticator)
 
 	tmpDir, err := os.MkdirTemp("", "TestSetDefaultServer_*")
 	s.Require().NoError(err)

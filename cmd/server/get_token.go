@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 
+	"github.com/konstellation-io/kli/authserver"
 	"github.com/konstellation-io/kli/internal/render"
 	"github.com/spf13/cobra"
 
@@ -22,7 +23,7 @@ func NewGetTokenCmd(logger logging.Interface) *cobra.Command {
 		`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
-			token, err := server.NewHandler(logger, r).GetToken(args[0])
+			token, err := server.NewHandler(logger, r, authserver.NewDefaultAuthServer(logger)).GetToken(args[0])
 			if err != nil {
 				return err
 			}
