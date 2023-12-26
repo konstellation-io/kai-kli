@@ -287,7 +287,7 @@ func (r *CliTextRenderer) renderLogsFile(productID string, logs []entity.Log, sh
 
 	file, err := os.Create(fileName)
 	if err != nil {
-		r.logger.Error("Error creating logs.txt file: " + err.Error())
+		r.logger.Error(ErrorCreatingLogsFile(err))
 		return
 	}
 	defer file.Close()
