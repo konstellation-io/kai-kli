@@ -3,16 +3,18 @@ package product
 import (
 	"errors"
 
+	"github.com/konstellation-io/kli/internal/entity"
 	"github.com/konstellation-io/kli/internal/services/configuration"
 	productconfiguration "github.com/konstellation-io/kli/internal/services/product_configuration"
-	"github.com/konstellation-io/krt/pkg/krt"
+	"github.com/konstellation-io/kli/pkg/krtutil"
 )
 
 type BindProductOpts struct {
-	Server    string
-	ProductID string
-	LocalPath string
-	Force     bool
+	Server     string
+	ProductID  string
+	VersionTag *string
+	LocalPath  string
+	Force      bool
 }
 
 func (h *Handler) Bind(opts *BindProductOpts) error {
@@ -28,12 +30,14 @@ func (h *Handler) Bind(opts *BindProductOpts) error {
 		return err
 	}
 
-	product, err := h.productClient.GetProduct(server, opts.ProductID)
+	var version *entity.Version
+
+	version, err = h.versionClient.Get(server, opts.ProductID, opts.VersionTag)
 	if err != nil {
 		return err
 	}
 
-	productConfig, err := h.configService.GetConfiguration(product.ID, opts.LocalPath)
+	productConfig, err := h.configService.GetConfiguration(opts.ProductID, opts.LocalPath)
 	if err != nil && !errors.Is(err, productconfiguration.ErrProductConfigNotFound) {
 		return err
 	}
@@ -43,10 +47,8 @@ func (h *Handler) Bind(opts *BindProductOpts) error {
 	}
 
 	err = h.configService.WriteConfiguration(&productconfiguration.KaiProductConfiguration{
-		Krt: &krt.Krt{
-			Description: product.Description,
-		},
-	}, product.ID, opts.LocalPath)
+		Krt: krtutil.MapVersionToKrt(version),
+	}, opts.ProductID, opts.LocalPath)
 
 	if err != nil {
 		return err

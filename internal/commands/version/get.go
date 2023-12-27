@@ -17,7 +17,7 @@ func (h *Handler) GetVersion(opts *GetVersionOpts) error {
 		return err
 	}
 
-	registeredProcess, err := h.versionClient.Get(srv, opts.ProductID, opts.VersionTag)
+	registeredProcess, err := h.versionClient.Get(srv, opts.ProductID, &opts.VersionTag)
 	if err != nil {
 		return err
 	}

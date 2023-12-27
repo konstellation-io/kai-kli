@@ -25,6 +25,7 @@ const (
 	_debugFlag                      = "debug"
 	_authenticatedAnnotation        = "authenticated"
 	_productConfigurationAnnotation = "needs-product-config"
+	_outputFormatFlag               = "out"
 )
 
 // NewRootCmd creates the base command where all subcommands are added.
@@ -40,6 +41,11 @@ func NewRootCmd(
 		Long:  `Use Konstellation API from the command line.`,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			err := setDebugLogLevel(cmd, logger)
+			if err != nil {
+				return err
+			}
+
+			err = setOutputFormat(cmd, logger)
 			if err != nil {
 				return err
 			}
@@ -71,6 +77,7 @@ func NewRootCmd(
 	})
 
 	cmd.PersistentFlags().Bool(_debugFlag, false, "Set debug mode")
+	cmd.PersistentFlags().StringP(_outputFormatFlag, "o", "text", "Output format. One of: json|text")
 
 	// Child commands
 	cmd.AddCommand(newVersionCmd(version, buildDate))
@@ -121,6 +128,18 @@ func setDebugLogLevel(cmd *cobra.Command, logger logging.Interface) error {
 
 		logger.SetDebugLevel()
 	}
+
+	return err
+}
+
+func setOutputFormat(cmd *cobra.Command, logger logging.Interface) error {
+	of, err := cmd.Flags().GetString(_outputFormatFlag)
+	if err != nil {
+		return err
+	}
+
+	viper.Set(config.OutputFormatKey, of)
+	logger.SetOutputFormat(of)
 
 	return err
 }
