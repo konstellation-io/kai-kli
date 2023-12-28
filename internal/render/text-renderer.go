@@ -102,12 +102,6 @@ func (r *CliTextRenderer) RenderProcesses(processes []krt.Process) {
 		"Object store", "CPU limits", "Memory limits", "Networking", "Configured properties", "Configured secrets"})
 
 	for _, pr := range processes { //nolint:gocritic
-		gpu := "No"
-
-		if *pr.GPU {
-			gpu = "Yes"
-		}
-
 		obj := "-"
 
 		if pr.ObjectStore != nil {
@@ -126,7 +120,7 @@ func (r *CliTextRenderer) RenderProcesses(processes []krt.Process) {
 			string(pr.Type),
 			pr.Image,
 			strconv.Itoa(*pr.Replicas),
-			gpu,
+			boolToText(*pr.GPU),
 			strings.Join(pr.Subscriptions, "\n"),
 			obj,
 			fmt.Sprintf("Request: %s\nLimit: %s", pr.ResourceLimits.CPU.Request, pr.ResourceLimits.CPU.Limit),
@@ -167,7 +161,7 @@ func (r *CliTextRenderer) RenderRegisteredProcesses(registeredProcesses []*entit
 	}
 
 	r.tableWriter.SetHeader([]string{
-		"Name", "Version", "Status", "Type", "Image", "Upload Date", "Owner",
+		"Name", "Version", "Status", "Type", "Image", "Upload Date", "Owner", "Is Public",
 	})
 
 	for _, pr := range registeredProcesses {
@@ -179,6 +173,7 @@ func (r *CliTextRenderer) RenderRegisteredProcesses(registeredProcesses []*entit
 			pr.Image,
 			pr.UploadDate.Format(time.RFC3339),
 			pr.Owner,
+			boolToText(pr.IsPublic),
 		})
 	}
 
@@ -296,9 +291,9 @@ func (r *CliTextRenderer) renderLogsFile(productID string, logs []entity.Log, sh
 		var fullLog string
 
 		if !showAllLabels {
-			fullLog = (log.FormatedLog)
+			fullLog = log.FormatedLog
 		} else {
-			fullLog = (fmt.Sprintf("%s - %s", log.FormatedLog, log.Labels))
+			fullLog = fmt.Sprintf("%s - %s", log.FormatedLog, log.Labels)
 		}
 
 		_, err := fmt.Fprintln(file, fullLog)
@@ -334,4 +329,12 @@ func (r *CliTextRenderer) RenderProductCreated(_ string, _ *configuration.Server
 
 func (r *CliTextRenderer) RenderProductBinded(_ *kai.Product) {
 	r.logger.Success("Product successfully bound!")
+}
+
+func boolToText(b bool) string {
+	if b {
+		return "Yes"
+	}
+
+	return "No"
 }

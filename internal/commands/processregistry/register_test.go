@@ -204,6 +204,8 @@ func (s *RegisterProcessSuite) TestRegisterNewProcess_Public_ExpectOK() {
 		RegisterPublic(gomock.Any(), gomock.Any(), processID, processType, version).
 		Return(registeredProcess, nil)
 
+	s.renderer.EXPECT().RenderProcessRegistered(registeredProcess)
+
 	// WHEN
 	err := s.manager.RegisterProcess(&processregistry.RegisterProcessOpts{
 		ServerName:  serverName,
