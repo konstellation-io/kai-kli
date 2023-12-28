@@ -31,8 +31,9 @@ func NewListCmd(logger logging.Interface) *cobra.Command {
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
 
 			productConfigService := productconfiguration.NewProductConfigService(logger)
+			kaiClient := api.NewKaiClient()
 
-			err = product.NewHandler(logger, r, api.NewKaiClient().ProductClient(), productConfigService).
+			err = product.NewHandler(logger, r, kaiClient.ProductClient(), kaiClient.VersionClient(), productConfigService).
 				ListProducts(server)
 			if err != nil {
 				return err
