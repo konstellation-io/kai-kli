@@ -15,7 +15,6 @@ func NewProcessRegistryCmd(logger logging.Interface) *cobra.Command {
 		Example: heredoc.Doc(`
 			$ kli process-registry ls <product_id> [opts...]
 			$ kli process-registry register <process_type> <process_id> [opts...]
-			$ kli process-registry unregister <process_id> [opts...]
 		`),
 	}
 

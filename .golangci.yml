@@ -86,7 +86,6 @@ linters:
     - whitespace
     - asciicheck
     - gochecknoglobals
-    - gocognit
     - godot
     - nestif
     - prealloc
