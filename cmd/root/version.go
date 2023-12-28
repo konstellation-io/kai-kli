@@ -1,15 +1,14 @@
 package root
 
 import (
-	"fmt"
-	"strings"
-
 	"github.com/MakeNowJust/heredoc"
+	"github.com/konstellation-io/kli/internal/logging"
+	"github.com/konstellation-io/kli/internal/render"
 	"github.com/spf13/cobra"
 )
 
 // newVersionCmd creates a new command to handle 'version' keyword.
-func newVersionCmd(version, buildDate string) *cobra.Command {
+func newVersionCmd(logger logging.Interface, version, buildDate string) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "version",
 		Short: "Show the version of the CLI",
@@ -17,20 +16,10 @@ func newVersionCmd(version, buildDate string) *cobra.Command {
 			$ kli version
 		`),
 		Run: func(cmd *cobra.Command, args []string) {
-			_, _ = fmt.Fprint(cmd.OutOrStdout(), Format(version, buildDate))
+			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
+			r.RenderKliVersion(version, buildDate)
 		},
 	}
 
 	return cmd
-}
-
-// Format return the version properly formatted.
-func Format(version, buildDate string) string {
-	version = strings.TrimPrefix(version, "v")
-
-	if buildDate != "" {
-		version = fmt.Sprintf("%s (%s)", version, buildDate)
-	}
-
-	return fmt.Sprintf("kli version %s\n", version)
 }

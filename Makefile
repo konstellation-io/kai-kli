@@ -17,4 +17,5 @@ gotest: ## Run integration and unit tests
 
 .PHONY: generate
 generate: ## Generate and install a new version of kli
-	./scripts/generate_release.sh && sudo mv dist/kli /usr/bin/kli
+	./scripts/generate_release.sh 1.0.0 && sudo mv dist/kli /usr/bin/kli
+

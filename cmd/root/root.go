@@ -1,6 +1,9 @@
 package root
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/konstellation-io/kli/authserver"
 	"github.com/konstellation-io/kli/cmd/storage"
 	"github.com/spf13/cobra"
@@ -80,7 +83,7 @@ func NewRootCmd(
 	cmd.PersistentFlags().StringP(_outputFormatFlag, "o", "text", "Output format. One of: json|text")
 
 	// Child commands
-	cmd.AddCommand(newVersionCmd(version, buildDate))
+	cmd.AddCommand(newVersionCmd(logger, version, buildDate))
 	cmd.AddCommand(server.NewServerCmd(logger))
 	cmd.AddCommand(product.NewProductCmd(logger))
 	cmd.AddCommand(workflow.NewWorkflowCmd(logger))
@@ -138,8 +141,14 @@ func setOutputFormat(cmd *cobra.Command, logger logging.Interface) error {
 		return err
 	}
 
+	of = strings.ToLower(of)
+
+	if of != "json" && of != "text" {
+		return fmt.Errorf("invalid output format: %s", of)
+	}
+
 	viper.Set(config.OutputFormatKey, of)
 	logger.SetOutputFormat(of)
 
-	return err
+	return nil
 }

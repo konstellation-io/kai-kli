@@ -10,4 +10,5 @@ type Interface interface {
 	Debug(msg string)
 	SetDebugLevel()
 	SetOutputFormat(of string)
+	IsJSONOutputFormat() bool
 }
