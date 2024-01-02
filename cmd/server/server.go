@@ -21,6 +21,7 @@ func NewServerCmd(logger logging.Interface) *cobra.Command {
 			$ kli server login-cli <server_name> --username <username> --password <password> ` +
 			`--client-id <client-id> --client-secret <client-secret>
 			$ kli server logout <server_name>
+			$ kli server get-token my-server
 		`),
 	}
 

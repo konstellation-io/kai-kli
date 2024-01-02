@@ -11,11 +11,11 @@ import (
 // NewListCmd creates a new command to list the existing workflows for the given product.
 func NewListCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "list [--product-id <product_id>] [--server <server_name>]",
+		Use:     "list [--product-id <product_id>]",
 		Aliases: []string{"ls"},
 		Args:    cobra.ExactArgs(0),
-		Short:   "List all the workflows for the given product on the given server",
-		Example: "$ kli ls [--product_id <product_id>] [--server <server_name>]",
+		Short:   "List all the workflows for the given product",
+		Example: "$ kli workflow ls [--product <product_id>]",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			productID, err := cmd.Flags().GetString(_productIDFlag)
 			if err != nil {
