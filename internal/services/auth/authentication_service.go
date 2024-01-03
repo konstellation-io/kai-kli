@@ -223,6 +223,9 @@ func (a *AuthenticationService) Logout(serverName string) error {
 
 	server.Realm = ""
 	server.ClientID = ""
+	server.ClientSecret = ""
+	server.Username = ""
+	server.Password = ""
 	server.Token = nil
 
 	err = kaiConfig.UpdateServer(server)
@@ -271,6 +274,7 @@ func (a *AuthenticationService) logoutRequest(server *configuration.Server) erro
 
 	data := url.Values{}
 	data.Set("client_id", server.ClientID)
+	data.Set("client_secret", server.ClientSecret)
 	data.Add("refresh_token", server.Token.RefreshToken)
 
 	// Make the HTTP POST request
