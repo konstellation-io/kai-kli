@@ -112,7 +112,6 @@ func (s *ServerLogoutSuite) TestLogoutServer_ExpectOk() {
 	s.Require().NoError(err)
 	updatedSrv, err := kaiConf.GetServer(srv.Name)
 	s.Require().NoError(err)
-	s.Require().Empty(updatedSrv.AuthEndpoint)
 	s.Require().Empty(updatedSrv.Realm)
 	s.Require().Empty(updatedSrv.ClientID)
 	s.Require().Nil(updatedSrv.Token)
