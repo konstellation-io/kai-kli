@@ -19,6 +19,7 @@ func (c *processRegistryClient) List(
 					uploadDate
 					owner
 					status
+					isPublic
 			}
 		}
 		`

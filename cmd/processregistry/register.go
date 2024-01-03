@@ -23,6 +23,7 @@ const (
 	_productIDFlag  = "product"
 	_serverFlag     = "server"
 	_versionFlag    = "version"
+	_publicFlag     = "public"
 )
 
 // NewRegisterCmd creates a new command to register a new process in the given server.
@@ -59,6 +60,11 @@ func NewRegisterCmd(logger logging.Interface) *cobra.Command {
 				return err
 			}
 
+			isPublic, err := cmd.Flags().GetBool(_publicFlag)
+			if err != nil {
+				return err
+			}
+
 			if !strings.HasSuffix(dockerFile, "Dockerfile") {
 				return ErrDockerfileNotFound
 			}
@@ -82,6 +88,7 @@ func NewRegisterCmd(logger logging.Interface) *cobra.Command {
 					SourcesPath: sourcesPath,
 					Dockerfile:  dockerFile,
 					Version:     version,
+					IsPublic:    isPublic,
 				})
 			if err != nil {
 				return err
@@ -94,12 +101,12 @@ func NewRegisterCmd(logger logging.Interface) *cobra.Command {
 	cmd.Flags().String(_sourcesFlag, "", "Path to the source code of the process.")
 	cmd.Flags().String(_dockerfileFlag, "", "Path to the Dockerfile of the process.")
 	cmd.Flags().String(_productIDFlag, "", "The product ID to register the process.")
-	cmd.Flags().String(_versionFlag, "s", "The version with which register the process.")
+	cmd.Flags().String(_versionFlag, "", "The version with which register the process.")
+	cmd.Flags().Bool(_publicFlag, false, "Register public version if true.")
 
 	cmd.MarkFlagRequired(_sourcesFlag)    //nolint:errcheck
 	cmd.MarkFlagRequired(_dockerfileFlag) //nolint:errcheck
 	cmd.MarkFlagRequired(_versionFlag)    //nolint:errcheck
-	cmd.MarkFlagRequired(_productIDFlag)  //nolint:errcheck
 
 	return cmd
 }

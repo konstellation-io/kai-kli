@@ -11,4 +11,5 @@ type RegisteredProcess struct {
 	UploadDate time.Time `json:"uploadDate"`
 	Owner      string    `json:"owner"`
 	Status     string    `json:"status"`
+	IsPublic   bool      `json:"isPublic"`
 }
