@@ -21,7 +21,7 @@ const (
 // NewLoginCLICmd creates a new command to log in to an existing server.
 func NewLoginCLICmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
-		Use: `login-cli <server_name> --realm <realm> --username <username> --password <password> --client-id <client-id>` +
+		Use: `login-cli <server_name> --realm <realm> --username <username> --password <password> --client-id <client-id> ` +
 			`--client-secret <client-secret>`,
 		Args:  cobra.ExactArgs(1),
 		Short: "login to an existing server",

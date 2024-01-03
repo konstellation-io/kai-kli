@@ -221,7 +221,6 @@ func (a *AuthenticationService) Logout(serverName string) error {
 		}
 	}
 
-	server.AuthEndpoint = ""
 	server.Realm = ""
 	server.ClientID = ""
 	server.Token = nil
