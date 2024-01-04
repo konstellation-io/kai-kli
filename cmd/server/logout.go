@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/konstellation-io/kli/authserver"
 	"github.com/konstellation-io/kli/internal/render"
 	"github.com/spf13/cobra"
 
@@ -36,7 +37,7 @@ func NewLogoutCmd(logger logging.Interface) *cobra.Command {
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
 
-			err = server.NewHandler(logger, r).Logout(srv.Name)
+			err = server.NewHandler(logger, r, authserver.NewDefaultAuthServer(logger)).Logout(srv.Name)
 			if err != nil {
 				return err
 			}

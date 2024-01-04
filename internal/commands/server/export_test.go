@@ -9,7 +9,7 @@ import (
 )
 
 func NewTestHandler(logger logging.Interface, renderer render.Renderer,
-	authServer authserver.AuthServerInterface) *Handler {
+	authServer authserver.Authenticator) *Handler {
 	return &Handler{
 		logger:         logger,
 		renderer:       renderer,

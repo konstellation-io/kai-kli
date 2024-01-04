@@ -29,7 +29,7 @@ var (
 
 type AuthenticationService struct {
 	logger        logging.Interface
-	authServer    authserver.AuthServerInterface
+	authServer    authserver.Authenticator
 	configService *configuration.KaiConfigService
 }
 
@@ -41,7 +41,7 @@ type TokenResponse struct {
 	TokenType        string `json:"token_type"`
 }
 
-func NewAuthentication(logger logging.Interface, authServer authserver.AuthServerInterface) *AuthenticationService {
+func NewAuthentication(logger logging.Interface, authServer authserver.Authenticator) *AuthenticationService {
 	return &AuthenticationService{
 		logger:        logger,
 		authServer:    authServer,
@@ -152,6 +152,57 @@ func (a *AuthenticationService) Login(serverName, realm, clientID string) (*conf
 	return server.Token, nil
 }
 
+func (a *AuthenticationService) LoginCLI(serverName, realm, clientID, clientSecret, username,
+	password string) (*configuration.Token, error) {
+	kaiConfig, err := a.configService.GetConfiguration()
+	if err != nil {
+		return nil, err
+	}
+
+	server, err := kaiConfig.GetServer(serverName)
+	if err != nil {
+		return nil, err
+	}
+
+	// Add credentials to the server
+	server.Realm = realm
+	server.ClientID = clientID
+	server.ClientSecret = clientSecret
+	server.Username = username
+	server.Password = password
+
+	// If the credentials are empty, return an error
+	if !a.areCredentialsValid(server) {
+		return nil, ErrInvalidCredentials
+	}
+
+	tokenResponse, err := a.loginRequest(server)
+	if err != nil {
+		return nil, err
+	}
+
+	server.Token = &configuration.Token{
+		Date:             time.Now().UTC(),
+		AccessToken:      tokenResponse.AccessToken,
+		ExpiresIn:        tokenResponse.ExpiresIn,
+		RefreshExpiresIn: tokenResponse.RefreshExpiresIn,
+		RefreshToken:     tokenResponse.RefreshToken,
+		TokenType:        tokenResponse.TokenType,
+	}
+
+	err = kaiConfig.UpdateServer(server)
+	if err != nil {
+		return nil, err
+	}
+
+	err = a.configService.WriteConfiguration(kaiConfig)
+	if err != nil {
+		return nil, err
+	}
+
+	return server.Token, nil
+}
+
 func (a *AuthenticationService) Logout(serverName string) error {
 	kaiConfig, err := a.configService.GetConfiguration()
 	if err != nil {
@@ -170,9 +221,11 @@ func (a *AuthenticationService) Logout(serverName string) error {
 		}
 	}
 
-	server.AuthEndpoint = ""
 	server.Realm = ""
 	server.ClientID = ""
+	server.ClientSecret = ""
+	server.Username = ""
+	server.Password = ""
 	server.Token = nil
 
 	err = kaiConfig.UpdateServer(server)
@@ -186,11 +239,14 @@ func (a *AuthenticationService) Logout(serverName string) error {
 func (a *AuthenticationService) loginRequest(server *configuration.Server) (*TokenResponse, error) {
 	a.logger.Info("Logging in...")
 
-	authResponse, err := a.authServer.StartServer(
-		authserver.KeycloakConfig{
-			KeycloakURL: server.AuthEndpoint,
-			Realm:       server.Realm,
-			ClientID:    server.ClientID,
+	authResponse, err := a.authServer.Login(
+		&authserver.KeycloakConfig{
+			KeycloakURL:  server.AuthEndpoint,
+			Realm:        server.Realm,
+			ClientID:     server.ClientID,
+			Username:     server.Username,
+			Password:     server.Password,
+			ClientSecret: server.ClientSecret,
 		},
 	)
 	if err != nil {
@@ -218,6 +274,7 @@ func (a *AuthenticationService) logoutRequest(server *configuration.Server) erro
 
 	data := url.Values{}
 	data.Set("client_id", server.ClientID)
+	data.Set("client_secret", server.ClientSecret)
 	data.Add("refresh_token", server.Token.RefreshToken)
 
 	// Make the HTTP POST request

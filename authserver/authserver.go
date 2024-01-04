@@ -22,26 +22,26 @@ const (
 //go:embed static/success.html
 var successPage string
 
-//go:generate mockgen -source=${GOFILE} -destination=../mocks/auth_server.go -package=mocks AuthServer
-type AuthServerInterface interface { //nolint:revive
-	StartServer(config KeycloakConfig) (*AuthResponse, error)
+//go:generate mockgen -source=${GOFILE} -destination=../mocks/authenticator.go -package=mocks Authenticator
+type Authenticator interface {
+	Login(config *KeycloakConfig) (*AuthResponse, error)
 }
 
-type AuthServer struct {
+type BrowserAuthenticator struct {
 	config   EmbeddedServerConfig
 	closeApp sync.WaitGroup
 	logger   logging.Interface
 	response *AuthResponse
 }
 
-func NewDefaultAuthServer(logger logging.Interface) *AuthServer {
+func NewDefaultAuthServer(logger logging.Interface) *BrowserAuthenticator {
 	return NewAuthServer(logger, EmbeddedServerConfig{
 		Port:         _defaultRandomPort,
 		CallbackPath: _defaultCallbackPath,
 	})
 }
 
-func NewAuthServer(logger logging.Interface, config EmbeddedServerConfig) *AuthServer {
+func NewAuthServer(logger logging.Interface, config EmbeddedServerConfig) *BrowserAuthenticator {
 	if config.Port <= 0 {
 		port, err := freeport.GetFreePort()
 		if err != nil {
@@ -53,7 +53,7 @@ func NewAuthServer(logger logging.Interface, config EmbeddedServerConfig) *AuthS
 		config.Port = uint32(port)
 	}
 
-	return &AuthServer{
+	return &BrowserAuthenticator{
 		logger:   logger,
 		config:   config,
 		closeApp: sync.WaitGroup{},
@@ -61,9 +61,12 @@ func NewAuthServer(logger logging.Interface, config EmbeddedServerConfig) *AuthS
 }
 
 type KeycloakConfig struct {
-	KeycloakURL string
-	Realm       string
-	ClientID    string
+	KeycloakURL  string
+	Realm        string
+	ClientID     string
+	ClientSecret string
+	Username     string
+	Password     string
 }
 
 type EmbeddedServerConfig struct {
@@ -79,13 +82,13 @@ type AuthResponse struct {
 	TokenType        string `json:"token_type"`
 }
 
-func (as *AuthServer) getCallbackURL() string {
+func (as *BrowserAuthenticator) getCallbackURL() string {
 	return fmt.Sprintf("http://localhost:%v/%v",
 		as.config.Port,
 		as.config.CallbackPath)
 }
 
-func (as *AuthServer) StartServer(config KeycloakConfig) (*AuthResponse, error) {
+func (as *BrowserAuthenticator) Login(config *KeycloakConfig) (*AuthResponse, error) {
 	serverAddress := fmt.Sprintf("localhost:%v", as.config.Port)
 
 	as.logger.Debug(fmt.Sprintf("Booting up the server at: %s", serverAddress))
@@ -148,7 +151,7 @@ func (as *AuthServer) StartServer(config KeycloakConfig) (*AuthResponse, error) 
 	return nil, fmt.Errorf("unable to get access token")
 }
 
-func (as *AuthServer) tokenExchangeRequest(code string, config KeycloakConfig) (*AuthResponse, error) {
+func (as *BrowserAuthenticator) tokenExchangeRequest(code string, config *KeycloakConfig) (*AuthResponse, error) {
 	request, err := as.buildTokenExchangeRequest(code, config)
 	if err != nil {
 		return nil, fmt.Errorf("unable to exchange code for token: %v", err)
