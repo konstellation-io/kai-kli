@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 
+	"github.com/konstellation-io/kli/authserver"
 	"github.com/konstellation-io/kli/internal/render"
 	"github.com/spf13/cobra"
 
@@ -41,7 +42,7 @@ func NewAddCmd(logger logging.Interface) *cobra.Command {
 			}
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
-			err = server.NewHandler(logger, r).AddNewServer(newServer, setDefault)
+			err = server.NewHandler(logger, r, authserver.NewDefaultAuthServer(logger)).AddNewServer(newServer, setDefault)
 			if err != nil {
 				return err
 			}

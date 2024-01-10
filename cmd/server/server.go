@@ -17,8 +17,11 @@ func NewServerCmd(logger logging.Interface) *cobra.Command {
 			$ kli server add <server_name> <server_url>
 			$ kli server remove <server_name>
 			$ kli server default <server_name>
-			$ kli server login <server_name> <username> <password>
+			$ kli server login <server_name>
+			$ kli server login-cli <server_name> --username <username> --password <password> ` +
+			`--client-id <client-id> --client-secret <client-secret>
 			$ kli server logout <server_name>
+			$ kli server get-token my-server
 		`),
 	}
 
@@ -28,6 +31,7 @@ func NewServerCmd(logger logging.Interface) *cobra.Command {
 		NewAddCmd(logger),
 		NewRemoveCmd(logger),
 		NewLoginCmd(logger),
+		NewLoginCLICmd(logger),
 		NewLogoutCmd(logger),
 		NewGetTokenCmd(logger),
 	)

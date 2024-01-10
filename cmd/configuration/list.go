@@ -16,7 +16,7 @@ func NewListCmd(logger logging.Interface) *cobra.Command {
 		Args:    cobra.ExactArgs(0),
 		Short:   "List the existing configuration from the given scope",
 		Example: `
-    $ kli config list [opts...]
+    $ kli config ls [opts...]
 		`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			productID, err := cmd.Flags().GetString(_productIDFlag)

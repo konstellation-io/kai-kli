@@ -65,3 +65,18 @@ func (mr *MockAPIClientMockRecorder) Register(server, processFile, productID, pr
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Register", reflect.TypeOf((*MockAPIClient)(nil).Register), server, processFile, productID, processID, processType, version)
 }
+
+// RegisterPublic mocks base method.
+func (m *MockAPIClient) RegisterPublic(server *configuration.Server, processFile *os.File, processID, processType, version string) (*entity.RegisteredProcess, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RegisterPublic", server, processFile, processID, processType, version)
+	ret0, _ := ret[0].(*entity.RegisteredProcess)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RegisterPublic indicates an expected call of RegisterPublic.
+func (mr *MockAPIClientMockRecorder) RegisterPublic(server, processFile, processID, processType, version interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterPublic", reflect.TypeOf((*MockAPIClient)(nil).RegisterPublic), server, processFile, processID, processType, version)
+}

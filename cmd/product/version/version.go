@@ -18,6 +18,12 @@ func NewVersionCmd(logger logging.Interface) *cobra.Command {
 		Example: heredoc.Doc(`
 			$ kli product versions ls <product_name> [opts...]
 			$ kli product version get <product_name> <version_tag> [opts...]
+			$ kli product version publish <product_id> <version_tag> <comment> [opts...]
+			$ kli product version unpublish <product_id> <version_tag> <comment> [opts...]
+			$ kli product version start <product_id> <version_tag> <comment> [opts...]
+			$ kli product version stop <product_id> <version_tag> <comment> [opts...]
+			$ kli product version logs <product_id> <version_tag> --from <from_timestamp> --to <to_timestamp> [opts...]
+			$ kli product version push <krt_file> [opts...]
 		`),
 	}
 
