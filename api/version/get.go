@@ -5,20 +5,76 @@ import (
 	"github.com/konstellation-io/kli/internal/services/configuration"
 )
 
-func (c *Client) Get(server *configuration.Server, productID, versionTag string) (*entity.Version, error) {
+// Get returns a version of a product given its tag.
+func (c *Client) Get(server *configuration.Server, productID string, versionTag *string) (*entity.Version, error) {
 	query := `
-		query Version($productID: ID!, $tag: String!) {
+		query Version($productID: ID!, $tag: String) {
 			version(productID: $productID, tag: $tag) {
-					tag
-					creationDate
-					status
-					error
+				tag
+        description
+        creationDate
+        creationAuthor
+        publicationDate
+        publicationAuthor
+        status
+        error
+        config {
+					key
+					value
+        }
+        workflows {
+					name
+					type
+					config {
+							key
+							value
+					}
+					processes {
+						name
+						type
+						image
+						replicas
+						gpu
+						subscriptions
+						status
+						config {
+							key
+							value
+						}
+						objectStore {
+							name
+							scope
+						}
+						secrets {
+							key
+							value
+						}
+						networking {
+							targetPort
+							destinationPort
+							protocol
+						}
+						resourceLimits {
+							cpu {
+								request
+								limit
+							}
+							memory {
+								request
+								limit
+							}
+						}
+					}
+        }
 			}
 		}
 		`
 	vars := map[string]interface{}{
 		"productID": productID,
-		"tag":       versionTag,
+	}
+
+	if versionTag != nil {
+		vars["tag"] = *versionTag
 	}
 
 	var respData struct {

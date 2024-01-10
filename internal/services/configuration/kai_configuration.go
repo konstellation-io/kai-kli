@@ -17,6 +17,9 @@ type Server struct {
 	StorageEndpoint string `yaml:"storageEndpoint"`
 	Realm           string `yaml:"realm"`
 	ClientID        string `yaml:"clientId"`
+	ClientSecret    string `yaml:"clientSecret"`
+	Username        string `yaml:"username"`
+	Password        string `yaml:"password"`
 	Token           *Token `yaml:"token"`
 	IsDefault       bool   `yaml:"default"`
 }

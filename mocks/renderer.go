@@ -37,6 +37,18 @@ func (m *MockRenderer) EXPECT() *MockRendererMockRecorder {
 	return m.recorder
 }
 
+// RenderCallout mocks base method.
+func (m *MockRenderer) RenderCallout(v *entity.Version) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderCallout", v)
+}
+
+// RenderCallout indicates an expected call of RenderCallout.
+func (mr *MockRendererMockRecorder) RenderCallout(v interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderCallout", reflect.TypeOf((*MockRenderer)(nil).RenderCallout), v)
+}
+
 // RenderConfiguration mocks base method.
 func (m *MockRenderer) RenderConfiguration(scope string, config map[string]string) {
 	m.ctrl.T.Helper()
@@ -47,6 +59,18 @@ func (m *MockRenderer) RenderConfiguration(scope string, config map[string]strin
 func (mr *MockRendererMockRecorder) RenderConfiguration(scope, config interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderConfiguration", reflect.TypeOf((*MockRenderer)(nil).RenderConfiguration), scope, config)
+}
+
+// RenderKliVersion mocks base method.
+func (m *MockRenderer) RenderKliVersion(version, buildDate string) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderKliVersion", version, buildDate)
+}
+
+// RenderKliVersion indicates an expected call of RenderKliVersion.
+func (mr *MockRendererMockRecorder) RenderKliVersion(version, buildDate interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderKliVersion", reflect.TypeOf((*MockRenderer)(nil).RenderKliVersion), version, buildDate)
 }
 
 // RenderLogs mocks base method.
@@ -61,6 +85,18 @@ func (mr *MockRendererMockRecorder) RenderLogs(productID, logs, outFormat, showA
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderLogs", reflect.TypeOf((*MockRenderer)(nil).RenderLogs), productID, logs, outFormat, showAllLabels)
 }
 
+// RenderProcessRegistered mocks base method.
+func (m *MockRenderer) RenderProcessRegistered(process *entity.RegisteredProcess) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderProcessRegistered", process)
+}
+
+// RenderProcessRegistered indicates an expected call of RenderProcessRegistered.
+func (mr *MockRendererMockRecorder) RenderProcessRegistered(process interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderProcessRegistered", reflect.TypeOf((*MockRenderer)(nil).RenderProcessRegistered), process)
+}
+
 // RenderProcesses mocks base method.
 func (m *MockRenderer) RenderProcesses(processes []krt.Process) {
 	m.ctrl.T.Helper()
@@ -71,6 +107,30 @@ func (m *MockRenderer) RenderProcesses(processes []krt.Process) {
 func (mr *MockRendererMockRecorder) RenderProcesses(processes interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderProcesses", reflect.TypeOf((*MockRenderer)(nil).RenderProcesses), processes)
+}
+
+// RenderProductBinded mocks base method.
+func (m *MockRenderer) RenderProductBinded(product *kai.Product) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderProductBinded", product)
+}
+
+// RenderProductBinded indicates an expected call of RenderProductBinded.
+func (mr *MockRendererMockRecorder) RenderProductBinded(product interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderProductBinded", reflect.TypeOf((*MockRenderer)(nil).RenderProductBinded), product)
+}
+
+// RenderProductCreated mocks base method.
+func (m *MockRenderer) RenderProductCreated(product string, server *configuration.Server, initLocal bool) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderProductCreated", product, server, initLocal)
+}
+
+// RenderProductCreated indicates an expected call of RenderProductCreated.
+func (mr *MockRendererMockRecorder) RenderProductCreated(product, server, initLocal interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderProductCreated", reflect.TypeOf((*MockRenderer)(nil).RenderProductCreated), product, server, initLocal)
 }
 
 // RenderProducts mocks base method.

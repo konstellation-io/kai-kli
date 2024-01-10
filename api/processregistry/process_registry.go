@@ -13,6 +13,8 @@ import (
 type APIClient interface {
 	Register(server *configuration.Server, processFile *os.File, productID,
 		processID, processType, version string) (*entity.RegisteredProcess, error)
+	RegisterPublic(server *configuration.Server, processFile *os.File, processID, processType,
+		version string) (*entity.RegisteredProcess, error)
 	List(server *configuration.Server, productID, processType string) ([]*entity.RegisteredProcess, error)
 }
 

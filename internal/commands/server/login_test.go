@@ -21,11 +21,11 @@ import (
 type ServerLoginSuite struct {
 	suite.Suite
 
-	renderer   *mocks.MockRenderer
-	manager    *server.Handler
-	logger     logging.Interface
-	tmpDir     string
-	authServer *mocks.MockAuthServerInterface
+	renderer      *mocks.MockRenderer
+	manager       *server.Handler
+	logger        logging.Interface
+	tmpDir        string
+	authenticator *mocks.MockAuthenticator
 }
 
 func TestServerLoginSuite(t *testing.T) {
@@ -40,8 +40,8 @@ func (s *ServerLoginSuite) SetupSuite() {
 
 	s.logger = logger
 	s.renderer = renderer
-	s.authServer = mocks.NewMockAuthServerInterface(ctrl)
-	s.manager = server.NewTestHandler(logger, renderer, s.authServer)
+	s.authenticator = mocks.NewMockAuthenticator(ctrl)
+	s.manager = server.NewTestHandler(logger, renderer, s.authenticator)
 
 	tmpDir, err := os.MkdirTemp("", "TestServerLogin_*")
 	s.Require().NoError(err)
@@ -94,7 +94,7 @@ func (s *ServerLoginSuite) TestLoginServer_ExpectToken() {
 	err = kaiConfService.WriteConfiguration(kaiConf)
 	s.Require().NoError(err)
 
-	s.authServer.EXPECT().StartServer(gomock.Any()).Return(&authserver.AuthResponse{
+	s.authenticator.EXPECT().Login(gomock.Any()).Return(&authserver.AuthResponse{
 		AccessToken:      "access token",
 		ExpiresIn:        300,
 		RefreshExpiresIn: 5000,
@@ -143,7 +143,7 @@ func (s *ServerLoginSuite) TestLoginServer_ExpectError() {
 	err = kaiConfService.WriteConfiguration(kaiConf)
 	s.Require().NoError(err)
 
-	s.authServer.EXPECT().StartServer(gomock.Any()).Return(nil, errors.New("error getting token"))
+	s.authenticator.EXPECT().Login(gomock.Any()).Return(nil, errors.New("error getting token"))
 
 	// WHEN
 	token, err := s.manager.Login(srv.Name, srv.Realm, srv.ClientID)

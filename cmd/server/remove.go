@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 
+	"github.com/konstellation-io/kli/authserver"
 	"github.com/konstellation-io/kli/internal/render"
 	"github.com/spf13/cobra"
 
@@ -25,7 +26,7 @@ func NewRemoveCmd(logger logging.Interface) *cobra.Command {
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
 
-			err := server.NewHandler(logger, r).RemoveServer(serverName)
+			err := server.NewHandler(logger, r, authserver.NewDefaultAuthServer(logger)).RemoveServer(serverName)
 			if err != nil {
 				return err
 			}

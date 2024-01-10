@@ -11,6 +11,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/konstellation-io/kli/internal/entity"
+	"github.com/konstellation-io/kli/internal/services/configuration"
 	"github.com/konstellation-io/krt/pkg/krt"
 	ignore "github.com/sabhiram/go-gitignore"
 )
@@ -20,8 +22,11 @@ const (
 )
 
 var (
-	ErrPathDoesNotExist         = errors.New("path does not exist")
-	ErrZipFileCouldNotBeCreated = errors.New("tar.gz file could not be created")
+	ErrPathDoesNotExist                 = errors.New("path does not exist")
+	ErrZipFileCouldNotBeCreated         = errors.New("tar.gz file could not be created")
+	ErrInvalidProcessType               = errors.New("invalid process type")
+	ErrMissingProduct                   = errors.New("missing product")
+	ErrIncompatibleProductAndPublicOpts = errors.New("product and public args are incompatible")
 )
 
 type RegisterProcessOpts struct {
@@ -32,11 +37,28 @@ type RegisterProcessOpts struct {
 	SourcesPath string
 	Dockerfile  string
 	Version     string
+	IsPublic    bool
+}
+
+func (o *RegisterProcessOpts) Validate() error {
+	if !o.ProcessType.IsValid() {
+		return ErrInvalidProcessType
+	}
+
+	if o.ProductID == "" && !o.IsPublic {
+		return ErrMissingProduct
+	}
+
+	if o.ProductID != "" && o.IsPublic {
+		return ErrIncompatibleProductAndPublicOpts
+	}
+
+	return nil
 }
 
 func (c *Handler) RegisterProcess(opts *RegisterProcessOpts) error {
-	if !opts.ProcessType.IsValid() {
-		return fmt.Errorf("invalid process type: %q", opts.ProcessType)
+	if err := opts.Validate(); err != nil {
+		return fmt.Errorf("validating args: %w", err)
 	}
 
 	kaiConfig, err := c.configService.GetConfiguration()
@@ -68,15 +90,24 @@ func (c *Handler) RegisterProcess(opts *RegisterProcessOpts) error {
 
 	defer tmpZipFile.Close()
 
-	registeredProcess, err := c.processRegistryClient.
-		Register(srv, tmpZipFile, opts.ProductID, opts.ProcessID, string(opts.ProcessType), opts.Version)
+	registeredProcess, err := c.registerProcess(srv, tmpZipFile, opts)
 	if err != nil {
 		return err
 	}
 
-	c.logger.Success(fmt.Sprintf("Creating process with id %q", registeredProcess.ID))
+	c.renderer.RenderProcessRegistered(registeredProcess)
 
 	return nil
+}
+
+func (c *Handler) registerProcess(srv *configuration.Server, tmpZipFile *os.File,
+	opts *RegisterProcessOpts) (*entity.RegisteredProcess, error) {
+	if opts.IsPublic {
+		return c.processRegistryClient.RegisterPublic(srv, tmpZipFile, opts.ProcessID, string(opts.ProcessType), opts.Version)
+	}
+
+	return c.processRegistryClient.
+		Register(srv, tmpZipFile, opts.ProductID, opts.ProcessID, string(opts.ProcessType), opts.Version)
 }
 
 func (c *Handler) createTempTarGzFile(patternsToIgnore ignore.IgnoreParser, paths ...string) (*os.File, error) {

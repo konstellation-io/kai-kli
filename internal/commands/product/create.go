@@ -38,14 +38,18 @@ func (h *Handler) CreateProduct(opts *CreateProductOpts) error {
 		return fmt.Errorf("creating remote product: %w", err)
 	}
 
-	h.logger.Success(fmt.Sprintf("Product %s successfully created in the server %s", opts.ProductName, server.Name))
+	if h.logger.IsJSONOutputFormat() {
+		h.renderer.RenderProductCreated(opts.ProductName, server, opts.InitLocal)
+	} else {
+		h.logger.Success(fmt.Sprintf("Product %s successfully created in the server %s", opts.ProductName, server.Name))
 
-	if opts.InitLocal {
-		if err := h.createLocalProductConfiguration(opts); err != nil {
-			return fmt.Errorf("creating local product's configuration: %w", err)
+		if opts.InitLocal {
+			if err := h.createLocalProductConfiguration(opts); err != nil {
+				return fmt.Errorf("creating local product's configuration: %w", err)
+			}
+
+			h.logger.Success(fmt.Sprintf("Product %q local configuration created.", opts.ProductName))
 		}
-
-		h.logger.Success(fmt.Sprintf("Product %q local configuration created.", opts.ProductName))
 	}
 
 	return nil

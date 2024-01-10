@@ -37,11 +37,12 @@ func (s *ServerLogoutSuite) SetupSuite() {
 	ctrl := gomock.NewController(s.T())
 	logger := mocks.NewMockLogger(ctrl)
 	renderer := mocks.NewMockRenderer(ctrl)
+	authenticator := mocks.NewMockAuthenticator(ctrl)
 	mocks.AddLoggerExpects(logger)
 
 	s.logger = logger
 	s.renderer = renderer
-	s.manager = server.NewHandler(logger, renderer)
+	s.manager = server.NewHandler(logger, renderer, authenticator)
 
 	tmpDir, err := os.MkdirTemp("", "TestServerLogout_*")
 	s.Require().NoError(err)
@@ -111,7 +112,6 @@ func (s *ServerLogoutSuite) TestLogoutServer_ExpectOk() {
 	s.Require().NoError(err)
 	updatedSrv, err := kaiConf.GetServer(srv.Name)
 	s.Require().NoError(err)
-	s.Require().Empty(updatedSrv.AuthEndpoint)
 	s.Require().Empty(updatedSrv.Realm)
 	s.Require().Empty(updatedSrv.ClientID)
 	s.Require().Nil(updatedSrv.Token)

@@ -1,6 +1,7 @@
 package server
 
 import (
+	"github.com/konstellation-io/kli/authserver"
 	"github.com/konstellation-io/kli/internal/render"
 	"github.com/spf13/cobra"
 
@@ -16,7 +17,7 @@ func NewListCmd(logger logging.Interface) *cobra.Command {
 		Short:   "List all available servers",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
-			return server.NewHandler(logger, r).ListServers()
+			return server.NewHandler(logger, r, authserver.NewDefaultAuthServer(logger)).ListServers()
 		},
 	}
 

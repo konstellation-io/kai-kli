@@ -69,6 +69,20 @@ func (mr *MockLoggerMockRecorder) Info(msg interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Info", reflect.TypeOf((*MockLogger)(nil).Info), msg)
 }
 
+// IsJSONOutputFormat mocks base method.
+func (m *MockLogger) IsJSONOutputFormat() bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IsJSONOutputFormat")
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// IsJSONOutputFormat indicates an expected call of IsJSONOutputFormat.
+func (mr *MockLoggerMockRecorder) IsJSONOutputFormat() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsJSONOutputFormat", reflect.TypeOf((*MockLogger)(nil).IsJSONOutputFormat))
+}
+
 // SetDebugLevel mocks base method.
 func (m *MockLogger) SetDebugLevel() {
 	m.ctrl.T.Helper()
@@ -79,6 +93,18 @@ func (m *MockLogger) SetDebugLevel() {
 func (mr *MockLoggerMockRecorder) SetDebugLevel() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetDebugLevel", reflect.TypeOf((*MockLogger)(nil).SetDebugLevel))
+}
+
+// SetOutputFormat mocks base method.
+func (m *MockLogger) SetOutputFormat(of string) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "SetOutputFormat", of)
+}
+
+// SetOutputFormat indicates an expected call of SetOutputFormat.
+func (mr *MockLoggerMockRecorder) SetOutputFormat(of interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetOutputFormat", reflect.TypeOf((*MockLogger)(nil).SetOutputFormat), of)
 }
 
 // Success mocks base method.
