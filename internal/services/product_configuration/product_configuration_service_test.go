@@ -1,3 +1,5 @@
+//go:build unit
+
 package productconfiguration_test
 
 import (

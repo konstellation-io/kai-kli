@@ -41,16 +41,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Test
+      - name: Run unit tests
         run: |
-          go test -coverprofile="${{ matrix.platform }}_coverage.out" -covermode=atomic -coverpkg=./... ./...
-          go tool cover -func="${{ matrix.platform }}_coverage.out"
+          go test -coverprofile="coverage-unit-${{ matrix.platform }}.out" -covermode=atomic -coverpkg=./... ./... --tags=unit
+          go tool cover -func="coverage-unit-${{ matrix.platform }}.out"
 
-      - name: Upload coverage report
+      - name: Run integration tests
+        run: |
+          go test -coverprofile="coverage-integration-${{ matrix.platform }}.out" -covermode=atomic -coverpkg=./... ./... --tags=integration
+          go tool cover -func="coverage-integration-${{ matrix.platform }}.out"
+
+      - name: Upload unit coverage report
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ matrix.platform }}_coverage
-          path: ${{ matrix.platform }}_coverage.out
+          name: coverage-unit-${{ matrix.platform }}
+          path: coverage-unit-${{ matrix.platform }}.out
+
+      - name: Upload integration coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-integration-${{ matrix.platform }}
+          path: coverage-integration-${{ matrix.platform }}.out
 
   coverage:
     runs-on: ubuntu-latest
@@ -65,10 +76,15 @@ jobs:
         uses: actions/checkout@v3
       - run: git fetch --prune --unshallow
 
-      - name: Download coverage report
+      - name: Download unit coverage report
         uses: actions/download-artifact@v1
         with:
-          name: ubuntu-latest_coverage
+          name: coverage-unit-ubuntu-latest
+
+      - name: Download integration coverage report
+        uses: actions/download-artifact@v1
+        with:
+          name: coverage-integration-ubuntu-latest
 
       - name: Analyze with SonarCloud
         uses: sonarsource/sonarcloud-github-action@master
