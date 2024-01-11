@@ -44,7 +44,7 @@ jobs:
       - name: Run unit tests
         run: |
           go test -coverprofile="coverage-unit-${{ matrix.platform }}.out" -covermode=atomic -coverpkg=./... ./... --tags=unit
-          go tool cover -func="$coverage-unit-${{ matrix.platform }}.out"
+          go tool cover -func="coverage-unit-${{ matrix.platform }}.out"
 
       - name: Run integration tests
         run: |
