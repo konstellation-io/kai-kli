@@ -64,7 +64,11 @@ jobs:
           path: coverage-integration-${{ matrix.platform }}.out
 
   coverage:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: [ 1.20.x ]
+        platform: [ ubuntu-latest ]
+    runs-on: ${{ matrix.platform }}
     needs: tests
     steps:
       - name: Install Go
@@ -79,12 +83,12 @@ jobs:
       - name: Download unit coverage report
         uses: actions/download-artifact@v1
         with:
-          name: coverage-unit-ubuntu-latest
+          name: coverage-unit-${{ matrix.platform }}
 
       - name: Download integration coverage report
         uses: actions/download-artifact@v1
         with:
-          name: coverage-integration-ubuntu-latest
+          name: coverage-integration-${{ matrix.platform }}
 
       - name: Analyze with SonarCloud
         uses: sonarsource/sonarcloud-github-action@master
