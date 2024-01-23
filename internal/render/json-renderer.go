@@ -163,6 +163,7 @@ func (r *CliJSONRenderer) RenderRegisteredProcesses(registeredProcesses []*entit
 					r.jsonWriter.KeyValue("Image", pr.Image)
 					r.jsonWriter.KeyValue("UploadDate", pr.UploadDate.Format(time.RFC3339))
 					r.jsonWriter.KeyValue("Owner", pr.Owner)
+					r.jsonWriter.KeyValue("Public", pr.IsPublic)
 				})
 			}
 		})
