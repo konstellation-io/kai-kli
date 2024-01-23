@@ -30,6 +30,7 @@ type VersionSuite struct {
 	renderer         *mocks.MockRenderer
 	logger           *mocks.MockLogger
 	versionClient    *mocks.MockVersionClient
+	productClient    *mocks.MockProductClient
 	handler          *version.Handler
 	kaiConfiguration *configuration.KaiConfigService
 	productConfig    *productconfiguration.ProductConfigService
@@ -47,6 +48,7 @@ func (s *VersionSuite) SetupSuite() {
 	s.logger = mocks.NewMockLogger(ctrl)
 	s.renderer = mocks.NewMockRenderer(ctrl)
 	s.versionClient = mocks.NewMockVersionClient(s.T())
+	s.productClient = mocks.NewMockProductClient(s.T())
 	s.kaiConfiguration = configuration.NewKaiConfigService(s.logger)
 
 	mocks.AddLoggerExpects(s.logger)
@@ -76,7 +78,7 @@ func (s *VersionSuite) SetupSuite() {
 	err = s.kaiConfiguration.WriteConfiguration(kaiConf)
 	s.Require().NoError(err)
 
-	s.handler = version.NewHandler(s.logger, s.renderer, s.versionClient)
+	s.handler = version.NewHandler(s.logger, s.renderer, s.versionClient, s.productClient)
 	s.krtFilePath = path.Join("testdata", productName+".yaml")
 
 	s.productConfig = productconfiguration.NewProductConfigService(s.logger)

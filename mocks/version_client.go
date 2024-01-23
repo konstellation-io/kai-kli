@@ -188,25 +188,25 @@ func (_c *MockVersionClient_Logs_Call) RunAndReturn(run func(*configuration.Serv
 	return _c
 }
 
-// Publish provides a mock function with given fields: server, productID, versionTag, comment
-func (_m *MockVersionClient) Publish(server *configuration.Server, productID string, versionTag string, comment string) ([]entity.TriggerEndpoint, error) {
-	ret := _m.Called(server, productID, versionTag, comment)
+// Publish provides a mock function with given fields: server, productID, versionTag, comment, force
+func (_m *MockVersionClient) Publish(server *configuration.Server, productID string, versionTag string, comment string, force bool) ([]entity.TriggerEndpoint, error) {
+	ret := _m.Called(server, productID, versionTag, comment, force)
 
 	var r0 []entity.TriggerEndpoint
 	var r1 error
-	if rf, ok := ret.Get(0).(func(*configuration.Server, string, string, string) ([]entity.TriggerEndpoint, error)); ok {
-		return rf(server, productID, versionTag, comment)
+	if rf, ok := ret.Get(0).(func(*configuration.Server, string, string, string, bool) ([]entity.TriggerEndpoint, error)); ok {
+		return rf(server, productID, versionTag, comment, force)
 	}
-	if rf, ok := ret.Get(0).(func(*configuration.Server, string, string, string) []entity.TriggerEndpoint); ok {
-		r0 = rf(server, productID, versionTag, comment)
+	if rf, ok := ret.Get(0).(func(*configuration.Server, string, string, string, bool) []entity.TriggerEndpoint); ok {
+		r0 = rf(server, productID, versionTag, comment, force)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]entity.TriggerEndpoint)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(*configuration.Server, string, string, string) error); ok {
-		r1 = rf(server, productID, versionTag, comment)
+	if rf, ok := ret.Get(1).(func(*configuration.Server, string, string, string, bool) error); ok {
+		r1 = rf(server, productID, versionTag, comment, force)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -224,13 +224,14 @@ type MockVersionClient_Publish_Call struct {
 //   - productID string
 //   - versionTag string
 //   - comment string
-func (_e *MockVersionClient_Expecter) Publish(server interface{}, productID interface{}, versionTag interface{}, comment interface{}) *MockVersionClient_Publish_Call {
-	return &MockVersionClient_Publish_Call{Call: _e.mock.On("Publish", server, productID, versionTag, comment)}
+//   - force bool
+func (_e *MockVersionClient_Expecter) Publish(server interface{}, productID interface{}, versionTag interface{}, comment interface{}, force interface{}) *MockVersionClient_Publish_Call {
+	return &MockVersionClient_Publish_Call{Call: _e.mock.On("Publish", server, productID, versionTag, comment, force)}
 }
 
-func (_c *MockVersionClient_Publish_Call) Run(run func(server *configuration.Server, productID string, versionTag string, comment string)) *MockVersionClient_Publish_Call {
+func (_c *MockVersionClient_Publish_Call) Run(run func(server *configuration.Server, productID string, versionTag string, comment string, force bool)) *MockVersionClient_Publish_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(*configuration.Server), args[1].(string), args[2].(string), args[3].(string))
+		run(args[0].(*configuration.Server), args[1].(string), args[2].(string), args[3].(string), args[4].(bool))
 	})
 	return _c
 }
@@ -240,7 +241,7 @@ func (_c *MockVersionClient_Publish_Call) Return(_a0 []entity.TriggerEndpoint, _
 	return _c
 }
 
-func (_c *MockVersionClient_Publish_Call) RunAndReturn(run func(*configuration.Server, string, string, string) ([]entity.TriggerEndpoint, error)) *MockVersionClient_Publish_Call {
+func (_c *MockVersionClient_Publish_Call) RunAndReturn(run func(*configuration.Server, string, string, string, bool) ([]entity.TriggerEndpoint, error)) *MockVersionClient_Publish_Call {
 	_c.Call.Return(run)
 	return _c
 }
