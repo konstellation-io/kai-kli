@@ -2,6 +2,13 @@ package entity
 
 import "time"
 
+const (
+	VersionStatusStarted   = "STARTED"
+	VersionStatusPublished = "PUBLISHED"
+	VersionStatusStopped   = "STOPPED"
+	VersionStatusCritical  = "CRITICAL"
+)
+
 type ConfigurationVariable struct {
 	Key   string
 	Value string

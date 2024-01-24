@@ -32,7 +32,7 @@ func NewGetCmd(logger logging.Interface) *cobra.Command {
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
 
-			err = version.NewHandler(logger, r, api.NewKaiClient().VersionClient()).
+			err = version.NewHandler(logger, r, api.NewKaiClient().VersionClient(), api.NewKaiClient().ProductClient()).
 				GetVersion(&version.GetVersionOpts{
 					ServerName: server,
 					ProductID:  productID,
