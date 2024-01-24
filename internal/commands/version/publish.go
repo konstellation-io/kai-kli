@@ -11,7 +11,7 @@ import (
 var (
 	ErrVersionNotStarted       = errors.New("version must be started before publish")
 	ErrVersionAlreadyPublished = errors.New("version already published")
-	ErrProductAlreadyPublished = errors.New("product has a version published, use the --force param to replace it")
+	ErrProductAlreadyPublished = errors.New("product has a published version, use the --force param to replace it")
 )
 
 type PublishOpts struct {
