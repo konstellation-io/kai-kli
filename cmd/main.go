@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	config2 "github.com/konstellation-io/kli/cmd/config"
 	"github.com/konstellation-io/kli/cmd/root"
@@ -29,5 +30,6 @@ func main() {
 
 	if err := rootCmd.Execute(); err != nil {
 		logger.Error(fmt.Sprintf("execution error: %s\n", err))
+		os.Exit(1)
 	}
 }
