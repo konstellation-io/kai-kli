@@ -367,3 +367,21 @@ func (r *CliJSONRenderer) RenderProductBinded(product *kai.Product) {
 
 	_, _ = r.ioWriter.Write([]byte("\n"))
 }
+
+func (r *CliJSONRenderer) RenderLogin(serverName string) {
+	r.jsonWriter.RootObject(func() {
+		r.jsonWriter.KeyValue("Status", "OK")
+		r.jsonWriter.KeyValue("Logged", serverName)
+	})
+
+	_, _ = r.ioWriter.Write([]byte("\n"))
+}
+
+func (r *CliJSONRenderer) RenderLogout(serverName string) {
+	r.jsonWriter.RootObject(func() {
+		r.jsonWriter.KeyValue("Status", "OK")
+		r.jsonWriter.KeyValue("LoggedOut", serverName)
+	})
+
+	_, _ = r.ioWriter.Write([]byte("\n"))
+}

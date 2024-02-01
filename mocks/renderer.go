@@ -73,6 +73,30 @@ func (mr *MockRendererMockRecorder) RenderKliVersion(version, buildDate interfac
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderKliVersion", reflect.TypeOf((*MockRenderer)(nil).RenderKliVersion), version, buildDate)
 }
 
+// RenderLogin mocks base method.
+func (m *MockRenderer) RenderLogin(serverName string) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderLogin", serverName)
+}
+
+// RenderLogin indicates an expected call of RenderLogin.
+func (mr *MockRendererMockRecorder) RenderLogin(serverName interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderLogin", reflect.TypeOf((*MockRenderer)(nil).RenderLogin), serverName)
+}
+
+// RenderLogout mocks base method.
+func (m *MockRenderer) RenderLogout(serverName string) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderLogout", serverName)
+}
+
+// RenderLogout indicates an expected call of RenderLogout.
+func (mr *MockRendererMockRecorder) RenderLogout(serverName interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderLogout", reflect.TypeOf((*MockRenderer)(nil).RenderLogout), serverName)
+}
+
 // RenderLogs mocks base method.
 func (m *MockRenderer) RenderLogs(productID string, logs []entity.Log, outFormat entity.LogOutFormat, showAllLabels bool) {
 	m.ctrl.T.Helper()

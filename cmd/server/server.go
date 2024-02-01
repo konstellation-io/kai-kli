@@ -5,6 +5,11 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/konstellation-io/kli/internal/logging"
+	"github.com/konstellation-io/kli/internal/services/configuration"
+)
+
+const (
+	_serverFlag = "server"
 )
 
 // NewServerCmd creates a new command to handle 'server' subcommands.
@@ -37,4 +42,25 @@ func NewServerCmd(logger logging.Interface) *cobra.Command {
 	)
 
 	return cmd
+}
+
+func getServerOrDefault(cmd *cobra.Command, logger logging.Interface) (*configuration.Server, error) {
+	serverName, err := cmd.Flags().GetString(_serverFlag)
+	if err != nil {
+		serverName = ""
+	}
+
+	configService := configuration.NewKaiConfigService(logger)
+
+	kaiConfig, err := configService.GetConfiguration()
+	if err != nil {
+		return nil, err
+	}
+
+	srv, err := kaiConfig.GetServerOrDefault(serverName)
+	if err != nil {
+		return nil, err
+	}
+
+	return srv, nil
 }
