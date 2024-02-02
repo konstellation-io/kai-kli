@@ -339,7 +339,7 @@ func (r *CliTextRenderer) RenderLogout(serverName string) {
 	r.logger.Success(fmt.Sprintf("Logged out from %q.", serverName))
 }
 
-func (r *CliTextRenderer) RenderPushVersion(versionTag string, product string) {
+func (r *CliTextRenderer) RenderPushVersion(versionTag, product string) {
 	r.logger.Success(fmt.Sprintf("Version with tag %q of product %q successfully created!", versionTag, product))
 }
 
