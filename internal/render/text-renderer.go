@@ -339,6 +339,10 @@ func (r *CliTextRenderer) RenderLogout(serverName string) {
 	r.logger.Success(fmt.Sprintf("Logged out from %q.", serverName))
 }
 
+func (r *CliTextRenderer) RenderPushVersion(versionTag string, product string) {
+	r.logger.Success(fmt.Sprintf("Version with tag %q of product %q successfully created!", versionTag, product))
+}
+
 func boolToText(b bool) string {
 	if b {
 		return "Yes"
