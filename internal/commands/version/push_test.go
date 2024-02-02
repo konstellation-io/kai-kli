@@ -10,6 +10,7 @@ import (
 
 func (s *VersionSuite) TestPushVersion_ExpectOK() {
 	s.versionClient.EXPECT().Push(s.server, productName, s.krtFilePath).Return(versionTag, nil).Once()
+	s.renderer.EXPECT().RenderPushVersion(versionTag, productName)
 
 	err := s.handler.PushVersion(&version.PushVersionOpts{
 		Server:      s.server.Name,
@@ -25,6 +26,7 @@ func (s *VersionSuite) TestPushVersion_UpdateVersionOnPush_ExpectOK() {
 	newDescription := "New description"
 
 	s.versionClient.EXPECT().Push(s.server, productName, s.krtFilePath).Return(newVersion, nil).Once()
+	s.renderer.EXPECT().RenderPushVersion(newVersion, productName)
 
 	err := s.handler.PushVersion(&version.PushVersionOpts{
 		Server:      s.server.Name,
