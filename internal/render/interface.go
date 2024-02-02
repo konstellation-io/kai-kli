@@ -26,4 +26,6 @@ type Renderer interface {
 	RenderProcessRegistered(process *entity.RegisteredProcess)
 	RenderProductCreated(product string, server *configuration.Server, initLocal bool)
 	RenderProductBinded(product *kai.Product)
+	RenderLogin(serverName string)
+	RenderLogout(serverName string)
 }
