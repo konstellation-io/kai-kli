@@ -134,15 +134,15 @@ func (mr *MockRendererMockRecorder) RenderProcesses(processes interface{}) *gomo
 }
 
 // RenderProductBinded mocks base method.
-func (m *MockRenderer) RenderProductBinded(product *kai.Product) {
+func (m *MockRenderer) RenderProductBinded(productID string) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "RenderProductBinded", product)
+	m.ctrl.Call(m, "RenderProductBinded", productID)
 }
 
 // RenderProductBinded indicates an expected call of RenderProductBinded.
-func (mr *MockRendererMockRecorder) RenderProductBinded(product interface{}) *gomock.Call {
+func (mr *MockRendererMockRecorder) RenderProductBinded(productID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderProductBinded", reflect.TypeOf((*MockRenderer)(nil).RenderProductBinded), product)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderProductBinded", reflect.TypeOf((*MockRenderer)(nil).RenderProductBinded), productID)
 }
 
 // RenderProductCreated mocks base method.

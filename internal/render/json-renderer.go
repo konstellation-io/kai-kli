@@ -355,14 +355,12 @@ func (r *CliJSONRenderer) RenderProductCreated(product string, server *configura
 	_, _ = r.ioWriter.Write([]byte("\n"))
 }
 
-func (r *CliJSONRenderer) RenderProductBinded(product *kai.Product) {
+func (r *CliJSONRenderer) RenderProductBinded(productID string) {
 	r.jsonWriter.RootObject(func() {
 		r.jsonWriter.KeyValue("Status", "OK")
-		r.jsonWriter.KeyValue("Message", "")
+		r.jsonWriter.KeyValue("Message", "Product successfully bound!")
 		r.jsonWriter.Object("Data", func() {
-			r.jsonWriter.KeyValue("ID", product.ID)
-			r.jsonWriter.KeyValue("Name", product.Name)
-			r.jsonWriter.KeyValue("Description", product.Description)
+			r.jsonWriter.KeyValue("ProductID", productID)
 		})
 	})
 

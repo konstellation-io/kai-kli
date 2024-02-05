@@ -54,7 +54,7 @@ func (h *Handler) Bind(opts *BindProductOpts) error {
 		return err
 	}
 
-	h.logger.Success("Product successfully bound!")
+	h.renderer.RenderProductBinded(opts.ProductID)
 
 	return nil
 }

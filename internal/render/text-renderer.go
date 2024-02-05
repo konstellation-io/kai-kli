@@ -333,8 +333,8 @@ func (r *CliTextRenderer) RenderProductCreated(_ string, _ *configuration.Server
 	// We do not need to render anything in text format.
 }
 
-func (r *CliTextRenderer) RenderProductBinded(_ *kai.Product) {
-	r.logger.Success("Product successfully bound!")
+func (r *CliTextRenderer) RenderProductBinded(productID string) {
+	r.logger.Success(fmt.Sprintf("Product %q successfully bound!", productID))
 }
 
 func (r *CliTextRenderer) RenderLogin(serverName string) {
