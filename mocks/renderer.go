@@ -205,6 +205,30 @@ func (mr *MockRendererMockRecorder) RenderServers(servers interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderServers", reflect.TypeOf((*MockRenderer)(nil).RenderServers), servers)
 }
 
+// RenderStartVersion mocks base method.
+func (m *MockRenderer) RenderStartVersion(versionTag, product string) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderStartVersion", versionTag, product)
+}
+
+// RenderStartVersion indicates an expected call of RenderStartVersion.
+func (mr *MockRendererMockRecorder) RenderStartVersion(versionTag, product interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderStartVersion", reflect.TypeOf((*MockRenderer)(nil).RenderStartVersion), versionTag, product)
+}
+
+// RenderStopVersion mocks base method.
+func (m *MockRenderer) RenderStopVersion(versionTag, product string) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderStopVersion", versionTag, product)
+}
+
+// RenderStopVersion indicates an expected call of RenderStopVersion.
+func (mr *MockRendererMockRecorder) RenderStopVersion(versionTag, product interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderStopVersion", reflect.TypeOf((*MockRenderer)(nil).RenderStopVersion), versionTag, product)
+}
+
 // RenderTriggers mocks base method.
 func (m *MockRenderer) RenderTriggers(triggers []entity.TriggerEndpoint) {
 	m.ctrl.T.Helper()

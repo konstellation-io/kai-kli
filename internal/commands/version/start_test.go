@@ -19,6 +19,7 @@ func (s *VersionSuite) TestStartVersion() {
 
 	s.versionClient.EXPECT().Get(s.server, productName, &startOpts.VersionTag).Return(&entity.Version{}, nil).Once()
 	s.versionClient.EXPECT().Start(s.server, productName, versionTag, comment).Return(versionTag, nil).Once()
+	s.renderer.EXPECT().RenderStartVersion(versionTag, productName).Return().Times(1)
 
 	err := s.handler.Start(startOpts)
 	s.Assert().NoError(err)
