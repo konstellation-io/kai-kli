@@ -28,4 +28,5 @@ type Renderer interface {
 	RenderProductBinded(product *kai.Product)
 	RenderLogin(serverName string)
 	RenderLogout(serverName string)
+	RenderPushVersion(versionTag string, product string)
 }

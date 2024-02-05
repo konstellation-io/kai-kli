@@ -169,6 +169,18 @@ func (mr *MockRendererMockRecorder) RenderProducts(products interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderProducts", reflect.TypeOf((*MockRenderer)(nil).RenderProducts), products)
 }
 
+// RenderPushVersion mocks base method.
+func (m *MockRenderer) RenderPushVersion(versionTag, product string) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderPushVersion", versionTag, product)
+}
+
+// RenderPushVersion indicates an expected call of RenderPushVersion.
+func (mr *MockRendererMockRecorder) RenderPushVersion(versionTag, product interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderPushVersion", reflect.TypeOf((*MockRenderer)(nil).RenderPushVersion), versionTag, product)
+}
+
 // RenderRegisteredProcesses mocks base method.
 func (m *MockRenderer) RenderRegisteredProcesses(registries []*entity.RegisteredProcess) {
 	m.ctrl.T.Helper()

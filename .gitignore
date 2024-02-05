@@ -10,3 +10,5 @@ testdata/.kai
 testdata/completion
 cover.out
 cover.html
+go.work
+go.work.sum

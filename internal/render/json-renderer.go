@@ -381,6 +381,19 @@ func (r *CliJSONRenderer) RenderLogout(serverName string) {
 	_, _ = r.ioWriter.Write([]byte("\n"))
 }
 
+func (r *CliJSONRenderer) RenderPushVersion(versionTag, product string) {
+	r.jsonWriter.RootObject(func() {
+		r.jsonWriter.KeyValue("Status", "OK")
+		r.jsonWriter.KeyValue("Message", "Version successfully created!")
+		r.jsonWriter.Object("Data", func() {
+			r.jsonWriter.KeyValue("VersionTag", versionTag)
+			r.jsonWriter.KeyValue("Product", product)
+		})
+	})
+
+	_, _ = r.ioWriter.Write([]byte("\n"))
+}
+
 func (r *CliJSONRenderer) renderTriggersFn(triggers []entity.TriggerEndpoint) func() {
 	return func() {
 		for _, t := range triggers {
