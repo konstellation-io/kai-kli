@@ -104,3 +104,11 @@ dockers:
     ids:
       - "go"
     dockerfile: Dockerfile
+
+# https://goreleaser.com/customization/checksum/
+checksum:
+  name_template: "{{ .ProjectName }}_{{ .Version }}_checksums.txt"
+
+# https://goreleaser.com/customization/changelog/
+changelog:
+  skip: true # This part will be handled by Nyx
