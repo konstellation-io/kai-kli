@@ -212,7 +212,7 @@ func (r *CliTextRenderer) RenderVersion(productID string, v *entity.Version) {
 
 	if v.Status == entity.VersionStatusPublished {
 		r.logger.Info("Published triggers:")
-		r.RenderTriggers(v.PublishedTriggers)
+		r.renderTriggers(v.PublishedTriggers)
 	}
 }
 
@@ -232,29 +232,6 @@ func (r *CliTextRenderer) RenderVersions(productID string, versions []*entity.Ve
 			v.Tag,
 			v.Status,
 			v.CreationDate.Format(time.RFC3339),
-		})
-	}
-
-	r.tableWriter.Render()
-}
-
-func (r *CliTextRenderer) RenderTriggers(triggers []entity.TriggerEndpoint) {
-	if len(triggers) == 0 {
-		r.logger.Info("No triggers found.")
-		return
-	}
-
-	r.tableWriter.SetHeader([]string{
-		"Name",
-		"Status",
-		"Link",
-	})
-
-	for _, trigger := range triggers {
-		r.tableWriter.Append([]string{
-			trigger.Trigger,
-			"UP",
-			trigger.URL,
 		})
 	}
 
@@ -345,16 +322,48 @@ func (r *CliTextRenderer) RenderLogout(serverName string) {
 	r.logger.Success(fmt.Sprintf("Logged out from %q.", serverName))
 }
 
-func (r *CliTextRenderer) RenderPushVersion(versionTag, product string) {
+func (r *CliTextRenderer) RenderPushVersion(product, versionTag string) {
 	r.logger.Success(fmt.Sprintf("Version with tag %q of product %q successfully created!", versionTag, product))
 }
 
-func (r *CliTextRenderer) RenderStartVersion(versionTag, product string) {
+func (r *CliTextRenderer) RenderStartVersion(product, versionTag string) {
 	r.logger.Success(fmt.Sprintf("Version with tag %q of product %q is starting!", versionTag, product))
 }
 
-func (r *CliTextRenderer) RenderStopVersion(versionTag, product string) {
+func (r *CliTextRenderer) RenderStopVersion(product, versionTag string) {
 	r.logger.Success(fmt.Sprintf("Version with tag %q of product %q is stopping!", versionTag, product))
+}
+
+func (r *CliTextRenderer) RenderPublishVersion(product, versionTag string, triggers []entity.TriggerEndpoint) {
+	r.logger.Success(fmt.Sprintf("Version with tag %q of product %q correctly published!", versionTag, product))
+	r.renderTriggers(triggers)
+}
+
+func (r *CliTextRenderer) renderTriggers(triggers []entity.TriggerEndpoint) {
+	if len(triggers) == 0 {
+		r.logger.Info("No triggers found.")
+		return
+	}
+
+	r.tableWriter.SetHeader([]string{
+		"Name",
+		"Status",
+		"Link",
+	})
+
+	for _, trigger := range triggers {
+		r.tableWriter.Append([]string{
+			trigger.Trigger,
+			"UP",
+			trigger.URL,
+		})
+	}
+
+	r.tableWriter.Render()
+}
+
+func (r *CliTextRenderer) RenderUnpublishVersion(product, versionTag string) {
+	r.logger.Success(fmt.Sprintf("Version with tag %q of product %q correctly unpublished!", versionTag, product))
 }
 
 func boolToText(b bool) string {

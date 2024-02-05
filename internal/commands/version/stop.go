@@ -25,7 +25,7 @@ func (h *Handler) Stop(opts *StopOpts) error {
 		return err
 	}
 
-	h.renderer.RenderStopVersion(tag, opts.ProductID)
+	h.renderer.RenderStopVersion(opts.ProductID, tag)
 
 	return nil
 }

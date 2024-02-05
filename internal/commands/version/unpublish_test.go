@@ -10,6 +10,7 @@ import (
 
 func (s *VersionSuite) TestUnpublishVersion() {
 	s.versionClient.EXPECT().Unpublish(s.server, productName, versionTag, comment).Return(versionTag, nil).Once()
+	s.renderer.EXPECT().RenderUnpublishVersion(productName, versionTag).Times(1)
 
 	err := s.handler.Unpublish(&version.UnpublishOpts{
 		ServerName: s.server.Name,

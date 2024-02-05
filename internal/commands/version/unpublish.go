@@ -1,7 +1,5 @@
 package version
 
-import "fmt"
-
 type UnpublishOpts struct {
 	ServerName string
 	ProductID  string
@@ -27,9 +25,7 @@ func (h *Handler) Unpublish(opts *UnpublishOpts) error {
 		return err
 	}
 
-	h.logger.Success(
-		fmt.Sprintf("%s - %s correcly unpublished.", opts.ProductID, tag),
-	)
+	h.renderer.RenderUnpublishVersion(opts.ProductID, tag)
 
 	return nil
 }

@@ -2,7 +2,6 @@ package version
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/konstellation-io/kli/internal/entity"
 	"github.com/konstellation-io/kli/internal/services/configuration"
@@ -45,11 +44,7 @@ func (h *Handler) Publish(opts *PublishOpts) error {
 		return err
 	}
 
-	h.logger.Success(
-		fmt.Sprintf("%q - %q correctly published.", opts.ProductID, opts.VersionTag),
-	)
-
-	h.renderer.RenderTriggers(publishedTriggers)
+	h.renderer.RenderPublishVersion(opts.ProductID, opts.VersionTag, publishedTriggers)
 
 	return nil
 }
