@@ -204,10 +204,16 @@ func (r *CliTextRenderer) RenderProducts(products []kai.Product) {
 func (r *CliTextRenderer) RenderVersion(productID string, v *entity.Version) {
 	if v.Error != "" {
 		r.logger.Info(fmt.Sprintf("%s - %s status is: %s and has an error: %s.", productID, v.Tag, v.Status, v.Error))
+
 		return
 	}
 
 	r.logger.Info(fmt.Sprintf("%s - %s status is: %s.", productID, v.Tag, v.Status))
+
+	if v.Status == entity.VersionStatusPublished {
+		r.logger.Info("Published triggers:")
+		r.RenderTriggers(v.PublishedTriggers)
+	}
 }
 
 func (r *CliTextRenderer) RenderVersions(productID string, versions []*entity.Version) {
