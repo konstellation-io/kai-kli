@@ -192,13 +192,19 @@ func (r *CliJSONRenderer) RenderProducts(products []kai.Product) {
 
 func (r *CliJSONRenderer) RenderVersion(productID string, v *entity.Version) {
 	r.jsonWriter.RootObject(func() {
-		r.jsonWriter.KeyValue("Product", productID)
-		r.jsonWriter.KeyValue("Tag", v.Tag)
-		r.jsonWriter.KeyValue("Status", v.Status)
-		r.jsonWriter.KeyValue("CreationDate", v.CreationDate.Format(time.RFC3339))
+		r.jsonWriter.KeyValue("Status", "OK")
+		r.jsonWriter.KeyValue("Message", "Version successfully obtained!")
+		r.jsonWriter.Object("Data", func() {
+			r.jsonWriter.KeyValue("Product", productID)
+			r.jsonWriter.KeyValue("Tag", v.Tag)
+			r.jsonWriter.KeyValue("Status", v.Status)
+			r.jsonWriter.KeyValue("CreationDate", v.CreationDate.Format(time.RFC3339))
+		})
+
 		if v.Error != "" {
 			r.jsonWriter.KeyValue("Error", v.Error)
 		}
+
 		if len(v.PublishedTriggers) > 0 {
 			r.jsonWriter.Array("PublishedTriggers", r.renderTriggersFn(v.PublishedTriggers))
 		}
@@ -210,7 +216,7 @@ func (r *CliJSONRenderer) RenderVersion(productID string, v *entity.Version) {
 func (r *CliJSONRenderer) RenderVersions(productID string, versions []*entity.Version) {
 	r.jsonWriter.RootObject(func() {
 		r.jsonWriter.KeyValue("Status", "OK")
-		r.jsonWriter.KeyValue("Message", "")
+		r.jsonWriter.KeyValue("Message", "Versions successfully obtained!")
 		r.jsonWriter.Array("Data", func() {
 			for _, v := range versions {
 				r.jsonWriter.ArrayObject(func() {
