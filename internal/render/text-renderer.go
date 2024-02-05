@@ -337,6 +337,14 @@ func (r *CliTextRenderer) RenderProductBinded(_ *kai.Product) {
 	r.logger.Success("Product successfully bound!")
 }
 
+func (r *CliTextRenderer) RenderLogin(serverName string) {
+	r.logger.Success(fmt.Sprintf("Logged into %q.", serverName))
+}
+
+func (r *CliTextRenderer) RenderLogout(serverName string) {
+	r.logger.Success(fmt.Sprintf("Logged out from %q.", serverName))
+}
+
 func boolToText(b bool) string {
 	if b {
 		return "Yes"
