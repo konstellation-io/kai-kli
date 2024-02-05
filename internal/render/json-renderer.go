@@ -199,6 +199,9 @@ func (r *CliJSONRenderer) RenderVersion(productID string, v *entity.Version) {
 		if v.Error != "" {
 			r.jsonWriter.KeyValue("Error", v.Error)
 		}
+		if len(v.PublishedTriggers) > 0 {
+			r.jsonWriter.Array("PublishedTriggers", r.renderTriggersFn(v.PublishedTriggers))
+		}
 	})
 
 	_, _ = r.ioWriter.Write([]byte("\n"))
@@ -227,15 +230,7 @@ func (r *CliJSONRenderer) RenderTriggers(triggers []entity.TriggerEndpoint) {
 	r.jsonWriter.RootObject(func() {
 		r.jsonWriter.KeyValue("Status", "OK")
 		r.jsonWriter.KeyValue("Message", "")
-		r.jsonWriter.Array("Data", func() {
-			for _, t := range triggers {
-				r.jsonWriter.ArrayObject(func() {
-					r.jsonWriter.KeyValue("Name", t.Trigger)
-					r.jsonWriter.KeyValue("Status", "UP")
-					r.jsonWriter.KeyValue("Link", t.URL)
-				})
-			}
-		})
+		r.jsonWriter.Array("Data", r.renderTriggersFn(triggers))
 	})
 
 	_, _ = r.ioWriter.Write([]byte("\n"))
@@ -384,4 +379,16 @@ func (r *CliJSONRenderer) RenderLogout(serverName string) {
 	})
 
 	_, _ = r.ioWriter.Write([]byte("\n"))
+}
+
+func (r *CliJSONRenderer) renderTriggersFn(triggers []entity.TriggerEndpoint) func() {
+	return func() {
+		for _, t := range triggers {
+			r.jsonWriter.ArrayObject(func() {
+				r.jsonWriter.KeyValue("Name", t.Trigger)
+				r.jsonWriter.KeyValue("Status", "UP")
+				r.jsonWriter.KeyValue("Link", t.URL)
+			})
+		}
+	}
 }
