@@ -31,7 +31,7 @@ func (s *VersionSuite) TestPublishVersion() {
 	s.versionClient.EXPECT().Get(s.server, productName, &versionTag).Return(vers, nil).Once()
 	s.productClient.EXPECT().GetProduct(s.server, productName).Return(product, nil).Once()
 	s.versionClient.EXPECT().Publish(s.server, productName, versionTag, comment, false).Return(urls, nil).Once()
-	s.renderer.EXPECT().RenderTriggers(urls).Return()
+	s.renderer.EXPECT().RenderPublishVersion(productName, versionTag, urls).Return().Times(1)
 	err := s.handler.Publish(&version.PublishOpts{
 		ServerName: s.server.Name,
 		ProductID:  productName,
@@ -56,7 +56,7 @@ func (s *VersionSuite) TestPublishVersion_NoTriggersPublished() {
 	s.versionClient.EXPECT().Get(s.server, productName, &versionTag).Return(vers, nil).Once()
 	s.productClient.EXPECT().GetProduct(s.server, productName).Return(product, nil).Once()
 	s.versionClient.EXPECT().Publish(s.server, productName, versionTag, comment, false).Return(nil, nil).Once()
-	s.renderer.EXPECT().RenderTriggers(nil).Return()
+	s.renderer.EXPECT().RenderPublishVersion(productName, versionTag, nil).Return().Times(1)
 
 	err := s.handler.Publish(&version.PublishOpts{
 		ServerName: s.server.Name,
@@ -203,7 +203,7 @@ func (s *VersionSuite) TestPublishVersion_ProductAlreadyPublished_Force() {
 	s.versionClient.EXPECT().Get(s.server, productName, &versionTag).Return(vers, nil).Once()
 	s.productClient.EXPECT().GetProduct(s.server, productName).Return(product, nil).Once()
 	s.versionClient.EXPECT().Publish(s.server, productName, versionTag, comment, true).Return(nil, nil).Once()
-	s.renderer.EXPECT().RenderTriggers(nil).Return()
+	s.renderer.EXPECT().RenderPublishVersion(productName, versionTag, nil).Return()
 
 	err := s.handler.Publish(&version.PublishOpts{
 		ServerName: s.server.Name,

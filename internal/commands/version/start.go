@@ -38,7 +38,7 @@ func (h *Handler) Start(opts *StartOpts) error {
 		return err
 	}
 
-	h.renderer.RenderStartVersion(tag, opts.ProductID)
+	h.renderer.RenderStartVersion(opts.ProductID, tag)
 
 	return nil
 }

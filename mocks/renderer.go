@@ -169,16 +169,28 @@ func (mr *MockRendererMockRecorder) RenderProducts(products interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderProducts", reflect.TypeOf((*MockRenderer)(nil).RenderProducts), products)
 }
 
-// RenderPushVersion mocks base method.
-func (m *MockRenderer) RenderPushVersion(versionTag, product string) {
+// RenderPublishVersion mocks base method.
+func (m *MockRenderer) RenderPublishVersion(product, versionTag string, triggers []entity.TriggerEndpoint) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "RenderPushVersion", versionTag, product)
+	m.ctrl.Call(m, "RenderPublishVersion", product, versionTag, triggers)
+}
+
+// RenderPublishVersion indicates an expected call of RenderPublishVersion.
+func (mr *MockRendererMockRecorder) RenderPublishVersion(product, versionTag, triggers interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderPublishVersion", reflect.TypeOf((*MockRenderer)(nil).RenderPublishVersion), product, versionTag, triggers)
+}
+
+// RenderPushVersion mocks base method.
+func (m *MockRenderer) RenderPushVersion(product, versionTag string) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderPushVersion", product, versionTag)
 }
 
 // RenderPushVersion indicates an expected call of RenderPushVersion.
-func (mr *MockRendererMockRecorder) RenderPushVersion(versionTag, product interface{}) *gomock.Call {
+func (mr *MockRendererMockRecorder) RenderPushVersion(product, versionTag interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderPushVersion", reflect.TypeOf((*MockRenderer)(nil).RenderPushVersion), versionTag, product)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderPushVersion", reflect.TypeOf((*MockRenderer)(nil).RenderPushVersion), product, versionTag)
 }
 
 // RenderRegisteredProcesses mocks base method.
@@ -206,39 +218,39 @@ func (mr *MockRendererMockRecorder) RenderServers(servers interface{}) *gomock.C
 }
 
 // RenderStartVersion mocks base method.
-func (m *MockRenderer) RenderStartVersion(versionTag, product string) {
+func (m *MockRenderer) RenderStartVersion(product, versionTag string) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "RenderStartVersion", versionTag, product)
+	m.ctrl.Call(m, "RenderStartVersion", product, versionTag)
 }
 
 // RenderStartVersion indicates an expected call of RenderStartVersion.
-func (mr *MockRendererMockRecorder) RenderStartVersion(versionTag, product interface{}) *gomock.Call {
+func (mr *MockRendererMockRecorder) RenderStartVersion(product, versionTag interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderStartVersion", reflect.TypeOf((*MockRenderer)(nil).RenderStartVersion), versionTag, product)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderStartVersion", reflect.TypeOf((*MockRenderer)(nil).RenderStartVersion), product, versionTag)
 }
 
 // RenderStopVersion mocks base method.
-func (m *MockRenderer) RenderStopVersion(versionTag, product string) {
+func (m *MockRenderer) RenderStopVersion(product, versionTag string) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "RenderStopVersion", versionTag, product)
+	m.ctrl.Call(m, "RenderStopVersion", product, versionTag)
 }
 
 // RenderStopVersion indicates an expected call of RenderStopVersion.
-func (mr *MockRendererMockRecorder) RenderStopVersion(versionTag, product interface{}) *gomock.Call {
+func (mr *MockRendererMockRecorder) RenderStopVersion(product, versionTag interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderStopVersion", reflect.TypeOf((*MockRenderer)(nil).RenderStopVersion), versionTag, product)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderStopVersion", reflect.TypeOf((*MockRenderer)(nil).RenderStopVersion), product, versionTag)
 }
 
-// RenderTriggers mocks base method.
-func (m *MockRenderer) RenderTriggers(triggers []entity.TriggerEndpoint) {
+// RenderUnpublishVersion mocks base method.
+func (m *MockRenderer) RenderUnpublishVersion(product, versionTag string) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "RenderTriggers", triggers)
+	m.ctrl.Call(m, "RenderUnpublishVersion", product, versionTag)
 }
 
-// RenderTriggers indicates an expected call of RenderTriggers.
-func (mr *MockRendererMockRecorder) RenderTriggers(triggers interface{}) *gomock.Call {
+// RenderUnpublishVersion indicates an expected call of RenderUnpublishVersion.
+func (mr *MockRendererMockRecorder) RenderUnpublishVersion(product, versionTag interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderTriggers", reflect.TypeOf((*MockRenderer)(nil).RenderTriggers), triggers)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderUnpublishVersion", reflect.TypeOf((*MockRenderer)(nil).RenderUnpublishVersion), product, versionTag)
 }
 
 // RenderVersion mocks base method.
