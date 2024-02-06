@@ -204,7 +204,6 @@ func (r *CliTextRenderer) RenderProducts(products []kai.Product) {
 func (r *CliTextRenderer) RenderVersion(productID string, v *entity.Version) {
 	if v.Error != "" {
 		r.logger.Info(fmt.Sprintf("%s - %s status is: %s and has an error: %s.", productID, v.Tag, v.Status, v.Error))
-
 		return
 	}
 

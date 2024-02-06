@@ -31,7 +31,7 @@ builds:
     goos: [darwin]
     goarch: [amd64, arm64]
   - <<: *build_defaults
-    id: linux
+    id: go
     goos: [linux]
     goarch: [amd64, arm64]
   - <<: *build_defaults
@@ -43,7 +43,6 @@ builds:
 archives:
   - <<: &archive_defaults
       name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}-{{ .Arch }}"
-      rlcp: true
       wrap_in_directory: true
       files:
         - LICENSE
@@ -70,7 +69,7 @@ nfpms:
 #https://goreleaser.com/customization/homebrew/
 brews:
   - name: kli
-    tap:
+    repository:
       owner: konstellation-io
       name: homebrew-tap
       token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
@@ -96,6 +95,15 @@ scoops:
       token: "{{ .Env.SCOOP_BUCKET_GITHUB_TOKEN }}"
       pull_request:
         enabled: false
+
+dockers:
+  - image_templates:
+      - "konstellation/{{.ProjectName}}:{{ .Tag }}"
+      - "konstellation/{{.ProjectName}}:latest"
+    use: buildx
+    ids:
+      - "go"
+    dockerfile: Dockerfile
 
 # https://goreleaser.com/customization/checksum/
 checksum:
