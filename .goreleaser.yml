@@ -98,8 +98,8 @@ scoops:
 
 dockers:
   - image_templates:
-      - "konstellation-io/{{.ProjectName}}:{{ .Tag }}"
-      - "konstellation-io/{{.ProjectName}}:latest"
+      - "konstellation/{{.ProjectName}}:{{ .Tag }}"
+      - "konstellation/{{.ProjectName}}:latest"
     use: buildx
     ids:
       - "go"
