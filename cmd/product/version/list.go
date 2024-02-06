@@ -31,7 +31,7 @@ func NewListCmd(logger logging.Interface) *cobra.Command {
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
 
-			err = version.NewHandler(logger, r, api.NewKaiClient().VersionClient()).
+			err = version.NewHandler(logger, r, api.NewKaiClient().VersionClient(), api.NewKaiClient().ProductClient()).
 				ListVersions(&version.ListVersionsOpts{
 					ServerName: server,
 					ProductID:  productID,

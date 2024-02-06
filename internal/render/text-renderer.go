@@ -208,6 +208,11 @@ func (r *CliTextRenderer) RenderVersion(productID string, v *entity.Version) {
 	}
 
 	r.logger.Info(fmt.Sprintf("%s - %s status is: %s.", productID, v.Tag, v.Status))
+
+	if v.Status == entity.VersionStatusPublished {
+		r.logger.Info("Published triggers:")
+		r.RenderTriggers(v.PublishedTriggers)
+	}
 }
 
 func (r *CliTextRenderer) RenderVersions(productID string, versions []*entity.Version) {
@@ -327,8 +332,20 @@ func (r *CliTextRenderer) RenderProductCreated(_ string, _ *configuration.Server
 	// We do not need to render anything in text format.
 }
 
-func (r *CliTextRenderer) RenderProductBinded(_ *kai.Product) {
-	r.logger.Success("Product successfully bound!")
+func (r *CliTextRenderer) RenderProductBinded(productID string) {
+	r.logger.Success(fmt.Sprintf("Product %q successfully bound!", productID))
+}
+
+func (r *CliTextRenderer) RenderLogin(serverName string) {
+	r.logger.Success(fmt.Sprintf("Logged into %q.", serverName))
+}
+
+func (r *CliTextRenderer) RenderLogout(serverName string) {
+	r.logger.Success(fmt.Sprintf("Logged out from %q.", serverName))
+}
+
+func (r *CliTextRenderer) RenderPushVersion(versionTag, product string) {
+	r.logger.Success(fmt.Sprintf("Version with tag %q of product %q successfully created!", versionTag, product))
 }
 
 func boolToText(b bool) string {

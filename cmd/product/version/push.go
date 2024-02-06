@@ -45,7 +45,7 @@ func NewPushCmd(logger logging.Interface) *cobra.Command {
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
 
-			err = version.NewHandler(logger, r, api.NewKaiClient().VersionClient()).
+			err = version.NewHandler(logger, r, api.NewKaiClient().VersionClient(), api.NewKaiClient().ProductClient()).
 				PushVersion(&version.PushVersionOpts{
 					Server:      server,
 					KrtFilePath: krtFilePath,

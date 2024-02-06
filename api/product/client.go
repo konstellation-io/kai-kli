@@ -56,6 +56,7 @@ func (c *Client) GetProduct(server *configuration.Server, id string) (*kai.Produ
 				id
 				name
 				description
+				publishedVersion
 			}
 		}
 	`
@@ -76,11 +77,7 @@ func (c *Client) GetProduct(server *configuration.Server, id string) (*kai.Produ
 		return nil, errors.New("no product returned")
 	}
 
-	return &kai.Product{
-		ID:          respData.Product.ID,
-		Name:        respData.Product.Name,
-		Description: respData.Product.Description,
-	}, nil
+	return respData.Product, nil
 }
 
 func (c *Client) GetProducts(server *configuration.Server) ([]kai.Product, error) {

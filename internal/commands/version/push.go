@@ -40,7 +40,7 @@ func (h *Handler) PushVersion(opts *PushVersionOpts) error {
 		return fmt.Errorf("pushing krt.yaml file: %w", err)
 	}
 
-	h.logger.Success(fmt.Sprintf("Version with tag %q of product %q successfully created!", versionTag, product))
+	h.renderer.RenderPushVersion(versionTag, product)
 
 	return nil
 }

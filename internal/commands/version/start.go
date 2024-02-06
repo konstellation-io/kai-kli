@@ -1,6 +1,10 @@
 package version
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/konstellation-io/kli/internal/entity"
+)
 
 type StartOpts struct {
 	ServerName string
@@ -25,7 +29,7 @@ func (h *Handler) Start(opts *StartOpts) error {
 		return err
 	}
 
-	if vers.Status == "CRITICAL" {
+	if vers.Status == entity.VersionStatusCritical {
 		h.renderer.RenderCallout(vers)
 	}
 

@@ -25,5 +25,8 @@ type Renderer interface {
 	RenderKliVersion(version, buildDate string)
 	RenderProcessRegistered(process *entity.RegisteredProcess)
 	RenderProductCreated(product string, server *configuration.Server, initLocal bool)
-	RenderProductBinded(product *kai.Product)
+	RenderProductBinded(productID string)
+	RenderLogin(serverName string)
+	RenderLogout(serverName string)
+	RenderPushVersion(versionTag string, product string)
 }
