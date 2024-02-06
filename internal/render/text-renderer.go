@@ -348,6 +348,14 @@ func (r *CliTextRenderer) RenderPushVersion(versionTag, product string) {
 	r.logger.Success(fmt.Sprintf("Version with tag %q of product %q successfully created!", versionTag, product))
 }
 
+func (r *CliTextRenderer) RenderStartVersion(versionTag, product string) {
+	r.logger.Success(fmt.Sprintf("Version with tag %q of product %q is starting!", versionTag, product))
+}
+
+func (r *CliTextRenderer) RenderStopVersion(versionTag, product string) {
+	r.logger.Success(fmt.Sprintf("Version with tag %q of product %q is stopping!", versionTag, product))
+}
+
 func boolToText(b bool) string {
 	if b {
 		return "Yes"

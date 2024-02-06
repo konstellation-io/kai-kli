@@ -1,7 +1,5 @@
 package version
 
-import "fmt"
-
 type StopOpts struct {
 	ServerName string
 	ProductID  string
@@ -27,9 +25,7 @@ func (h *Handler) Stop(opts *StopOpts) error {
 		return err
 	}
 
-	h.logger.Success(
-		fmt.Sprintf("Version %q is stopping", tag),
-	)
+	h.renderer.RenderStopVersion(tag, opts.ProductID)
 
 	return nil
 }

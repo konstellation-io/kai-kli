@@ -29,4 +29,6 @@ type Renderer interface {
 	RenderLogin(serverName string)
 	RenderLogout(serverName string)
 	RenderPushVersion(versionTag string, product string)
+	RenderStartVersion(versionTag string, product string)
+	RenderStopVersion(versionTag string, product string)
 }
