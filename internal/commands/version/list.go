@@ -1,8 +1,11 @@
 package version
 
+import "github.com/konstellation-io/kli/internal/entity"
+
 type ListVersionsOpts struct {
-	ServerName string
-	ProductID  string
+	ServerName   string
+	ProductID    string
+	StatusFilter string
 }
 
 func (h *Handler) ListVersions(opts *ListVersionsOpts) error {
@@ -21,7 +24,25 @@ func (h *Handler) ListVersions(opts *ListVersionsOpts) error {
 		return err
 	}
 
+	// filter is done here instead of in the client to avoid adding complexity to the client
+	// and make the rendering of empty results after filtering more easy to manage
+	if opts.StatusFilter != "" {
+		registeredProcesses = filterVersionsByStatus(registeredProcesses, opts.StatusFilter)
+	}
+
 	h.renderer.RenderVersions(opts.ProductID, registeredProcesses)
 
 	return nil
+}
+
+func filterVersionsByStatus(versions []*entity.Version, status string) []*entity.Version {
+	var filteredVersions []*entity.Version
+
+	for _, v := range versions {
+		if v.Status == status {
+			filteredVersions = append(filteredVersions, v)
+		}
+	}
+
+	return filteredVersions
 }
