@@ -19,7 +19,6 @@ type Renderer interface {
 	RenderProducts(products []kai.Product)
 	RenderVersion(productID string, v *entity.Version)
 	RenderVersions(productID string, versions []*entity.Version)
-	RenderTriggers(triggers []entity.TriggerEndpoint)
 	RenderLogs(productID string, logs []entity.Log, outFormat entity.LogOutFormat, showAllLabels bool)
 	RenderCallout(v *entity.Version)
 	RenderKliVersion(version, buildDate string)
@@ -28,5 +27,9 @@ type Renderer interface {
 	RenderProductBinded(productID string)
 	RenderLogin(serverName string)
 	RenderLogout(serverName string)
-	RenderPushVersion(versionTag string, product string)
+	RenderPushVersion(product string, versionTag string)
+	RenderStartVersion(product string, versionTag string)
+	RenderStopVersion(product string, versionTag string)
+	RenderPublishVersion(product string, versionTag string, triggers []entity.TriggerEndpoint)
+	RenderUnpublishVersion(product string, versionTag string)
 }

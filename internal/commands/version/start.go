@@ -1,8 +1,6 @@
 package version
 
 import (
-	"fmt"
-
 	"github.com/konstellation-io/kli/internal/entity"
 )
 
@@ -40,7 +38,7 @@ func (h *Handler) Start(opts *StartOpts) error {
 		return err
 	}
 
-	h.logger.Success(fmt.Sprintf("Version %q is starting.", tag))
+	h.renderer.RenderStartVersion(opts.ProductID, tag)
 
 	return nil
 }

@@ -31,7 +31,7 @@ builds:
     goos: [darwin]
     goarch: [amd64, arm64]
   - <<: *build_defaults
-    id: go
+    id: linux
     goos: [linux]
     goarch: [amd64, arm64]
   - <<: *build_defaults
@@ -102,7 +102,7 @@ dockers:
       - "konstellation/{{.ProjectName}}:latest"
     use: buildx
     ids:
-      - "go"
+      - "linux"
     dockerfile: Dockerfile
 
 # https://goreleaser.com/customization/checksum/

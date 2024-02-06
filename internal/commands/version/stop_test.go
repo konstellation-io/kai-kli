@@ -10,6 +10,7 @@ import (
 
 func (s *VersionSuite) TestStopVersion() {
 	s.versionClient.EXPECT().Stop(s.server, productName, versionTag, comment).Return(versionTag, nil).Once()
+	s.renderer.EXPECT().RenderStopVersion(productName, versionTag).Return().Times(1)
 
 	err := s.handler.Stop(&version.StopOpts{
 		ServerName: s.server.Name,

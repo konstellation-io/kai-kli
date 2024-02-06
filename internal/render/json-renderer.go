@@ -214,9 +214,16 @@ func (r *CliJSONRenderer) RenderVersion(productID string, v *entity.Version) {
 }
 
 func (r *CliJSONRenderer) RenderVersions(productID string, versions []*entity.Version) {
+	var msg string
+	if len(versions) == 0 {
+		msg = "No versions found."
+	} else {
+		msg = "Versions successfully obtained!"
+	}
+
 	r.jsonWriter.RootObject(func() {
 		r.jsonWriter.KeyValue("Status", "OK")
-		r.jsonWriter.KeyValue("Message", "Versions successfully obtained!")
+		r.jsonWriter.KeyValue("Message", msg)
 		r.jsonWriter.Array("Data", func() {
 			for _, v := range versions {
 				r.jsonWriter.ArrayObject(func() {
@@ -227,16 +234,6 @@ func (r *CliJSONRenderer) RenderVersions(productID string, versions []*entity.Ve
 				})
 			}
 		})
-	})
-
-	_, _ = r.ioWriter.Write([]byte("\n"))
-}
-
-func (r *CliJSONRenderer) RenderTriggers(triggers []entity.TriggerEndpoint) {
-	r.jsonWriter.RootObject(func() {
-		r.jsonWriter.KeyValue("Status", "OK")
-		r.jsonWriter.KeyValue("Message", "")
-		r.jsonWriter.Array("Data", r.renderTriggersFn(triggers))
 	})
 
 	_, _ = r.ioWriter.Write([]byte("\n"))
@@ -398,6 +395,46 @@ func (r *CliJSONRenderer) RenderPushVersion(versionTag, product string) {
 	_, _ = r.ioWriter.Write([]byte("\n"))
 }
 
+func (r *CliJSONRenderer) RenderStartVersion(versionTag, product string) {
+	r.jsonWriter.RootObject(func() {
+		r.jsonWriter.KeyValue("Status", "OK")
+		r.jsonWriter.KeyValue("Message", "Version is starting!")
+		r.jsonWriter.Object("Data", func() {
+			r.jsonWriter.KeyValue("VersionTag", versionTag)
+			r.jsonWriter.KeyValue("Product", product)
+		})
+	})
+
+	_, _ = r.ioWriter.Write([]byte("\n"))
+}
+
+func (r *CliJSONRenderer) RenderStopVersion(versionTag, product string) {
+	r.jsonWriter.RootObject(func() {
+		r.jsonWriter.KeyValue("Status", "OK")
+		r.jsonWriter.KeyValue("Message", "Version is stopping!")
+		r.jsonWriter.Object("Data", func() {
+			r.jsonWriter.KeyValue("VersionTag", versionTag)
+			r.jsonWriter.KeyValue("Product", product)
+		})
+	})
+
+	_, _ = r.ioWriter.Write([]byte("\n"))
+}
+
+func (r *CliJSONRenderer) RenderPublishVersion(versionTag, product string, triggers []entity.TriggerEndpoint) {
+	r.jsonWriter.RootObject(func() {
+		r.jsonWriter.KeyValue("Status", "OK")
+		r.jsonWriter.KeyValue("Message", "Version correctly published!")
+		r.jsonWriter.Object("Data", func() {
+			r.jsonWriter.KeyValue("VersionTag", versionTag)
+			r.jsonWriter.KeyValue("Product", product)
+			r.jsonWriter.Array("Triggers", r.renderTriggersFn(triggers))
+		})
+	})
+
+	_, _ = r.ioWriter.Write([]byte("\n"))
+}
+
 func (r *CliJSONRenderer) renderTriggersFn(triggers []entity.TriggerEndpoint) func() {
 	return func() {
 		for _, t := range triggers {
@@ -408,4 +445,17 @@ func (r *CliJSONRenderer) renderTriggersFn(triggers []entity.TriggerEndpoint) fu
 			})
 		}
 	}
+}
+
+func (r *CliJSONRenderer) RenderUnpublishVersion(versionTag, product string) {
+	r.jsonWriter.RootObject(func() {
+		r.jsonWriter.KeyValue("Status", "OK")
+		r.jsonWriter.KeyValue("Message", "Version correctly unpublished!")
+		r.jsonWriter.Object("Data", func() {
+			r.jsonWriter.KeyValue("VersionTag", versionTag)
+			r.jsonWriter.KeyValue("Product", product)
+		})
+	})
+
+	_, _ = r.ioWriter.Write([]byte("\n"))
 }
