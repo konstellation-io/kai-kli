@@ -22,6 +22,6 @@ USER kli
 
 WORKDIR /app
 
-COPY --chown=$UID kli /app/kli
+COPY --chown=$UID bin/kli /app/kli
 
 ENTRYPOINT [ "/app/kli" ]
