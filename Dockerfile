@@ -22,6 +22,6 @@ USER kli
 
 WORKDIR /app
 
-COPY --chown=$UID kai-kli /app/kai-kli
+COPY --chown=$UID kli /app/kli
 
-ENTRYPOINT [ "/app/kai-kli" ]
+ENTRYPOINT [ "/app/kli" ]
