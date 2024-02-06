@@ -73,6 +73,30 @@ func (mr *MockRendererMockRecorder) RenderKliVersion(version, buildDate interfac
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderKliVersion", reflect.TypeOf((*MockRenderer)(nil).RenderKliVersion), version, buildDate)
 }
 
+// RenderLogin mocks base method.
+func (m *MockRenderer) RenderLogin(serverName string) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderLogin", serverName)
+}
+
+// RenderLogin indicates an expected call of RenderLogin.
+func (mr *MockRendererMockRecorder) RenderLogin(serverName interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderLogin", reflect.TypeOf((*MockRenderer)(nil).RenderLogin), serverName)
+}
+
+// RenderLogout mocks base method.
+func (m *MockRenderer) RenderLogout(serverName string) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderLogout", serverName)
+}
+
+// RenderLogout indicates an expected call of RenderLogout.
+func (mr *MockRendererMockRecorder) RenderLogout(serverName interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderLogout", reflect.TypeOf((*MockRenderer)(nil).RenderLogout), serverName)
+}
+
 // RenderLogs mocks base method.
 func (m *MockRenderer) RenderLogs(productID string, logs []entity.Log, outFormat entity.LogOutFormat, showAllLabels bool) {
 	m.ctrl.T.Helper()
@@ -110,15 +134,15 @@ func (mr *MockRendererMockRecorder) RenderProcesses(processes interface{}) *gomo
 }
 
 // RenderProductBinded mocks base method.
-func (m *MockRenderer) RenderProductBinded(product *kai.Product) {
+func (m *MockRenderer) RenderProductBinded(productID string) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "RenderProductBinded", product)
+	m.ctrl.Call(m, "RenderProductBinded", productID)
 }
 
 // RenderProductBinded indicates an expected call of RenderProductBinded.
-func (mr *MockRendererMockRecorder) RenderProductBinded(product interface{}) *gomock.Call {
+func (mr *MockRendererMockRecorder) RenderProductBinded(productID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderProductBinded", reflect.TypeOf((*MockRenderer)(nil).RenderProductBinded), product)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderProductBinded", reflect.TypeOf((*MockRenderer)(nil).RenderProductBinded), productID)
 }
 
 // RenderProductCreated mocks base method.
@@ -143,6 +167,18 @@ func (m *MockRenderer) RenderProducts(products []kai.Product) {
 func (mr *MockRendererMockRecorder) RenderProducts(products interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderProducts", reflect.TypeOf((*MockRenderer)(nil).RenderProducts), products)
+}
+
+// RenderPushVersion mocks base method.
+func (m *MockRenderer) RenderPushVersion(versionTag, product string) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderPushVersion", versionTag, product)
+}
+
+// RenderPushVersion indicates an expected call of RenderPushVersion.
+func (mr *MockRendererMockRecorder) RenderPushVersion(versionTag, product interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderPushVersion", reflect.TypeOf((*MockRenderer)(nil).RenderPushVersion), versionTag, product)
 }
 
 // RenderRegisteredProcesses mocks base method.

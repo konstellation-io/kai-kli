@@ -2,16 +2,24 @@ package entity
 
 import "time"
 
+const (
+	VersionStatusStarted   = "STARTED"
+	VersionStatusPublished = "PUBLISHED"
+	VersionStatusStopped   = "STOPPED"
+	VersionStatusCritical  = "CRITICAL"
+)
+
 type ConfigurationVariable struct {
 	Key   string
 	Value string
 }
 
 type Version struct {
-	Tag         string                  `json:"tag"`
-	Description string                  `json:"description"`
-	Config      []ConfigurationVariable `json:"config"`
-	Workflows   []Workflow              `json:"workflows"`
+	Tag               string                  `json:"tag"`
+	Description       string                  `json:"description"`
+	Config            []ConfigurationVariable `json:"config"`
+	Workflows         []Workflow              `json:"workflows"`
+	PublishedTriggers []TriggerEndpoint       `json:"publishedTriggers"`
 
 	CreationDate time.Time `json:"creationDate"`
 	Status       string    `json:"status"`

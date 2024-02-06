@@ -12,6 +12,7 @@ type Handler struct {
 	logger         logging.Interface
 	renderer       render.Renderer
 	versionClient  kai.VersionClient
+	productClient  kai.ProductClient
 	configService  *configuration.KaiConfigService
 	productService *productconfiguration.ProductConfigService
 }
@@ -19,12 +20,14 @@ type Handler struct {
 func NewHandler(
 	logger logging.Interface,
 	renderer render.Renderer,
-	client kai.VersionClient,
+	versionClient kai.VersionClient,
+	productClient kai.ProductClient,
 ) *Handler {
 	return &Handler{
 		logger:         logger,
 		renderer:       renderer,
-		versionClient:  client,
+		versionClient:  versionClient,
+		productClient:  productClient,
 		configService:  configuration.NewKaiConfigService(logger),
 		productService: productconfiguration.NewProductConfigService(logger),
 	}

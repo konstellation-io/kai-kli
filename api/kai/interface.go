@@ -11,9 +11,10 @@ import (
 //go:generate mockery --name VersionClient --output ../../mocks --filename version_client.go --structname MockVersionClient
 
 type Product struct {
-	ID          string
-	Name        string
-	Description string
+	ID               string
+	Name             string
+	Description      string
+	PublishedVersion *string
 }
 
 // Client first level methods.
@@ -34,7 +35,7 @@ type VersionClient interface {
 	Stop(server *configuration.Server, productID, versionTag, comment string) (string, error)
 	Get(server *configuration.Server, productID string, versionTag *string) (*entity.Version, error)
 	List(server *configuration.Server, productID string) ([]*entity.Version, error)
-	Publish(server *configuration.Server, productID, versionTag, comment string) ([]entity.TriggerEndpoint, error)
+	Publish(server *configuration.Server, productID, versionTag, comment string, force bool) ([]entity.TriggerEndpoint, error)
 	Unpublish(server *configuration.Server, productID, versionTag, comment string) (string, error)
 	Logs(server *configuration.Server, filters *entity.LogFilters) ([]entity.Log, error)
 }

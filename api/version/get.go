@@ -18,6 +18,10 @@ func (c *Client) Get(server *configuration.Server, productID string, versionTag 
         publicationAuthor
         status
         error
+				publishedTriggers {
+					trigger
+					url
+				}
         config {
 					key
 					value

@@ -28,6 +28,7 @@ func (s *ProductSuite) TestBindProduct() {
 	}
 
 	s.versionClient.EXPECT().Get(s.server, _productName, bindOpts.VersionTag).Return(testVersion, nil).Once()
+	s.renderer.EXPECT().RenderProductBinded(_productName).Times(1)
 
 	err := s.handler.Bind(bindOpts)
 	s.Require().NoError(err)
@@ -56,6 +57,7 @@ func (s *ProductSuite) TestBindProductAlreadyExists() {
 	}
 
 	s.versionClient.EXPECT().Get(s.server, _productName, bindOpts.VersionTag).Return(testVersion, nil).Times(2)
+	s.renderer.EXPECT().RenderProductBinded(_productName).Times(1)
 
 	err := s.handler.Bind(bindOpts)
 	s.Require().NoError(err)
@@ -87,6 +89,7 @@ func (s *ProductSuite) TestBindForce() {
 	}
 
 	s.versionClient.EXPECT().Get(s.server, _productName, bindOpts.VersionTag).Return(testVersion, nil).Times(2)
+	s.renderer.EXPECT().RenderProductBinded(_productName).Times(2)
 
 	err := s.handler.Bind(bindOpts)
 	s.Require().NoError(err)

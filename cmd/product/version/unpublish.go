@@ -33,7 +33,7 @@ func NewUnpublishCmd(logger logging.Interface) *cobra.Command {
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
 
-			err = version.NewHandler(logger, r, api.NewKaiClient().VersionClient()).
+			err = version.NewHandler(logger, r, api.NewKaiClient().VersionClient(), api.NewKaiClient().ProductClient()).
 				Unpublish(&version.UnpublishOpts{
 					ServerName: server,
 					ProductID:  productID,
