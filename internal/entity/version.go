@@ -46,6 +46,7 @@ type Process struct {
 	Subscriptions  []string                `json:"subscriptions"`
 	Networking     *ProcessNetworking      `json:"networking"`
 	ResourceLimits *ProcessResourceLimits  `json:"resourceLimits"`
+	NodeSelectors  map[string]string       `json:"nodeSelectors"`
 }
 
 type ProcessObjectStore struct {
