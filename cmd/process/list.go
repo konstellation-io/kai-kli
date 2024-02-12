@@ -16,7 +16,7 @@ func NewListCmd(logger logging.Interface) *cobra.Command {
 		Args:    cobra.ExactArgs(0),
 		Short:   "List all the processes for the given product workflow on the given server",
 		Example: "$ kli process ls [--server <server_name>] [--product_id <product_id>]  [--workflow-id <workflow_id>]",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			serverName, err := cmd.Flags().GetString(_serverFlag)
 			if err != nil {
 				serverName = ""

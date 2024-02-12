@@ -15,7 +15,7 @@ func NewListCmd(logger logging.Interface) *cobra.Command {
 		Use:     "ls",
 		Aliases: []string{"list"},
 		Short:   "List all available servers",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
 			return server.NewHandler(logger, r, authserver.NewDefaultAuthServer(logger)).ListServers()
 		},
