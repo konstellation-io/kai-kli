@@ -33,6 +33,7 @@ type ProcessOpts struct {
 	Replicas      *int
 	GPU           bool
 	Subscriptions []string
+	NodeSelectors map[string]string
 }
 
 type Handler struct {

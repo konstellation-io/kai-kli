@@ -115,12 +115,22 @@ func (r *CliTextRenderer) RenderProcesses(processes []krt.Process) {
 				pr.Networking.TargetPort, pr.Networking.DestinationPort, pr.Networking.Protocol)
 		}
 
+		replicas := 1
+		if pr.Replicas != nil {
+			replicas = *pr.Replicas
+		}
+
+		gpu := false
+		if pr.GPU != nil {
+			gpu = *pr.GPU
+		}
+
 		r.tableWriter.Append([]string{
 			pr.Name,
 			string(pr.Type),
 			pr.Image,
-			strconv.Itoa(*pr.Replicas),
-			boolToText(*pr.GPU),
+			strconv.Itoa(replicas),
+			boolToText(gpu),
 			strings.Join(pr.Subscriptions, "\n"),
 			obj,
 			fmt.Sprintf("Request: %s\nLimit: %s", pr.ResourceLimits.CPU.Request, pr.ResourceLimits.CPU.Limit),
