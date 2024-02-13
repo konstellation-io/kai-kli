@@ -22,7 +22,7 @@ func NewListCmd(logger logging.Interface) *cobra.Command {
 		Example: `
     $ kli product ls [opts...]
 		`,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			server, err := cmd.Flags().GetString("server")
 			if err != nil {
 				return err

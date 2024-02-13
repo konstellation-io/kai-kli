@@ -156,6 +156,7 @@ func (c *Handler) addToTarGz(tw *tar.Writer, sourcePath string, patternsToIgnore
 		if err != nil {
 			return err
 		}
+
 		if info.IsDir() {
 			header.Name += "/"
 		}
@@ -176,6 +177,7 @@ func (c *Handler) addToTarGz(tw *tar.Writer, sourcePath string, patternsToIgnore
 		defer f.Close()
 
 		_, err = io.Copy(tw, f)
+
 		return err
 	})
 }

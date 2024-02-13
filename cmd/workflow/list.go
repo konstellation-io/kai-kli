@@ -16,7 +16,7 @@ func NewListCmd(logger logging.Interface) *cobra.Command {
 		Args:    cobra.ExactArgs(0),
 		Short:   "List all the workflows for the given product",
 		Example: "$ kli workflow ls [--product <product_id>]",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			productID, err := cmd.Flags().GetString(_productIDFlag)
 			if err != nil {
 				return err
