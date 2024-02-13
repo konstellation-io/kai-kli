@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"testing"
+	"time"
 
 	"github.com/golang/mock/gomock"
 	"github.com/spf13/viper"
@@ -19,7 +20,7 @@ import (
 	"github.com/konstellation-io/kli/mocks"
 )
 
-type SetDefaultServerSuite struct {
+type GetTokenSuite struct {
 	suite.Suite
 
 	renderer       *mocks.MockRenderer
@@ -29,11 +30,11 @@ type SetDefaultServerSuite struct {
 	kaiConfService *configuration.KaiConfigService
 }
 
-func TestSetDefaultServerSuite(t *testing.T) {
-	suite.Run(t, new(SetDefaultServerSuite))
+func TestGetTokenSuite(t *testing.T) {
+	suite.Run(t, new(GetTokenSuite))
 }
 
-func (s *SetDefaultServerSuite) SetupSuite() {
+func (s *GetTokenSuite) SetupSuite() {
 	ctrl := gomock.NewController(s.T())
 	logger := mocks.NewMockLogger(ctrl)
 	renderer := mocks.NewMockRenderer(ctrl)
@@ -44,7 +45,7 @@ func (s *SetDefaultServerSuite) SetupSuite() {
 	s.renderer = renderer
 	s.manager = server.NewHandler(logger, renderer, authenticator)
 
-	tmpDir, err := os.MkdirTemp("", "TestSetDefaultServer_*")
+	tmpDir, err := os.MkdirTemp("", "TestGetToken_*")
 	s.Require().NoError(err)
 
 	kaiConfigPath := path.Join(tmpDir, ".kai", "kai.conf")
@@ -55,12 +56,12 @@ func (s *SetDefaultServerSuite) SetupSuite() {
 	s.tmpDir = tmpDir
 }
 
-func (s *SetDefaultServerSuite) TearDownSuite(_, _ string) {
+func (s *GetTokenSuite) TearDownSuite(_, _ string) {
 	err := os.RemoveAll(s.tmpDir)
 	s.Require().NoError(err)
 }
 
-func (s *SetDefaultServerSuite) BeforeTest(_, _ string) {
+func (s *GetTokenSuite) BeforeTest(_, _ string) {
 	err := os.MkdirAll(path.Dir(viper.GetString(config.KaiConfigPath)), 0750)
 	s.Require().NoError(err)
 
@@ -77,7 +78,14 @@ func (s *SetDefaultServerSuite) BeforeTest(_, _ string) {
 		Realm:        "konstellation",
 		ClientID:     "admin-cli",
 		IsDefault:    false,
-		Token:        &configuration.Token{},
+		Token: &configuration.Token{
+			Date:             time.Now(),
+			AccessToken:      "my-token",
+			ExpiresIn:        3600,
+			RefreshExpiresIn: 3600,
+			RefreshToken:     "refresh-token",
+			TokenType:        "Bearer",
+		},
 	})
 	s.Require().NoError(err)
 
@@ -96,7 +104,7 @@ func (s *SetDefaultServerSuite) BeforeTest(_, _ string) {
 	s.Require().NoError(err)
 }
 
-func (s *SetDefaultServerSuite) AfterTest(_, _ string) {
+func (s *GetTokenSuite) AfterTest(_, _ string) {
 	if err := os.RemoveAll(path.Dir(viper.GetString(config.KaiConfigPath))); err != nil {
 		if !errors.Is(err, os.ErrNotExist) {
 			s.T().Fatalf("error cleaning tmp path: %s", err)
@@ -104,30 +112,25 @@ func (s *SetDefaultServerSuite) AfterTest(_, _ string) {
 	}
 }
 
-func (s *SetDefaultServerSuite) TestSetDefaultServer_ExpectOk() {
+func (s *GetTokenSuite) TestGetToken_ExpectOk() {
 	// Given
 	serverName := "my-server1"
 
-	s.renderer.EXPECT().RenderServers(gomock.Any()).Times(1)
-
 	// WHEN
-	err := s.manager.SetDefaultServer(serverName)
+	token, err := s.manager.GetToken(serverName)
 
 	// THEN
 	s.Require().NoError(err)
-	kaiConf, err := s.kaiConfService.GetConfiguration()
-	s.Require().NoError(err)
-	updatedSrv, err := kaiConf.GetServer(serverName)
-	s.Require().NoError(err)
-	s.Require().Equal(true, updatedSrv.IsDefault)
+	s.Require().Equal("my-token", token.AccessToken)
+	s.Require().Equal("refresh-token", token.RefreshToken)
 }
 
-func (s *SetDefaultServerSuite) TestSetDefaultServer_NonExistingServer_ExpectError() {
+func (s *GetTokenSuite) TestGetToken_NonExistingServer_ExpectError() {
 	// Given
 	serverName := "some-invalid-server"
 
 	// WHEN
-	err := s.manager.SetDefaultServer(serverName)
+	_, err := s.manager.GetToken(serverName)
 
 	// THEN
 	s.Require().Error(err)

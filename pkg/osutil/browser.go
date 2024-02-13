@@ -9,7 +9,7 @@ import (
 func OpenBrowser(url string) error {
 	var browserCommand *exec.Cmd
 
-	switch runtime.GOOS {
+	switch GetOperatingSystem() {
 	case "linux":
 		browserCommand = exec.Command("xdg-open", url)
 	case "windows":
@@ -23,4 +23,9 @@ func OpenBrowser(url string) error {
 	err := browserCommand.Run()
 
 	return err
+}
+
+//go:noinline // Needed for monkey patching the method in tests
+func GetOperatingSystem() string {
+	return runtime.GOOS
 }

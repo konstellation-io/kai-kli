@@ -222,3 +222,101 @@ func (s *RegisterProcessSuite) TestRegisterNewProcess_Public_ExpectOK() {
 	// THEN
 	s.Require().NoError(err)
 }
+
+func (s *RegisterProcessSuite) TestRegisterNewProcess_InvalidServer_ExpectError() {
+	// GIVEN
+	serverName := "invalid-server"
+	processType := _processType
+	processID := _processID
+	version := _version
+	processPath := "../../../testdata/sample-trigger"
+	dockerfilePath := "../../../testdata/sample-trigger/Dockerfile"
+
+	// WHEN
+	err := s.manager.RegisterProcess(&processregistry.RegisterProcessOpts{
+		ServerName:  serverName,
+		ProcessType: krt.ProcessType(processType),
+		ProcessID:   processID,
+		SourcesPath: processPath,
+		Dockerfile:  dockerfilePath,
+		Version:     version,
+		IsPublic:    true,
+	})
+
+	// THEN
+	s.Require().Error(err)
+}
+
+func (s *RegisterProcessSuite) TestRegisterNewProcess_InvalidPublicProcessWithProduct_ExpectError() {
+	// GIVEN
+	serverName := _serverName
+	productID := _productID
+	processType := _processType
+	processID := _processID
+	version := _version
+	processPath := "../../../testdata/sample-trigger"
+	dockerfilePath := "../../../testdata/sample-trigger/Dockerfile"
+
+	// WHEN
+	err := s.manager.RegisterProcess(&processregistry.RegisterProcessOpts{
+		ServerName:  serverName,
+		ProcessType: krt.ProcessType(processType),
+		ProductID:   productID,
+		ProcessID:   processID,
+		SourcesPath: processPath,
+		Dockerfile:  dockerfilePath,
+		Version:     version,
+		IsPublic:    true,
+	})
+
+	// THEN
+	s.Require().Error(err)
+}
+
+func (s *RegisterProcessSuite) TestRegisterNewProcess_InvalidPrivateProcessWithoutProduct_ExpectError() {
+	// GIVEN
+	serverName := _serverName
+	processType := _processType
+	processID := _processID
+	version := _version
+	processPath := "../../../testdata/sample-trigger"
+	dockerfilePath := "../../../testdata/sample-trigger/Dockerfile"
+
+	// WHEN
+	err := s.manager.RegisterProcess(&processregistry.RegisterProcessOpts{
+		ServerName:  serverName,
+		ProcessType: krt.ProcessType(processType),
+		ProcessID:   processID,
+		SourcesPath: processPath,
+		Dockerfile:  dockerfilePath,
+		Version:     version,
+		IsPublic:    false,
+	})
+
+	// THEN
+	s.Require().Error(err)
+}
+
+func (s *RegisterProcessSuite) TestRegisterNewProcess_InvalidProcessType_ExpectError() {
+	// GIVEN
+	serverName := _serverName
+	processType := "invalid-type"
+	processID := _processID
+	version := _version
+	processPath := "../../../testdata/sample-trigger"
+	dockerfilePath := "../../../testdata/sample-trigger/Dockerfile"
+
+	// WHEN
+	err := s.manager.RegisterProcess(&processregistry.RegisterProcessOpts{
+		ServerName:  serverName,
+		ProcessType: krt.ProcessType(processType),
+		ProcessID:   processID,
+		SourcesPath: processPath,
+		Dockerfile:  dockerfilePath,
+		Version:     version,
+		IsPublic:    false,
+	})
+
+	// THEN
+	s.Require().Error(err)
+}
