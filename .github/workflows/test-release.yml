@@ -43,11 +43,11 @@ jobs:
 
       - name: Run unit tests
         run: go test ./... -cover -v -coverpkg=./... -coverprofile="coverage-unit.out" --tags=unit
-        working-directory: ./
+        working-directory: ./${{ matrix.platform }}
 
       - name: Run integration tests
         run: go test ./... -cover -v -coverpkg=./... -coverprofile="coverage-integration.out" --tags=integration
-        working-directory: ./
+        working-directory: ./${{ matrix.platform }}
 
       - name: Upload unit coverage report
         uses: actions/upload-artifact@v4
