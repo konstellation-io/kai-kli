@@ -103,6 +103,7 @@ func (as *BrowserAuthenticator) Login(config *KeycloakConfig) (*AuthResponse, er
 			if code == "" {
 				as.logger.Info("Code not found in the callback URL")
 				as.closeApp.Done()
+
 				return
 			}
 
@@ -110,6 +111,7 @@ func (as *BrowserAuthenticator) Login(config *KeycloakConfig) (*AuthResponse, er
 			if err != nil {
 				as.logger.Error(fmt.Sprintf("Error exchanging token: %v", err))
 				as.closeApp.Done()
+
 				return
 			}
 

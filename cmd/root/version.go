@@ -15,7 +15,7 @@ func newVersionCmd(logger logging.Interface, version, buildDate string) *cobra.C
 		Example: heredoc.Doc(`
 			$ kli version
 		`),
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(cmd *cobra.Command, _ []string) {
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
 			r.RenderKliVersion(version, buildDate)
 		},

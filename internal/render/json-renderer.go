@@ -259,6 +259,7 @@ func (r *CliJSONRenderer) renderLogsConsole(logs []entity.Log, showAllLabels boo
 			for _, log := range logs {
 				r.jsonWriter.ArrayObject(func() {
 					r.jsonWriter.KeyValue("Message", log.FormatedLog)
+
 					if showAllLabels {
 						r.jsonWriter.Object("Labels", func() {
 							for _, v := range log.Labels {
@@ -294,6 +295,7 @@ func (r *CliJSONRenderer) renderLogsFile(productID string, logs []entity.Log, sh
 			for _, log := range logs {
 				filewriter.ArrayObject(func() {
 					filewriter.KeyValue("Message", log.FormatedLog)
+
 					if showAllLabels {
 						filewriter.Object("Labels", func() {
 							for _, v := range log.Labels {

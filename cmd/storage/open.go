@@ -15,7 +15,7 @@ func NewOpenCmd(logger logging.Interface) *cobra.Command {
 		Example: `
     $ kli storage open
 		`,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			serverName, err := cmd.Flags().GetString(_serverFlag)
 			if err != nil {
 				return err

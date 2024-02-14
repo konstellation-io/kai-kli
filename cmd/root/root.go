@@ -42,7 +42,7 @@ func NewRootCmd(
 		Use:   "kli [command] [subcommand] [flags]",
 		Short: "Konstellation CLI",
 		Long:  `Use Konstellation API from the command line.`,
-		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
 			err := setDebugLogLevel(cmd, logger)
 			if err != nil {
 				return err

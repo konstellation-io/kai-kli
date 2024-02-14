@@ -46,6 +46,7 @@ func (w *Handler) AddProcess(opts *ProcessOpts) error {
 			Subscriptions:  opts.Subscriptions,
 			ResourceLimits: limits,
 			Networking:     network,
+			NodeSelectors:  opts.NodeSelectors,
 		})
 
 	if err != nil {
