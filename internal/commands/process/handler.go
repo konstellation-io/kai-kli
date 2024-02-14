@@ -33,6 +33,7 @@ type ProcessOpts struct {
 	Replicas      *int
 	GPU           bool
 	Subscriptions []string
+	NodeSelectors map[string]string
 }
 
 type Handler struct {
@@ -80,4 +81,12 @@ func (w *Handler) getObjectStore(opts *ProcessOpts) *krt.ProcessObjectStore {
 	}
 
 	return nil
+}
+
+func (w *Handler) updateNodeSelectors(opts *ProcessOpts, proc *krt.Process) map[string]string {
+	if opts.NodeSelectors == nil {
+		return proc.NodeSelectors
+	}
+
+	return opts.NodeSelectors
 }

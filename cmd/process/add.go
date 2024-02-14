@@ -52,6 +52,7 @@ func NewAddCmd(logger logging.Interface) *cobra.Command {
 	cmd.Flags().Int(_networkTargetPort, -1, "The target port exposed by the current process.")
 	cmd.Flags().String(_networkProtocol, "", "The network protocol used by the current process.")
 	cmd.Flags().StringSlice(_subscriptionsFlag, []string{}, "The subscriptions to be used by the current process.")
+	cmd.Flags().StringToString(_nodeSelectorsFlag, nil, "The node selectors to determine the node where the process is deployed.")
 
 	cmd.MarkFlagRequired(_productIDFlag)  //nolint:errcheck
 	cmd.MarkFlagRequired(_workflowIDFlag) //nolint:errcheck
@@ -117,6 +118,11 @@ func getAddProcessOpts(processID, processType, image string, cmd *cobra.Command)
 		return nil, err
 	}
 
+	nodeSelectors, err := cmd.Flags().GetStringToString(_nodeSelectorsFlag)
+	if err != nil {
+		return nil, err
+	}
+
 	prc := &process.ProcessOpts{
 		ServerName:       serverName,
 		ProductID:        productID,
@@ -132,6 +138,7 @@ func getAddProcessOpts(processID, processType, image string, cmd *cobra.Command)
 		CPULimit:         cpuLimit,
 		MemoryRequest:    memRequest,
 		MemoryLimit:      memLimit,
+		NodeSelectors:    nodeSelectors,
 	}
 
 	prc, err = getNetworkingConfig(cmd, prc)

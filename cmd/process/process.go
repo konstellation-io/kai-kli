@@ -22,6 +22,7 @@ const (
 	_objectStoreNameFlag  = "object-store"
 	_objectStoreScopeFlag = "object-store-scope"
 	_subscriptionsFlag    = "subscriptions"
+	_nodeSelectorsFlag    = "node-selectors"
 	_networkSourcePort    = "source-port"
 	_networkTargetPort    = "target-port"
 	_networkProtocol      = "protocol"
