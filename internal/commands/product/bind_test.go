@@ -106,3 +106,16 @@ func (s *ProductSuite) TestBindForce() {
 	err = os.Remove(fileName)
 	s.Require().NoError(err)
 }
+
+func (s *ProductSuite) TestBind_InvalidServer_ExpectError() {
+	bindOpts := &product.BindProductOpts{
+		Server:     "invalid-server",
+		ProductID:  _productName,
+		VersionTag: nil,
+		LocalPath:  "",
+		Force:      true,
+	}
+
+	err := s.handler.Bind(bindOpts)
+	s.Require().Error(err)
+}

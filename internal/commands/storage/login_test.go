@@ -3,6 +3,7 @@
 package storage_test
 
 import (
+	"fmt"
 	"path"
 	"testing"
 
@@ -22,6 +23,7 @@ type StorageLoginSuite struct {
 
 	handler    *storage.Handler
 	testServer *configuration.Server
+	logger     *mocks.MockLogger
 }
 
 func TestStorageLoginSuite(t *testing.T) {
@@ -32,6 +34,8 @@ func (s *StorageLoginSuite) SetupSuite() {
 	ctrl := gomock.NewController(s.T())
 	logger := mocks.NewMockLogger(ctrl)
 	mocks.AddLoggerExpects(logger)
+
+	s.logger = logger
 
 	s.handler = storage.NewHandler(logger)
 
@@ -57,4 +61,19 @@ func (s *StorageLoginSuite) TestStorageLogin() {
 
 	err := s.handler.OpenConsole(s.testServer.Name)
 	s.Require().NoError(err)
+}
+
+func (s *StorageLoginSuite) TestStorageLogin_CannotOpenBrowser_ExpectOk() {
+	patch := monkey.Patch(osutil.OpenBrowser, func(url string) error {
+		return fmt.Errorf("error opening browser")
+	})
+	defer patch.Unpatch()
+
+	err := s.handler.OpenConsole(s.testServer.Name)
+	s.Require().NoError(err)
+}
+
+func (s *StorageLoginSuite) TestStorageLogin_WrongServer_ExpectError() {
+	err := s.handler.OpenConsole("wrong-name")
+	s.Require().Error(err)
 }
