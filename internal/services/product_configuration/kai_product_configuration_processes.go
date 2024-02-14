@@ -120,6 +120,10 @@ func (c *KaiProductConfiguration) updateWorkflowInternal(current, updated *krt.P
 		tmpProcess.ResourceLimits = updated.ResourceLimits
 	}
 
+	if updated.NodeSelectors != nil {
+		tmpProcess.NodeSelectors = updated.NodeSelectors
+	}
+
 	return tmpProcess
 }
 

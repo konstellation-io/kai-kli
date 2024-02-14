@@ -135,15 +135,17 @@ func (c *Handler) createTempTarGzFile(patternsToIgnore ignore.IgnoreParser, path
 
 func (c *Handler) addToTarGz(tw *tar.Writer, sourcePath string, patternsToIgnore ignore.IgnoreParser) error {
 	return filepath.Walk(sourcePath, func(dirPath string, info os.FileInfo, err error) error {
-		if patternsToIgnore.MatchesPath(path.Base(dirPath)) {
+		if patternsToIgnore.MatchesPath(dirPath) {
 			c.logger.Debug(fmt.Sprintf("Skipping file %q", dirPath))
 			return nil
 		}
 
-		c.logger.Debug(fmt.Sprintf("Adding %s to tar.gz file, error %s\n", dirPath, err))
 		if err != nil {
+			c.logger.Debug(fmt.Sprintf("Error adding %s to tar.gz file: %s\n", dirPath, err))
 			return err
 		}
+
+		c.logger.Debug(fmt.Sprintf("Adding %s to tar.gz file", dirPath))
 
 		header, err := tar.FileInfoHeader(info, info.Name())
 		if err != nil {
@@ -154,6 +156,7 @@ func (c *Handler) addToTarGz(tw *tar.Writer, sourcePath string, patternsToIgnore
 		if err != nil {
 			return err
 		}
+
 		if info.IsDir() {
 			header.Name += "/"
 		}
@@ -174,6 +177,7 @@ func (c *Handler) addToTarGz(tw *tar.Writer, sourcePath string, patternsToIgnore
 		defer f.Close()
 
 		_, err = io.Copy(tw, f)
+
 		return err
 	})
 }
@@ -191,7 +195,7 @@ func (c *Handler) getPattersToIgnore(dirPath string) ignore.IgnoreParser {
 
 	patterns, err := ignore.CompileIgnoreFile(krtignorePath)
 	if err != nil {
-		c.logger.Info("Ignoring .krtignore file")
+		c.logger.Info("Couldn't load .krtignore file")
 
 		return ignore.CompileIgnoreLines()
 	}

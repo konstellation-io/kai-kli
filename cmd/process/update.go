@@ -24,9 +24,6 @@ func NewUpdateCmd(logger logging.Interface) *cobra.Command {
 				return err
 			}
 
-			// TODO Get the given product or the default one
-			// TODO Get the given server or the default one
-
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
 			err = process.NewHandler(logger, r).UpdateProcess(updateProcessOpts)
 			if err != nil {
@@ -53,6 +50,7 @@ func NewUpdateCmd(logger logging.Interface) *cobra.Command {
 	cmd.Flags().Int(_networkTargetPort, -1, "The target port exposed by the current process.")
 	cmd.Flags().String(_networkProtocol, "", "The network protocol used by the current process.")
 	cmd.Flags().StringSlice(_subscriptionsFlag, nil, "The subscriptions to be used by the current process.")
+	cmd.Flags().StringToString(_nodeSelectorsFlag, nil, "The node selectors to determine the node where the process is deployed.")
 
 	cmd.MarkFlagRequired(_productIDFlag)  //nolint:errcheck
 	cmd.MarkFlagRequired(_workflowIDFlag) //nolint:errcheck
@@ -108,6 +106,13 @@ func getUpdateProcessOpts(processID string, cmd *cobra.Command) (*process.Proces
 	err = getUpdateOptsNetworking(cmd, opts)
 	if err != nil {
 		return nil, err
+	}
+
+	if cmd.Flag(_nodeSelectorsFlag).Changed {
+		opts.NodeSelectors, err = cmd.Flags().GetStringToString(_nodeSelectorsFlag)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return opts, nil

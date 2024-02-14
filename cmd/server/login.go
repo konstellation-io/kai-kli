@@ -22,7 +22,7 @@ func NewLoginCmd(logger logging.Interface) *cobra.Command {
 		Example: `
     $ kli server login --realm <realm> --client-id <client-id> --server my-server
 		`,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			srv, err := getServerOrDefault(cmd, logger)
 			if err != nil {
 				return err

@@ -40,7 +40,7 @@ func mapWorkflowsToKrt(workflows []entity.Workflow) []krt.Workflow {
 }
 
 func mapProcessesToKrt(processes []entity.Process) []krt.Process {
-	krtProcesses := []krt.Process{}
+	krtProcesses := make([]krt.Process, 0, len(processes))
 
 	for idx := range processes {
 		replicaCopy := processes[idx].Replicas
@@ -58,6 +58,7 @@ func mapProcessesToKrt(processes []entity.Process) []krt.Process {
 			Subscriptions:  processes[idx].Subscriptions,
 			Networking:     mapNetworkingToKrt(processes[idx].Networking),
 			ResourceLimits: mapResourceLimitsToKrt(processes[idx].ResourceLimits),
+			NodeSelectors:  processes[idx].NodeSelectors,
 		})
 	}
 

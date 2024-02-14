@@ -18,7 +18,7 @@ func NewListCmd(logger logging.Interface) *cobra.Command {
 		Example: `
     $ kli config ls [opts...]
 		`,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			productID, err := cmd.Flags().GetString(_productIDFlag)
 			if err != nil {
 				return err

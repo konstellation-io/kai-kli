@@ -109,6 +109,49 @@ func (s *AddProcessSuite) TestAddProcess_ExpectOk() {
 	s.Require().NoError(err)
 }
 
+func (s *AddProcessSuite) TestAddProcessWithObjectStore_ExpectOk() {
+	// GIVEN
+	replicas := 1
+	gpu := false
+	server := "server1"
+	workflow := "Workflow1"
+	newProcess := krt.Process{
+		Name:     "my-process",
+		Type:     krt.ProcessTypeTask,
+		Image:    "kst/task",
+		Replicas: &replicas,
+		GPU:      &gpu,
+		Config:   nil,
+		ObjectStore: &krt.ProcessObjectStore{
+			Name:  "my-object-store",
+			Scope: krt.ObjectStoreScopeWorkflow,
+		},
+		Secrets:       map[string]string{},
+		Subscriptions: []string{"subject1", "subject2"},
+		Networking:    nil,
+	}
+	s.renderer.EXPECT().RenderProcesses(ProcessMatcher(_getDefaultProcess(), newProcess))
+
+	// WHEN
+	err := s.handler.AddProcess(&process.ProcessOpts{
+		ServerName:        server,
+		ProductID:         s.productName,
+		WorkflowID:        workflow,
+		ProcessID:         newProcess.Name,
+		ProcessType:       newProcess.Type,
+		Image:             newProcess.Image,
+		Replicas:          newProcess.Replicas,
+		Subscriptions:     newProcess.Subscriptions,
+		ObjectStoreName:   newProcess.ObjectStore.Name,
+		ObjectStoreScope:  newProcess.ObjectStore.Scope,
+		NetworkSourcePort: nil,
+		NetworkTargetPort: nil,
+	})
+
+	// THEN
+	s.Require().NoError(err)
+}
+
 func (s *AddProcessSuite) TestAddProcess_NonExistingProduct_ExpectError() {
 	// GIVEN
 	replicas := 1

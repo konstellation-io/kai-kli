@@ -151,3 +151,37 @@ func (s *ListProcessSuite) TestList_APIError() {
 	// THEN
 	s.Require().Error(err)
 }
+
+func (s *ListProcessSuite) TestList_InvalidTypeFilter_APIError() {
+	// GIVEN
+	processType := "some-invalid-type"
+	productID := _productID
+	serverName := _serverName
+
+	// WHEN
+	err := s.manager.ListProcesses(&processRegistryCMD.ListProcessesOpts{
+		ServerName:  serverName,
+		ProductID:   productID,
+		ProcessType: krt.ProcessType(processType),
+	})
+
+	// THEN
+	s.Require().Error(err)
+}
+
+func (s *ListProcessSuite) TestList_InvalidServer_ExpectError() {
+	// GIVEN
+	processType := _processType
+	productID := _productID
+	serverName := "invalid-server"
+
+	// WHEN
+	err := s.manager.ListProcesses(&processRegistryCMD.ListProcessesOpts{
+		ServerName:  serverName,
+		ProductID:   productID,
+		ProcessType: krt.ProcessType(processType),
+	})
+
+	// THEN
+	s.Require().Error(err)
+}
