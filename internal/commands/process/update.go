@@ -42,6 +42,7 @@ func (w *Handler) UpdateProcess(opts *ProcessOpts) error {
 			Subscriptions:  opts.Subscriptions,
 			ResourceLimits: limits,
 			Networking:     network,
+			NodeSelectors:  w.updateNodeSelectors(opts, proc),
 		})
 
 	if err != nil {

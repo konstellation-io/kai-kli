@@ -82,3 +82,11 @@ func (w *Handler) getObjectStore(opts *ProcessOpts) *krt.ProcessObjectStore {
 
 	return nil
 }
+
+func (w *Handler) updateNodeSelectors(opts *ProcessOpts, proc *krt.Process) map[string]string {
+	if opts.NodeSelectors == nil {
+		return proc.NodeSelectors
+	}
+
+	return opts.NodeSelectors
+}
