@@ -43,19 +43,19 @@ jobs:
 
       - name: Run unit tests
         run: go test ./... -cover -v -coverpkg=./... -coverprofile="coverage-unit.out" --tags=unit
-        working-directory: ./${{ matrix.platform }}
+        working-directory: ./
 
       - name: Run integration tests
         run: go test ./... -cover -v -coverpkg=./... -coverprofile="coverage-integration.out" --tags=integration
-        working-directory: ./${{ matrix.platform }}
+        working-directory: ./
 
       - name: Upload unit coverage report
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report-${{ matrix.platform }}
           path: |
-            ${{ matrix.platform }}/coverage-unit.out
-            ${{ matrix.platform }}/coverage-integration.out
+            coverage-unit.out
+            coverage-integration.out
 
   coverage:
     strategy:
@@ -78,13 +78,11 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: coverage-report-${{ matrix.platform }}
-          path: |
-            ${{ matrix.platform }}
 
       - name: Analyze with SonarCloud
         uses: sonarsource/sonarcloud-github-action@master
         with:
-          projectBaseDir: ${{ matrix.platform }}
+          projectBaseDir: ./
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
