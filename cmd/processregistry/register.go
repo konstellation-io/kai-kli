@@ -20,10 +20,7 @@ var (
 const (
 	_sourcesFlag    = "src"
 	_dockerfileFlag = "dockerfile"
-	_productIDFlag  = "product"
-	_serverFlag     = "server"
 	_versionFlag    = "version"
-	_publicFlag     = "public"
 )
 
 // NewRegisterCmd creates a new command to register a new process in the given server.
@@ -75,6 +72,7 @@ func NewRegisterCmd(logger logging.Interface) *cobra.Command {
 			}
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
+
 			err = processregistry.NewHandler(
 				logger,
 				r,

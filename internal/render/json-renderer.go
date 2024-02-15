@@ -325,7 +325,7 @@ func (r *CliJSONRenderer) RenderKliVersion(version, buildDate string) {
 func (r *CliJSONRenderer) RenderProcessRegistered(process *entity.RegisteredProcess) {
 	r.jsonWriter.RootObject(func() {
 		r.jsonWriter.KeyValue("Status", "OK")
-		r.jsonWriter.KeyValue("Message", "")
+		r.jsonWriter.KeyValue("Message", fmt.Sprintf("Process %s created!", process.Name))
 		r.jsonWriter.Object("Data", func() {
 			r.jsonWriter.KeyValue("Name", process.Name)
 			r.jsonWriter.KeyValue("Version", process.Version)
@@ -338,6 +338,16 @@ func (r *CliJSONRenderer) RenderProcessRegistered(process *entity.RegisteredProc
 	})
 
 	_, _ = r.ioWriter.Write([]byte("\n"))
+}
+
+func (r *CliJSONRenderer) RenderProcessDeleted(process string) {
+	r.jsonWriter.RootObject(func() {
+		r.jsonWriter.KeyValue("Status", "OK")
+		r.jsonWriter.KeyValue("Message", fmt.Sprintf("Process %s deleted!", process))
+		r.jsonWriter.Object("Data", func() {
+			r.jsonWriter.KeyValue("ProcessID", process)
+		})
+	})
 }
 
 func (r *CliJSONRenderer) RenderProductCreated(product string, server *configuration.Server, initLocal bool) {

@@ -315,6 +315,10 @@ func (r *CliTextRenderer) RenderProcessRegistered(process *entity.RegisteredProc
 	r.logger.Success(fmt.Sprintf("Creating process with id %q", process.ID))
 }
 
+func (r *CliTextRenderer) RenderProcessDeleted(process string) {
+	r.logger.Success(fmt.Sprintf("Process with id %q successfully deleted!", process))
+}
+
 func (r *CliTextRenderer) RenderProductCreated(_ string, _ *configuration.Server, _ bool) {
 	// We do not need to render anything in text format.
 }
