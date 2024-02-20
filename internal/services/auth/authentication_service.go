@@ -41,6 +41,11 @@ type TokenResponse struct {
 	TokenType        string `json:"token_type"`
 }
 
+type ErrorResponse struct {
+	Error            string `json:"error"`
+	ErrorDescription string `json:"error_description"`
+}
+
 func NewAuthentication(logger logging.Interface, authServer authserver.Authenticator) *AuthenticationService {
 	return &AuthenticationService{
 		logger:        logger,
@@ -76,7 +81,7 @@ func (a *AuthenticationService) GetToken(serveName string) (*configuration.Token
 
 	token, err := a.refreshTokenRequest(server)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("refreshing token: %w", err)
 	}
 
 	if token.AccessToken == "" {
@@ -335,7 +340,14 @@ func (a *AuthenticationService) refreshTokenRequest(server *configuration.Server
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("refreshing token: %s", resp.Status)
+		var errorResponse ErrorResponse
+
+		err := json.NewDecoder(resp.Body).Decode(&errorResponse)
+		if err != nil {
+			return nil, fmt.Errorf("parsing error response: %w", err)
+		}
+
+		return nil, errors.New(errorResponse.ErrorDescription)
 	}
 
 	var tokenResponse TokenResponse
