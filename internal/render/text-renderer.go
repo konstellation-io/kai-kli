@@ -227,7 +227,7 @@ func (r *CliTextRenderer) RenderVersion(productID string, v *entity.Version) {
 
 func (r *CliTextRenderer) RenderVersions(productID string, versions []*entity.Version) {
 	if len(versions) < 1 {
-		r.logger.Info("No versions found.")
+		r.logger.Error("No versions found.")
 		return
 	}
 
