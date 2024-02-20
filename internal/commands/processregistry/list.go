@@ -19,6 +19,10 @@ type ListFilters struct {
 }
 
 func (c *Handler) ListProcesses(opts *ListProcessesOpts) error {
+	if opts.Filters == nil {
+		opts.Filters = &ListFilters{}
+	}
+
 	if opts.Filters.ProcessType != "" && !opts.Filters.ProcessType.IsValid() {
 		return fmt.Errorf("invalid process type: %q", opts.Filters.ProcessType)
 	}
