@@ -214,19 +214,9 @@ func (r *CliJSONRenderer) RenderVersion(productID string, v *entity.Version) {
 }
 
 func (r *CliJSONRenderer) RenderVersions(productID string, versions []*entity.Version) {
-	var (
-		msg    = ""
-		status = "OK"
-	)
-
-	if len(versions) < 1 {
-		status = "KO"
-		msg = "No versions found."
-	}
-
 	r.jsonWriter.RootObject(func() {
-		r.jsonWriter.KeyValue("Status", status)
-		r.jsonWriter.KeyValue("Message", msg)
+		r.jsonWriter.KeyValue("Status", "OK")
+		r.jsonWriter.KeyValue("Message", "")
 		r.jsonWriter.Array("Data", func() {
 			for _, v := range versions {
 				r.jsonWriter.ArrayObject(func() {
