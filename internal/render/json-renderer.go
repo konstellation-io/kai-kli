@@ -193,7 +193,7 @@ func (r *CliJSONRenderer) RenderProducts(products []kai.Product) {
 func (r *CliJSONRenderer) RenderVersion(productID string, v *entity.Version) {
 	r.jsonWriter.RootObject(func() {
 		r.jsonWriter.KeyValue("Status", "OK")
-		r.jsonWriter.KeyValue("Message", "Version successfully obtained!")
+		r.jsonWriter.KeyValue("Message", "")
 		r.jsonWriter.Object("Data", func() {
 			r.jsonWriter.KeyValue("Product", productID)
 			r.jsonWriter.KeyValue("Tag", v.Tag)
@@ -214,16 +214,9 @@ func (r *CliJSONRenderer) RenderVersion(productID string, v *entity.Version) {
 }
 
 func (r *CliJSONRenderer) RenderVersions(productID string, versions []*entity.Version) {
-	var msg string
-	if len(versions) == 0 {
-		msg = "No versions found."
-	} else {
-		msg = "Versions successfully obtained!"
-	}
-
 	r.jsonWriter.RootObject(func() {
 		r.jsonWriter.KeyValue("Status", "OK")
-		r.jsonWriter.KeyValue("Message", msg)
+		r.jsonWriter.KeyValue("Message", "")
 		r.jsonWriter.Array("Data", func() {
 			for _, v := range versions {
 				r.jsonWriter.ArrayObject(func() {
@@ -343,7 +336,7 @@ func (r *CliJSONRenderer) RenderProcessRegistered(process *entity.RegisteredProc
 func (r *CliJSONRenderer) RenderProcessDeleted(process string) {
 	r.jsonWriter.RootObject(func() {
 		r.jsonWriter.KeyValue("Status", "OK")
-		r.jsonWriter.KeyValue("Message", fmt.Sprintf("Process %s deleted!", process))
+		r.jsonWriter.KeyValue("Message", "")
 		r.jsonWriter.Object("Data", func() {
 			r.jsonWriter.KeyValue("ProcessID", process)
 		})
@@ -367,7 +360,7 @@ func (r *CliJSONRenderer) RenderProductCreated(product string, server *configura
 func (r *CliJSONRenderer) RenderProductBinded(productID string) {
 	r.jsonWriter.RootObject(func() {
 		r.jsonWriter.KeyValue("Status", "OK")
-		r.jsonWriter.KeyValue("Message", "Product successfully bound!")
+		r.jsonWriter.KeyValue("Message", "")
 		r.jsonWriter.Object("Data", func() {
 			r.jsonWriter.KeyValue("ProductID", productID)
 		})
@@ -397,7 +390,7 @@ func (r *CliJSONRenderer) RenderLogout(serverName string) {
 func (r *CliJSONRenderer) RenderPushVersion(versionTag, product string) {
 	r.jsonWriter.RootObject(func() {
 		r.jsonWriter.KeyValue("Status", "OK")
-		r.jsonWriter.KeyValue("Message", "Version successfully created!")
+		r.jsonWriter.KeyValue("Message", "")
 		r.jsonWriter.Object("Data", func() {
 			r.jsonWriter.KeyValue("VersionTag", versionTag)
 			r.jsonWriter.KeyValue("Product", product)
@@ -410,7 +403,7 @@ func (r *CliJSONRenderer) RenderPushVersion(versionTag, product string) {
 func (r *CliJSONRenderer) RenderStartVersion(versionTag, product string) {
 	r.jsonWriter.RootObject(func() {
 		r.jsonWriter.KeyValue("Status", "OK")
-		r.jsonWriter.KeyValue("Message", "Version is starting!")
+		r.jsonWriter.KeyValue("Message", "")
 		r.jsonWriter.Object("Data", func() {
 			r.jsonWriter.KeyValue("VersionTag", versionTag)
 			r.jsonWriter.KeyValue("Product", product)
@@ -423,7 +416,7 @@ func (r *CliJSONRenderer) RenderStartVersion(versionTag, product string) {
 func (r *CliJSONRenderer) RenderStopVersion(versionTag, product string) {
 	r.jsonWriter.RootObject(func() {
 		r.jsonWriter.KeyValue("Status", "OK")
-		r.jsonWriter.KeyValue("Message", "Version is stopping!")
+		r.jsonWriter.KeyValue("Message", "")
 		r.jsonWriter.Object("Data", func() {
 			r.jsonWriter.KeyValue("VersionTag", versionTag)
 			r.jsonWriter.KeyValue("Product", product)
@@ -436,7 +429,7 @@ func (r *CliJSONRenderer) RenderStopVersion(versionTag, product string) {
 func (r *CliJSONRenderer) RenderPublishVersion(versionTag, product string, triggers []entity.TriggerEndpoint) {
 	r.jsonWriter.RootObject(func() {
 		r.jsonWriter.KeyValue("Status", "OK")
-		r.jsonWriter.KeyValue("Message", "Version correctly published!")
+		r.jsonWriter.KeyValue("Message", "")
 		r.jsonWriter.Object("Data", func() {
 			r.jsonWriter.KeyValue("VersionTag", versionTag)
 			r.jsonWriter.KeyValue("Product", product)
@@ -462,7 +455,7 @@ func (r *CliJSONRenderer) renderTriggersFn(triggers []entity.TriggerEndpoint) fu
 func (r *CliJSONRenderer) RenderUnpublishVersion(versionTag, product string) {
 	r.jsonWriter.RootObject(func() {
 		r.jsonWriter.KeyValue("Status", "OK")
-		r.jsonWriter.KeyValue("Message", "Version correctly unpublished!")
+		r.jsonWriter.KeyValue("Message", "")
 		r.jsonWriter.Object("Data", func() {
 			r.jsonWriter.KeyValue("VersionTag", versionTag)
 			r.jsonWriter.KeyValue("Product", product)
