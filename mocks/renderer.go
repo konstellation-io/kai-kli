@@ -109,6 +109,18 @@ func (mr *MockRendererMockRecorder) RenderLogs(productID, logs, outFormat, showA
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderLogs", reflect.TypeOf((*MockRenderer)(nil).RenderLogs), productID, logs, outFormat, showAllLabels)
 }
 
+// RenderProcessDeleted mocks base method.
+func (m *MockRenderer) RenderProcessDeleted(process string) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderProcessDeleted", process)
+}
+
+// RenderProcessDeleted indicates an expected call of RenderProcessDeleted.
+func (mr *MockRendererMockRecorder) RenderProcessDeleted(process interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderProcessDeleted", reflect.TypeOf((*MockRenderer)(nil).RenderProcessDeleted), process)
+}
+
 // RenderProcessRegistered mocks base method.
 func (m *MockRenderer) RenderProcessRegistered(process *entity.RegisteredProcess) {
 	m.ctrl.T.Helper()

@@ -23,6 +23,7 @@ type Renderer interface {
 	RenderCallout(v *entity.Version)
 	RenderKliVersion(version, buildDate string)
 	RenderProcessRegistered(process *entity.RegisteredProcess)
+	RenderProcessDeleted(process string)
 	RenderProductCreated(product string, server *configuration.Server, initLocal bool)
 	RenderProductBinded(productID string)
 	RenderLogin(serverName string)

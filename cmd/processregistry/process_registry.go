@@ -7,6 +7,12 @@ import (
 	"github.com/konstellation-io/kli/internal/logging"
 )
 
+const (
+	_serverFlag    = "server"
+	_productIDFlag = "product"
+	_publicFlag    = "public"
+)
+
 // NewProcessRegistryCmd creates a new command to handle 'process-registry' subcommands.
 func NewProcessRegistryCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
@@ -23,6 +29,7 @@ func NewProcessRegistryCmd(logger logging.Interface) *cobra.Command {
 	cmd.AddCommand(
 		NewListCmd(logger),
 		NewRegisterCmd(logger),
+		NewDeleteCmd(logger),
 	)
 
 	return cmd
