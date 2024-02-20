@@ -20,7 +20,6 @@ var (
 const (
 	_sourcesFlag    = "src"
 	_dockerfileFlag = "dockerfile"
-	_versionFlag    = "version"
 )
 
 // NewRegisterCmd creates a new command to register a new process in the given server.
