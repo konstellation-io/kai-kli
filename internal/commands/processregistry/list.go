@@ -7,14 +7,24 @@ import (
 )
 
 type ListProcessesOpts struct {
-	ServerName  string
-	ProductID   string
+	ServerName string
+	ProductID  string
+	Filters    *ListFilters
+}
+
+type ListFilters struct {
+	ProcessName string
+	Version     string
 	ProcessType krt.ProcessType
 }
 
 func (c *Handler) ListProcesses(opts *ListProcessesOpts) error {
-	if opts.ProcessType != "" && !opts.ProcessType.IsValid() {
-		return fmt.Errorf("invalid process type: %q", opts.ProcessType)
+	if opts.Filters == nil {
+		opts.Filters = &ListFilters{}
+	}
+
+	if opts.Filters.ProcessType != "" && !opts.Filters.ProcessType.IsValid() {
+		return fmt.Errorf("invalid process type: %q", opts.Filters.ProcessType)
 	}
 
 	kaiConfig, err := c.configService.GetConfiguration()
@@ -28,7 +38,7 @@ func (c *Handler) ListProcesses(opts *ListProcessesOpts) error {
 	}
 
 	registeredProcesses, err := c.processRegistryClient.List(
-		srv, opts.ProductID, string(opts.ProcessType),
+		srv, opts.ProductID, opts.Filters.ProcessName, opts.Filters.Version, string(opts.Filters.ProcessType),
 	)
 	if err != nil {
 		return err

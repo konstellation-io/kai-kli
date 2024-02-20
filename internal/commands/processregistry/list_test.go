@@ -97,14 +97,22 @@ func (s *ListProcessSuite) BeforeTest(_, _ string) {
 
 func (s *ListProcessSuite) TestList() {
 	// GIVEN
-	processType := _processType
 	productID := _productID
 	serverName := _serverName
+	processName := _processName
+	version := _version
+	processType := _processType
+
+	listFilters := &processRegistryCMD.ListFilters{
+		ProcessName: processName,
+		Version:     version,
+		ProcessType: krt.ProcessType(processType),
+	}
 
 	testRegisteredProcess := &entity.RegisteredProcess{
 		ID:         "test-process-id",
-		Name:       "test-process",
-		Version:    "v1.0.0",
+		Name:       processName,
+		Version:    version,
 		Type:       processType,
 		Image:      "test-image",
 		UploadDate: time.Now().UTC(),
@@ -113,7 +121,7 @@ func (s *ListProcessSuite) TestList() {
 
 	retrievedRegisteredProcesses := []*entity.RegisteredProcess{testRegisteredProcess}
 
-	s.processRegistryAPI.EXPECT().List(gomock.Any(), productID, processType).Return(
+	s.processRegistryAPI.EXPECT().List(gomock.Any(), productID, processName, version, processType).Return(
 		retrievedRegisteredProcesses,
 		nil,
 	)
@@ -121,9 +129,9 @@ func (s *ListProcessSuite) TestList() {
 
 	// WHEN
 	err := s.manager.ListProcesses(&processRegistryCMD.ListProcessesOpts{
-		ServerName:  serverName,
-		ProductID:   productID,
-		ProcessType: krt.ProcessType(processType),
+		ServerName: serverName,
+		ProductID:  productID,
+		Filters:    listFilters,
 	})
 
 	// THEN
@@ -132,20 +140,18 @@ func (s *ListProcessSuite) TestList() {
 
 func (s *ListProcessSuite) TestList_APIError() {
 	// GIVEN
-	processType := _processType
 	productID := _productID
 	serverName := _serverName
 
-	s.processRegistryAPI.EXPECT().List(gomock.Any(), productID, processType).Return(
+	s.processRegistryAPI.EXPECT().List(gomock.Any(), productID, "", "", "").Return(
 		nil,
 		fmt.Errorf("mock error"),
 	)
 
 	// WHEN
 	err := s.manager.ListProcesses(&processRegistryCMD.ListProcessesOpts{
-		ServerName:  serverName,
-		ProductID:   productID,
-		ProcessType: krt.ProcessType(processType),
+		ServerName: serverName,
+		ProductID:  productID,
 	})
 
 	// THEN
@@ -154,15 +160,19 @@ func (s *ListProcessSuite) TestList_APIError() {
 
 func (s *ListProcessSuite) TestList_InvalidTypeFilter_APIError() {
 	// GIVEN
-	processType := "some-invalid-type"
 	productID := _productID
 	serverName := _serverName
+	processType := "some-invalid-type"
+
+	filters := &processRegistryCMD.ListFilters{
+		ProcessType: krt.ProcessType(processType),
+	}
 
 	// WHEN
 	err := s.manager.ListProcesses(&processRegistryCMD.ListProcessesOpts{
-		ServerName:  serverName,
-		ProductID:   productID,
-		ProcessType: krt.ProcessType(processType),
+		ServerName: serverName,
+		ProductID:  productID,
+		Filters:    filters,
 	})
 
 	// THEN
@@ -171,15 +181,13 @@ func (s *ListProcessSuite) TestList_InvalidTypeFilter_APIError() {
 
 func (s *ListProcessSuite) TestList_InvalidServer_ExpectError() {
 	// GIVEN
-	processType := _processType
 	productID := _productID
 	serverName := "invalid-server"
 
 	// WHEN
 	err := s.manager.ListProcesses(&processRegistryCMD.ListProcessesOpts{
-		ServerName:  serverName,
-		ProductID:   productID,
-		ProcessType: krt.ProcessType(processType),
+		ServerName: serverName,
+		ProductID:  productID,
 	})
 
 	// THEN

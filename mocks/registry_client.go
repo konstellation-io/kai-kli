@@ -36,19 +36,49 @@ func (m *MockAPIClient) EXPECT() *MockAPIClientMockRecorder {
 	return m.recorder
 }
 
-// List mocks base method.
-func (m *MockAPIClient) List(server *configuration.Server, productID, processType string) ([]*entity.RegisteredProcess, error) {
+// Delete mocks base method.
+func (m *MockAPIClient) Delete(server *configuration.Server, productID, processID, version string) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "List", server, productID, processType)
+	ret := m.ctrl.Call(m, "Delete", server, productID, processID, version)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Delete indicates an expected call of Delete.
+func (mr *MockAPIClientMockRecorder) Delete(server, productID, processID, version interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockAPIClient)(nil).Delete), server, productID, processID, version)
+}
+
+// DeletePublic mocks base method.
+func (m *MockAPIClient) DeletePublic(server *configuration.Server, processID, version string) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeletePublic", server, processID, version)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeletePublic indicates an expected call of DeletePublic.
+func (mr *MockAPIClientMockRecorder) DeletePublic(server, processID, version interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeletePublic", reflect.TypeOf((*MockAPIClient)(nil).DeletePublic), server, processID, version)
+}
+
+// List mocks base method.
+func (m *MockAPIClient) List(server *configuration.Server, productID, processName, version, processType string) ([]*entity.RegisteredProcess, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "List", server, productID, processName, version, processType)
 	ret0, _ := ret[0].([]*entity.RegisteredProcess)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // List indicates an expected call of List.
-func (mr *MockAPIClientMockRecorder) List(server, productID, processType interface{}) *gomock.Call {
+func (mr *MockAPIClientMockRecorder) List(server, productID, processName, version, processType interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockAPIClient)(nil).List), server, productID, processType)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockAPIClient)(nil).List), server, productID, processName, version, processType)
 }
 
 // Register mocks base method.
