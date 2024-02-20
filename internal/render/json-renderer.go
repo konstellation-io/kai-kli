@@ -325,7 +325,7 @@ func (r *CliJSONRenderer) RenderKliVersion(version, buildDate string) {
 func (r *CliJSONRenderer) RenderProcessRegistered(process *entity.RegisteredProcess) {
 	r.jsonWriter.RootObject(func() {
 		r.jsonWriter.KeyValue("Status", "OK")
-		r.jsonWriter.KeyValue("Message", fmt.Sprintf("Process %s created!", process.Name))
+		r.jsonWriter.KeyValue("Message", "")
 		r.jsonWriter.Object("Data", func() {
 			r.jsonWriter.KeyValue("Name", process.Name)
 			r.jsonWriter.KeyValue("Version", process.Version)
