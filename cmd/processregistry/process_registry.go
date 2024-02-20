@@ -8,9 +8,12 @@ import (
 )
 
 const (
-	_serverFlag    = "server"
-	_productIDFlag = "product"
-	_publicFlag    = "public"
+	_serverFlag      = "server"
+	_publicFlag      = "public"
+	_productIDFlag   = "product"
+	_processNameFlag = "process"
+	_versionFlag     = "version"
+	_processTypeFlag = "type"
 )
 
 // NewProcessRegistryCmd creates a new command to handle 'process-registry' subcommands.

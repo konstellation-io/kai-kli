@@ -67,18 +67,18 @@ func (mr *MockAPIClientMockRecorder) DeletePublic(server, processID, version int
 }
 
 // List mocks base method.
-func (m *MockAPIClient) List(server *configuration.Server, productID, processType string) ([]*entity.RegisteredProcess, error) {
+func (m *MockAPIClient) List(server *configuration.Server, productID, processName, version, processType string) ([]*entity.RegisteredProcess, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "List", server, productID, processType)
+	ret := m.ctrl.Call(m, "List", server, productID, processName, version, processType)
 	ret0, _ := ret[0].([]*entity.RegisteredProcess)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // List indicates an expected call of List.
-func (mr *MockAPIClientMockRecorder) List(server, productID, processType interface{}) *gomock.Call {
+func (mr *MockAPIClientMockRecorder) List(server, productID, processName, version, processType interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockAPIClient)(nil).List), server, productID, processType)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockAPIClient)(nil).List), server, productID, processName, version, processType)
 }
 
 // Register mocks base method.

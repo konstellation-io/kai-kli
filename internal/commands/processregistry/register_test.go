@@ -21,10 +21,11 @@ import (
 
 const (
 	_serverName  = "test"
-	_processType = "trigger"
-	_processID   = "test-process"
 	_productID   = "test-product"
+	_processID   = "test-process-id"
+	_processName = "test-process"
 	_version     = "v1.0.0"
+	_processType = "trigger"
 )
 
 type RegisterProcessSuite struct {

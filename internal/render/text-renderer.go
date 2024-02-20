@@ -312,7 +312,7 @@ func (r *CliTextRenderer) RenderKliVersion(version, buildDate string) {
 }
 
 func (r *CliTextRenderer) RenderProcessRegistered(process *entity.RegisteredProcess) {
-	r.logger.Success(fmt.Sprintf("Creating process with id %q", process.ID))
+	r.logger.Success(fmt.Sprintf("Creating process with id %q, image will be uploaded to %q", process.ID, process.Image))
 }
 
 func (r *CliTextRenderer) RenderProcessDeleted(process string) {
