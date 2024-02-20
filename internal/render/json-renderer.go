@@ -343,7 +343,7 @@ func (r *CliJSONRenderer) RenderProcessRegistered(process *entity.RegisteredProc
 func (r *CliJSONRenderer) RenderProcessDeleted(process string) {
 	r.jsonWriter.RootObject(func() {
 		r.jsonWriter.KeyValue("Status", "OK")
-		r.jsonWriter.KeyValue("Message", fmt.Sprintf("Process %s deleted!", process))
+		r.jsonWriter.KeyValue("Message", "")
 		r.jsonWriter.Object("Data", func() {
 			r.jsonWriter.KeyValue("ProcessID", process)
 		})
