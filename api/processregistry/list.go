@@ -9,7 +9,7 @@ func (c *processRegistryClient) List(
 	server *configuration.Server, productID, processName, version, processType string,
 ) ([]*entity.RegisteredProcess, error) {
 	query := `
-		query RegisteredProcesses($productID: ID!, $processType: String) {
+		query RegisteredProcesses($productID: ID!, $processName: String, $version: String, $processType: String) {
 			registeredProcesses(productID: $productID, processName: $processName, version: $version, processType: $processType) {
 					id
 					name
