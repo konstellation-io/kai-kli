@@ -15,7 +15,9 @@ type APIClient interface {
 		processID, processType, version string) (*entity.RegisteredProcess, error)
 	RegisterPublic(server *configuration.Server, processFile *os.File, processID, processType,
 		version string) (*entity.RegisteredProcess, error)
-	List(server *configuration.Server, productID, processType string) ([]*entity.RegisteredProcess, error)
+	List(server *configuration.Server, productID, processName, version, processType string) ([]*entity.RegisteredProcess, error)
+	Delete(server *configuration.Server, productID, processID, version string) (string, error)
+	DeletePublic(server *configuration.Server, processID, version string) (string, error)
 }
 
 type processRegistryClient struct {

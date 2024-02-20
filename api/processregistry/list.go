@@ -6,11 +6,11 @@ import (
 )
 
 func (c *processRegistryClient) List(
-	server *configuration.Server, productID, processType string,
+	server *configuration.Server, productID, processName, version, processType string,
 ) ([]*entity.RegisteredProcess, error) {
 	query := `
-		query RegisteredProcesses($productID: ID!, $processType: String) {
-			registeredProcesses(productID: $productID, processType: $processType) {
+		query RegisteredProcesses($productID: ID!, $processName: String, $version: String, $processType: String) {
+			registeredProcesses(productID: $productID, processName: $processName, version: $version, processType: $processType) {
 					id
 					name
 					version
@@ -25,6 +25,8 @@ func (c *processRegistryClient) List(
 		`
 	vars := map[string]interface{}{
 		"productID":   productID,
+		"processName": processName,
+		"version":     version,
 		"processType": processType,
 	}
 
