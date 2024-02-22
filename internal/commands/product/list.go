@@ -22,16 +22,13 @@ func (h *Handler) ListProducts(serverName string, opts *ListProductsOpts) error 
 		return err
 	}
 
-	products, err := h.productClient.GetProducts(server)
-	if err != nil {
-		return err
+	if opts == nil {
+		opts = &ListProductsOpts{}
 	}
 
-	// TODO - technical debt, this should be done in the server side
-	// filter is done here instead of in the client to avoid adding complexity to the client
-	// and make the rendering of empty results after filtering more easy to manage
-	if opts.ProductName != "" {
-		products = filterProductsByName(products, opts.ProductName)
+	products, err := h.productClient.GetProducts(server, opts.ProductName)
+	if err != nil {
+		return err
 	}
 
 	h.renderer.RenderProducts(products)

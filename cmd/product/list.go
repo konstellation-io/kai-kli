@@ -16,7 +16,7 @@ const (
 // NewListCmd creates a new command to bind a product.
 func NewListCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "list [opts...]",
+		Use:     "list [--product <product_name>] [opts...]",
 		Args:    cobra.ExactArgs(0),
 		Aliases: []string{"ls"},
 		Short:   "List existing products.",

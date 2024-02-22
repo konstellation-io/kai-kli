@@ -80,10 +80,10 @@ func (c *Client) GetProduct(server *configuration.Server, id string) (*kai.Produ
 	return respData.Product, nil
 }
 
-func (c *Client) GetProducts(server *configuration.Server) ([]kai.Product, error) {
+func (c *Client) GetProducts(server *configuration.Server, productName string) ([]kai.Product, error) {
 	mutation := `
-		query GetProducts() {
-			products() {
+		query GetProducts($productName: String) {
+			products(productName: $productName) {
 				id
 				name
 				description
@@ -91,7 +91,9 @@ func (c *Client) GetProducts(server *configuration.Server) ([]kai.Product, error
 		}
 	`
 
-	vars := map[string]interface{}{}
+	vars := map[string]interface{}{
+		"productName": productName,
+	}
 
 	var respData struct {
 		Products []kai.Product

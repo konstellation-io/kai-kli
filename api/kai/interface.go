@@ -26,7 +26,7 @@ type Client interface { //nolint: golint
 type ProductClient interface {
 	CreateProduct(server *configuration.Server, name, description string) error
 	GetProduct(server *configuration.Server, id string) (*Product, error)
-	GetProducts(server *configuration.Server) ([]Product, error)
+	GetProducts(server *configuration.Server, productName string) ([]Product, error)
 }
 
 type VersionClient interface {
