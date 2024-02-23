@@ -1,8 +1,14 @@
 package product
 
-import "github.com/konstellation-io/kli/internal/services/configuration"
+import (
+	"github.com/konstellation-io/kli/internal/services/configuration"
+)
 
-func (h *Handler) ListProducts(serverName string) error {
+type ListProductsOpts struct {
+	ProductName string
+}
+
+func (h *Handler) ListProducts(serverName string, opts *ListProductsOpts) error {
 	configService := configuration.NewKaiConfigService(h.logger)
 
 	conf, err := configService.GetConfiguration()
@@ -15,7 +21,11 @@ func (h *Handler) ListProducts(serverName string) error {
 		return err
 	}
 
-	products, err := h.productClient.GetProducts(server)
+	if opts == nil {
+		opts = &ListProductsOpts{}
+	}
+
+	products, err := h.productClient.GetProducts(server, opts.ProductName)
 	if err != nil {
 		return err
 	}

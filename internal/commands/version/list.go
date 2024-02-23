@@ -24,6 +24,7 @@ func (h *Handler) ListVersions(opts *ListVersionsOpts) error {
 		return err
 	}
 
+	// TODO - technical debt, this should be done in the server side
 	// filter is done here instead of in the client to avoid adding complexity to the client
 	// and make the rendering of empty results after filtering more easy to manage
 	if opts.StatusFilter != "" {
