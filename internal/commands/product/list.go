@@ -1,7 +1,6 @@
 package product
 
 import (
-	"github.com/konstellation-io/kli/api/kai"
 	"github.com/konstellation-io/kli/internal/services/configuration"
 )
 
@@ -34,16 +33,4 @@ func (h *Handler) ListProducts(serverName string, opts *ListProductsOpts) error 
 	h.renderer.RenderProducts(products)
 
 	return nil
-}
-
-func filterProductsByName(products []kai.Product, name string) []kai.Product {
-	var filteredProducts []kai.Product
-
-	for _, p := range products {
-		if p.Name == name {
-			filteredProducts = append(filteredProducts, p)
-		}
-	}
-
-	return filteredProducts
 }
