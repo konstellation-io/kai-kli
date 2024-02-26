@@ -10,7 +10,7 @@ import (
 	"github.com/konstellation-io/kli/internal/entity"
 )
 
-func (s *VersionSuite) TestListVersion() {
+func (s *VersionSuite) TestListVersion_NoFilter_OK() {
 	const (
 		productName = "test-product"
 		versionTag  = "v.1.0.1-test"
@@ -24,7 +24,7 @@ func (s *VersionSuite) TestListVersion() {
 		},
 	}
 
-	s.versionClient.EXPECT().List(s.server, productName).Return(versions, nil).Once()
+	s.versionClient.EXPECT().List(s.server, productName, (*string)(nil)).Return(versions, nil).Once()
 	s.renderer.EXPECT().RenderVersions(productName, versions)
 
 	err := s.handler.ListVersions(&version.ListVersionsOpts{
@@ -34,7 +34,7 @@ func (s *VersionSuite) TestListVersion() {
 	s.Assert().NoError(err)
 }
 
-func (s *VersionSuite) TestListVersion_FilterVersionsByStatus_ExpectOk() {
+func (s *VersionSuite) TestListVersion_WithFilter_Ok() {
 	const (
 		productName = "test-product"
 	)
@@ -52,14 +52,17 @@ func (s *VersionSuite) TestListVersion_FilterVersionsByStatus_ExpectOk() {
 		},
 	}
 
-	s.versionClient.EXPECT().List(s.server, productName).Return(versions, nil).Once()
-	s.renderer.EXPECT().RenderVersions(productName, []*entity.Version{versions[1]})
-
-	err := s.handler.ListVersions(&version.ListVersionsOpts{
+	statusFilter := entity.VersionStatusStarted
+	listVersionOpts := &version.ListVersionsOpts{
 		ServerName:   s.server.Name,
 		ProductID:    productName,
-		StatusFilter: entity.VersionStatusStarted,
-	})
+		StatusFilter: &statusFilter,
+	}
+
+	s.versionClient.EXPECT().List(s.server, productName, listVersionOpts.StatusFilter).Return(versions, nil).Once()
+	s.renderer.EXPECT().RenderVersions(productName, versions)
+
+	err := s.handler.ListVersions(listVersionOpts)
 	s.Assert().NoError(err)
 }
 
@@ -74,7 +77,7 @@ func (s *VersionSuite) TestListVersion_WrongServer_ExpectError() {
 func (s *VersionSuite) TestListVersion_ClientFails_ExpectErrors() {
 	expectedError := errors.New("client error")
 
-	s.versionClient.EXPECT().List(s.server, productName).Return(nil, expectedError).Once()
+	s.versionClient.EXPECT().List(s.server, productName, (*string)(nil)).Return(nil, expectedError).Once()
 
 	err := s.handler.ListVersions(&version.ListVersionsOpts{
 		ServerName: s.server.Name,
