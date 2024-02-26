@@ -59,8 +59,10 @@ func (s *VersionSuite) TestListVersion_WithFilter_Ok() {
 		StatusFilter: &statusFilter,
 	}
 
-	s.versionClient.EXPECT().List(s.server, productName, listVersionOpts.StatusFilter).Return(versions, nil).Once()
-	s.renderer.EXPECT().RenderVersions(productName, versions)
+	filteredVersions := []*entity.Version{versions[1]}
+
+	s.versionClient.EXPECT().List(s.server, productName, listVersionOpts.StatusFilter).Return(filteredVersions, nil).Once()
+	s.renderer.EXPECT().RenderVersions(productName, filteredVersions)
 
 	err := s.handler.ListVersions(listVersionOpts)
 	s.Assert().NoError(err)
