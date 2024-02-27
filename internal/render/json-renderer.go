@@ -459,3 +459,32 @@ func (r *CliJSONRenderer) RenderUnpublishVersion(versionTag, product string) {
 
 	_, _ = r.ioWriter.Write([]byte("\n"))
 }
+
+func (r *CliJSONRenderer) RenderAddUserToProduct(product, userEmail string) {
+	r.renderManageProductMembersResponse(product, userEmail)
+}
+
+func (r *CliJSONRenderer) RenderRemoveUserFromProduct(product, userEmail string) {
+	r.renderManageProductMembersResponse(product, userEmail)
+}
+
+func (r *CliJSONRenderer) RenderAddMaintainerToProduct(product, userEmail string) {
+	r.renderManageProductMembersResponse(product, userEmail)
+}
+
+func (r *CliJSONRenderer) RenderRemoveMaintainerFromProduct(product, userEmail string) {
+	r.renderManageProductMembersResponse(product, userEmail)
+}
+
+func (r *CliJSONRenderer) renderManageProductMembersResponse(product, userEmail string) {
+	r.jsonWriter.RootObject(func() {
+		r.jsonWriter.KeyValue("Status", "OK")
+		r.jsonWriter.KeyValue("Message", "")
+		r.jsonWriter.Object("Data", func() {
+			r.jsonWriter.KeyValue("UserEmail", userEmail)
+			r.jsonWriter.KeyValue("Product", product)
+		})
+	})
+
+	_, _ = r.ioWriter.Write([]byte("\n"))
+}
