@@ -34,7 +34,7 @@ type VersionClient interface {
 	Start(server *configuration.Server, productID, versionTag, comment string) (string, error)
 	Stop(server *configuration.Server, productID, versionTag, comment string) (string, error)
 	Get(server *configuration.Server, productID string, versionTag *string) (*entity.Version, error)
-	List(server *configuration.Server, productID string) ([]*entity.Version, error)
+	List(server *configuration.Server, productID string, status *string) ([]*entity.Version, error)
 	Publish(server *configuration.Server, productID, versionTag, comment string, force bool) ([]entity.TriggerEndpoint, error)
 	Unpublish(server *configuration.Server, productID, versionTag, comment string) (string, error)
 	Logs(server *configuration.Server, filters *entity.LogFilters) ([]entity.Log, error)

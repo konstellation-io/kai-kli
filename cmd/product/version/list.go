@@ -1,6 +1,8 @@
 package version
 
 import (
+	"strings"
+
 	"github.com/konstellation-io/kli/api"
 	"github.com/konstellation-io/kli/internal/commands/version"
 	"github.com/konstellation-io/kli/internal/logging"
@@ -33,19 +35,22 @@ func NewListCmd(logger logging.Interface) *cobra.Command {
 				return err
 			}
 
+			listVersionOpts := &version.ListVersionsOpts{
+				ServerName: server,
+				ProductID:  productID,
+			}
+
 			statusFilter, err := cmd.Flags().GetString(_statusFlag)
-			if err != nil {
-				return err
+			if err == nil {
+				statusFilter = strings.ToUpper(statusFilter)
+				listVersionOpts.StatusFilter = &statusFilter
 			}
 
 			r := render.NewDefaultCliRenderer(logger, cmd.OutOrStdout())
 
-			err = version.NewHandler(logger, r, api.NewKaiClient().VersionClient(), api.NewKaiClient().ProductClient()).
-				ListVersions(&version.ListVersionsOpts{
-					ServerName:   server,
-					ProductID:    productID,
-					StatusFilter: statusFilter,
-				})
+			err = version.NewHandler(
+				logger, r, api.NewKaiClient().VersionClient(), api.NewKaiClient().ProductClient(),
+			).ListVersions(listVersionOpts)
 			if err != nil {
 				return err
 			}
