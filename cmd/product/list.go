@@ -9,10 +9,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const (
+	_productFlag = "product"
+)
+
 // NewListCmd creates a new command to bind a product.
 func NewListCmd(logger logging.Interface) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "list [opts...]",
+		Use:     "list [--product <product_name>] [opts...]",
 		Args:    cobra.ExactArgs(0),
 		Aliases: []string{"ls"},
 		Short:   "List existing products.",
@@ -23,6 +27,13 @@ func NewListCmd(logger logging.Interface) *cobra.Command {
     $ kli product ls [opts...]
 		`,
 		RunE: func(cmd *cobra.Command, _ []string) error {
+			var opts product.ListProductsOpts
+
+			productName, err := cmd.Flags().GetString(_productFlag)
+			if err == nil {
+				opts.ProductName = productName
+			}
+
 			server, err := cmd.Flags().GetString("server")
 			if err != nil {
 				return err
@@ -33,8 +44,9 @@ func NewListCmd(logger logging.Interface) *cobra.Command {
 			productConfigService := productconfiguration.NewProductConfigService(logger)
 			kaiClient := api.NewKaiClient()
 
-			err = product.NewHandler(logger, r, kaiClient.ProductClient(), kaiClient.VersionClient(), productConfigService).
-				ListProducts(server)
+			err = product.NewHandler(
+				logger, r, kaiClient.ProductClient(), kaiClient.VersionClient(), productConfigService,
+			).ListProducts(server, &opts)
 			if err != nil {
 				return err
 			}
@@ -43,8 +55,7 @@ func NewListCmd(logger logging.Interface) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().String(_localPathFlag, "", "The path where the local environment is initialized.")
-	cmd.Flags().BoolP(_forceBindFlag, "f", false, "If true, overrides local product configuration if exists.")
+	cmd.Flags().String(_productFlag, "", "Filter results by product name.")
 
 	return cmd
 }

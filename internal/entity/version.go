@@ -3,10 +3,10 @@ package entity
 import "time"
 
 const (
-	VersionStatusStarted   = "STARTED"
-	VersionStatusPublished = "PUBLISHED"
-	VersionStatusStopped   = "STOPPED"
-	VersionStatusCritical  = "CRITICAL"
+	VersionStatusStarted   string = "STARTED"
+	VersionStatusPublished string = "PUBLISHED"
+	VersionStatusStopped   string = "STOPPED"
+	VersionStatusCritical  string = "CRITICAL"
 )
 
 type ConfigurationVariable struct {

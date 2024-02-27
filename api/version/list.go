@@ -5,10 +5,10 @@ import (
 	"github.com/konstellation-io/kli/internal/services/configuration"
 )
 
-func (c *Client) List(server *configuration.Server, productID string) ([]*entity.Version, error) {
+func (c *Client) List(server *configuration.Server, productID string, status *string) ([]*entity.Version, error) {
 	query := `
-		query Versions($productID: ID!) {
-			versions(productID: $productID) {
+		query Versions($productID: ID!, $status: String) {
+			versions(productID: $productID, status: $status) {
 					tag
 					creationDate
 					status
@@ -17,6 +17,10 @@ func (c *Client) List(server *configuration.Server, productID string) ([]*entity
 		`
 	vars := map[string]interface{}{
 		"productID": productID,
+	}
+
+	if status != nil {
+		vars["status"] = *status
 	}
 
 	var respData struct {

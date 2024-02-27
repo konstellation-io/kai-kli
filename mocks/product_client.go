@@ -209,25 +209,25 @@ func (_c *MockProductClient_GetProduct_Call) RunAndReturn(run func(*configuratio
 	return _c
 }
 
-// GetProducts provides a mock function with given fields: server
-func (_m *MockProductClient) GetProducts(server *configuration.Server) ([]kai.Product, error) {
-	ret := _m.Called(server)
+// GetProducts provides a mock function with given fields: server, productName
+func (_m *MockProductClient) GetProducts(server *configuration.Server, productName string) ([]kai.Product, error) {
+	ret := _m.Called(server, productName)
 
 	var r0 []kai.Product
 	var r1 error
-	if rf, ok := ret.Get(0).(func(*configuration.Server) ([]kai.Product, error)); ok {
-		return rf(server)
+	if rf, ok := ret.Get(0).(func(*configuration.Server, string) ([]kai.Product, error)); ok {
+		return rf(server, productName)
 	}
-	if rf, ok := ret.Get(0).(func(*configuration.Server) []kai.Product); ok {
-		r0 = rf(server)
+	if rf, ok := ret.Get(0).(func(*configuration.Server, string) []kai.Product); ok {
+		r0 = rf(server, productName)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]kai.Product)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(*configuration.Server) error); ok {
-		r1 = rf(server)
+	if rf, ok := ret.Get(1).(func(*configuration.Server, string) error); ok {
+		r1 = rf(server, productName)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -242,13 +242,14 @@ type MockProductClient_GetProducts_Call struct {
 
 // GetProducts is a helper method to define mock.On call
 //   - server *configuration.Server
-func (_e *MockProductClient_Expecter) GetProducts(server interface{}) *MockProductClient_GetProducts_Call {
-	return &MockProductClient_GetProducts_Call{Call: _e.mock.On("GetProducts", server)}
+//   - productName string
+func (_e *MockProductClient_Expecter) GetProducts(server interface{}, productName interface{}) *MockProductClient_GetProducts_Call {
+	return &MockProductClient_GetProducts_Call{Call: _e.mock.On("GetProducts", server, productName)}
 }
 
-func (_c *MockProductClient_GetProducts_Call) Run(run func(server *configuration.Server)) *MockProductClient_GetProducts_Call {
+func (_c *MockProductClient_GetProducts_Call) Run(run func(server *configuration.Server, productName string)) *MockProductClient_GetProducts_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(*configuration.Server))
+		run(args[0].(*configuration.Server), args[1].(string))
 	})
 	return _c
 }
@@ -258,7 +259,7 @@ func (_c *MockProductClient_GetProducts_Call) Return(_a0 []kai.Product, _a1 erro
 	return _c
 }
 
-func (_c *MockProductClient_GetProducts_Call) RunAndReturn(run func(*configuration.Server) ([]kai.Product, error)) *MockProductClient_GetProducts_Call {
+func (_c *MockProductClient_GetProducts_Call) RunAndReturn(run func(*configuration.Server, string) ([]kai.Product, error)) *MockProductClient_GetProducts_Call {
 	_c.Call.Return(run)
 	return _c
 }

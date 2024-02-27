@@ -26,7 +26,7 @@ type Client interface { //nolint: golint
 type ProductClient interface {
 	CreateProduct(server *configuration.Server, name, description string) error
 	GetProduct(server *configuration.Server, id string) (*Product, error)
-	GetProducts(server *configuration.Server) ([]Product, error)
+	GetProducts(server *configuration.Server, productName string) ([]Product, error)
 	AddUserToProduct(server *configuration.Server, product, userEmail string) error
 	RemoveUserFromProduct(server *configuration.Server, product, userEmail string) error
 	AddMaintainerToProduct(server *configuration.Server, product, userEmail string) error
@@ -38,7 +38,7 @@ type VersionClient interface {
 	Start(server *configuration.Server, productID, versionTag, comment string) (string, error)
 	Stop(server *configuration.Server, productID, versionTag, comment string) (string, error)
 	Get(server *configuration.Server, productID string, versionTag *string) (*entity.Version, error)
-	List(server *configuration.Server, productID string) ([]*entity.Version, error)
+	List(server *configuration.Server, productID string, status *string) ([]*entity.Version, error)
 	Publish(server *configuration.Server, productID, versionTag, comment string, force bool) ([]entity.TriggerEndpoint, error)
 	Unpublish(server *configuration.Server, productID, versionTag, comment string) (string, error)
 	Logs(server *configuration.Server, filters *entity.LogFilters) ([]entity.Log, error)

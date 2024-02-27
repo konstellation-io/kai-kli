@@ -120,11 +120,41 @@ func (s *ListProductSuite) TestListProducts() {
 			Description: _productDescription,
 		},
 	}
-	s.productClient.EXPECT().GetProducts(s.server).Return(products, nil).Times(1)
+
+	filter := &product.ListProductsOpts{}
+
+	s.productClient.EXPECT().GetProducts(s.server, "").Return(products, nil).Times(1)
 	s.renderer.EXPECT().RenderProducts(products)
 
 	// WHEN
-	err := s.handler.ListProducts(_serverName)
+	err := s.handler.ListProducts(_serverName, filter)
+
+	// THEN
+	s.Assert().NoError(err)
+}
+
+func (s *ListProductSuite) TestListProducts_WithFilter() {
+	// GIVEN
+	products := []kai.Product{
+		{
+			ID:          _productID,
+			Name:        _productName,
+			Description: _productDescription,
+		},
+		{
+			ID:          _productID,
+			Name:        _productName,
+			Description: _productDescription,
+		},
+	}
+
+	filter := &product.ListProductsOpts{ProductName: _productName}
+
+	s.productClient.EXPECT().GetProducts(s.server, _productName).Return(products, nil).Times(1)
+	s.renderer.EXPECT().RenderProducts(products)
+
+	// WHEN
+	err := s.handler.ListProducts(_serverName, filter)
 
 	// THEN
 	s.Assert().NoError(err)
@@ -133,10 +163,10 @@ func (s *ListProductSuite) TestListProducts() {
 func (s *ListProductSuite) TestListProducts_Error() {
 	// GIVEN
 	errTest := configuration.ErrServerNotFound
-	s.productClient.EXPECT().GetProducts(s.server).Return(nil, errTest).Times(1)
+	s.productClient.EXPECT().GetProducts(s.server, "").Return(nil, errTest).Times(1)
 
 	// WHEN
-	err := s.handler.ListProducts(_serverName)
+	err := s.handler.ListProducts(_serverName, nil)
 
 	// THEN
 	s.Assert().EqualError(err, errTest.Error())
