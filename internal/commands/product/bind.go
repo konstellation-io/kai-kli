@@ -67,6 +67,7 @@ func (h *Handler) getVersion(server *configuration.Server, opts *BindProductOpts
 	if err != nil {
 		if strings.Contains(err.Error(), ErrProductExistsNoVersions.Error()) {
 			h.logger.Warn("Product exists but has no versions, using an empty version")
+
 			version = &entity.Version{}
 		} else {
 			return nil, err
