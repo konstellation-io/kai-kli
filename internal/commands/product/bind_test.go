@@ -3,6 +3,7 @@
 package product_test
 
 import (
+	"errors"
 	"os"
 
 	"github.com/konstellation-io/kli/internal/commands/product"
@@ -56,7 +57,7 @@ func (s *ProductSuite) TestBindProductAlreadyExists() {
 		Force:      false,
 	}
 
-	s.versionClient.EXPECT().Get(s.server, _productName, bindOpts.VersionTag).Return(testVersion, nil).Times(2)
+	s.versionClient.EXPECT().Get(s.server, _productName, bindOpts.VersionTag).Return(testVersion, nil).Times(1)
 	s.renderer.EXPECT().RenderProductBinded(_productName).Times(1)
 
 	err := s.handler.Bind(bindOpts)
@@ -107,7 +108,7 @@ func (s *ProductSuite) TestBindForce() {
 	s.Require().NoError(err)
 }
 
-func (s *ProductSuite) TestBind_InvalidServer_ExpectError() {
+func (s *ProductSuite) TestBind_InvalidServer() {
 	bindOpts := &product.BindProductOpts{
 		Server:     "invalid-server",
 		ProductID:  _productName,
@@ -117,5 +118,38 @@ func (s *ProductSuite) TestBind_InvalidServer_ExpectError() {
 	}
 
 	err := s.handler.Bind(bindOpts)
-	s.Require().Error(err)
+	s.Error(err)
+}
+
+func (s *ProductSuite) TestBind_GetVersionError() {
+	bindOpts := &product.BindProductOpts{
+		Server:     s.server.Name,
+		ProductID:  _productName,
+		VersionTag: nil,
+		LocalPath:  "",
+		Force:      true,
+	}
+
+	testErr := errors.New("test error")
+
+	s.versionClient.EXPECT().Get(s.server, _productName, bindOpts.VersionTag).Return(nil, testErr).Times(1)
+
+	err := s.handler.Bind(bindOpts)
+	s.ErrorIs(err, testErr)
+}
+
+func (s *ProductSuite) TestBind_GetVersionError_ProductExists() {
+	bindOpts := &product.BindProductOpts{
+		Server:     s.server.Name,
+		ProductID:  _productName,
+		VersionTag: nil, // GIVEN no specific version tag
+		LocalPath:  "",
+		Force:      true,
+	}
+
+	s.versionClient.EXPECT().Get(s.server, _productName, bindOpts.VersionTag).Return(nil, product.ErrProductExistsNoVersions).Times(1)
+	s.renderer.EXPECT().RenderProductBinded(_productName).Times(1)
+
+	err := s.handler.Bind(bindOpts)
+	s.NoError(err)
 }
