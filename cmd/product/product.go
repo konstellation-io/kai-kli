@@ -20,6 +20,10 @@ func NewProductCmd(logger logging.Interface) *cobra.Command {
 			$ kli products ls [opts...]
 			$ kli product create <product_name> [opts...]
 			$ kli product bind <product_name> [opts...]
+			$ kli product add-user <product_name> <user-email> [opts...]
+			$ kli product remove-user <product_name> <user-email> [opts...]
+			$ kli product add-maintainer <product_name> <user-email> [opts...]
+			$ kli product remove-maintainer <product_name> <user-email> [opts...]
 		`),
 	}
 
@@ -29,6 +33,10 @@ func NewProductCmd(logger logging.Interface) *cobra.Command {
 		NewCreateCmd(logger),
 		NewBindCmd(logger),
 		NewListCmd(logger),
+		NewAddUserCmd(logger),
+		NewRemoveUserCmd(logger),
+		NewAddMaintainerCmd(logger),
+		NewRemoveMaintainerCmd(logger),
 		version.NewVersionCmd(logger),
 	)
 

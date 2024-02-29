@@ -386,3 +386,19 @@ func boolToText(b bool) string {
 
 	return "No"
 }
+
+func (r *CliTextRenderer) RenderAddUserToProduct(product, userEmail string) {
+	r.logger.Success(fmt.Sprintf("User with email %q added to product %q!", userEmail, product))
+}
+
+func (r *CliTextRenderer) RenderRemoveUserFromProduct(product, userEmail string) {
+	r.logger.Success(fmt.Sprintf("User with email %q removed from product %q!", userEmail, product))
+}
+
+func (r *CliTextRenderer) RenderAddMaintainerToProduct(product, userEmail string) {
+	r.logger.Success(fmt.Sprintf("Maintainer with email %q added to product %q!", userEmail, product))
+}
+
+func (r *CliTextRenderer) RenderRemoveMaintainerFromProduct(product, userEmail string) {
+	r.logger.Success(fmt.Sprintf("Maintainer with email %q removed from product %q!", userEmail, product))
+}

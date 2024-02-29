@@ -34,7 +34,3 @@ type Server struct {
 	Host     string
 	Protocol string
 }
-
-type RemoteServerInfo struct {
-	IsKaiServer bool
-}
