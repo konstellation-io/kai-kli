@@ -27,6 +27,10 @@ type ProductClient interface {
 	CreateProduct(server *configuration.Server, name, description string) error
 	GetProduct(server *configuration.Server, id string) (*Product, error)
 	GetProducts(server *configuration.Server, productName string) ([]Product, error)
+	AddUserToProduct(server *configuration.Server, product, userEmail string) error
+	RemoveUserFromProduct(server *configuration.Server, product, userEmail string) error
+	AddMaintainerToProduct(server *configuration.Server, product, userEmail string) error
+	RemoveMaintainerFromProduct(server *configuration.Server, product, userEmail string) error
 }
 
 type VersionClient interface {

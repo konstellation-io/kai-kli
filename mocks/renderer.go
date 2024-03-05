@@ -37,6 +37,30 @@ func (m *MockRenderer) EXPECT() *MockRendererMockRecorder {
 	return m.recorder
 }
 
+// RenderAddMaintainerToProduct mocks base method.
+func (m *MockRenderer) RenderAddMaintainerToProduct(product, userEmail string) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderAddMaintainerToProduct", product, userEmail)
+}
+
+// RenderAddMaintainerToProduct indicates an expected call of RenderAddMaintainerToProduct.
+func (mr *MockRendererMockRecorder) RenderAddMaintainerToProduct(product, userEmail interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderAddMaintainerToProduct", reflect.TypeOf((*MockRenderer)(nil).RenderAddMaintainerToProduct), product, userEmail)
+}
+
+// RenderAddUserToProduct mocks base method.
+func (m *MockRenderer) RenderAddUserToProduct(product, userEmail string) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderAddUserToProduct", product, userEmail)
+}
+
+// RenderAddUserToProduct indicates an expected call of RenderAddUserToProduct.
+func (mr *MockRendererMockRecorder) RenderAddUserToProduct(product, userEmail interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderAddUserToProduct", reflect.TypeOf((*MockRenderer)(nil).RenderAddUserToProduct), product, userEmail)
+}
+
 // RenderCallout mocks base method.
 func (m *MockRenderer) RenderCallout(v *entity.Version) {
 	m.ctrl.T.Helper()
@@ -215,6 +239,30 @@ func (m *MockRenderer) RenderRegisteredProcesses(registries []*entity.Registered
 func (mr *MockRendererMockRecorder) RenderRegisteredProcesses(registries interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderRegisteredProcesses", reflect.TypeOf((*MockRenderer)(nil).RenderRegisteredProcesses), registries)
+}
+
+// RenderRemoveMaintainerFromProduct mocks base method.
+func (m *MockRenderer) RenderRemoveMaintainerFromProduct(product, userEmail string) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderRemoveMaintainerFromProduct", product, userEmail)
+}
+
+// RenderRemoveMaintainerFromProduct indicates an expected call of RenderRemoveMaintainerFromProduct.
+func (mr *MockRendererMockRecorder) RenderRemoveMaintainerFromProduct(product, userEmail interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderRemoveMaintainerFromProduct", reflect.TypeOf((*MockRenderer)(nil).RenderRemoveMaintainerFromProduct), product, userEmail)
+}
+
+// RenderRemoveUserFromProduct mocks base method.
+func (m *MockRenderer) RenderRemoveUserFromProduct(product, userEmail string) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RenderRemoveUserFromProduct", product, userEmail)
+}
+
+// RenderRemoveUserFromProduct indicates an expected call of RenderRemoveUserFromProduct.
+func (mr *MockRendererMockRecorder) RenderRemoveUserFromProduct(product, userEmail interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenderRemoveUserFromProduct", reflect.TypeOf((*MockRenderer)(nil).RenderRemoveUserFromProduct), product, userEmail)
 }
 
 // RenderServers mocks base method.
